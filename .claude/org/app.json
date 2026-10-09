@@ -1,0 +1,24 @@
+{
+  "org_version": "0.2.0",
+  "app_name": "読書アプリ",
+  "idea": "読む時間そのものが美しくなる、デザイン賞を狙う読書アプリ",
+  "owner": "matsuura-tak",
+  "stacks": [
+    "ios"
+  ],
+  "paths": {
+    "ios": "ios/",
+    "backend": "backend/",
+    "design": "design/",
+    "contracts": "contracts/",
+    "acceptance_tests": [
+      "ios/AcceptanceTests/",
+      "backend/tests/acceptance/"
+    ]
+  },
+  "commands": {
+    "ios_build": "",
+    "ios_test": "",
+    "backend_test": ""
+  }
+}
