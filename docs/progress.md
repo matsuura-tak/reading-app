@@ -18,3 +18,4 @@
 - 2026-10-16 001-reading-session G0 決定 違いは ToRead と比べる（1）。案 A「伏せて読み始める」を中心に pdm が PRD を作り直す。並行して tech-lead が案 A の実現性を調べる docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-16 001-reading-session G0 Takuma待ち pdm が案 A で第1部を作り直した（推奨：形を変える。承認は ToRead のメモと Q9 のあと）。新しい事実（伏せるタイマーは2018年から、US に読書の Offshelf、ToRead は背面タップで始められる）で Q9 を聞く。tech-lead は案 A を作れると見たが、向きのロック中に伏せが届くかは実機でしか分からない（Q-A） docs/prd/001-reading-session.md の 8、17、18、docs/reviews/001-reading-session-G0-tech-lead-flip-research.md
 - 2026-10-16 001-reading-session G0 決定 Q9 (a) 案 A で進める。実機の確かめを Takuma が行う（結果待ち）。pdm が PRD の後半（9〜16、18、G0 の前の確認）を作り直す docs/approvals/001-reading-session-G0-Q8.md
+- 2026-10-16 001-reading-session G0 Takuma待ち PRD の作り直しが終わった（AC 40件、G3 と G4 に分けた）。G0 r2 は Takuma の実機の確かめ①〜③の結果を待って始める。承認には ToRead のメモも要る docs/prd/001-reading-session.md、docs/reviews/001-reading-session-G0-ruling.md
