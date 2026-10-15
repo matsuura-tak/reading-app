@@ -14,3 +14,4 @@
 - 2026-10-15 001-reading-session G0 r1 FAIL（verifier 重大2、tech-lead その1 重大1、その2 重大2。pdm が直して r2 へ） docs/reviews/001-reading-session-G0-verifier-r1.md、docs/reviews/001-reading-session-G0-tech-lead-r1.md
 - 2026-10-15 001-reading-session G0 Takuma待ち pdm の推奨が「作らない（今の範囲と形のままでは）」に変わった。18 の Q8（作るか、形を変えるか、やめるか）を聞く。第2部の直しと r2 は Q8 の答えまで止める docs/prd/001-reading-session.md の 8、17、18
 - 2026-10-15 001-reading-session G0 Q8 決定 (a)「違いを先に決める」。designer が差をつける点の候補を調べる。Takuma が ToRead を3回試してメモを送る。両方がそろったら pdm が PRD を作り直す docs/approvals/001-reading-session-G0-Q8.md
+- 2026-10-16 001-reading-session Q8(a) designer の調査 済み。推す候補 A「伏せて読み始める」（ToRead にはないが、伏せるタイマーは JP3本・US2本ある）。Takuma の ToRead のメモと、違いを比べる相手の答え待ち design/001-reading-session-research.md
