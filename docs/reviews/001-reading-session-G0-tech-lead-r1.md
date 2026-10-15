@@ -2,7 +2,7 @@ FAIL
 
 （指揮役の注）tech-lead の G0 判定は、1体目が手数の上限に達して報告を出さずに止まったため、範囲を2つに分けて2体の tech-lead に呼び直した。このファイルには2体の報告をそのまま並べる。全体の判定は、どちらか一方でも FAIL なら FAIL。
 - その2：第1部の根拠と、G0 の前の確認 → FAIL
-- その1：実現性、非機能、費用、プライバシー → 下に追記する
+- その1：実現性、非機能、費用、プライバシー → FAIL（このファイルの後半）
 
 # その2：第1部の根拠と、G0 の前の確認
 
@@ -192,3 +192,319 @@ FAIL
 - 回：r1
 - 対象：feat/001-reading-session、BASE ea9fc51（HEAD f112613。対象のファイルは同じ）
 - 日付：2026-10-15
+
+# その1：実現性、非機能、費用、プライバシー
+
+FAIL
+
+以下、「PRD」は /Users/takumamatsuura/reading-app/docs/prd/001-reading-session.md（BASE=ea9fc51 から変わっていない）を指します。
+
+## 指摘
+重大1件、要修正7件、提案5件です。どれも PRD の文を直せば済み、作るものの考え方は変えなくてよい内容です。25件の AC は、標準のフレームワークだけで作れます。許可のダイアログもバックグラウンドの実行も要りません。
+
+1. 重大、PRD:332 と PRD:345
+   - 問題：「クラッシュしない利用者の割合」を「App Store Connect と Xcode のクラッシュの記録」で測るとしています。しかし App Store Connect が定めているのは Crash Rate（"Crashes divided by total sessions"、つまりセッションあたり）で、利用者の割合ではありません。対象も、分析の共有に同意した利用者だけです。利用者の割合を出せる Apple の定義は見つかりませんでした。
+   - なぜ重大か：この行は撤退基準（段階リリースの一時停止）に使われます。14 は「公開の前に決め、後から動かさない」（PRD:339）ので、承認のあとでは直せません。
+   - 根拠：https://developer.apple.com/help/app-store-connect-analytics/benchmarks/peer-group-benchmarks/
+   - 直す方向：13 と 14 の指標を「Crash Rate（App Store Connect、クラッシュ数÷セッション数）」に替え、目標と撤退の数値を置き直します。利用者の割合のまま残すなら、(b) のときに MetricKit の診断から求める式とイベントを 15 に足します（MetricKit の使い方は G1 で確かめる）。
+
+2. 要修正、PRD:374（17 の 4.3(b)）、PRD:43-46、PRD:98
+   - 問題：今の 4.3(b) は "simple timers" を名指しし、"we will not accept new submissions unless they offer a meaningfully different or improved experience" と書いています。PRD は、ストアの検索の件数と違いの文で受けているだけです。しかも 8 の反論で「機能だけなら…ほぼ同じことができ」と自分で認めています。却下されると、2週の枠が無駄になります。
+   - 根拠：https://developer.apple.com/app-store/review/guidelines/ の 4.3(b) と 2.3.1(a)（審査メモに具体的に書くこと）
+   - 直す方向：17 に本文を引きます。審査メモで見せる違いを書きます（本ごとに時間が残る、ロックやほかのアプリや強制終了をまたいで数える、記録を直せる）。6 のリスクの表に「審査」の行を足し、このリスクを受け入れるかを 18 で Takuma に聞きます。
+
+3. 要修正、PRD:377（17）、PRD:103-118（9）、PRD:153-305（11）
+   - 問題：5.1.1(i) は "All apps must include a link to their privacy policy in the App Store Connect metadata field and within the app in an easily accessible manner." と定めています。PRD は「Q4 で計測を入れるならプライバシーポリシーが要る」と読めます。アプリの中でリンクを置く場所も、9 と AC にありません。
+   - 直す方向：17 を「Q4 によらず要る」に直します。9 に「アプリの中にプライバシーポリシーへのリンクを置く（読書中の画面には置かない。AC-9 の押せる要素を増やさないため）」を足し、11 にその AC を足します。
+
+4. 要修正、PRD:356-364、PRD:366（15）、PRD:388（Q4）
+   - 問題（ID を送る場合）：続けて使うランダムな ID をイベントに付けると、「結び付くか：いいえ」は成り立たないおそれが高いです。
+     - Apple は Device ID を "the device's advertising identifier, or other device-level ID" とし、"'Personal Information' and 'Personal Data', as defined under relevant privacy laws, are considered linked to the user" と書いています。
+     - 結び付くとされれば、5.1.2(i)（個人データを送る前に許可を得る）にも当たりえます。
+   - 問題（ID を送らない場合）：I-1（初回から24時間以内）と I-3（翌週も読んだ）を出すためのプロパティが、表にありません。
+   - 根拠：https://developer.apple.com/app-store/app-privacy-details/ 、ガイドライン 5.1.2(i)
+   - 直す方向：ID を送らない形にします。Reading Ended に、端末の中で求める真偽を3つ足します（`first_saved_within_24h`、`first_saved_this_week`、`saved_last_week`）。区分は「使用状況データ（製品の操作）」と「診断（その他の診断データ）」で、結び付かない、トラッキングしない、と書けます。
+
+5. 要修正、PRD:349（14 の注記）、PRD:326-333（13）
+   - 問題：Q4 で (a) を選んだときに置き換えるのは、14 の1行目と2行目だけです。次の行もイベントがないと測れません。
+     - 14 の4行目（6時間以上の記録の割合）と5行目（I-3）
+     - 13 の I-2、6時間以上の割合、直されたか消された記録の割合
+   - 直す方向：(a) のときの置き換えを、イベントに頼る全部の行に書きます。例：I-3 は App Store Connect の Day 7 / Day 28 Retention にする。6時間以上の割合は測れないので、行を外す理由と代わりの手当てを書く。
+
+6. 要修正、PRD:148（10）、PRD:154、PRD:216-221（AC-11）、PRD:270-275（AC-20）
+   - 問題：時刻の扱いは「証拠 1-b」の方針にします。ただ、計算した分が0未満（端末の時刻を戻した）か1440を超える（終え忘れ、時刻を進めた）ときの決まりと AC がありません。今のままだと、30時間の終え忘れは「終える」で1800分の記録になり、直す画面では今の値が1〜1440の外になって保存できません。
+   - 直す方向：pdm が AC を2つ足します（例：AC-26 経過が1440分を超えたとき、AC-27 端末の時刻が読み始めより前に戻されたとき）。記録に残す値は1〜1440にそろえ、負の値は残しません。扱い方（分を入れてもらう、1440で止める など）は pdm が決めます。
+
+7. 要修正、PRD:214（AC-10 の確かめ方）
+   - 問題：画面のテストでは、画面をロックできません。XCUIDevice.Button の値は home、volumeUp、volumeDown、action、camera だけです。
+   - 根拠：https://developer.apple.com/documentation/xcuiautomation/xcuidevice/button
+   - 直す方向：「ほかのアプリ（ホームで離れる）は画面のテスト、ロックは実機の確認」と書き分けます。
+
+8. 要修正、PRD:308-312（12 の速さ）
+   - 問題：4行とも数字はありますが、測り方と測る機種がありません。
+   - 直す方向：機種は Takuma への質問 T2 の答えにします。測り方は「証拠 1-d」の表を写します。
+
+9. 提案、PRD:162-173（AC-2、AC-3）
+   - 問題：「字」の数え方が決まっていません。
+   - 直す方向：前後の空白を除いたあとの Swift の Character（書記素）の数にします。テストの値に「全角空白（U+3000）だけ」と「絵文字を含む100字」を足します。
+
+10. 提案、PRD:174-179（AC-4）
+    - 問題：記録を消したり分を直したりしたあと、「最後に読んだ日時」をどう求めるかが決まっていません。
+    - 直す方向：「残っている記録で最も新しい読み始めの日時。記録がなければ加えた日時」と書きます。
+
+11. 提案、PRD:362（Reading Save Failed の error_kind）
+    - 問題：disk_full を空き容量の API で求めると、申告の理由 E174.1 が "Information accessed for this reason, or any derived information, may not be sent off-device." と定めているため、外に送れません。
+    - 直す方向：保存のエラーの種類から決める、と書きます。
+
+12. 提案、PRD:319（12）、PRD:387（Q3）
+    - 直す方向：バックアップの答え（証拠 5）を 12 と docs/support/ に書きます。アプリを消すと記録が消えることも書きます。
+
+13. 提案、PRD:370（16）
+    - 直す方向：月の費用を、証拠 3 の数字で埋めます。
+
+## 採点表（design-reviewer だけ）
+対象外です。
+
+## 前回の指摘の追跡（r2 だけ）
+対象外です（r1）。
+
+## 証拠
+- 対象：BASE=ea9fc51 の PRD（とくに 9〜18）と /Users/takumamatsuura/reading-app/docs/prd/product.md の 6。
+  - 終わりの時点で HEAD は 8f8504e に進んでいました。間のコミット（f112613、8f8504e）は docs/reviews/ に2ファイルを足しただけで、`git diff --stat ea9fc51 HEAD -- docs/prd` は空です。判定は同じ PRD に対するものです。
+  - 判定を独立に保つため、足された2つの報告は読んでいません。
+- 観点：その1（実現性、非機能、費用、プライバシー）だけを見ました。第1部の根拠と「G0 の前の確認」は、その2 の担当なので見ていません。
+
+### 1. AC ごとの実現性の表（25行）
+| AC | 実現できるか | 使う iOS の仕組み | 気になる点 |
+|---|---|---|---|
+| AC-1 | できる | SwiftUI の標準の一覧と空の表示、SwiftData の取得 | ツールバーの「+」と空の表示のボタンを両方出すと `books.add` が2つになる。G1 でどちらか1つにする |
+| AC-2 | できる | TextField。前後の空白は `.whitespacesAndNewlines` で除く | 「字」の数え方が決まっていない（指摘 9） |
+| AC-3 | できる | 同上。加える操作を無効にする | 全角空白だけのタイトルも「空白文字だけ」に入れる |
+| AC-4 | できる | SwiftData の並べ替え。最後の日時は記録から求める | 記録を消した・直したあとの並び（指摘 10） |
+| AC-5 | できる | 一覧の行から読み始める。初回の案内の画面を置かない | 起動時に `reading` なら読書中の画面に戻る（AC-11）ので、AC-5 は `idle` のときだけ |
+| AC-6 | できる | 記録は本への関係でタイトルを引き、写して持たない | 記録にタイトルを写すと、直したときにずれる。設計メモで禁止する |
+| AC-7 | できる | SwiftData の関係の削除規則（cascade）、確認のダイアログ、件数は String Catalog の複数形 | 将来 iCloud を足すため、関係は optional にしておく（証拠 5） |
+| AC-8 | できる | 同上 | なし |
+| AC-9 | できる | 読書中の画面を全画面の表示にし、ナビゲーションバーとタブバーを出さない | シートで出すと、下に引いて閉じる操作が残る。押せる要素は、ボタン、リンク、スイッチ、入力欄の数の合計で数える |
+| AC-10 | 条件付き（確かめ方） | 読み始めの時刻を保存し、戻ったときに差で数える。バックグラウンドの実行は使わない。プロセスが生きている間は ContinuousClock（"does not stop incrementing while the system is asleep"） | ロックは画面のテストでできない（指摘 7）。テストでは起動引数（DEBUG ビルドだけ）で読み始めを10分前にし、10分待たない。実機での10分の確認は G3 |
+| AC-11 | 条件付き（時刻の方針） | 読み始めに状態を保存してから画面を出す。開き直したら、保存した時刻から数え直す | ContinuousClock の時刻は "only comparable locally during the execution of a program" なので、強制終了のあとは端末の時刻（Date）に頼る（1-b、指摘 6）。強制終了は XCUIApplication の terminate() を使う見込み（文書は G1 で確かめる） |
+| AC-12 | できる（確かめ方は 1-c） | `isIdleTimerDisabled` に触らない（既定は false）。音や動画を流さない | シミュレーターの画面のテストでは、自動ロックを確かめられない |
+| AC-13 | できる | 分＝秒÷60 の切り捨て。合計は記録ごとの分の和 | 秒の和を切り捨てると、20＋12＝32 とずれることがある。記録ごとの分の和にそろえる |
+| AC-14 | 条件付き（測り方） | 保存は1件の書き込み | XCUITest の待ちには、テストの道具そのものの遅れが入る。測り方は 1-d |
+| AC-15 | できる | 59秒は0分なので保存しない | (b) なら Reading Ended（saved=false）が I-2 の分母に入る |
+| AC-16 | できる | 開始の時刻を、開始のときのタイムゾーンで日付にする | 日英の日付の書式は designer が決める |
+| AC-17 | できる | 開始の時刻（Date）とタイムゾーン ID を保存し、その日の記録にする | 分は Date どうしの差なので、タイムゾーンに左右されない |
+| AC-18 | できる | 空の表示 | なし |
+| AC-19 | できる | 記録の分を書き換え、合計は記録から求める | なし |
+| AC-20 | できる | 1〜1440 の外では保存の操作を無効にする | 「終える」で1440分を超える記録ができてしまう（指摘 6） |
+| AC-21 | できる | 記録を消し、合計は記録から求める | なし |
+| AC-22 | 条件付き（つなぎ口） | DEBUG ビルドだけで効く起動引数で、保存を次の N 回失敗させる。読書ごとの ID で1件にまとめる | 一意の制約は将来の iCloud で使えないので、保存の前に同じ ID を探す形にする。つなぎ口は G1 で contracts/ に書く |
+| AC-23 | できる | (a) なら通信のコードがない。(b) なら送信の失敗を画面に出さない | 確かめ方は 1-c |
+| AC-24 | できる | 通知、カメラ、写真、位置、トラッキング、iCloud を使わない | テストではホーム画面側（springboard）のダイアログを0と数える（書き方は G1 で確かめる）。Q1 で (b) を選ぶとカメラの許可が出る |
+| AC-25 | できる | SwiftData に保存し、開き直して読む | なし |
+
+### 1-b. 時刻の方針（AC-10、AC-11、PRD:148 の「要確認」と PRD:81 の実現性への根拠）
+1. 読み始めに、読書の ID、本、開始の時刻（Date）、開始のときのタイムゾーン ID を保存します。保存できてから読書中の画面を出します。
+2. プロセスが生きている間（ロック中や、ほかのアプリの間で止められているだけのときも含む）は、ContinuousClock の差で数えます。眠っている間も進み、端末の時刻を手で変えても影響を受けません。
+3. 開き直したあと（強制終了、システムによる終了、再起動）は「今の Date − 開始の Date」で数えます。
+4. 分は、秒を60で割って切り捨てます。結果が0未満か1440を超えるときは、そのまま残しません（指摘 6）。こうすれば、負の値や極端な値は記録に入りません。
+5. 日付は、開始の Date を開始のときのタイムゾーンで表した日です。分は Date どうしの差なので、タイムゾーンをまたいでも変わりません。
+6. 使わないもの：
+   - `ProcessInfo.systemUptime`（"The amount of time the system has been awake since..."。眠っている間を数えない）
+   - `SuspendingClock`（"stops incrementing while the system is asleep"）
+7. 弱い所：強制終了のあとに時刻を手で変えると、3 の差がずれます。4 の範囲の中なら気づけません。再起動をまたいでも比べられる時計（mach_continuous_time など）が申告の一覧に入るかは未確認で、G1 の ADR で決めます。
+8. 実機での確かめ（PRD:81 の合格の線）は G3 で行います。今回は指示どおり spike をしていません。
+
+### 1-c. AC-12、AC-22、AC-23 の確かめ方
+- AC-12：
+  - (1) `grep -rn isIdleTimerDisabled ios/` が0行であることを、受け入れテストの前提として CI で見ます。Apple は "Most apps should let the system turn off the screen when the idle timer elapses." と書いています。
+  - (2) 実機で自動ロックを30秒にし、40秒以内に画面が消えることと、戻ったときに `reading` のままであることを見ます（G3）。
+  - 値を出す隠れた要素を画面に置く案は、AC-9 の要素の数と VoiceOver の読み上げに混ざるので採りません。
+- AC-22：起動引数（例：`-UITest-FailNextSaves 1`、DEBUG ビルドだけ）で、保存が次の1回だけ失敗するようにします。読み始めは起動引数で15分前にします。
+  - 1回目の「終える」：`session.save.error` が出て、状態が `reading` のままかを見ます。
+  - 2回目の「終える」：記録が1件で15分以上かを見ます。
+  - 空き容量を本当に0にする方法は使いません。再現しにくく、空き容量の API には E174.1 の制約があるためです。
+- AC-23：
+  - (a) なら、通信のコードがないこと（`grep -rn URLSession ios/` が0行）と、画面のテストで記録が残り、エラーの表示が0回であることで足ります。
+  - (b) なら、起動引数で送信を必ず失敗させ、保存と画面に影響しないことを見ます（12 の行）。
+  - 機内モードでの通しは、実機で確かめます（G3）。
+
+### 1-d. 速さの線と最低対応の機種（AC-14 と 12）
+- 最低対応 OS の案：iOS 26.0。
+  - 2026-06-07 の時点で、iPhone 全体の79%、最近4年に出た機種の86% が iOS 26 です（Apple の公表値）。
+  - iOS 26 だけにすれば、見た目（Liquid Glass）が1通りで済み、G3 のスクリーンショットと見た目の確かめが半分になります。
+  - 反論：2026-06 の時点で約21% の iPhone が入れられず、iPhone XS と XR の人を外します。
+- 測る機種の案：iOS 26 が動くいちばん古い機種、iPhone 11 の各機種か iPhone SE（第2世代）。Apple の対応機種のページで確かめましたが、検索の結果の要約で見ただけで、本文は開いていません。
+
+| 12 の行 | 測り方 | 合格の線 |
+|---|---|---|
+| 起動から一覧を操作できるまで1秒 | 性能テストで `XCTApplicationLaunchMetric(waitUntilResponsive:)` を5回動かす | 平均1.0秒以内 |
+| 「終える」から終わりの画面まで0.5秒 | 押したときと終わりの画面の表示に os_signpost を置き、`XCTOSSignpostMetric(subsystem:category:name:)` で5回測る | 平均0.5秒以内 |
+| 200冊・5,000件で一覧が1秒 | 起動引数でデータを入れ、一覧の表示を os_signpost で区切って測る | 1.0秒以内。超えたら記録の一覧を分けて読み込む |
+| 演出で待たせる時間が0秒 | 画面のテストで、演出の途中に次の操作を押して効くかを見る。演出の間に操作を止める書き方を grep で探す | 0件 |
+
+- 見込み：1件の書き込みと200行の一覧は、A13 の機種でも線に収まると見ています［推測］。確かめるのは G2 で、実機の出力を設計メモの 6 に貼ります。
+
+### 2. 審査と権限で気になる点
+| 項目 | 見立て | 根拠 |
+|---|---|---|
+| 許可のダイアログ | 0回で作れる。通知、カメラ、写真、位置、トラッキング、iCloud を使わない。(b) のインターネットへの送信にも許可は要らない | ATT の文書は、追跡するアプリだけに要るとする |
+| バックグラウンド（2.5.4） | 使わない。UIBackgroundModes も BGTask も要らない。時刻の差で数えるので、アプリが止められても困らない | 2.5.4 |
+| entitlement | v1 では要らない。Q3 で (b) を選ぶと iCloud と CloudKit が要る | SwiftData の同期の文書 |
+| 4.2 | 低いか中くらい。保存するデータ、2つの一覧、直す・消す操作があり、ウェブの包み直しではない | 4.2 |
+| 4.3(b) | 高い。"simple timers" が名指しされている（指摘 2）。ToRead と mekuru が JP のストアにあることは、和らげる材料にはなる。ただ、名指しの文が入った時期との前後は確かめていない | 4.3(b) |
+| 2.3、2.3.1 | 「通信なし」「何も送らない」と書けるのは (a) のときだけ。審査メモには機能を具体的に書く | 2.3、2.3.1(a) |
+| 5.1.1(i) | すべてのアプリに、アプリの中のリンクも要る（指摘 3） | 5.1.1(i) |
+| 5.1.2(i) | 個人データを送るなら許可が要る。ID を送らない形で避ける（指摘 4） | 5.1.2(i) |
+| PrivacyInfo.xcprivacy | 下に分けて書く | 公式の理由の一覧 |
+
+PrivacyInfo.xcprivacy で申告が要る見込みのもの：
+- UserDefaults（初回の起動の印など）を使うなら、NSPrivacyAccessedAPICategoryUserDefaults と CA92.1（アプリだけが読み書きする）。
+- systemUptime など起動からの時間の API を使うなら、NSPrivacyAccessedAPICategorySystemBootTime と 35F9.1。35F9.1 には "an exception for information about the amount of time that has elapsed between events that occurred within the app, which may be sent off-device" があり、duration_minutes は送ってかまいません。
+- 今の時刻（Date）は、申告の一覧にありません。ファイルの作成・変更の日時（NSFileModificationDate など）は一覧にあるので使いません。
+- 空き容量の API は使いません。
+- (b) では、NSPrivacyCollectedDataTypes に「製品の操作」と「その他の診断データ」を書き、NSPrivacyTracking は false にします。
+
+### 3. 利用者1,000人あたりの月の費用
+- 送る件数の見積もり［推測］：1日1回読む人で、Reading Started 30件、Reading Ended 30件、そのほか約5件で、月に約65件です。1日2回なら約125件です。1,000人なら月に6.5万〜12.5万件です。
+
+| 案 | サーバー | 外部のサービス | 1,000人あたりの月 | 根拠（開いた日 2026-10-15） |
+|---|---|---|---|---|
+| (a) イベントを送らない | 0 | 0 | 0ドル | Apple の App Analytics は "You are not responsible for disclosing data collected by Apple." |
+| (b) Aptabase | 0 | 無料は月2万件まで。20万件の枠が "$10/month" | 約10ドル | https://aptabase.com/pricing 。枠を超えると "analytics are temporarily paused until the start of the next month"。28日目の判定が欠けないよう、余裕のある枠にする |
+| (b) Google Analytics for Firebase | 0 | Spark と Blaze のどちらでも "No-cost" | 0ドル | https://firebase.google.com/pricing 。送る識別子と広告の機能の扱いは未確認 |
+
+- TelemetryDeck も候補に考えましたが、料金のページ（/pricing/ と /pricing）は 404 で、dashboard の料金表は本文を取れなかったため、候補から外しました。
+- Apple Developer Program の年会費は、利用者の数に関係しない固定費なので、ここには入れていません（額は確かめていません）。
+
+### 4. プライバシー（Q4 で (b) を選んだとき）
+- ATT は要りません。
+  - Apple の文書は "Your app needs to use the App Tracking Transparency framework if it collects data about people and shares it with other companies to track them across apps and websites." と書いています。
+  - トラッキングの定義は「Third-Party Data と結び付けて広告やその計測に使うこと、またはデータブローカーと共有すること」です。
+  - 条件：ほかの開発者のアプリのデータと合わせて広告に使う SDK を入れないこと（"even if you don't use the SDK for these purposes"）。
+- 端末の中のランダムな ID：
+  - Device ID の定義に "other device-level ID" が入り、法律でいう個人データは「結び付く」とみなされます。続けて使う ID を送るなら、「Identifiers > Device ID、結び付く」と申告するのが安全で、PRD の「いいえ」は成り立ちません。
+  - ID を送らなければ、"Stripping data of any direct identifiers... before collection" に当たり、「結び付かない」と書けます（指摘 4）。
+- 端末の中だけのデータ：収集に当たりません（"Data that is processed only on device is not 'collected'"）。PRD:366 の見立ては正しいです。
+  - ただし "If you derive anything from that data and send it off device, the resulting data should be considered separately" とあり、送るプロパティ（分など）は申告します。
+- IP アドレス：受け取っても残さなければ申告は要りません（"if an authentication token or IP address is sent on a server call and not retained"）。Aptabase のページには IP を残すかの記載がなく、(b) を選んだら G1 で相手の文書を確かめます。
+
+### 5. Q3：バックアップから記録が戻るか
+- iCloud のバックアップ："iCloud Backup includes app data for the apps that you've downloaded on your device."（https://support.apple.com/en-us/108770）
+- パソコンへのバックアップ："includes almost all of your device's data and settings"。ただし Keychain は暗号化したバックアップのときだけ入ります（https://support.apple.com/en-us/108771）。
+- 新しい機種へは "you can use a backup to transfer your information to a new device" とあり、戻ります。
+- 開発者の文書では、tmp と Library/Caches はバックアップから外れます。記録はそこに置きません（https://developer.apple.com/documentation/foundation/optimizing-your-app-s-data-for-icloud-backup）。記録を Keychain にも置きません。
+- アプリを消すと、記録は消えます。
+- あとで iCloud の同期を足すとき：CloudKit は一意の制約を使えず、関係はすべて optional にする必要があります。CloudKit の型は、本番に上げたあと足すことしかできません（SwiftData の同期の文書）。v1 から、この制約に合う型を VersionedSchema で包んでおけば、型を移し替える手間はなくなります。今あるローカルの記録が同期を入れたときに自動で上がるかは未確認で、Q3 で (b) を選ぶときに ADR と spike で確かめます。
+
+### 6. 18 への tech-lead の推奨と、Takuma への新しい質問
+- Q1：(a) を推奨します。
+  - 理由：AC-24 の「許可0回」と AC-23 の「通信なし」を保てます。(b) と (c) は、ISBN や検索の語を外部の書誌サービスに送るので、12 の「タイトルと著者は外に送らない」（PRD:316）と食い違います。
+  - 元に戻しにくい点：一度送る作りにすると、この約束は戻せません。
+- Q3：(a) と、iCloud に合わせた型を推奨します（証拠 5）。
+  - 機種を変えても、iCloud かパソコンのバックアップから戻ります。
+  - 反論：アプリを消すと記録が消えます。
+- Q4：(b) を推奨します。条件は、続けて使う ID を送らないこと、端末の中で求める真偽を足すこと（指摘 4）、送る先は相手の文書で IP を残すかとトラッキングを確かめてから決めることです。
+  - 理由：(a) では I-1、I-2、I-3、6時間以上の割合が測れず、撤退基準の4行が判定できません。費用は1,000人あたり月10ドルまでです。
+  - いちばん強い反論：「何も送らない」と言えなくなり、外部のサービスと送信のコードが増えます。
+- T1（新しい質問）：最低対応 OS
+  - 決めてほしいこと：最低対応 OS を iOS 26.0 にするか。
+  - 推奨：iOS 26.0（1-d の理由）。
+  - いちばん強い反論：約21% の iPhone が入れられない。
+  - 元に戻せるか：あとで下げられるが、作業が要る。
+  - 見てほしいファイル：この報告の 1-d。
+- T2（新しい質問）：性能を測る実機
+  - 決めてほしいこと：12 の性能を測る実機を、手元のどの機種にするか。
+  - 推奨：iPhone 11 か SE（第2世代）。手元になければ手元の機種で測り、線を半分の秒数にする。
+  - いちばん強い反論：古い機種がないと、遅い端末での体験を確かめられない。
+  - 元に戻せるか：戻せる。
+  - 見てほしいファイル：PRD:308-312。
+- 4.3(b) を受け入れるかの問いは、指摘 2 のとおり、pdm が 18 に足します。
+
+### 15 のイベントをどこで取れるか
+- 9種類とも、アプリの中で取れます。サーバーはありません。
+- App First Opened は初回の印（UserDefaults）で取ります。アプリを入れ直すと、もう一度送られます。
+- I-1 と I-3 は、指摘 4 の真偽を足せば ID なしで出せます。
+
+### 読んだファイル
+- /Users/takumamatsuura/reading-app/docs/prd/001-reading-session.md（406行すべて）
+- /Users/takumamatsuura/reading-app/docs/prd/product.md
+- /Users/takumamatsuura/reading-app/.claude/org/app.json
+- /Users/takumamatsuura/reading-app/CLAUDE.md
+- /Users/takumamatsuura/reading-app/docs/org/gates.md
+- /Users/takumamatsuura/reading-app/docs/templates/review-report.md
+- /Users/takumamatsuura/reading-app/contracts/dependencies.md（表は空）
+- /Users/takumamatsuura/reading-app/docs/progress.md
+- docs/adr/ は空でした。
+
+### 実行したコマンドと結果
+- 開始時：`git rev-parse HEAD` は ea9fc51…、`git status --short` は空。
+- Apple の DocC の JSON を curl で取り、スクラッチパッドのスクリプトで本文を出しました（リポジトリの外。/private/tmp/claude-501/-Users-takumamatsuura-reading-app/54111b04-6b80-410d-9782-7fbf5f807550/scratchpad/tools/docc.py と /private/tmp/claude-501/-Users-takumamatsuura-reading-app/54111b04-6b80-410d-9782-7fbf5f807550/scratchpad/tools/ctx.py）。分かったこと：
+  - ContinuousClock と SuspendingClock の説明（上に引いたとおり）
+  - systemUptime は「眠っている間を数えない」、申告が要る
+  - isIdleTimerDisabled の既定は false
+  - XCTApplicationLaunchMetric に `init(waitUntilResponsive:)` がある
+  - XCTOSSignpostMetric に `init(subsystem:category:name:)` がある
+  - accessibilityReduceMotion がある
+  - ATT の概要の文
+  - SwiftData の CloudKit の制約の表
+  - XCUIDevice.Button は home、volumeUp、volumeDown、action、camera だけ（XCUIDevice は今は xcuiautomation の下にある）
+  - 申告の理由 35F9.1、CA92.1、E174.1 の本文
+- 引用符の多いコマンドが1回ガードに止められたため、回り道をせず、スクリプトをファイルに分けて実行し直しました。
+- `git log --oneline ea9fc51..HEAD` は f112613 と 8f8504e（どちらも docs/reviews/ の保存）。`git diff --stat ea9fc51 HEAD -- docs/prd` は空。
+- 最後の `git status --short` は出力なし（空）でした。
+
+### 開いた URL（すべて 2026-10-15）
+- https://developer.apple.com/documentation/swift/continuousclock
+- https://developer.apple.com/documentation/swift/suspendingclock
+- https://developer.apple.com/documentation/foundation/processinfo/systemuptime
+- https://developer.apple.com/documentation/uikit/uiapplication/isidletimerdisabled
+- https://developer.apple.com/documentation/xcuiautomation/xcuidevice/button
+- https://developer.apple.com/documentation/xctest/xctapplicationlaunchmetric
+- https://developer.apple.com/documentation/xctest/xctossignpostmetric
+- https://developer.apple.com/documentation/swiftui/environmentvalues/accessibilityreducemotion
+- https://developer.apple.com/documentation/apptrackingtransparency
+- https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitypereasons
+- https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype
+- https://developer.apple.com/documentation/swiftdata/syncing-model-data-across-a-persons-devices
+- https://developer.apple.com/documentation/foundation/optimizing-your-app-s-data-for-icloud-backup
+- https://developer.apple.com/app-store/app-privacy-details/
+- https://developer.apple.com/app-store/review/guidelines/（10万字まで読んだ。引いた節はその中にある）
+- https://support.apple.com/en-us/108770
+- https://support.apple.com/en-us/108771
+- https://aptabase.com/pricing
+- https://firebase.google.com/pricing
+- https://developer.apple.com/help/app-store-connect-analytics/benchmarks/peer-group-benchmarks/
+- https://developer.apple.com/support/app-store/
+- 検索だけで本文は開いていないもの：https://support.apple.com/guide/iphone/iphone-models-compatible-with-ios-26-iphe3fa5df43/26/ios/26
+- 開けなかったもの：TelemetryDeck の料金（404、本文なし）、PostHog の料金（本文なし）
+
+### 未検証
+次のものが残っているので、PASS にはできません。
+- A13 の機種での速さの線。G2 に実機で測り、T2 で機種を決めます。
+- 再起動をまたぐ時計が申告の一覧に入るか。G1 の ADR で決めます。
+- Aptabase が IP を残すか、ほかのアプリのデータと合わせるか。Firebase が送る識別子。どちらも (b) を選んだときに G1 で確かめます。
+- 今あるローカルの記録が、iCloud の同期を入れたときに上がるか。Q3 で (b) を選ぶときに確かめます。
+- iOS 26 の対応機種（検索の要約だけで見た）。
+- XCUIApplication の terminate() と springboard のダイアログの数え方。G1 で文書を確かめます。
+- 4.3(b) に "simple timers" が入った時期。
+- AC-10、AC-11、AC-12 の実機での動き。G3 で確かめます。
+
+### git status --short
+（出力なし）
+
+### 記録（判定役が書いたもの）
+- 関門：G0
+- 判定した役：tech-lead（その1：実現性、非機能、費用、プライバシー）
+- 回：r1
+- 対象：docs/prd/001-reading-session.md（feat/001-reading-session、BASE ea9fc51。HEAD 8f8504e でも PRD は同じ）
+- 日付：2026-10-15
+- メモ：docs/reviews/001-reading-session-G0-tech-lead-r1.md には、すでに その2 が保存されています。別の名前で保存してください。（指揮役の注：1つの役の1回分として、同じファイルに続けて保存した）
+
+## 記録（指揮役が保存するときに書き足す）
+- 関門：G0
+- 判定した役：tech-lead（2体に分けた。その1 と その2。model は役割ファイルの opus。作り手の pdm も今回は fable が使えず opus で動いたため、別のモデルの判定役はこの回に入っていない）
+- 回：r1（1体目は手数の上限で報告なし。範囲を分けて呼び直したものを r1 とする）
+- 対象：docs/prd/001-reading-session.md、docs/prd/product.md（ブランチ feat/001-reading-session、BASE=ea9fc51fd31ed7fe73357e4f2b5523a8dcded7d1。判定中に HEAD は f112613、8f8504e に進んだが、どちらも docs/reviews/ の保存だけで PRD は同じ）
+- 日付：2026-10-15
+- 全体の判定：FAIL（その1 FAIL、その2 FAIL）

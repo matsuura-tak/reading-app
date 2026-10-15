@@ -11,3 +11,4 @@
 ## 記録
 - 組織を導入した。最初の機能は Takuma が /feature で始める。
 - 2026-10-15 001-reading-session 開始 着手 依頼「読書の時間（本を選んで読み始め、静かで美しい画面で読み、終えると時間が残る）」
+- 2026-10-15 001-reading-session G0 r1 FAIL（verifier 重大2、tech-lead その1 重大1、その2 重大2。pdm が直して r2 へ） docs/reviews/001-reading-session-G0-verifier-r1.md、docs/reviews/001-reading-session-G0-tech-lead-r1.md
