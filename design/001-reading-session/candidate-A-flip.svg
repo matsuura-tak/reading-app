@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="2540" viewBox="0 0 780 2540" role="img" aria-labelledby="title desc">
+  <title id="title">候補A「伏せて読み始める」と ToRead の比べ（読み始め、伏せた瞬間、読書中、読み終えた瞬間）</title>
+  <desc id="desc">左の列は ToRead の製品ページのスクリーンショットから読み取った要素を文字で置いた下書き。右の列は候補Aの下書きで、仕様ではない。中身の文字版は candidate-A-flip.md にある。</desc>
+  <style>
+    .t { font-family: -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif; fill: #1C1C1E; }
+    .s { fill: #6E6E73; }
+    .w { fill: #FFFFFF; }
+    .b { font-weight: 600; }
+    .h { font-weight: 700; }
+    .frame { fill: #FFFFFF; stroke: #8E8E93; stroke-width: 2; }
+    .card { fill: #F2F2F7; }
+    .btn { fill: #1C1C1E; }
+    .ghost { fill: none; stroke: #8E8E93; stroke-width: 1.5; }
+    .rule { stroke: #C7C7CC; stroke-width: 1; }
+  </style>
+  <rect x="0" y="0" width="780" height="2540" fill="#FFFFFF"/>
+
+  <!-- 見出し -->
+  <text class="t h" x="40" y="48" font-size="20">候補A「伏せて読み始める」と ToRead の比べ</text>
+  <text class="t s" x="40" y="76" font-size="13">左：ToRead（スクリーンショットから読み取った要素だけ。色、字形、にじみは写していない）</text>
+  <text class="t s" x="40" y="96" font-size="13">右：案A（比べるための下書き。仕様ではない）。根拠は research の 6-2 と R-1、R-2、R-11〜R-14</text>
+  <text class="t b" x="180" y="138" font-size="15" text-anchor="middle">ToRead</text>
+  <text class="t b" x="600" y="138" font-size="15" text-anchor="middle">案A</text>
+
+  <!-- 1 読み始め -->
+  <text class="t h" x="40" y="166" font-size="16">1 読み始め</text>
+  <rect class="frame" x="40" y="180" width="280" height="540" rx="36"/>
+  <text class="t" x="68" y="214" font-size="13">9:41</text>
+  <text class="t s" x="180" y="260" font-size="12" text-anchor="middle">日曜日 早朝</text>
+  <text class="t" x="180" y="470" font-size="34" text-anchor="middle">読む</text>
+  <text class="t s" x="180" y="500" font-size="11" text-anchor="middle">（中央の文字を押して始める）</text>
+  <circle cx="300" cy="450" r="2.5" fill="#8E8E93"/>
+  <circle cx="300" cy="462" r="2.5" fill="#8E8E93"/>
+  <circle cx="300" cy="474" r="2.5" fill="#8E8E93"/>
+  <text class="t" x="180" y="650" font-size="13" text-anchor="middle">本：こころ ▾</text>
+  <text class="t" x="180" y="680" font-size="13" text-anchor="middle">音：小雨 ▾</text>
+
+  <rect class="frame" x="460" y="180" width="280" height="540" rx="36"/>
+  <text class="t" x="488" y="214" font-size="13">9:41</text>
+  <text class="t h" x="480" y="272" font-size="28">本</text>
+  <text class="t" x="712" y="246" font-size="22" text-anchor="middle">＋</text>
+  <rect class="card" x="476" y="295" width="248" height="186" rx="12"/>
+  <text class="t b" x="492" y="325" font-size="17">こころ</text>
+  <text class="t s" x="492" y="347" font-size="13">夏目漱石</text>
+  <text class="t s" x="492" y="368" font-size="13">この本と 6 時間 12 分</text>
+  <rect class="btn" x="492" y="384" width="216" height="44" rx="10"/>
+  <text class="t w b" x="600" y="412" font-size="17" text-anchor="middle">読む</text>
+  <text class="t s" x="600" y="456" font-size="12" text-anchor="middle">伏せて置いても読み始めます</text>
+  <text class="t" x="492" y="515" font-size="17">雪国</text>
+  <text class="t s" x="492" y="536" font-size="13">川端康成・2 時間 5 分</text>
+  <line class="rule" x1="492" y1="554" x2="724" y2="554"/>
+  <text class="t" x="492" y="584" font-size="17">檸檬</text>
+  <text class="t s" x="492" y="605" font-size="13">梶井基次郎・38 分</text>
+
+  <text class="t" x="40" y="748" font-size="12">ToRead（スクリーンショット1）</text>
+  <text class="t s" x="40" y="766" font-size="12">押せそうな要素：読む、本、音の3つ</text>
+  <text class="t s" x="40" y="784" font-size="12">背景は生成りに淡い橙のにじみ（写していない）</text>
+  <text class="t s" x="40" y="802" font-size="12">右端の点は画面をめくる印と読み取った</text>
+  <text class="t" x="460" y="748" font-size="12">案A：一覧（読む前）</text>
+  <text class="t s" x="460" y="766" font-size="12">主操作は「読む」1つ。先頭の本は伏せても</text>
+  <text class="t s" x="460" y="784" font-size="12">始まる（ボタンと伏せる、同じ重みの2つの道）</text>
+  <text class="t s" x="460" y="802" font-size="12">本を加える「＋」は右上の脇役</text>
+
+  <!-- 2 伏せた瞬間 -->
+  <text class="t h" x="40" y="860" font-size="16">2 伏せた瞬間</text>
+  <text class="t" x="40" y="892" font-size="12">ToRead：「読む」を押してから、スマホを置く。</text>
+  <text class="t s" x="40" y="910" font-size="12">説明文「読書セッションを開始し、スマホを置いて、</text>
+  <text class="t s" x="40" y="928" font-size="12">ただ読む」。置き方は問わない。</text>
+  <text class="t" x="605" y="890" font-size="12" text-anchor="middle">画面を下にして置く</text>
+  <rect x="530" y="902" width="150" height="16" rx="6" fill="#8E8E93"/>
+  <line class="rule" x1="470" y1="920" x2="740" y2="920"/>
+  <text class="t s" x="460" y="948" font-size="12">触覚：SensoryFeedback.start を1回</text>
+  <text class="t s" x="460" y="966" font-size="12">VoiceOver：「『こころ』を読み始めました」</text>
+  <text class="t s" x="460" y="984" font-size="12">画面の動き：なし（待ち0秒）</text>
+  <text class="t s" x="460" y="1002" font-size="12">画面は自動ロックまで下向きのまま点く</text>
+
+  <!-- 3 読書中 -->
+  <text class="t h" x="40" y="1070" font-size="16">3 読書中（起こしたとき）</text>
+  <rect class="frame" x="40" y="1090" width="280" height="540" rx="36"/>
+  <text class="t" x="68" y="1124" font-size="13">9:41</text>
+  <text class="t" x="180" y="1380" font-size="50" text-anchor="middle">23:46</text>
+  <rect class="ghost" x="64" y="1530" width="108" height="36" rx="18"/>
+  <text class="t" x="118" y="1553" font-size="13" text-anchor="middle">一時停止</text>
+  <rect class="ghost" x="188" y="1530" width="108" height="36" rx="18"/>
+  <text class="t" x="242" y="1553" font-size="13" text-anchor="middle">終了</text>
+  <text class="t s" x="180" y="1595" font-size="12" text-anchor="middle">本：こころ ▾　音：小雨 ▾</text>
+
+  <rect class="frame" x="460" y="1090" width="280" height="540" rx="36"/>
+  <text class="t" x="488" y="1124" font-size="13">9:41</text>
+  <text class="t b" x="484" y="1210" font-size="22">こころ</text>
+  <text class="t s" x="484" y="1236" font-size="15">夏目漱石</text>
+  <text class="t" x="600" y="1380" font-size="48" text-anchor="middle">18 分</text>
+  <text class="t s" x="600" y="1412" font-size="15" text-anchor="middle">21:04 から</text>
+  <rect class="btn" x="484" y="1520" width="232" height="50" rx="12"/>
+  <text class="t w b" x="600" y="1551" font-size="17" text-anchor="middle">終える</text>
+  <text class="t s" x="600" y="1595" font-size="12" text-anchor="middle">伏せて置いても、ロックしても</text>
+  <text class="t s" x="600" y="1612" font-size="12" text-anchor="middle">数え続けます</text>
+
+  <text class="t" x="40" y="1658" font-size="12">ToRead（スクリーンショット2、3）</text>
+  <text class="t s" x="40" y="1676" font-size="12">押せそうな要素：一時停止、終了、本、音の4つ</text>
+  <text class="t s" x="40" y="1694" font-size="12">経過は分:秒の大きな数字（細い字形）、黒地</text>
+  <text class="t s" x="40" y="1712" font-size="12">音を開くと5つの音と音量が出る（3枚目）</text>
+  <text class="t" x="460" y="1658" font-size="12">案A：押せる要素は「終える」1つ</text>
+  <text class="t s" x="460" y="1676" font-size="12">秒は出さず分だけ（分が変わるときに更新）</text>
+  <text class="t s" x="460" y="1694" font-size="12">文字は .title2、.largeTitle、.subheadline の</text>
+  <text class="t s" x="460" y="1712" font-size="12">3段。細い字形は使わない（B-4）</text>
+
+  <!-- 4 読み終えた瞬間 -->
+  <text class="t h" x="40" y="1780" font-size="16">4 読み終えた瞬間</text>
+  <rect class="frame" x="40" y="1800" width="280" height="540" rx="36"/>
+  <text class="t" x="68" y="1834" font-size="13">9:41</text>
+  <text class="t" x="180" y="2060" font-size="40" text-anchor="middle">23 分</text>
+  <text class="t" x="180" y="2100" font-size="14" text-anchor="middle">読書時間を記録しました</text>
+  <text class="t s" x="180" y="2150" font-size="12" text-anchor="middle">心に残った一文はありますか？</text>
+  <text class="t s" x="180" y="2185" font-size="12" text-anchor="middle">読み続ける</text>
+
+  <rect class="frame" x="460" y="1800" width="280" height="540" rx="36"/>
+  <text class="t" x="488" y="1834" font-size="13">9:41</text>
+  <text class="t b" x="600" y="2000" font-size="17" text-anchor="middle">こころ</text>
+  <text class="t" x="600" y="2062" font-size="48" text-anchor="middle">43 分</text>
+  <text class="t" x="600" y="2100" font-size="17" text-anchor="middle">この本と 6 時間 55 分</text>
+  <rect class="btn" x="484" y="2230" width="232" height="50" rx="12"/>
+  <text class="t w b" x="600" y="2261" font-size="17" text-anchor="middle">閉じる</text>
+  <text class="t s" x="600" y="2305" font-size="12" text-anchor="middle">続けて読むときは、</text>
+  <text class="t s" x="600" y="2322" font-size="12" text-anchor="middle">もう一度伏せてください</text>
+
+  <text class="t" x="40" y="2368" font-size="12">ToRead（スクリーンショット4）</text>
+  <text class="t s" x="40" y="2386" font-size="12">押せそうな要素：一文の誘い、読み続けるの2つ</text>
+  <text class="t s" x="40" y="2404" font-size="12">黒地。分は細い字形の大きな数字</text>
+  <text class="t s" x="40" y="2422" font-size="12">一文を書き添える流れがここから始まる</text>
+  <text class="t" x="460" y="2368" font-size="12">案A：押せる要素は「閉じる」1つ</text>
+  <text class="t s" x="460" y="2386" font-size="12">触覚 .stop を1回。今回の分とこの本の合計</text>
+  <text class="t s" x="460" y="2404" font-size="12">一文の誘いは置かない（ToRead にある）</text>
+  <text class="t s" x="460" y="2422" font-size="12">伏せ直すと同じ本の続きが始まる（提案）</text>
+
+  <!-- 注 -->
+  <line class="rule" x1="40" y1="2450" x2="740" y2="2450"/>
+  <text class="t s" x="40" y="2476" font-size="12">ToRead の欄は、製品ページのスクリーンショット（2026-10-15 に確認）から読み取った要素を文字で置いた下書き。</text>
+  <text class="t s" x="40" y="2494" font-size="12">案A の欄は比べるための下書きで、仕様ではない。主操作の黒は仮で、色は G1 でトークンとして決める。</text>
+  <text class="t s" x="40" y="2512" font-size="12">文字版と、アクセシビリティ、確かめる手順、未決の点は candidate-A-flip.md にある。</text>
+</svg>
