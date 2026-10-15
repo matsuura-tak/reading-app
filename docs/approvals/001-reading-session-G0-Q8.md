@@ -10,3 +10,13 @@
 - 選ばれた選択肢の中身（質問に書いた文）：今の形では作らない。Takuma さんが ToRead を3回使って足りない点をメモし、designer の画面の比較と合わせて、ToRead にない違いを1つ決める。そのあと PRD を作り直して G0 をやり直す。
 - 違いと認める線（PRD の 18 の Q8）：違いを審査メモの1文で書け、審査の担当がアプリの中で1分以内に確かめられ、ToRead の製品ページにない。
 - 根拠のファイル：docs/prd/001-reading-session.md の 3、8、17、18、docs/reviews/001-reading-session-G0-tech-lead-r1.md、docs/reviews/001-reading-session-G0-verifier-r1.md
+
+## 追加の決定：違いを何と比べるか（2026-10-16）
+- 聞いたこと：「『違い』を何と比べますか？（伏せると始まるタイマーはストアにすでにあります。ToRead との違いで十分かどうかで、案 A を採るかが変わります）」（選択肢 (1) ToRead と比べる、(2) ストア全体と比べる、(3) メモを書いてから決める）
+- Takuma の返事（そのまま引用）：
+
+> (1) ToRead と比べる (推奨)
+
+- 選ばれた選択肢の中身（質問に書いた文）：案 A「伏せて読み始める」を中心に PRD を作り直す。審査には、伏せて始めることと本ごとの記録を組み合わせた体験として説明する。4.3(b) のリスクは残る。ToRead のメモで別の強い不満が出たら入れ替える。
+- 根拠のファイル：design/001-reading-session-research.md の 6、design/001-reading-session/candidate-A-flip.md
+- まだのもの：Takuma が ToRead を3回試したメモ（届いたら pdm に渡し、案 A と比べ直す）
