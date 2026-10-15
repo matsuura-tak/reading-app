@@ -1,48 +1,52 @@
 # アプリ全体：読書アプリ（仮の名前）
 
-- 書いた役：pdm　日付：2026-10-15　状態：下書き（001-reading-session の G0 と一緒に Takuma が確かめる）
+- 書いた役：pdm　日付：2026-10-15　状態：下書き（001-reading-session の G0 と一緒に Takuma が確かめる）。2026-10-15 に G0 r1 の指摘（docs/reviews/001-reading-session-G0-tech-lead-r1.md）で 1、2、4、5 を直した。
 - アイデア（.claude/org/app.json）：読む時間そのものが美しくなる、デザイン賞を狙う読書アプリ
 - 根拠の印：［実データ］［公開情報 URL］［推測］。印のない文は根拠に数えない。このアプリはまだ公開前なので［実データ］はない。
 - 調べた日：すべて 2026-10-15。評価の数はその日の App Store の値。
 
 ## 1. 対象の層
 - 中心：日本に住み、紙の本（電子書籍を含む）を読みたいのに、スマホに時間を取られて読む量が減ったと感じている人。
-  - 16歳以上の 62.6% が1か月に1冊も本を読まず、69.1% が「読書量が減っている」と答えた。減った理由の1位は「スマートフォンなどで時間が取られる」43.6%［公開情報 https://www.nippon.com/ja/japan-data/h02135/ 文化庁「国語に関する世論調査」令和5年度、回答3,559人］。
-  - 「誰かと静かに読む」だけのアプリ mekuru が、公開（2026-08-12）から約2か月で評価360件、平均4.7を集めている。静かに読む時間を求める人は一定数いる［公開情報 https://apps.apple.com/jp/app/mekuru/id6792955764］。
+  - 16歳以上の 62.6% が1か月に1冊も本を読まず、69.1% が読書量が「減っている」と答えた。減った理由の1位は「携帯電話、スマートフォンなどで時間が取られる」43.6%［公開情報 https://www.nippon.com/ja/japan-data/h02135/ 文化庁「国語に関する世論調査」令和5年度、回答3,559人］。
+  - 静かに読むための部屋のアプリ mekuru が、公開（2026-08-12）から約2か月で評価360件、平均4.7を集めている。静かに読む時間を求める人は一定数いる［公開情報 https://apps.apple.com/jp/app/mekuru/id6792955764］。
 - 次の層：すでに読書の習慣があり、読んだ時間を美しく残したい人［推測］。
-- 対象にしない層：本の管理、感想の共有、読書の SNS が目的の人。ブクログ（評価28,250件）や読書メーター（7,187件）が強く、同じ土俵では勝てない［公開情報 https://apps.apple.com/jp/app/%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86%E3%83%96%E3%82%AF%E3%83%AD%E3%82%B0-%E6%9C%AC%E6%A3%9A-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2/id359066582］。
+- 対象にしない層：本の管理、感想の共有、読書の SNS が目的の人。ブクログ（評価28,250件）や読書メーター（7,187件）が強く、同じ土俵では勝てない［公開情報 https://apps.apple.com/jp/app/%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86%E3%83%96%E3%82%AF%E3%83%AD%E3%82%B0-%E6%9C%AC%E6%A3%9A-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2/id359066582 、https://apps.apple.com/jp/app/%E8%AA%AD%E6%9B%B8%E3%83%A1%E3%83%BC%E3%82%BF%E3%83%BC/id509979590］。
 
 ## 2. 中心の Job
 - スマホに時間を取られて本から遠ざかっていると感じるとき、本と向き合う時間を自分の暮らしに取り戻したい。そうすれば、読んでいる自分を確かめられ、落ち着いた時間が増える。
 - 機能の面：本と過ごした時間が、手間なく、正しく残る。
 - 気持ちの面：スマホを触っている後ろめたさから離れ、落ち着いて本に向き合える［推測］。
-- 人の目の面：「本を読む人」でいる自分を、自分で確かめられる。人に見せる仕組みは当面持たない［推測］。
+- 人の目の面：「本を読む人」でいる自分を、自分で確かめられる［推測］。人に見せる仕組みを持たないことは、5 の位置づけで決めている。
 
 ## 3. 対象のストアの国と言語
 - 国：JP（日本）。調べた競合と調査はすべて日本のストアと日本の調査。
 - 言語：日本語が主、英語も用意する（組織の決まりで文言は日英。G3 で英語のスクリーンショットを撮る）。英語圏のストアに出すかは未定（日本で North Star を見てから決める。Takuma に確かめる）。
 
 ## 4. 競合と代替
-レビューは各アプリの製品ページと、App Store のレビューの RSS（`https://itunes.apple.com/<国>/rss/customerreviews/page=1/id=<ID>/sortby=mostrecent/json`）で読んだ。
+レビューは各アプリの製品ページと、App Store のレビューの RSS（`https://itunes.apple.com/<国>/rss/customerreviews/page=1/id=<ID>/sortby=mostrecent/json`）で読んだ。引用のあとの括弧は、レビューの日付と星の数。
 
 | 名前 | URL | 評価の数（JP） | 価格と課金の形 | 強み | 繰り返し出る不満（引用と URL） |
 |---|---|---|---|---|---|
-| mekuru | https://apps.apple.com/jp/app/mekuru/id6792955764 | 360（平均4.7） | 無料。部屋のオーナー 月¥580 / 年¥5,800 | 静かな読書ルーム。ほかの人の気配。読書時間を「時間の本棚」に残す。登録なしで入れる | 時間が止まる・消える：「開きっぱなしじゃないと時間がカウントされません」「画面閉じれるようにして欲しい」「スリープモードでも途切れずに使えたら」「読書時間が2時間しか記録されていなかった」（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=6792955764/sortby=mostrecent/json）。製品ページにも、ほかのアプリから戻ると部屋に入れず読書時間がリセットされたという声がある（要約）［公開情報］ |
-| ToRead: 読書タイマー | https://apps.apple.com/jp/app/toread-%E8%AA%AD%E6%9B%B8%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC/id6757129946 | 2（平均5.0）。US 8 | 無料。Plus 買い切り¥1,500、チップ | ワンタップで開始。目標や連続日数なしの穏やかな記録。環境音。忘れたときの自動終了 | 不満の記録なし（JP と US の RSS とも本文0件、製品ページにも本文なし） |
-| Bookly: Book Tracker | https://apps.apple.com/us/app/bookly-book-tracker/id1085047737 | 237。US 62,075（平均4.6） | 無料。Pro 月$4.99 / 年$29.99 など。広告あり | 読書のタイマーと統計、目標、環境音 | 課金の壁と広告：「Free version gives you a limit of 10 books」「Ads in the free version are all the sudden out of control」「Constantly asking to be paid」。初回の質問攻め：「got asked more questions than I have at most job interviews」（RSS https://itunes.apple.com/us/rss/customerreviews/page=1/id=1085047737/sortby=mostrecent/json と page=2） |
-| Bookmory | https://apps.apple.com/jp/app/bookmory-%E6%9C%AC%E6%A3%9A-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2-%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86/id1515533482 | 189（平均4.7）。US 16,158 | 無料（広告あり）。月¥380 / 年¥3,400 | 本棚、タイマー、ロック画面と Dynamic Island の表示、統計、メモ | 本の登録の手間と失敗：「9月発売の本を検索しても見つからない」「バーコードの読み取りに失敗した場合、フリーズ」。保存：「バックアップ作成でうまくいくときと、うまくいかない時がある」（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=1515533482/sortby=mostrecent/json）。製品ページにも、入力の手順が多いという声がある（要約）［公開情報］ |
-| Forest（集中タイマー。隣の Job） | https://apps.apple.com/jp/app/forest-%E9%9B%86%E4%B8%AD-%E5%8B%89%E5%BC%B7%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC/id866450515 | 10,737（平均4.7） | 無料。Forest Plus | スマホを置くと木が育つ。気の散るアプリのブロック | 飾りが手間を増やす：「豪華なデザインとかアニメーションとか要らない」「作業終了時に余計なアニメーションやひと手間が増えて」「今では無駄な演出や増えた手順のせいでストレス」（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=866450515/sortby=mostrecent/json、2026年9〜10月） |
-| 読書管理ブクログ（本の管理。隣の Job） | https://apps.apple.com/jp/app/%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86%E3%83%96%E3%82%AF%E3%83%AD%E3%82%B0-%E6%9C%AC%E6%A3%9A-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2/id359066582 | 28,250（平均4.5） | 無料。プレミアム（月額） | 250万人の本棚。バーコード登録。感想1,400万件 | 本の登録と表紙：「バーコードで本登録できんくなった」「表紙が出なくなってしまった」「検索機能がいけてなくて使いづらい」。課金：「月額料金を払わないと…フォルダ分け・並べ替えすらできず」（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=359066582/sortby=mostrecent/json） |
+| mekuru | https://apps.apple.com/jp/app/mekuru/id6792955764 | 360（平均4.7） | 無料。部屋のオーナー 月¥580 / 年¥5,800 | 静かな読書ルーム。ほかの人の気配。ひとりの部屋。読書時間を「時間の本棚」に残し、本ごとの時間も見られる（製品ページの更新内容）。2026-08-12 の公開から 10-12 の 5.1.0 まで、版の更新が速い | 時間が止まる・消える：「開きっぱなしじゃないと時間がカウントされません」「画面閉じれるようにして欲しい」「スリープモードでも途切れずに使えたら」（2026-09-23 ★3）、「読書時間が2時間しか記録されていなかった」（09-24 ★1）（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=6792955764/sortby=mostrecent/json）。製品ページにも、ほかのアプリから戻ると部屋に入れず読書時間がリセットされたという声がある（要約、2026-09-27）［公開情報］。開発者の返答（09-29）は「部屋を画面に出しているあいだの時間を数える作り」。9月28日からは、席を外しても6分は同じ部屋の席を取っておき、「アプリを切り替えた時点までの読書時間は、記録に残る作り」。2.1.0（09-06）からは、2時間ほど画面に触れないと「まだ読んでいますか？」とたずね、返事がなければ15分後に読書を終える［公開情報 製品ページ］ |
+| ToRead: 読書タイマー | https://apps.apple.com/jp/app/toread-%E8%AA%AD%E6%9B%B8%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC/id6757129946 | 3（平均5.0）。US 8 | 「無料で、広告もありません」。Plus 買い切り¥1,500 | ワンタップで開始。「読書セッションを開始し、スマホを置いて、ただ読む」。履歴の編集と手入力。忘れたときの自動終了。本ごとの時間と「残した一文」（1.1.0、2026-10-05）。目標や連続記録のない穏やかな記録。静かでミニマルな画面（スクリーンショットの見出しは「座って。ただ、読む。」）。環境音。iCloud 同期。ロック画面と Dynamic Island の表示とウィジェットは Plus | 不満の記録なし（JP と US の RSS とも本文0件、製品ページにも本文なし） |
+| ReadShelf | https://apps.apple.com/jp/app/readshelf-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2-%E8%94%B5%E6%9B%B8%E7%AE%A1%E7%90%86-%E6%9C%AC%E6%A3%9A-%E7%A9%8D%E8%AA%AD-%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC/id6780907685 | 0 | 無料。Premium あり（価格は見ていない） | 「あなたのデータを外に出すことは一切ありません」（本の検索だけ外の書籍データベースに問い合わせる）。アカウント不要。タイマー。過去の読書の手入力と編集。ライブアクティビティ。本棚、統計、目標、レベル | 不満の記録なし（評価0件、JP の RSS に本文0件） |
+| Honno | https://apps.apple.com/jp/app/honno-%E7%A9%8D%E8%AA%AD%E8%A7%A3%E6%B6%88%E3%81%AE%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86%E3%82%A2%E3%83%97%E3%83%AA/id6759947173 | 1 | 無料 | 「会員登録不要・データはすべてスマホの中」。タイマー、連続記録、目標、バーコード | 不満の記録なし（評価1件、JP の RSS に本文0件） |
+| Bookly: Book Tracker | https://apps.apple.com/us/app/bookly-book-tracker/id1085047737 | 237。US 62,075（平均4.6） | 無料。Pro 月$4.99 / 年$29.99 など。広告あり | 読書のタイマーと統計、目標、環境音 | 課金の壁と広告：「Free version gives you a limit of 10 books」（2026-10-11 ★1）、「Ads in the free version are all the sudden out of control」（10-13 ★2）、「Constantly asking to be paid」（09-16 ★1）。初回の質問攻め：「got asked more questions than I have at most job interviews」（09-18 ★1）（RSS https://itunes.apple.com/us/rss/customerreviews/page=1/id=1085047737/sortby=mostrecent/json と page=2） |
+| Bookmory | https://apps.apple.com/jp/app/bookmory-%E6%9C%AC%E6%A3%9A-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2-%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86/id1515533482 | 189（平均4.7）。US 16,158 | 無料（広告あり）。月¥380 / 年¥3,400 | 本棚、タイマー、ロック画面と Dynamic Island の表示、統計、メモ | 本の登録の手間と失敗：「9月発売の本を検索しても見つからない」「バーコードの読み取りに失敗した場合、フリーズ」（同じ1件、2024-10-13 ★3）。保存：「バックアップ作成でうまくいくときと、うまくいかない時がある」（2023-09-24 ★3）（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=1515533482/sortby=mostrecent/json）。製品ページにも「入力に手間が掛かりすぎる」（2025-07-26）［公開情報］ |
+| Forest（集中タイマー。隣の Job） | https://apps.apple.com/jp/app/forest-%E9%9B%86%E4%B8%AD-%E5%8B%89%E5%BC%B7%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC/id866450515 | 10,737（平均4.7） | 無料。Forest Plus | スマホを置くと木が育つ。気の散るアプリのブロック | 飾りが手間を増やす：「豪華なデザインとかアニメーションとか要らない」（2026-10-09 ★1）、「作業終了時に余計なアニメーションやひと手間が増えて」（10-13 ★1）、「今では無駄な演出や増えた手順のせいでストレス」（09-26 ★1）。同じ趣旨が 09-22 と 09-27 にもある（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=866450515/sortby=mostrecent/json） |
+| 読書管理ブクログ（本の管理。隣の Job） | https://apps.apple.com/jp/app/%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86%E3%83%96%E3%82%AF%E3%83%AD%E3%82%B0-%E6%9C%AC%E6%A3%9A-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2/id359066582 | 28,250（平均4.5） | 無料。プレミアム（月額） | 250万人の本棚。バーコード登録。感想1,400万件 | 本の登録と表紙：「バーコードで本登録できんくなった」（2026-05-19 ★1）、「表紙が出なくなってしまった」（07-08 ★2）、「検索機能がいけてなくて使いづらい」（05-07 ★2）。課金：「月額料金を払わないと…フォルダ分け・並べ替えすらできず」（03-02 ★1）（RSS https://itunes.apple.com/jp/rss/customerreviews/page=1/id=359066582/sortby=mostrecent/json） |
 | 代替：時計のストップウォッチ＋メモ | https://www.apollomaniacs.com/ipod/howto_touch_clock_stopwatch.htm | ー | 無料（iPhone に最初からある） | ほかのアプリに移っても数え続け、ロック画面に出る［公開情報］ | 何の本を測ったかの名前を付けられない（同ページに記載なし）。残すには毎回メモに本の名前と分数を書く［推測］ |
 | 代替：紙の読書ノート | https://www.city.yokohama.lg.jp/izumi/kurashi/kyodo_manabi/manabi/dokusho/dokushokiroku.html | ー | ノート代のみ | 手で書く楽しさ。感想や引用も残せる | 例に挙がる項目はタイトル、著者、日付、感想などで、読んだ時間の欄はない［公開情報］ |
 | 代替：何もしない（ただ読む） | ー | ー | 0円 | 手間ゼロ | 読んだ量が何も残らない。69.1% が読書量の減少を感じている［公開情報 https://www.nippon.com/ja/japan-data/h02135/］ |
 
-- まとめ：時間を残す仕組みはどこにでもある（ストップウォッチでも足りる）。不満が繰り返し出るのは、(1) 時間が途中で止まる・消える（mekuru）、(2) 本の登録の手間と失敗（Bookmory、ブクログ）、(3) 課金と広告の催促（Bookly、ブクログ）、(4) 飾りのせいで手順が増える（Forest）の4つ［公開情報 上の各 URL］。
+- まとめ：時間を残す仕組みはどこにでもある。ストップウォッチでも足り、ロック中も数えて本ごとに残す無料の読書アプリも複数ある（ToRead、ReadShelf、読書タイマー〜読書記録&習慣化〜）［公開情報 上の各 URL と https://apps.apple.com/jp/app/%E8%AA%AD%E6%9B%B8%E3%82%BF%E3%82%A4%E3%83%9E%E3%83%BC-%E8%AA%AD%E6%9B%B8%E8%A8%98%E9%8C%B2-%E7%BF%92%E6%85%A3%E5%8C%96/id6755981496］。不満が繰り返し出るのは、(1) 時間が途中で止まる・消える（mekuru）、(2) 本の登録の手間と失敗（Bookmory、ブクログ）、(3) 課金と広告の催促（Bookly、ブクログ）、(4) 飾りのせいで手順が増える（Forest）の4つ［公開情報 上の各 URL］。(1) は ToRead などがすでに解いている。
 - (4) はこのアプリにとっていちばん大事な警告。「美しさ」が手順や待ち時間を1つでも増やすと、同じ不満を受ける［公開情報 Forest の RSS］。
+- いちばん近い競合は ToRead。機能だけでなく、静かな見た目と、目標を置かない打ち出しも同じ方向で、無料で広告もない［公開情報 ToRead の URL］。審査ガイドライン 4.3(b) は "simple timers" を名指しし、"meaningfully different or improved experience" がなければ新しい提出を受け付けない［公開情報 https://developer.apple.com/app-store/review/guidelines/］。
 
 ## 5. 位置づけ（1文）
 スマホに時間を取られて本から遠ざかった人のための、読んでいる時間と読み終えた瞬間を静かで美しいひとときにするアプリ。本の管理や読書の SNS ではなく、「読む時間」だけに絞り、美しさのために手順を1つも増やさない点で、ブクログ、Bookly、Forest と違う。
 
+- 注意：この位置は ToRead がすでに取っている（無料、広告なし、目標なし、静かな画面）［公開情報 ToRead の URL］。ToRead との違いは、まだ言えない。001 の PRD の 8 で「今の範囲では作らない」を推し、違いを決めることを Takuma に頼んだ（001 の 18 の Q8）。違いが決まったら、この1文を書き直す。
 - デザイン賞の狙い：Apple Design Awards の6部門のうち、Interaction（「effortless controls」）と Visuals and Graphics、Inclusivity（さまざまな能力と言語）を狙う［公開情報 https://developer.apple.com/design/awards/］。どれを主にするかは designer の調査で決める。
 
 ## 6. North Star と入力指標
