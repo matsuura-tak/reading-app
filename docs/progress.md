@@ -20,3 +20,4 @@
 - 2026-10-16 001-reading-session G0 決定 Q9 (a) 案 A で進める。実機の確かめを Takuma が行う（結果待ち）。pdm が PRD の後半（9〜16、18、G0 の前の確認）を作り直す docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-16 001-reading-session G0 Takuma待ち PRD の作り直しが終わった（AC 40件、G3 と G4 に分けた）。G0 r2 は Takuma の実機の確かめ①〜③の結果を待って始める。承認には ToRead のメモも要る docs/prd/001-reading-session.md、docs/reviews/001-reading-session-G0-ruling.md
 - 2026-10-16 001-reading-session G0 一時停止 Takuma が方向を問い直した（ニーズへの効き、埋もれる心配、日本になく海外で育つ分野、独自性と賞）。角度の調べもの（pdm 3体、designer、tech-lead。書かない）を始めた。実機の確かめと ToRead のメモは、案 A を続けると決まるまで保留 なし（調べものの報告は届いたら docs/reviews/ に保存）
+- 2026-10-16 001-reading-session 方向の見直し Takuma待ち 調べもの5体がそろった。①②は日本にこの夏同じ形のアプリが出ていた（Pause、よみかえし）。③は OS と受賞作 Speechify と重なる。新しい候補は「音読の宿題」（pdm と designer が推す）と「毎日の名作」（Scroll The Bible 型）。どちらを確かめるかを聞く docs/reviews/001-reading-session-angles-*.md
