@@ -15,6 +15,7 @@
 | index.html | ページ本体。CSS と JS は中に書いた。外のファイル（書体、画像、スクリプト）は読み込まない。手は SVG の形をページの中に書いた |
 | README.md | この文書 |
 
+- **公開の枠に合わせました（2026-10-16）**：index.html は `<title>` から始まり、doctype、charset、viewport（viewport-fit=cover）、上下の safe-area の余白は Artifact の公開の枠が付けます。左右の余白は body の `max(16px, env(safe-area-inset-left / right, 0px))` で取り、`claude:viewport-fit-sides` の meta と組にしました。`lang="ja"` は `<main>` に付けました。枠が無いので、ファイルを iPhone の Safari で直接開くと縮んで見える見込みです（5. の確かめは Artifact で）。
 ## 1. 3つの案の台本（10秒で1周。最後の0.5秒で舞台の色に溶けて、最初に戻る）
 ### 案1　続きの一行（毎晩）
 | 秒 | 起きること | 画面の文字 |
