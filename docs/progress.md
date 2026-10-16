@@ -25,3 +25,4 @@
 - 2026-10-16 001-reading-session 方向の見直し Takuma待ち 確かめの4体がそろった（pdm 音読・名作、designer 画面案6枚、tech-lead）。判定の材料は Takuma の聞き取り（親3人、大人3人）。期日の目安 2026-10-23 docs/reviews/001-reading-session-validate-*.md、design/explore/
 - 2026-10-16 001-reading-session 方向の見直し 決定 課題を選び直す。Takuma が共感したのは 2 積読・次の1冊、4 長い文章が読めない、1 働いていると読めない。音読と名作は止めた。4体が調べもの（書かない） docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-16 001-reading-session 方向の見直し Takuma待ち 課題の選び直しの調べもの4体がそろった。つまずきはスマホ（43.6%）と疲れ（38.9%）が大きく、迷う（3.6%、H25）は小さい。designer と pdm の推しは「疲れた夜の入口」を毎晩の中心にし、積読のカメラは本を読み終えたときの1回にする形 docs/reviews/001-reading-session-reselect-*.md
+- 2026-10-16 001-reading-session 方向の見直し 決定「まだ決めない」。確かめを4つ行う（本棚の写真、7晩の記録、5人への聞き取り、10秒の動画の見比べ）。期日の目安 10/23 docs/reviews/001-reading-session-validation-plan.md
