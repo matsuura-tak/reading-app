@@ -54,7 +54,7 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
 .lead{margin-top:8px;font-size:.9375rem;color:var(--text-2)}
 .concept{margin-top:40px}
 .meta{margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
-.concept h2{font-size:1.0625rem;line-height:1.4;font-weight:700}
+.concept h2{flex:1 1 12em;font-size:1.0625rem;line-height:1.4;font-weight:700}
 .desc{margin-top:4px;font-size:.9375rem;line-height:1.6}
 .replay{flex:none;min-height:44px;min-width:44px;padding:0 16px;font:inherit;font-size:.9375rem;line-height:1.2;color:var(--text);background:transparent;border:1px solid var(--control);border-radius:22px;cursor:pointer}
 .replay:active{background:var(--control-press)}
@@ -63,6 +63,12 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
 .ask ol{padding-left:1.4em}
 .ask li{font-size:1.0625rem;line-height:1.5;font-weight:700}
 .ask li+li{margin-top:12px}
+.order{margin-top:56px}
+.order-h{font-size:.8125rem;line-height:1.4;color:var(--text-2)}
+.nums{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px}
+.nums button{flex:none;min-width:44px;min-height:44px;padding:0 8px;font:inherit;font-size:.8125rem;line-height:1;color:var(--text-2);background:transparent;border:1px solid transparent;border-radius:22px;cursor:pointer;font-variant-numeric:tabular-nums}
+.nums button[aria-pressed="true"]{color:var(--text);font-weight:700;border-color:var(--control)}
+.nums button:active{background:var(--control-press)}
 .frames{display:none;gap:12px}
 .frame{margin:0;container-type:inline-size}
 .frame figcaption{margin-top:4px;font-size:.8125rem;color:var(--text-2)}
@@ -244,10 +250,10 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
   <p class="lead">まだ作っていない読書アプリの、3つの案です。どれも約10秒で、音はありません。</p>
 </header>
 
-<section class="concept" aria-labelledby="h-c1">
+<section class="concept" data-c="1" aria-labelledby="h-c1">
   <div class="live"><div class="stage-wrap">
     <div class="stage c1" role="img" data-keys="3,5.9,8.6"
-      aria-label="続きの一行の場面。夜、机の上の iPhone を手に取ると、ロック画面に縦書きで「雨は、まだやまなかった。」と p.43 が出ている。伏せて机に置くと画面は見えなくなり、文庫本を開く。18分後に起こすと「p.43 → p.61」「18分」と出る。"
+      aria-label="夜、机の上の iPhone を手に取ると、ロック画面に縦書きで「雨は、まだやまなかった。」と p.43 が出ている。伏せて机に置くと画面は見えなくなり、文庫本を開く。18分後に起こすと「p.43 → p.61」「18分」と出る。"
       data-frames="1コマ目。夜11時40分、手に取った iPhone のロック画面に、縦書きで「雨は、まだやまなかった。」、その下に p.43。|2コマ目。iPhone を伏せて机に置き、文庫本を開いている。画面は見えない。|3コマ目。18分後に起こすと、11時58分のロック画面に「p.43 → p.61」「18分」。">
       <div class="book">
         <div class="pg l"></div>
@@ -281,16 +287,16 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
   </div></div>
   <div class="frames"></div>
   <div class="meta">
-    <h2 id="h-c1">1　続きの一行</h2>
+    <h2 id="h-c1">iPhone を手に取ると、<br>続きの一行が出る</h2>
     <button type="button" class="replay" aria-describedby="h-c1">もう一度再生</button>
   </div>
-  <p class="desc">夜、iPhone を手に取ると、昨夜読み終えた一行が出ている。伏せると読書が始まる。</p>
+  <p class="desc">夜、ロック画面に、昨夜読んだ最後の一行が出る。伏せて、本を開く。</p>
 </section>
 
-<section class="concept" aria-labelledby="h-c2">
+<section class="concept" data-c="2" aria-labelledby="h-c2">
   <div class="live"><div class="stage-wrap">
     <div class="stage c2" role="img" data-keys="2.2,4.5,8.6"
-      aria-label="積読の山から次の1冊の場面。机に7冊の本が積んである。iPhone のカメラを向けると、画面の中で背表紙に1本ずつ細い線が付き、「小さな舟」にだけ線が残る。「次は、これ。」「p.1から、約15分。」と出て、その本を山から引き抜く。"
+      aria-label="机に7冊の本が積んである。iPhone のカメラを向けると、画面の中で背表紙に1本ずつ細い線が付き、「小さな舟」にだけ線が残る。「次は、これ。」「p.1から、約15分。」と出て、その本を山から引き抜く。"
       data-frames="1コマ目。机に積んだ7冊の本に iPhone のカメラを向けている。画面の中で、背表紙に1本ずつ細い線が付いていく。|2コマ目。画面の中で「小さな舟」にだけ細い線が残り、「次は、これ。」「p.1から、約15分。」と出ている。|3コマ目。手が「小さな舟」を山から引き抜いている。">
       <div class="desk"></div>
       <div class="pile">
@@ -331,16 +337,16 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
   </div></div>
   <div class="frames"></div>
   <div class="meta">
-    <h2 id="h-c2">2　積読の山から、次の1冊</h2>
+    <h2 id="h-c2">カメラを向けると、<br>次の1冊に線が付く</h2>
     <button type="button" class="replay" aria-describedby="h-c2">もう一度再生</button>
   </div>
-  <p class="desc">本を読み終えたら、積読の山にカメラを向ける。次の1冊にだけ、細い線が1本付く。</p>
+  <p class="desc">本を読み終えたら、カメラの画面で、積読の1冊にだけ線が残る。その本を抜く。</p>
 </section>
 
-<section class="concept" aria-labelledby="h-c3">
+<section class="concept" data-c="3" aria-labelledby="h-c3">
   <div class="live"><div class="stage-wrap">
     <div class="stage c3" role="img" data-keys="1.35,3.5,8.6"
-      aria-label="夜の盾の場面。夜11時12分、iPhone のホーム画面で SNS のアプリを押すと、画面が文庫の1ページの姿に変わり、縦書きで「124ページから。」「伏せて10分」とだけ出る。iPhone を伏せて机に置き、文庫本を開く。"
+      aria-label="夜11時12分、iPhone のホーム画面で SNS のアプリを押すと、画面が文庫の1ページの姿に変わり、縦書きで「124ページから。」「伏せて10分」とだけ出る。iPhone を伏せて机に置き、文庫本を開く。"
       data-frames="1コマ目。夜11時12分のホーム画面で、指が SNS のアプリを押している。|2コマ目。画面が文庫の1ページの姿に変わり、縦書きで「124ページから。」「伏せて10分」とだけ出ている。|3コマ目。iPhone を伏せて机に置き、文庫本を開いている。画面は見えない。">
       <div class="book">
         <div class="pg l"></div>
@@ -377,10 +383,10 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
   </div></div>
   <div class="frames"></div>
   <div class="meta">
-    <h2 id="h-c3">3　夜の盾</h2>
+    <h2 id="h-c3">SNS を開くと、<br>本の1ページが出る</h2>
     <button type="button" class="replay" aria-describedby="h-c3">もう一度再生</button>
   </div>
-  <p class="desc">夜に SNS を開こうとすると、画面が文庫の1ページになる。伏せて10分、本を読む。</p>
+  <p class="desc">夜、紙の色の画面に、続きのページ番号だけが出る。伏せて10分、本を読む。</p>
 </section>
 
 <section class="ask" aria-label="問い">
@@ -389,6 +395,17 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
     <li>どれをいちばん使ってみたいですか</li>
   </ol>
 </section>
+<div class="order" role="group" aria-labelledby="order-h" hidden>
+  <p class="order-h" id="order-h">見せる順番</p>
+  <div class="nums">
+    <button type="button" data-order="1" aria-pressed="true">1</button>
+    <button type="button" data-order="2" aria-pressed="false">2</button>
+    <button type="button" data-order="3" aria-pressed="false">3</button>
+    <button type="button" data-order="4" aria-pressed="false">4</button>
+    <button type="button" data-order="5" aria-pressed="false">5</button>
+    <button type="button" data-order="6" aria-pressed="false">6</button>
+  </div>
+</div>
 </main>
 <script>
 (function(){
@@ -419,6 +436,33 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
       box.appendChild(fig);
     });
   });
+  // 見せる順番：6通りの並び（数字は案の印 data-c）。6つを1回ずつ使うと、どの案も各位置に2回ずつ来る
+  var ORDERS={'1':'123','2':'231','3':'312','4':'132','5':'321','6':'213'};
+  var KEY='concepts-show-order';
+  var main=document.querySelector('main');
+  var ask=document.querySelector('.ask');
+  var nums=[].slice.call(document.querySelectorAll('.nums button'));
+  var restart=function(){};
+  function valid(v){v=String(v);return ORDERS.hasOwnProperty(v)?v:null;}
+  function arrange(n){
+    ORDERS[n].split('').forEach(function(c){main.insertBefore(document.querySelector('.concept[data-c="'+c+'"]'),ask);});
+    nums.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-order')===n?'true':'false');});
+    main.setAttribute('data-order',n);
+  }
+  // 初めては 1。最後に選んだ番号を覚えておく（使えないときは 1）。確かめ用に ?order=1〜6 も読む
+  var first=valid(q.get('order'));
+  if(!first){try{first=valid(window.localStorage.getItem(KEY));}catch(e){}}
+  arrange(first||'1');
+  nums.forEach(function(b){
+    b.addEventListener('click',function(){
+      var n=b.getAttribute('data-order');
+      try{window.localStorage.setItem(KEY,n);}catch(e){}
+      arrange(n);
+      window.scrollTo(0,0);
+      restart();
+    });
+  });
+  document.querySelector('.order').hidden=false;
   // 確かめ用：?t=秒 で、その時刻の場面に止める
   var fz=q.get('t');
   if(fz!==null){
@@ -433,8 +477,17 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
     st.classList.add('playing');
     st.setAttribute('data-started','1');
   }
+  // 並びを変えたとき：まだ再生していない状態（0秒で止まった形）に戻す
+  function rewind(st){
+    st.classList.remove('playing');
+    st.removeAttribute('data-started');
+    st.classList.add('reset');
+    void st.offsetWidth;
+    st.classList.remove('reset');
+  }
   if(!('IntersectionObserver' in window)){
     stages.forEach(play);
+    restart=function(){stages.forEach(play);};
   }else{
     var io=new IntersectionObserver(function(es){
       es.forEach(function(e){
@@ -447,6 +500,11 @@ h1{font-size:1.375rem;line-height:1.35;font-weight:700}
       });
     },{threshold:[0,0.5]});
     stages.forEach(function(st){io.observe(st);});
+    // 見え方を最初から数え直す（半分以上見えている舞台は、0秒から動く）
+    restart=function(){
+      io.takeRecords();
+      stages.forEach(function(st){io.unobserve(st);rewind(st);io.observe(st);});
+    };
   }
   [].forEach.call(document.querySelectorAll('.replay'),function(b){
     b.addEventListener('click',function(){play(b.closest('.concept').querySelector('.live .stage'));});
