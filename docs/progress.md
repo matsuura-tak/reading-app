@@ -23,3 +23,4 @@
 - 2026-10-16 001-reading-session 方向の見直し Takuma待ち 調べもの5体がそろった。①②は日本にこの夏同じ形のアプリが出ていた（Pause、よみかえし）。③は OS と受賞作 Speechify と重なる。新しい候補は「音読の宿題」（pdm と designer が推す）と「毎日の名作」（Scroll The Bible 型）。どちらを確かめるかを聞く docs/reviews/001-reading-session-angles-*.md
 - 2026-10-16 001-reading-session 方向の見直し 決定「音読の宿題」と「毎日の名作」を並べて1週間確かめる。designer が両方の画面案、pdm 2体と tech-lead が調べもの（書かない）。Takuma は小学生の親3人に問いを聞く docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-16 001-reading-session 方向の見直し Takuma待ち 確かめの4体がそろった（pdm 音読・名作、designer 画面案6枚、tech-lead）。判定の材料は Takuma の聞き取り（親3人、大人3人）。期日の目安 2026-10-23 docs/reviews/001-reading-session-validate-*.md、design/explore/
+- 2026-10-16 001-reading-session 方向の見直し 決定 課題を選び直す。Takuma が共感したのは 2 積読・次の1冊、4 長い文章が読めない、1 働いていると読めない。音読と名作は止めた。4体が調べもの（書かない） docs/approvals/001-reading-session-G0-Q8.md
