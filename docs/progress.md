@@ -44,3 +44,4 @@
 - 2026-10-18 001-reading-session G0 決定 名前は「よむま」。課金は早めに v1.1 へ回す。国立国会図書館は、自身の CC BY の書誌だけを使えば課金しても申請は要らない（指揮役が原文で確かめた。裁定 14）。pdm が決まったことを PRD に入れる小さな直しをしてから、G0 r2 に出す docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-18 001-reading-session G0 実機の確かめ tech-lead が試作に 1d（抜き出しの比べ）を足した（シミュレーターの自己テストで 4/4 有効、実機向けのビルドはエラー0）。手順書は scratchpad/device-check/HOW-TO.md。1d と 1c の数え方を確かめの計画に足した。Takuma に試作を渡す docs/reviews/001-reading-session-validation-plan.md
 - 2026-10-18 001-reading-session G0 判定中 r2 PRD（e88bae3。AC 112件）を、tech-lead 2体（その1：実現性と3週の見積もり直し／その2：根拠と「G0 の前の確認」）と verifier に出した。往復2回の決まりの最後の回 docs/prd/001-reading-session.md
+- 2026-10-18 001-reading-session G0 r2 FAIL tech-lead（その1：3週に入らない（G1〜G3 を入れると芯だけで約20〜27日）、書誌の合格の線があいまい／その2：ネコノホンシツジの行の事実）、verifier（著者の取り出しの手順の順番）。どれも方向を変えない直し。裁定 15 で3回目の判定に回さず、pdm の直しを指揮役が確かめる。Takuma待ち：期間の枠、国立国会図書館への連絡、申請しない前提の確認 docs/reviews/001-reading-session-G0-prd2-*-r2.md
