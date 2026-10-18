@@ -31,3 +31,4 @@
 - 2026-10-18 001-reading-session 方向の見直し 指示 Takuma：「続きの一行」は機能の1つとしてあり。友人の読書、出版社と受賞、「これを読んだ人は」のおすすめ、簡単な登録を含め、目的に沿う機能を統合した体験を検討する。4体が調べもの（書かない） docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-18 001-reading-session 方向の見直し Takuma待ち 統合の調べもの4体がそろった。4体とも、毎晩は続きの一行→伏せて読むだけにし、Takuma の4つは1冊を読み終えた夜に集める形を推した。v1 はサーバーなしで、友人と本当の「これを読んだ人は」は後の版。聞いたこと：製品の形、v1 の範囲、おすすめで欲しいもの、確かめの追加 docs/reviews/001-reading-session-integrate-proposal.md
 - 2026-10-18 001-reading-session 方向の見直し 決定 製品の形は「夜の入口、本の出口」（画面は「一冊のしおり」）。v1 はサーバーなし。次の1冊は積読から選ぶのが先。確かめを3つ足す（文庫のページ5枚、7晩の記録に1項目、聞き取りに1問）。次は pdm が product.md と v1 の PRD を書く docs/approvals/001-reading-session-G0-Q8.md
+- 2026-10-18 001-reading-session G0 判定中 pdm が product.md と v1 の PRD を書いた（1,008行、AC 91件。G3 で合否、うち25件に G4 の実機の確かめ）。G0 の判定を r1 から数え直す（裁定 7〜9）。tech-lead 2体と verifier が判定、並べて designer が統合した流れの絵コンテと主な画面を作る docs/prd/001-reading-session.md、docs/reviews/001-reading-session-G0-ruling.md
