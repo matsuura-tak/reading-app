@@ -42,3 +42,4 @@
 - 2026-10-18 001-reading-session 方向の見直し 決定 抜き出しの AI は確かめ 1d で決める（合格なら v1.1 の候補）。Takuma の iPhone は Apple Intelligence 対応。tech-lead が実機の確かめの試作を作った（scratchpad/device-check。シミュレーターと実機向けのビルドはエラー0）。抜き出しの比べを試作に足す。pdm は PRD を直している docs/reviews/001-reading-session-validation-plan.md
 - 2026-10-18 001-reading-session G0 Takuma待ち pdm が PRD を直した（r2。AC 112件、G0 r1 の指摘をすべて扱い、裁定 10〜13 を入れた）。残る問い：アプリの名前、課金を v1.1 に回す位置、国立国会図書館の申請の時期。抜き出し（Q4）は Takuma の答えで決まっているので、答えと合わせて pdm が小さく直してから G0 r2 に出す docs/prd/001-reading-session.md
 - 2026-10-18 001-reading-session G0 決定 名前は「よむま」。課金は早めに v1.1 へ回す。国立国会図書館は、自身の CC BY の書誌だけを使えば課金しても申請は要らない（指揮役が原文で確かめた。裁定 14）。pdm が決まったことを PRD に入れる小さな直しをしてから、G0 r2 に出す docs/approvals/001-reading-session-G0-Q8.md
+- 2026-10-18 001-reading-session G0 実機の確かめ tech-lead が試作に 1d（抜き出しの比べ）を足した（シミュレーターの自己テストで 4/4 有効、実機向けのビルドはエラー0）。手順書は scratchpad/device-check/HOW-TO.md。1d と 1c の数え方を確かめの計画に足した。Takuma に試作を渡す docs/reviews/001-reading-session-validation-plan.md
