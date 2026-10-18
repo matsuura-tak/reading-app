@@ -46,3 +46,4 @@
 - 2026-10-18 001-reading-session G0 判定中 r2 PRD（e88bae3。AC 112件）を、tech-lead 2体（その1：実現性と3週の見積もり直し／その2：根拠と「G0 の前の確認」）と verifier に出した。往復2回の決まりの最後の回 docs/prd/001-reading-session.md
 - 2026-10-18 001-reading-session G0 r2 FAIL tech-lead（その1：3週に入らない（G1〜G3 を入れると芯だけで約20〜27日）、書誌の合格の線があいまい／その2：ネコノホンシツジの行の事実）、verifier（著者の取り出しの手順の順番）。どれも方向を変えない直し。裁定 15 で3回目の判定に回さず、pdm の直しを指揮役が確かめる。Takuma待ち：期間の枠、国立国会図書館への連絡、申請しない前提の確認 docs/reviews/001-reading-session-G0-prd2-*-r2.md
 - 2026-10-18 001-reading-session G0 決定 期間は「速さを測って決める」（3週は目安。芯の G1 から始めて測る）。国立国会図書館には公開の前に利用の連絡を出す。利用申請は出さない（裁定 14 を確認）。pdm が r2 の直し（裁定 15）をする docs/approvals/001-reading-session-G0-Q8.md
+- 2026-10-18 001-reading-session G0 調べもの Takuma：「apple インテリジェンスとか上手いこと使えないのかな」。文を作らせない使い道（Visual Intelligence、Siri とショートカット、事実だけのふりかえり、Image Playground、PCC）を tech-lead と designer が調べる（書かない）。pdm は r2 の直しを並べて進めている docs/approvals/001-reading-session-G0-Q8.md
