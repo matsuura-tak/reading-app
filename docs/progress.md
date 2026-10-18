@@ -47,3 +47,4 @@
 - 2026-10-18 001-reading-session G0 r2 FAIL tech-lead（その1：3週に入らない（G1〜G3 を入れると芯だけで約20〜27日）、書誌の合格の線があいまい／その2：ネコノホンシツジの行の事実）、verifier（著者の取り出しの手順の順番）。どれも方向を変えない直し。裁定 15 で3回目の判定に回さず、pdm の直しを指揮役が確かめる。Takuma待ち：期間の枠、国立国会図書館への連絡、申請しない前提の確認 docs/reviews/001-reading-session-G0-prd2-*-r2.md
 - 2026-10-18 001-reading-session G0 決定 期間は「速さを測って決める」（3週は目安。芯の G1 から始めて測る）。国立国会図書館には公開の前に利用の連絡を出す。利用申請は出さない（裁定 14 を確認）。pdm が r2 の直し（裁定 15）をする docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-18 001-reading-session G0 調べもの Takuma：「apple インテリジェンスとか上手いこと使えないのかな」。文を作らせない使い道（Visual Intelligence、Siri とショートカット、事実だけのふりかえり、Image Playground、PCC）を tech-lead と designer が調べる（書かない）。pdm は r2 の直しを並べて進めている docs/approvals/001-reading-session-G0-Q8.md
+- 2026-10-18 001-reading-session G0 直しの確かめ pdm が G0 r2 の指摘を直した（AC 113件）。「直さないと通さない」4件は、指揮役が原文、RSS、決まりの例と照らして直ったことを確かめた（裁定 15）。承認の前に待つもの：実機の確かめの結果（Q-A、1c は測れたら）と、Apple Intelligence の使い道の調べもの docs/reviews/001-reading-session-G0-r2-fix-check.md
