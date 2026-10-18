@@ -40,3 +40,4 @@
 - 2026-10-18 001-reading-session 方向の見直し 決定 お金の目安は固定費が回ればよい（主はポートフォリオ）。収益は買い切り（芯は無料）。端末の AI は v1 に入れない。期間は3週を上限。次は pdm が PRD を直す（G0 r2 へ）。tech-lead が実機の確かめの試作を作る docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-18 001-reading-session 方向の見直し 訂正 reviewer が tech-lead の判断を判定して FAIL。直さないと通さない3件：結論が証拠より広い（抜き出しの AI は 12/12 で作れた）、指揮役のまとめの反論が偏っていた、有料の辞書が 4.10 に当たるおそれ。裁定 12、13 で直し、抜き出しの AI を Takuma に聞き直す docs/reviews/001-reading-session-ai-review.md
 - 2026-10-18 001-reading-session 方向の見直し 決定 抜き出しの AI は確かめ 1d で決める（合格なら v1.1 の候補）。Takuma の iPhone は Apple Intelligence 対応。tech-lead が実機の確かめの試作を作った（scratchpad/device-check。シミュレーターと実機向けのビルドはエラー0）。抜き出しの比べを試作に足す。pdm は PRD を直している docs/reviews/001-reading-session-validation-plan.md
+- 2026-10-18 001-reading-session G0 Takuma待ち pdm が PRD を直した（r2。AC 112件、G0 r1 の指摘をすべて扱い、裁定 10〜13 を入れた）。残る問い：アプリの名前、課金を v1.1 に回す位置、国立国会図書館の申請の時期。抜き出し（Q4）は Takuma の答えで決まっているので、答えと合わせて pdm が小さく直してから G0 r2 に出す docs/prd/001-reading-session.md
