@@ -301,3 +301,23 @@
     - PCC
   - tech-lead と designer が調べる（書かない）。PRD の直しと並べて進める。
   - 結果に推奨をつけて Takuma に返す。v1.0 は枠がきついので、安くて効くもの以外は v1.1 の候補とする見込み。
+
+## 追加の決定：App Intents と Visual Intelligence（2026-10-18）
+- 前提として伝えたこと：Apple Intelligence の使い道の調べもの2体のまとめ（docs/reviews/001-reading-session-apple-intelligence-proposal.md）。
+  - 推すのは App Intents（Control、Action ボタン、Siri から、アプリを開かずに読み始める。ショートカットで「どこまで読んだ？」。全機種、作り話なし）。
+  - Visual Intelligence は v1.1 の候補。AI のふりかえりは spike で 0/10 なので文の型で書く。Image Playground と PCC は急がない。AI の部分は無料（裁定 17）。
+  - いちばん強い反論は、App Intents は Apple Intelligence そのものではなく土台で、ToRead にもショートカットがあること。
+- 聞いたこと1：「Control、Action ボタン、Siri から「読み始める」仕組み（App Intents）を、最初の版の候補にしますか？」（選択肢 最初の版の候補にする、v1.1 に回す）
+- Takuma の返事（そのまま引用）：
+
+> 最初の版の候補にする (推奨)
+
+- 聞いたこと2：「本を写すと「61ページから」と出る Visual Intelligence は、どうしますか？」（選択肢 v1.1 の候補にする、最初の版に入れる、入れない）
+- Takuma の返事（そのまま引用）：
+
+> v1.1 の候補にする (推奨)
+
+- これで決まったこと
+  - App Intents（読み始める、どこまで読んだ？）は v1.0 の候補として、回す順の中に入れる。「読み始める」は Live Activity と組なので、Live Activity を回すときは一緒に回す。
+  - Visual Intelligence は v1.1 の候補。日本語の環境と本の見分けを、実機で確かめてから。
+- 次：pdm が PRD に入れる。足した AC は verifier が狭く判定する（裁定 18）。
