@@ -28,3 +28,4 @@
 - 2026-10-16 001-reading-session 方向の見直し 決定「まだ決めない」。確かめを4つ行う（本棚の写真、7晩の記録、5人への聞き取り、10秒の動画の見比べ）。期日の目安 10/23 docs/reviews/001-reading-session-validation-plan.md
 - 2026-10-16 001-reading-session 方向の見直し 確かめ4 試作ページを Artifact で公開した（Takuma だけが開ける。https://claude.ai/artifact/PaXtA3AiLPRSns13Q4xifw）。人に見せる前に、見せる順番の6通りの切り替えと、見出しの強さをそろえる直しを designer に頼んだ design/explore/concepts/
 - 2026-10-16 001-reading-session 方向の見直し 確かめ4 試作ページを直して公開し直した（同じリンク、版2）。見せる順番を6通りから選べる（6人に1つずつ使えば、どの案も各位置に2回ずつ）。見出しは番号と比喩を外し、3つを同じ型にそろえた。designer が指示の外で直した2点（説明の2行、読み上げの頭の呼び名）は、そろえる目的に沿うので指揮役が受け入れた。「SNS」の語は場面そのものなので残す（指揮役の裁定）。Takuma の答えは順番1として数え、残りの5人に2〜6を使う。リポジトリに AGENTS.md、.agents/、.codex/ が 18:35 にできていた（役も指揮役も作っていない）。コミットに入れていない design/explore/concepts/
+- 2026-10-18 001-reading-session 方向の見直し 指示 Takuma：「続きの一行」は機能の1つとしてあり。友人の読書、出版社と受賞、「これを読んだ人は」のおすすめ、簡単な登録を含め、目的に沿う機能を統合した体験を検討する。4体が調べもの（書かない） docs/approvals/001-reading-session-G0-Q8.md
