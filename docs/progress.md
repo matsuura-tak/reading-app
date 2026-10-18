@@ -36,3 +36,4 @@
 - 2026-10-18 001-reading-session G0 一時停止 Takuma：「お金にならないのは厳しい。ローカル AI を組み込む方向や他の方向をもう少し検討してほしい」。名義は個人、実機の確かめは承認の前、PRD の残りの問いは推奨どおり（課金の Q5 は返事1を優先して未決）。聞き取りに問い5を足した。収益の筋、ローカル AI、ほかの方向を4体が調べる（書かない）。G0 の直しは止める docs/approvals/001-reading-session-G0-Q8.md
 - 2026-10-18 001-reading-session 方向の見直し 探り designer が v1 の絵コンテ（8コマ）と主な画面10枚を作り、Artifact で公開した（Takuma だけが開ける。https://claude.ai/artifact/RFFVa2GyoNJpX48XjQqrgh）。収益とローカル AI の調べもの4体は作業中 design/explore/integrated/
 - 2026-10-18 001-reading-session 方向の見直し 再開 収益とローカル AI の調べもの4体が、利用量の上限（13時に戻る）で途中で止まった。決まりどおり SendMessage は使わず、同じ指示で新しく4体を呼び直す。前の体の作業用ファイル（scratchpad の money-pdm、ai-direction-pdm、ai-tech、ai-designer）は確かめてから使ってよいことにした
+- 2026-10-18 001-reading-session 方向の見直し Takuma待ち 収益とローカル AI の調べもの4体がそろった。形は変えない。端末の AI のあらすじは spike で誤り61%のため v1 に入れない（裁定）。収益は「芯は無料、買い切り」を推す。有料は見た目、しおり帳、読む手すり（読みがな、辞書、続きを声で。全機種）。入る額は小さい見込み（中くらいで年約34万円）。tech-lead の判断への反論を reviewer に頼む docs/reviews/001-reading-session-money-ai-proposal.md
