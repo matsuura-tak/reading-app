@@ -1,0 +1,438 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:h13-store:1",
+  "title": "H13 保存の読み出し（要素 hook.store の accessibilityValue の JSON）大きな版 1",
+  "description": "保存先の全項目を、画面を通さずに外から読む。値は読んだ瞬間に保存先から作る（要素の値を読むたびに作り直す。spike：91,500字を 63ms で読めた）。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[並び] books は addedAt の古い順、同じなら id の順。日時はすべて UTC の Z とミリ秒。値がない項目はキーを書かない（空の文字列は値なしとして書かない）。\n\n[snapshot] App Group の widget-snapshot.json をそのまま読んだ結果。中身は contracts/widget-snapshot.schema.json で検査できる。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "type": "object",
+  "required": [
+    "readoutVersion",
+    "readAt",
+    "storeSchemaVersion",
+    "books",
+    "settings",
+    "snapshot"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "readoutVersion": {
+      "const": 1
+    },
+    "readAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "description": "読んだ時のアプリの時計（H4、H5）。"
+    },
+    "storeSchemaVersion": {
+      "const": 1,
+      "description": "SwiftData の VersionedSchema の版（SchemaV1）。"
+    },
+    "books": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/book"
+      }
+    },
+    "session": {
+      "$ref": "#/$defs/session",
+      "description": "読書中の1件。idle のときはキーがない。"
+    },
+    "settings": {
+      "$ref": "#/$defs/settings"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/snapshot"
+    }
+  },
+  "$defs": {
+    "book": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "shelf",
+        "addedAt",
+        "lookupStatus",
+        "manuallyEdited",
+        "records"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+        },
+        "isbn": {
+          "type": "string",
+          "pattern": "^97[89][0-9]{10}$",
+          "description": "13桁。手で入れた本（lookupStatus が none）は書かない。"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "保存した形の書名。1〜100字（書記素。つなぎ口が数える）。"
+        },
+        "author": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "保存した形の著者（AC-92 の取り出しのあと）。1〜100字。著者なしはキーを書かない。"
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 400,
+          "description": "レーベル。"
+        },
+        "publishedYear": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 9999
+        },
+        "shelf": {
+          "enum": [
+            "current",
+            "tsundoku",
+            "finished"
+          ]
+        },
+        "addedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "加えた日時。"
+        },
+        "tsundokuAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "積読に加えた日時。shelf が tsundoku で省いたときは addedAt と同じ値を入れる。"
+        },
+        "finishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "読み終えた日時（design r1 の C の問い4、設計メモ 5）。shelf が finished のときだけ書ける。省いたときは addedAt と同じ値を入れる。"
+        },
+        "line": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240,
+          "description": "しおりの一行。1〜60字（書記素）。"
+        },
+        "page": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "lookupStatus": {
+          "enum": [
+            "none",
+            "pending",
+            "found",
+            "notFound"
+          ],
+          "description": "書誌の状態。省いたときは、isbn があれば found、なければ none。"
+        },
+        "lastLookupAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "前に問い合わせた日時（AC-10、AC-113）。"
+        },
+        "manuallyEdited": {
+          "type": "boolean"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/record"
+          },
+          "description": "startedAt の古い順、同じなら id の順。"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "shelf": {
+                "const": "finished"
+              }
+            },
+            "required": [
+              "shelf"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "finishedAt"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "isbn"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lookupStatus": {
+                "enum": [
+                  "pending",
+                  "found",
+                  "notFound"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "lookupStatus": {
+                "const": "none"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "id",
+        "startedAt",
+        "timeZoneID",
+        "minutes",
+        "entry"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "timeZoneID": {
+          "type": "string",
+          "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$"
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        },
+        "entry": {
+          "enum": [
+            "app",
+            "lock_widget",
+            "small_widget"
+          ]
+        }
+      }
+    },
+    "session": {
+      "type": "object",
+      "required": [
+        "bookID",
+        "startedAt",
+        "timeZoneID",
+        "entry",
+        "startedBy"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "bookID": {
+          "type": "string",
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "timeZoneID": {
+          "type": "string",
+          "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$"
+        },
+        "entry": {
+          "enum": [
+            "app",
+            "lock_widget",
+            "small_widget"
+          ]
+        },
+        "startedBy": {
+          "enum": [
+            "button",
+            "flip"
+          ]
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "required": [
+        "flipToStart",
+        "hideOnWidgets",
+        "widgetGuideShown"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "flipToStart": {
+          "type": "boolean"
+        },
+        "hideOnWidgets": {
+          "type": "boolean"
+        },
+        "widgetGuideShown": {
+          "type": "boolean"
+        }
+      }
+    },
+    "snapshot": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "status",
+            "content"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "ok"
+            },
+            "content": {
+              "$ref": "urn:reading-app:contracts:widget-snapshot:1"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "status"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "missing"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "status",
+            "reason"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "const": "unreadable"
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "readoutVersion": 1,
+      "readAt": "2026-10-15T14:50:00.000Z",
+      "storeSchemaVersion": 1,
+      "books": [
+        {
+          "id": "6F1C2A10-0000-4000-8000-000000000002",
+          "isbn": "9784087000023",
+          "title": "こころ",
+          "author": "夏目漱石",
+          "shelf": "finished",
+          "addedAt": "2026-09-01T11:00:00.000Z",
+          "finishedAt": "2026-10-10T14:30:00.000Z",
+          "lookupStatus": "found",
+          "manuallyEdited": false,
+          "records": []
+        },
+        {
+          "id": "6F1C2A10-0000-4000-8000-000000000001",
+          "isbn": "9784101000015",
+          "title": "羅生門",
+          "author": "芥川龍之介",
+          "publisher": "新潮社",
+          "label": "新潮文庫",
+          "publishedYear": 2005,
+          "shelf": "current",
+          "addedAt": "2026-10-01T12:00:00.000Z",
+          "line": "下人は、雨やみを待っていた。",
+          "page": 61,
+          "lookupStatus": "found",
+          "lastLookupAt": "2026-10-01T12:00:05.000Z",
+          "manuallyEdited": false,
+          "records": [
+            {
+              "id": "6F1C2A10-0000-4000-8000-0000000000A1",
+              "startedAt": "2026-10-13T13:00:00.000Z",
+              "timeZoneID": "Asia/Tokyo",
+              "minutes": 20,
+              "entry": "lock_widget"
+            }
+          ]
+        }
+      ],
+      "session": {
+        "bookID": "6F1C2A10-0000-4000-8000-000000000001",
+        "startedAt": "2026-10-15T14:40:00.000Z",
+        "timeZoneID": "Asia/Tokyo",
+        "entry": "small_widget",
+        "startedBy": "button"
+      },
+      "settings": {
+        "flipToStart": true,
+        "hideOnWidgets": false,
+        "widgetGuideShown": true
+      },
+      "snapshot": {
+        "status": "ok",
+        "content": {
+          "schemaVersion": 1,
+          "hideOnWidgets": false,
+          "appearanceID": "default",
+          "currentBook": {
+            "title": "羅生門",
+            "line": "下人は、雨やみを待っていた。",
+            "page": 61
+          }
+        }
+      }
+    },
+    {
+      "readoutVersion": 1,
+      "readAt": "2026-10-15T14:50:00.000Z",
+      "storeSchemaVersion": 1,
+      "books": [],
+      "settings": {
+        "flipToStart": true,
+        "hideOnWidgets": false,
+        "widgetGuideShown": false
+      },
+      "snapshot": {
+        "status": "missing"
+      }
+    }
+  ]
+}

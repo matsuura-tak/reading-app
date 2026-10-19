@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:h17-state:1",
+  "title": "H9・H10・H17 状態の読み出し（要素 hook.state の accessibilityValue）の書き方 大きな版 1",
+  "description": "hook.state の値は1行の文字列（$defs/raw の形）。テストは次の決まりで読んで、このスキーマの形のオブジェクトに直してから比べる。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[読み方] (1) ; で区切る (2) 最初の = の前がキー、後ろが値 (3) announce、notice、widgetReloads の値は「名前:回数」を , で区切った並び（空なら値は空で、{} とする） (4) lat. で始まるキーの値は、ミリ秒の整数を , で区切った並び（測った順） (5) true と false は真偽、数字だけの値は整数、ほかは文字列。キーの順に意味はない。\n\n[数える範囲] haptic、announce、notice、widgetReloads、lat.* は、プロセスが始まってからの数（開き直すと0から）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "type": "object",
+  "required": [
+    "state",
+    "idleTimerDisabled",
+    "proximity",
+    "flipMonitoring",
+    "startedBy",
+    "haptic",
+    "announce",
+    "notice",
+    "entry",
+    "sessionEntry",
+    "entryCandidate",
+    "widgetReloads"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "state": {
+      "enum": [
+        "idle",
+        "reading"
+      ],
+      "description": "H9。PRD 11 の冒頭の状態。"
+    },
+    "idleTimerDisabled": {
+      "type": "boolean",
+      "description": "UIApplication.isIdleTimerDisabled（AC-54。いつも偽のはず）。"
+    },
+    "proximity": {
+      "type": "boolean",
+      "description": "UIDevice.isProximityMonitoringEnabled（AC-54）。"
+    },
+    "flipMonitoring": {
+      "enum": [
+        "on",
+        "off"
+      ],
+      "description": "伏せの監視が動いているか（AC-47）。"
+    },
+    "startedBy": {
+      "enum": [
+        "button",
+        "flip",
+        "none"
+      ],
+      "description": "読書中の1件の始まり方。idle なら none。"
+    },
+    "haptic": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "アプリが出した触覚の回数。"
+    },
+    "announce": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-zA-Z][a-zA-Z0-9._-]*$"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "description": "アプリが出した読み上げ（UIAccessibility の announcement）の、文言キーごとの回数。"
+    },
+    "notice": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-zA-Z][a-zA-Z0-9._-]*$"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "description": "出した知らせの、文言キーごとの回数。置き方の案内は widgetGuide（AC-96）。"
+    },
+    "entry": {
+      "enum": [
+        "app",
+        "lock_widget",
+        "small_widget",
+        "none"
+      ],
+      "description": "このプロセスで最後に残った記録の入口の印（なければ none）。全部の記録の印は H13 の records[].entry。"
+    },
+    "sessionEntry": {
+      "enum": [
+        "app",
+        "lock_widget",
+        "small_widget",
+        "none"
+      ],
+      "description": "読書中の1件の入口の印（idle なら none）。"
+    },
+    "entryCandidate": {
+      "enum": [
+        "lock_widget",
+        "small_widget",
+        "none"
+      ],
+      "description": "メモリの入口の候補（contracts/entry-urls.md の 4）。"
+    },
+    "widgetReloads": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "launch",
+          "book.add",
+          "book.update",
+          "book.status",
+          "book.delete",
+          "mark.save",
+          "settings.save"
+        ]
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "description": "ウィジェットの再読み込みの要求（WidgetCenter.reloadAllTimelines の呼び出し）の、出どころごとの回数。出どころは launch（起動の写し）か、写しを変えた保存の H7 の名前。"
+    }
+  },
+  "patternProperties": {
+    "^lat\\.(endToMark|shelfOpen|bookOpen)$": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "description": "H10。区間の実時間（ミリ秒、切り上げ）。endToMark は AC-55、shelfOpen と bookOpen は AC-101。"
+    }
+  },
+  "$defs": {
+    "raw": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9.]*=[^;=]*(;[a-zA-Z][a-zA-Z0-9.]*=[^;=]*)*$",
+      "examples": [
+        "state=reading;idleTimerDisabled=false;proximity=false;flipMonitoring=off;startedBy=flip;haptic=1;announce=session.flipStarted.announcement:1;notice=;entry=none;sessionEntry=lock_widget;entryCandidate=lock_widget;widgetReloads=launch:1",
+        "state=idle;idleTimerDisabled=false;proximity=false;flipMonitoring=on;startedBy=none;haptic=1;announce=session.flipStarted.announcement:1;notice=widgetGuide:1;entry=lock_widget;sessionEntry=none;entryCandidate=none;widgetReloads=launch:1,mark.save:1;lat.endToMark=212,198"
+      ]
+    }
+  },
+  "examples": [
+    {
+      "state": "reading",
+      "idleTimerDisabled": false,
+      "proximity": false,
+      "flipMonitoring": "off",
+      "startedBy": "flip",
+      "haptic": 1,
+      "announce": {
+        "session.flipStarted.announcement": 1
+      },
+      "notice": {},
+      "entry": "none",
+      "sessionEntry": "lock_widget",
+      "entryCandidate": "lock_widget",
+      "widgetReloads": {
+        "launch": 1
+      }
+    },
+    {
+      "state": "idle",
+      "idleTimerDisabled": false,
+      "proximity": false,
+      "flipMonitoring": "on",
+      "startedBy": "none",
+      "haptic": 1,
+      "announce": {
+        "session.flipStarted.announcement": 1
+      },
+      "notice": {
+        "widgetGuide": 1
+      },
+      "entry": "lock_widget",
+      "sessionEntry": "none",
+      "entryCandidate": "none",
+      "widgetReloads": {
+        "launch": 1,
+        "mark.save": 1
+      },
+      "lat.endToMark": [
+        212,
+        198
+      ]
+    }
+  ]
+}

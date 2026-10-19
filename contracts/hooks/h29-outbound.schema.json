@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:h29-outbound:1",
+  "title": "H29・H31 外へ出したものの記録（要素 hook.outbound の accessibilityValue の JSON）大きな版 1",
+  "description": "H29：アプリの通信の部品（ReadingStore の書誌の部品）を通った要求を、送る直前に記録する。H20 の差し替え、H8 の通信なしで失敗した要求も記録する（どちらも記録の下で起きる）。URLSession が後から足すヘッダー（User-Agent など）と、部品を通らない通信は記録できないので、G2 で reviewer が grep で補う（PRD AC-103）。H31：アプリが開こうとした外の URL（openURL）を記録する。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[並び] seq の順（このプロセスで出した順。開き直すと空から）。url はパーセントエンコードを戻した全体。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "type": "object",
+  "required": [
+    "logVersion",
+    "requests",
+    "openedURLs"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "logVersion": {
+      "const": 1
+    },
+    "requests": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/request"
+      }
+    },
+    "openedURLs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/opened"
+      }
+    }
+  },
+  "$defs": {
+    "request": {
+      "type": "object",
+      "required": [
+        "seq",
+        "at",
+        "method",
+        "url",
+        "host",
+        "path",
+        "query",
+        "headers",
+        "body",
+        "outcome"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "アプリの時計（H4、H5）。"
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "HEAD"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host": {
+          "type": "string",
+          "description": "本番の行き先は ndlsearch.ndl.go.jp だけ（AC-103、G4-20）。"
+        },
+        "path": {
+          "type": "string"
+        },
+        "query": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "送った順。値はパーセントエンコードを戻した形。"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "部品が付けたヘッダー（URLRequest.allHTTPHeaderFields）。"
+        },
+        "body": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "stubbed",
+            "offline",
+            "noStub"
+          ],
+          "description": "stubbed：H20 が答えた。offline：H8 で失敗させた。noStub：H20 がない起動なので失敗させた（つなぎ口の入った構成は本物に送らない）。"
+        },
+        "status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599
+        },
+        "stub": {
+          "type": "object",
+          "required": [
+            "rule",
+            "kind"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "rule": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "description": "合った rules の位置（0から）。unmatched なら null。"
+            },
+            "kind": {
+              "enum": [
+                "items",
+                "zero",
+                "paramError",
+                "http"
+              ]
+            },
+            "held": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "stubbed"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "stub",
+              "status"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "stub"
+                  ]
+                },
+                {
+                  "required": [
+                    "status"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "opened": {
+      "type": "object",
+      "required": [
+        "seq",
+        "at",
+        "url",
+        "passedThrough"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "passedThrough": {
+          "type": "boolean",
+          "description": "本当に開いたか（-uitest-openurl passthrough のときだけ真）。"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "logVersion": 1,
+      "requests": [
+        {
+          "seq": 1,
+          "at": "2026-10-15T14:50:01.000Z",
+          "method": "GET",
+          "url": "https://ndlsearch.ndl.go.jp/api/opensearch?dpid=iss-ndl-opac iss-ndl-opac-inprocess&isbn=9784101000015&cnt=200",
+          "host": "ndlsearch.ndl.go.jp",
+          "path": "/api/opensearch",
+          "query": [
+            {
+              "name": "dpid",
+              "value": "iss-ndl-opac iss-ndl-opac-inprocess"
+            },
+            {
+              "name": "isbn",
+              "value": "9784101000015"
+            },
+            {
+              "name": "cnt",
+              "value": "200"
+            }
+          ],
+          "headers": {
+            "Accept": "application/xml"
+          },
+          "body": null,
+          "outcome": "stubbed",
+          "status": 200,
+          "stub": {
+            "rule": 0,
+            "kind": "items",
+            "held": false
+          }
+        },
+        {
+          "seq": 2,
+          "at": "2026-10-15T14:50:02.000Z",
+          "method": "GET",
+          "url": "https://ndlsearch.ndl.go.jp/api/opensearch?dpid=iss-ndl-opac iss-ndl-opac-inprocess&title=人間失格&cnt=200",
+          "host": "ndlsearch.ndl.go.jp",
+          "path": "/api/opensearch",
+          "query": [
+            {
+              "name": "dpid",
+              "value": "iss-ndl-opac iss-ndl-opac-inprocess"
+            },
+            {
+              "name": "title",
+              "value": "人間失格"
+            },
+            {
+              "name": "cnt",
+              "value": "200"
+            }
+          ],
+          "headers": {},
+          "body": null,
+          "outcome": "offline"
+        }
+      ],
+      "openedURLs": [
+        {
+          "seq": 1,
+          "at": "2026-10-15T14:51:00.000Z",
+          "url": "https://example.com/privacy",
+          "passedThrough": false
+        }
+      ]
+    }
+  ]
+}

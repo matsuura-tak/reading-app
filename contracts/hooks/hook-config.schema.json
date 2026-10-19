@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:hook-config:1",
+  "title": "つなぎ口の設定のファイル（App Group の入れ物の UITestHooks/config.json）大きな版 1",
+  "description": "テストの起動（-uitest- の引数か UITEST_ の環境変数があるとき）で、アプリが引数から作って書くファイル。引数のない起動（開き直し）と、システムが起こしたプロセス（入口の URL、選択肢のインテント）は、このファイルを読んで同じ差し替えを効かせる（G0 の intents の verifier の要修正3）。テストはこのファイルを書かない。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "type": "object",
+  "required": [
+    "configVersion",
+    "writtenAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "configVersion": {
+      "const": 1
+    },
+    "writtenAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "description": "書いた時の実時間。"
+    },
+    "clockBase": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "H4。ない時は本物の時計。"
+    },
+    "timeZoneID": {
+      "type": "string",
+      "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$",
+      "description": "H6。ない時は端末のタイムゾーン。"
+    },
+    "saveFailures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "target",
+          "remaining",
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "enum": [
+              "session.start",
+              "session.end",
+              "book.add",
+              "book.update",
+              "book.status",
+              "book.delete",
+              "record.update",
+              "record.delete",
+              "mark.save",
+              "settings.save",
+              "store.load"
+            ]
+          },
+          "remaining": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "あと何回失敗させるか。失敗させるたびに減らして書き直す。"
+          },
+          "kind": {
+            "enum": [
+              "disk_full",
+              "unknown"
+            ]
+          }
+        }
+      },
+      "description": "H7。"
+    },
+    "flipUnavailable": {
+      "type": "boolean",
+      "description": "H18。"
+    },
+    "camera": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "notDetermined",
+            "authorized",
+            "denied",
+            "restricted",
+            "unsupported"
+          ]
+        },
+        "requestResult": {
+          "enum": [
+            "granted",
+            "denied"
+          ]
+        }
+      },
+      "description": "H26。"
+    },
+    "barcodeFake": {
+      "type": "boolean",
+      "description": "H21。"
+    },
+    "ndlStub": {
+      "$ref": "urn:reading-app:contracts:hooks:h20-ndl-stub:1"
+    },
+    "openURL": {
+      "enum": [
+        "record",
+        "passthrough"
+      ],
+      "description": "H31。"
+    },
+    "readouts": {
+      "enum": [
+        "on",
+        "off"
+      ],
+      "description": "hook.* の読み出しの要素を出すか（速さの測定では off）。"
+    },
+    "widget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "render": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "family",
+              "width",
+              "height"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "family": {
+                "enum": [
+                  "accessoryRectangular",
+                  "systemSmall"
+                ],
+                "description": "W-1 は accessoryRectangular、W-2 は systemSmall。"
+              },
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        "show": {
+          "type": "object",
+          "required": [
+            "family",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "enum": [
+                "accessoryRectangular",
+                "systemSmall"
+              ],
+              "description": "W-1 は accessoryRectangular、W-2 は systemSmall。"
+            },
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "snapshotOverride": {
+          "type": "string",
+          "description": "@missing はファイルなしとして組む。"
+        }
+      },
+      "description": "H22。"
+    }
+  },
+  "examples": [
+    {
+      "configVersion": 1,
+      "writtenAt": "2026-10-20T03:00:00.000Z",
+      "clockBase": "2026-10-15T23:50:00+09:00",
+      "timeZoneID": "Asia/Tokyo",
+      "saveFailures": [
+        {
+          "target": "session.end",
+          "remaining": 1,
+          "kind": "disk_full"
+        }
+      ],
+      "flipUnavailable": false,
+      "camera": {
+        "status": "notDetermined",
+        "requestResult": "granted"
+      },
+      "barcodeFake": true,
+      "ndlStub": {
+        "stubVersion": 1,
+        "rules": [],
+        "unmatched": {
+          "kind": "zero"
+        }
+      },
+      "openURL": "record",
+      "readouts": "on",
+      "widget": {
+        "render": [
+          {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          }
+        ]
+      }
+    }
+  ]
+}
