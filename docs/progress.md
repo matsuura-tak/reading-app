@@ -69,3 +69,4 @@
 - 2026-10-20 001-reading-session G1 デザインの判定 r1 PASS tech-lead（重大0、要修正3：ウィジェットのページの置き場所と列の間隔、縦書きの置き換えの表、S-8a の戻る・払う閉じ方）。designer の問い7つに答え、設計メモ、契約、ADR 5本、書誌の30件の段取りを出した。自分の分の見積もりは 2.2〜3.25日（r2 は 1.5〜2日）。速さの式は変えず、両方の数を出す（裁定 26）。designer に2体の指摘を直させる docs/reviews/001-reading-session-G1-tech-lead-design-r1.md
 - 2026-10-20 001-reading-session G1 仕様の直し designer が r1 の指摘を直した（DR の重大5と要修正5、TL の要修正3、提案12）。ページの欄が空なら変えない形にし、PRD に AC を足す要はない。design-reviewer に r2（最後の回）をさせる docs/reviews/001-reading-session-G1-design-fix1-designer.md
 - 2026-10-20 001-reading-session G1 デザインの判定 PASS design-reviewer r2（採点 16/16、重大0。r1 の17件は16件が直り、1件は理由で受け入れ。tech-lead の要修正3件も直った）。tech-lead r1 も PASS なので、/feature の 6 を通った（芯の範囲。裁定 24）。次は 7：tech-lead の設計メモ、契約、ADR、書誌の30件 docs/reviews/001-reading-session-G1-design-reviewer-r2.md
+- 2026-10-20 001-reading-session G1 7 開始 tech-lead の設計メモ、契約、ADR を4回に分けて頼む（裁定 27）。7-1：設計メモの下書き、ADR 0001 と 0002、書誌の確かめの本の一覧
