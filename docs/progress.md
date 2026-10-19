@@ -71,3 +71,4 @@
 - 2026-10-20 001-reading-session G1 デザインの判定 PASS design-reviewer r2（採点 16/16、重大0。r1 の17件は16件が直り、1件は理由で受け入れ。tech-lead の要修正3件も直った）。tech-lead r1 も PASS なので、/feature の 6 を通った（芯の範囲。裁定 24）。次は 7：tech-lead の設計メモ、契約、ADR、書誌の30件 docs/reviews/001-reading-session-G1-design-reviewer-r2.md
 - 2026-10-20 001-reading-session G1 7 開始 tech-lead の設計メモ、契約、ADR を4回に分けて頼む（裁定 27）。7-1：設計メモの下書き、ADR 0001 と 0002、書誌の確かめの本の一覧
 - 2026-10-20 001-reading-session G1 7-1 tech-lead が設計メモの下書き（芯の AC 85行）、ADR 0001（iOS の土台）と 0002（保存と共有。保護の等級は既定なので Q6 に触れない）、書誌の確かめの本の一覧35件を書いた。一覧は問い合わせの前にコミットした。次は 7-2（問い合わせ、ADR 0004、書誌の契約） docs/reviews/001-reading-session-G1-7-1-tech-lead.md
+- 2026-10-20 001-reading-session G1 7-2 書誌の確かめ 合格（29/30。線 27。既刊 20/20、新刊 9/10。14日以内 3/5 は記録だけ）。指揮役が生の記録から数え直して確かめた。v1.0 から課金できる（(iii) で回さない限り）。ADR 0004 と国立国会図書館サーチの契約（spectral でエラー0）。次は 7-3（縦書きの spike、ADR 0003） docs/reviews/001-reading-session-G1-7-2-tech-lead.md
