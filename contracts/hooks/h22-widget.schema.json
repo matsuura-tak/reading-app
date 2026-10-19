@@ -642,6 +642,49 @@
           "mark.save": 1
         }
       }
+    },
+    {
+      "outputVersion": 1,
+      "renders": [
+        {
+          "request": {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          },
+          "seq": 1,
+          "producedAt": "2026-10-15T14:50:00.000Z",
+          "snapshotSource": "file",
+          "state": "noLine",
+          "url": "yomuma://open?entry=lock_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.rectangular",
+            "label": "今の本、120ページ",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.title": "今の本",
+            "widget.page": "p.120"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-15T14:50:00.000Z",
+                "state": "noLine"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 0.9
+          }
+        }
+      ],
+      "reloadRequests": {
+        "total": 1,
+        "byCause": {
+          "launch": 1
+        }
+      }
     }
   ]
 }

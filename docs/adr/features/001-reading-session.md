@@ -230,6 +230,7 @@ flowchart LR
   - 7-4a の検査のスクリプト（scratchpad の g1-7-4a/gen/check.py）を同じ8つに動かし直した：metaschema の検査 8/8 OK、例 16/16 OK、わざと契約に合わなくした17通りは17通りとも弾かれた（NG 0件）。
   - G1 の直し（reviewer r1 のあと。2026-10-20）：同じ check.py で metaschema 8/8 OK、例 19/19 OK（足した例3つ：h02 の書名のない notFound の本、h13 の書名のない pending の本と写し、写しの書名のない一行）、17通りは17通りとも弾かれた。足した22通り（書名を省ける本と省けない本、小文字の id、写しの書名なし、prevLat、latency.json）は22通りとも期待どおり（受ける9、弾く13）。
   - 直した契約：h02、h13、widget-snapshot（書名のない本。5）、h02 の id を大文字だけに（P3）、h17 の `prevLat.*` と `$defs/latencyFile`（P4）、h22 の例の `widget.unavailable` の文。main に出す前の版 1 の下書きの直しなので、版は上げない。
+  - G1 の直し2（仕様の決定 66 を写した。2026-10-20）：同じ check.py で metaschema 8/8 OK、例 20/20 OK（足した例1つ：h22 の書名のない今の本で一行なし・ページあり）、17通りは17通りとも弾かれた。check_new.py の22通りは22通りとも期待どおり。足した8通り（check_fix2.py）は8通りとも期待どおり（受ける4：h22 の noLine と noLineNoPage で書名の所が「今の本」、写しの書名も一行もない本、写しの title に「今の本」。弾く4：noLine に組み、知らない状態 noTitle、texts の ISBN、noLine に読めない理由）。写しの title に「今の本」を入れることは形では弾けないので、写しの [出し方] に書く側の決まりとして書いた。変えたのは widget-snapshot の description、h22 の例、test-hooks.md の H22 だけで、enum、形、版は変えていない。openapi.yaml は変えていない。
   - 道具が空振りしていないことの確かめ：required の項目がない例を持つスキーマを渡すと、ValidationError で落ちた。
 - 互換性を壊す変更：なし（新規。oasdiff の breaking は0件）。ADR と大きな版の上げは要らない。
 - 互換の決まり：同じ大きな版の中では足すだけ。
@@ -265,7 +266,7 @@ flowchart LR
     - title を持たない（nil）のは、isbn があり、lookupStatus が pending か notFound で、manuallyEdited が偽の本だけ。ISBN だけで加え、書誌がまだないか見つからなかった本（AC-9、AC-10、AC-11、AC-113）。found、none、手で直した本には必ず title がある。
     - 書誌が見つかったら dc:title から入れる。手で直すとき（S-7a）は、書名が1〜100字で要る（手で入れるときと同じ確かめ）。
     - 契約：h02 と h13 は、この条件のときだけ title を省ける（JSON Schema の if/else）。写し（widget-snapshot）は visibleBook の title を省ける。
-    - 見せ方：アプリの画面は仕様で決まっている（書名の所に文言キー `book.isbnAsTitle`「ISBN %@」。S-1 は下に `book.pendingInfo` か `book.infoNotFound`、S-7 は奥付の1行目）。ウィジェットは、一行があれば一行とページ（仕様 5 の W-1）。写しには ISBN を置かない（PRD 12）ので、ウィジェットでは「ISBN %@」を出せない。一行も書名もないときのウィジェットの見せ方と、書名のないときのウィジェットの読み上げのラベルは designer が決める（10 の申し送り）。
+    - 見せ方：アプリの画面は仕様で決まっている（書名の所に文言キー `book.isbnAsTitle`「ISBN %@」。S-1 は下に `book.pendingInfo` か `book.infoNotFound`、S-7 は奥付の1行目）。写しには ISBN を置かない（PRD 12）ので、ウィジェットでは「ISBN %@」を出せない。ウィジェット（W-1、W-2）は仕様の決定 66 のとおり：一行があれば書名のある本と同じ（一行とページ。書名はもともと見えない）。一行がなければ、書名の所に文言キー `widget.currentBookAsTitle`「今の本」を出し、ページがあれば「p.120」を添える。読み上げのラベルは書名の所を同じ文にし、順と書式は書名のある本と同じ（`widget.spoken`、`widget.spoken.noPage`、`widget.spoken.noLine`。例「今の本、120ページ」）。写しは書誌の状態を持たない（PRD 12）ので、待っているか見つからなかったかは出し分けない。H22 の状態は増やさない（normal、noLine、noLineNoPage）。写した所：contracts/widget-snapshot.schema.json の [出し方] と [読み上げのラベル]、contracts/test-hooks.md の H22、h22 の例の2つ目。
 - Record の項目：id、startedAt（読み始めの日時）、timeZoneID（読み始めたときのタイムゾーン。晩の日付はこれで出し、あとで変えない。AC-22）、minutes（1〜1440）、entry（入口の印：lock_widget、small_widget、app。選択肢で live_activity、intent_start、intent_open を足す）、book。
 - Session の項目：bookID、startedAt、timeZoneID、entry、startedBy（flip か button。H17）。
 - Settings の項目：flipToStart（既定はオン）、hideOnWidgets（既定はオフ）、widgetGuideShown（AC-96）。入口の時刻と見た目の id は、選択肢 (5) と課金を残すときに足す。
@@ -389,9 +390,9 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 - 設計のあとに残る、ほかの役への申し送り（指揮役から回す）
   - pdm と designer：積読の並びに使う日時（5 の決まっていないこと）。G1-13（ラテン文字の著者。7-2 の推奨は案 C）。
   - pdm と verifier：書名で探す結果の並べ直し（AC-4 の行）を AC にするか。PRD 12 に裁定 29 の読み方を書き足すこと。
-  - designer：7-3 と 7-2 の申し送りは、仕様の直し（bbc61cb。決定 62〜65）で済み、ADR 0003、contracts/entry-urls.md の 3、H22 の例に写した（G1 の直し）。残りは書名のない今の本（5）のウィジェット：W-1、W-2 で一行も書名もないときの見せ方と、書名のないときの読み上げのラベル（写しに ISBN がないので `book.isbnAsTitle` は使えない）。アプリの画面は仕様で決まっている（`book.isbnAsTitle`）。
+  - designer：7-3 と 7-2 の申し送りは、仕様の直し（bbc61cb。決定 62〜65）で済み、ADR 0003、contracts/entry-urls.md の 3、H22 の例に写した（G1 の直し）。書名のない今の本（5）のウィジェットの見せ方と読み上げのラベルも、仕様の決定 66（3055436）で済み、5、contracts/widget-snapshot.schema.json、contracts/test-hooks.md の H22、h22 の例に写した（G1 の直し2）。この行で残っているものはない。
   - 指揮役：ios/ を作る最初の PR で CLAUDE.md の `<>` の名前を決め、app.json の commands への反映を Takuma に頼む（P8。G2 の関門）。K1（外部送信規律）を Takuma に聞く。
-  - verifier：7-3 と 7-4a の申し送り（docs/reviews/001-reading-session-G1-7-3-tech-lead.md、001-reading-session-G1-7-4a-tech-lead.md）。
+  - verifier：7-3 と 7-4a の申し送り（docs/reviews/001-reading-session-G1-7-3-tech-lead.md、001-reading-session-G1-7-4a-tech-lead.md）。書名のない今の本のウィジェット（決定 66。仕様 10 の verifier への申し送り）は、H2 で書名のない今の本を入れ、H22 の `texts` の `widget.title` と読み上げのラベルで見られる（h22 の例の2つ目）。どの AC のテストで見るかは verifier が決める。
 
 ## 確かめ（A）
 印は、7-4b と G1 の直し（reviewer r1 のあと）で自分で確かめた所だけに付けた。tech-lead の自己確認で、合格の判定ではない（reviewer が判定する）。
