@@ -616,12 +616,12 @@
           "appearanceID": "default",
           "accessibility": {
             "identifier": "widget.small",
-            "label": "（文言キー widget.unavailable の文）",
+            "label": "よむまを開くと、ここに続きの一行が出ます。",
             "groupCount": 1
           },
           "texts": {
             "messageKey": "widget.unavailable",
-            "message": "（文言キー widget.unavailable の文）"
+            "message": "よむまを開くと、ここに続きの一行が出ます。"
           },
           "timeline": {
             "entries": [

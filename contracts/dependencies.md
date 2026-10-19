@@ -17,6 +17,6 @@ reviewer は G2 で、差分の依存がこの表にあるかを確かめます�
 
 | 道具 | 版 | 何に使うか | 入れ方（確かめた形） | 確かめた出力（2026-10-20） |
 |---|---|---|---|---|
-| Spectral（stoplightio/spectral） | 6.17.0 | OpenAPI の形式（contracts/.spectral.yaml） | GitHub の公式リリースの spectral-macos-arm64（sha256 の頭 cb7e1bd31d85a992）。node があれば `npx --yes @stoplight/spectral-cli@6.17.0` でもよい（node のある機械では未確認） | contracts/ndl-opensearch.yaml：`No results with a severity of 'hint' or higher found!` |
+| Spectral（stoplightio/spectral） | 6.17.0 | OpenAPI の形式（contracts/.spectral.yaml） | GitHub の公式リリースの spectral-macos-arm64。sha256 `cb7e1bd31d85a9920100d79e7ba138cc75cf529dfa8e7492c69affe52e38d142` が、配布元の公開値（GitHub の API `repos/stoplightio/spectral/releases/tags/v6.17.0` の assets の digest）と一致した（2026-10-20。reviewer r1 の P7）。CI では、この値と照らしてから動かすか、npx で版を固定する。node があれば `npx --yes @stoplight/spectral-cli@6.17.0` でもよい（node のある機械では未確認） | contracts/ndl-opensearch.yaml：`No results with a severity of 'hint' or higher found!` |
 | oasdiff | 1.34.0 | OpenAPI の互換性（main の契約と比べる） | GitHub の公式リリースの oasdiff_1.34.0_darwin_all.tar.gz（sha256 34f5713d…7952 が checksums.txt と一致） | 空の基準と比べて `No breaking changes to report` |
 | jsonschema（と、一緒に入る referencing） | 4.25.1 | contracts/hooks/ と widget-snapshot.schema.json の metaschema と examples の検査 | `python3 -m venv <外のフォルダ>/venv` のあと `pip install 'jsonschema==4.25.1'`（Python 3.9.6） | `schemas 8 examples 16 OK` |

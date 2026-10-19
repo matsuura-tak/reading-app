@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h02-seed:1",
   "title": "H2 データの投入（環境変数 UITEST_SEED の JSON）大きな版 1",
-  "description": "H2 で、本、記録、読書中の1件、設定を、本番と同じ保存先（SwiftData、Application Support）に入れる。投入は H1 の初期化を含む（先に全部消してから入れる）。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[入れ方] テストの起動（contracts/test-hooks.md の 2）で、環境変数 UITEST_SEED にこの JSON（UTF-8、200,000 バイトまで）を入れる。本500冊と記録5,000件は JSON でなく -uitest-seed-preset perf500（test-hooks.md の H2）。\n\n[つなぎ口が確かめること（JSON Schema で書けない分）] id が一意、session.bookID が shelf が current の本の id、字の数（書記素）が PRD 11 の冒頭の範囲。満たさなければ何も書かずに hook.error を出す（test-hooks.md の 2 の失敗）。\n\n[日時] RFC 3339 の時差つき（例 2026-10-15T23:50:00+09:00）。読み出し（H13）は UTC の Z で返す。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "description": "H2 で、本、記録、読書中の1件、設定を、本番と同じ保存先（SwiftData、Application Support）に入れる。投入は H1 の初期化を含む（先に全部消してから入れる）。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[入れ方] テストの起動（contracts/test-hooks.md の 2）で、環境変数 UITEST_SEED にこの JSON（UTF-8、200,000 バイトまで）を入れる。本500冊と記録5,000件は JSON でなく -uitest-seed-preset perf500（test-hooks.md の H2）。\n\n[つなぎ口が確かめること（JSON Schema で書けない分）] id が一意、session.bookID が shelf が current の本の id、字の数（書記素）が PRD 11 の冒頭の範囲。満たさなければ何も書かずに hook.error を出す（test-hooks.md の 2 の失敗）。\n\n[日時] RFC 3339 の時差つき（例 2026-10-15T23:50:00+09:00）。読み出し（H13）は UTC の Z で返す。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。\n\n[2026-10-20 の直し（G1 の reviewer r1）] 書名を省ける本（上の title の説明）を足し、id を大文字だけに絞った（P3）。main に出す前の版 1 の下書きの直しで、使う側（受け入れテスト）はまだないので、版は上げない。",
   "type": "object",
   "required": [
     "seedVersion",
@@ -46,7 +46,6 @@
       "type": "object",
       "required": [
         "id",
-        "title",
         "shelf",
         "addedAt"
       ],
@@ -54,8 +53,8 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$",
-          "description": "本の id（UUID）。行の識別子 shelf.row.<id> などに使う。投入の中で一意（つなぎ口が確かめる）。"
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$",
+          "description": "本の id（UUID。16進の英字は大文字で書く。H13 と識別子 shelf.row.<id> も同じ大文字の形で出る）。投入の中で一意（つなぎ口が確かめる）。"
         },
         "isbn": {
           "type": "string",
@@ -66,7 +65,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 400,
-          "description": "保存した形の書名。1〜100字（書記素。つなぎ口が数える）。"
+          "description": "保存した形の書名。1〜100字（書記素。つなぎ口が数える）。キーを省けるのは、isbn があり、lookupStatus が pending か notFound で、manuallyEdited が真でない本だけ（書誌を待っている本と、見つからなかった本。設計メモ 5、ADR 0004）。ほかの本には必ずある。"
         },
         "author": {
           "type": "string",
@@ -198,6 +197,31 @@
               }
             }
           }
+        },
+        {
+          "$comment": "書名を省ける本の決まり（設計メモ 5）。条件に合わない本は title が必須。",
+          "if": {
+            "required": [
+              "isbn",
+              "lookupStatus"
+            ],
+            "properties": {
+              "lookupStatus": {
+                "enum": [
+                  "pending",
+                  "notFound"
+                ]
+              },
+              "manuallyEdited": {
+                "const": false
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "title"
+            ]
+          }
         }
       ]
     },
@@ -213,7 +237,7 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
         },
         "startedAt": {
           "type": "string",
@@ -253,7 +277,7 @@
       "properties": {
         "bookID": {
           "type": "string",
-          "pattern": "^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$"
+          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
         },
         "startedAt": {
           "type": "string",
@@ -373,6 +397,19 @@
       "settings": {
         "widgetGuideShown": false
       }
+    },
+    {
+      "seedVersion": 1,
+      "books": [
+        {
+          "id": "6F1C2A10-0000-4000-8000-000000000004",
+          "isbn": "9784396635121",
+          "shelf": "current",
+          "addedAt": "2026-10-18T21:00:00+09:00",
+          "lookupStatus": "notFound",
+          "lastLookupAt": "2026-10-18T21:00:00+09:00"
+        }
+      ]
     }
   ]
 }

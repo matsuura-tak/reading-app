@@ -14,6 +14,7 @@
 コマンドを変えたら、app.json の更新を Takuma に頼みます（.claude/ は Takuma だけが直せます）。
 受け入れテストは、受け入れテストのフォルダの中の設定だけで動く形にします。
 いまの app.json の commands は3つとも空です（2026-10-20）。下の案を入れるよう Takuma に頼んでいます。
+G2 の関門は commands が空でないことを求めます（docs/org/gates.md）。ios/ を作る最初の PR で `<>` の名前を決めて動かし、そのコマンドを app.json に入れるよう、指揮役が Takuma に頼みます（G2 の前の予定。reviewer r1 の P8）。
 
 ### iOS（ios/ がまだないので、どれも未確認。形だけ。<> の名前は ios/ を作る最初の PR で決めて直す）
 - ビルド（未確認）：`xcodebuild -project ios/<プロジェクト>.xcodeproj -scheme <アプリのスキーム> -configuration Debug -destination 'generic/platform=iOS Simulator' SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build`

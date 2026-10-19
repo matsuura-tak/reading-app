@@ -50,9 +50,9 @@
   - 再読み込みは `reloadAllTimelines()` の呼び出しの回数で数える。
 - H28：`XCUIApplication.open(_:)` を使う（spike 1）。アプリの口は足さない。
 - G1-10（G4-15 の本500冊と記録5,000件）
-  1. 実機に Perf のビルドを Xcode で入れ、`-uitest-seed-preset perf500 -uitest-readouts off` で1回起動して入れる。
+  1. 実機に Perf のビルドを Xcode で入れ、`-uitest-seed-preset perf500 -uitest-readouts off` で1回起動して入れる。中身は contracts/test-hooks.md の H2 の表で、G3 の AC-101 と同じ（AC-101 の Given の分け方：本 A＝1冊目、id `00000000-0000-4000-8000-000000000001`、current に1,000件、2〜401冊目に10件ずつ、402〜500冊目は0件。合わせて本500冊、記録5,000件）。
   2. アプリを消さずに、同じバンドル ID の Release のビルドを上から入れる。開発の署名で Xcode から入れるか、TestFlight で入れる。
-  3. 本棚に500冊があることを画面で確かめてから、Instruments の os_signpost（shelfOpen、bookOpen。Release にも残す）で測る。
+  3. 本棚に500冊があることを画面で確かめてから、本棚を開くのと A の本の画面を開くのを5回ずつ、Instruments の os_signpost（shelfOpen、bookOpen。Release にも残す）で測る（AC-101 の When）。
   - TestFlight を上から入れても入れ物が残るかは［未確認］。残らなければ、開発の署名の Release のビルドで測る（G4-15 は「TestFlight か Release のビルド」）。
 
 ## 検討した案

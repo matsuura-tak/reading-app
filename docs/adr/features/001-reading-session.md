@@ -32,17 +32,17 @@
 | AC | 画面（design/） | operationId の代わり | データ（エンティティ） | 確かめるテスト |
 |---|---|---|---|---|
 | AC-1 | S-1（空） | なし（端末のみ）。H14、H26 | Book 0件、Settings | 画面（H14、H26。端末を消すので、ランダム順の実行と分けて動かす）／G4-5 |
-| AC-2 | S-1 → S-8 → S-8a → S-1 | ndlOpenSearch（isbn）。H20、H21、H26 | Book（置き場所 current、ISBN、書誌） | 画面（H1、H13、H20、H21、H26）／G4-10 |
+| AC-2 | S-1 → S-8 → S-8a → S-1 | ndlOpenSearch（isbn。読み取ったときに1回送り、結果を加えた本に引き継ぐ。加えた直後は送らない。ADR 0004 の決まり (1)〜(3)）。H20、H21、H26 | Book（置き場所 current、ISBN、書誌） | 画面（H1、H13、H20、H21、H26）／G4-10 |
 | AC-3 | S-8a | ndlOpenSearch（isbn）。H17、H20、H21 | Book（tsundoku。重なりは ISBN で見る） | 画面（H2、H13、H17、H20、H21、H26）／G4-10 |
 | AC-4 | S-8 → S-8b | ndlOpenSearch（title、cnt=200 で1回。ページ送りなし。端末で、ISBN のない item と重なった ISBN を除き、書名の完全一致 → 前方一致 → ほかの順に並べ直す。ADR 0004）。H20、H29 | Book | 画面（H1、H13、H20）。並べ直しは単体テスト（AC にするかは 10 の未決） |
 | AC-5 | S-8b（空） | ndlOpenSearch（title。0件の応答）。H20 | なし（保存しない） | 画面（H1、H20） |
 | AC-6 | S-8b（オフライン） | ndlOpenSearch（通信なし）。H8 | なし（保存しない） | 画面（H1、H8）／G4-4 |
 | AC-7 | S-8 → S-8c | なし（端末のみ）。H2、H13 | Book（書誌の状態 none） | 画面（H2、H13） |
 | AC-8 | S-8c（エラー） | なし（端末のみ）。H13 | なし（保存しない） | 画面（H1、H13） |
-| AC-9 | S-8a → S-1、S-6、S-7 | ndlOpenSearch（isbn。通信がなければ順番待ちにし、戻ったら問い合わせる）。H8、H20、H21、H29 | Book（書誌の状態 pending） | 画面（H1、H8、H13、H20、H21、H26）／G4-4 |
-| AC-10 | S-1、S-7 | ndlOpenSearch（isbn。0件の応答）。H4、H6、H20、H29 | Book（書誌の状態 notFound、前に問い合わせた日時） | 画面（H1、H4、H6、H13、H20、H21、H26） |
-| AC-11 | S-1、S-6、S-7 | ndlOpenSearch（HTTP の失敗）。H20、H29 | Book（書誌の状態 pending のまま） | 画面（H1、H13、H20、H21、H26） |
-| AC-113 | S-1、S-6、S-7、S-7a | ndlOpenSearch（isbn。前に来たとき、24時間以上たっていれば1回。加えてから45日まで）。H4、H5、H6、H20、H29 | Book（加えた日時、前に問い合わせた日時、手で直した印） | 画面（H2、H4、H5、H6、H13、H20）／G4-10 |
+| AC-9 | S-8a → S-1、S-6、S-7 | ndlOpenSearch（isbn。通信がない間は読み取りでも送らず pending で加え、通信が戻ったときの回で addedAt の順に1回ずつ送る。ADR 0004 の決まり (4) と回数の表）。H8、H20、H21、H29 | Book（書誌の状態 pending。書名なし） | 画面（H1、H8、H13、H20、H21、H26）／G4-4 |
+| AC-10 | S-1、S-7 | ndlOpenSearch（isbn。読み取ったときの1回だけ。0件を加えた本に引き継ぎ、24時間たつまで送らない）。H4、H6、H20、H29 | Book（書誌の状態 notFound、前に問い合わせた日時。書名なし） | 画面（H1、H4、H6、H13、H20、H21、H26） |
+| AC-11 | S-1、S-6、S-7 | ndlOpenSearch（HTTP の失敗。読み取ったときに1回、前に戻すたびに1回で、合わせて3回。加えた直後は送らない。ADR 0004 の回数の表）。H20、H29 | Book（書誌の状態 pending のまま。書名なし） | 画面（H1、H13、H20、H21、H26） |
+| AC-113 | S-1、S-6、S-7、S-7a | ndlOpenSearch（isbn。前に来たとき、24時間以上たっていれば1回。加えてから45日まで）。H4、H5、H6、H20、H29。H2 で始めるので、加えたときの1回は H2 の lastLookupAt で表し、H29 には残らない。H29 で数える数は PRD の「合わせて」より1つ少ない (1) 45件 (2) 2件 (3) 0件（test-hooks.md の H29） | Book（加えた日時、前に問い合わせた日時、手で直した印。書名なし） | 画面（H2、H4、H5、H6、H13、H20）／G4-10 |
 | AC-12 | S-8（権限） | なし（端末のみ）。H26 | なし | 画面（H1、H26）／G4-5 |
 | AC-92 | S-7 | ndlOpenSearch（isbn。dc:creator と author の要素）。H20 | Book.author（取り出した形で保存） | 画面（H1、H13、H20、H21、H26）。取り出しの単体テストを添える |
 
@@ -142,7 +142,7 @@
 | AC | 画面（design/） | operationId の代わり | データ（エンティティ） | 確かめるテスト |
 |---|---|---|---|---|
 | AC-100 | S-1 | なし（端末のみ）。H2。G3 は Perf の構成、G4 は Release（裁定 29） | ストア（本3冊、記録10件） | 性能（H2。XCTApplicationLaunchMetric を5回）／G4-15 |
-| AC-101 | S-6、S-7 | なし（端末のみ）。H10。G3 は Perf の構成、G4 は Release（裁定 29） | ストア（本500冊、記録5,000件） | 画面（H2、H10）／G4-15 |
+| AC-101 | S-6、S-7 | なし（端末のみ）。H10。G3 は Perf の構成、G4 は Release（裁定 29） | ストア（本500冊、記録5,000件。本 A に1,000件、400冊に10件ずつ、99冊は0件。H2 の perf500） | 画面（H2、H10）／G4-15 |
 | AC-102 | W-1、W-2 | なし（端末のみ）。H22（項目を返すまでの時間）。G3 は Perf の構成、G4 は Release（裁定 29） | Snapshot | ウィジェット（H2、H22） |
 
 ### 選択肢（回す所が決まってから、残す分を行ごとに足す）
@@ -201,9 +201,9 @@ flowchart LR
 | contracts/test-hooks.md | 文書 | 芯のつなぎ口23個の目的、使う AC、動かし方、入力、出力、失敗。選択肢の7個は名前だけ | 芯の85件（2 の表の H 番号） | テストの構成だけ（下） | 7-4a の spike 1、2 |
 | contracts/hooks/ の7つ | JSON Schema 2020-12 | h02-seed（H2）、h13-store（H13）、h17-state（H9、H10、H17）、h20-ndl-stub（H20）、h22-widget（H22）、h29-outbound（H29、H31）、hook-config（設定のファイル） | 同上 | $id の末尾 `:1` | jsonschema（下） |
 
-| operationId | 足す / 変える | AC | 認証 | 作る POST の Idempotency-Key |
-|---|---|---|---|---|
-| ndlOpenSearch（国立国会図書館サーチの GET /api/opensearch） | 足す（7-2） | AC-2〜AC-6、AC-9〜AC-11、AC-92、AC-103、AC-113 | 不要（`security: []`。クッキー、キャッシュ、利用者や端末の ID を送らない） | 対象外（GET だけ） |
+| operationId | 足す / 変える | AC | 誰が呼べるか（認証） | 持ち主の確かめ | 返す項目（アプリが読むもの） | 回数の上限 | 作る POST の Idempotency-Key |
+|---|---|---|---|---|---|---|---|
+| ndlOpenSearch（国立国会図書館サーチの GET /api/opensearch） | 足す（7-2） | AC-2〜AC-6、AC-9〜AC-11、AC-92、AC-103、AC-113 | 誰でも呼べる相手の公開 API（`security: []`）。クッキー、キャッシュ、利用者や端末の ID を送らない | 該当なし。相手は利用者のデータを持たず、返すのは公開の書誌（ADR 0004 の表の 9） | 契約の 200 の応答の対応表にある要素だけ。ほかは読まない | 同時に1件で、利用者の操作を先に送る（ADR 0004 の表の 6）。isbn は、読み取りで ISBN ごとに1回と、回（前に来たとき、通信が戻ったとき）で1冊に1回。notFound は24時間に1回で45日まで。title は操作1回につき cnt=200 で1回（続けて押したら前の要求を取り消してから、最後の語を送る）。待ちは30秒、応答は 2 MB まで | 対象外（GET だけ） |
 
 - spectral（v6.17.0。GitHub の公式リリースの spectral-macos-arm64、sha256 の頭 cb7e1bd31d85a992。node がないので npx でなく配布ファイルで動かした）
   ```
@@ -228,6 +228,8 @@ flowchart LR
   schemas 8 examples 16 OK          （exit 0。hooks の7つと widget-snapshot）
   ```
   - 7-4a の検査のスクリプト（scratchpad の g1-7-4a/gen/check.py）を同じ8つに動かし直した：metaschema の検査 8/8 OK、例 16/16 OK、わざと契約に合わなくした17通りは17通りとも弾かれた（NG 0件）。
+  - G1 の直し（reviewer r1 のあと。2026-10-20）：同じ check.py で metaschema 8/8 OK、例 19/19 OK（足した例3つ：h02 の書名のない notFound の本、h13 の書名のない pending の本と写し、写しの書名のない一行）、17通りは17通りとも弾かれた。足した22通り（書名を省ける本と省けない本、小文字の id、写しの書名なし、prevLat、latency.json）は22通りとも期待どおり（受ける9、弾く13）。
+  - 直した契約：h02、h13、widget-snapshot（書名のない本。5）、h02 の id を大文字だけに（P3）、h17 の `prevLat.*` と `$defs/latencyFile`（P4）、h22 の例の `widget.unavailable` の文。main に出す前の版 1 の下書きの直しなので、版は上げない。
   - 道具が空振りしていないことの確かめ：required の項目がない例を持つスキーマを渡すと、ValidationError で落ちた。
 - 互換性を壊す変更：なし（新規。oasdiff の breaking は0件）。ADR と大きな版の上げは要らない。
 - 互換の決まり：同じ大きな版の中では足すだけ。
@@ -252,27 +254,33 @@ flowchart LR
 | 入口の一時の値（開いた入口と時刻） | 端末のメモリだけ | いいえ | アプリが後ろに回るまで | 保存しないので消すものはない |
 
 - Book の項目
-  - id（UUID、一意）、isbn（13桁。手で入れた本は空）、title（1〜100字）、author（0〜100字。書誌の著者は AC-92 の決まりで取り出した形）
+  - id（UUID、一意。文字にするときは大文字の形で、H2、H13、識別子 `shelf.row.<id>` で同じ。reviewer r1 の P3）、isbn（13桁。手で入れた本は空）、title（1〜100字。書名のない本は下）、author（0〜100字。書誌の著者は AC-92 の決まりで取り出した形）
   - publisher、label（レーベル）、publishedYear（出版年）
   - 書誌のどの要素から取るかは、contracts/ndl-opensearch.yaml の 200 の応答の要素の対応表を正とする（ADR 0004）。書名は dc:title に dcndl:volume を足し、書名と著者は100字で切る。ISBN は10桁なら13桁に直す。
   - shelf（置き場所：current、tsundoku、finished）、addedAt（加えた日時）、tsundokuAt（積読に加えた日時。置き場所を tsundoku にした日時を入れる）、finishedAt（読み終えた日時。finished にした日時を入れ、ほかへ移したら消す。H2 と H13 の `books[].finishedAt`）
   - line（一行。1〜60字）、page（1〜9999）
   - lookupStatus（書誌の状態：none＝手で入れた、pending＝まだ、found、notFound）、lastLookupAt（前に問い合わせた日時。HTTP 200 のときだけ書く）、manuallyEdited（書名か著者を手で直した印。直したら問い合わせ直さない。AC-113）
   - records（Record の一覧。本を消すと一緒に消える）
+  - 書名のない本（reviewer r1 の要修正2）
+    - title を持たない（nil）のは、isbn があり、lookupStatus が pending か notFound で、manuallyEdited が偽の本だけ。ISBN だけで加え、書誌がまだないか見つからなかった本（AC-9、AC-10、AC-11、AC-113）。found、none、手で直した本には必ず title がある。
+    - 書誌が見つかったら dc:title から入れる。手で直すとき（S-7a）は、書名が1〜100字で要る（手で入れるときと同じ確かめ）。
+    - 契約：h02 と h13 は、この条件のときだけ title を省ける（JSON Schema の if/else）。写し（widget-snapshot）は visibleBook の title を省ける。
+    - 見せ方：アプリの画面は仕様で決まっている（書名の所に文言キー `book.isbnAsTitle`「ISBN %@」。S-1 は下に `book.pendingInfo` か `book.infoNotFound`、S-7 は奥付の1行目）。ウィジェットは、一行があれば一行とページ（仕様 5 の W-1）。写しには ISBN を置かない（PRD 12）ので、ウィジェットでは「ISBN %@」を出せない。一行も書名もないときのウィジェットの見せ方と、書名のないときのウィジェットの読み上げのラベルは designer が決める（10 の申し送り）。
 - Record の項目：id、startedAt（読み始めの日時）、timeZoneID（読み始めたときのタイムゾーン。晩の日付はこれで出し、あとで変えない。AC-22）、minutes（1〜1440）、entry（入口の印：lock_widget、small_widget、app。選択肢で live_activity、intent_start、intent_open を足す）、book。
 - Session の項目：bookID、startedAt、timeZoneID、entry、startedBy（flip か button。H17）。
 - Settings の項目：flipToStart（既定はオン）、hideOnWidgets（既定はオフ）、widgetGuideShown（AC-96）。入口の時刻と見た目の id は、選択肢 (5) と課金を残すときに足す。
 - Snapshot の項目は contracts/widget-snapshot.schema.json（大きな版 1）を正とする。
   - ISBN は入れない（PRD 12 が App Group に置くものを、書名、一行、ページ、出さない設定に限っている）。
-  - 出さない設定のときは、書名と一行を書かず、ページだけを書く。今の本がないときは currentBook を書かない。見た目の id は省ける（課金を残すときに使う）。
+  - 出さない設定のときは、書名と一行を書かず、ページだけを書く。今の本がないときは currentBook を書かない。見た目の id は省ける（課金を残すときに使う）。書名のない今の本は title を書かない（上の「書名のない本」）。
 - 計算で出し、保存しないもの：晩の日付（timeZoneID で表した読み始めの時刻が 4:00 より前なら前の日）、何晩、合計の分（ReadingCore）。
 - 知らない値の扱い（写しと URL は、拡張とアプリの版がずれる一瞬や、ほかのアプリから来ることがある）
   - 入口の印：知らない値は `app` として読む（contracts/entry-urls.md の 2 と 4）。
   - 写しの見た目の id：知らない値は default として読む（contracts/widget-snapshot.schema.json）。
   - 置き場所と書誌の状態：主の保存先を読み書きするのはアプリだけで、拡張は読まない（ADR 0001、0002）。同じ版のアプリが書いた値だけを読むので、知らない値は起きない。値を足すのは SchemaV2 以降で、そのときに MigrationStage と一緒に扱いを決める。
 - 順番待ちと問い合わせ直し（ADR 0004）
-  - 登録の順番待ちは、lookupStatus が pending の本そのもの。アプリが前に来て通信があるとき、addedAt の古い順に1件ずつ問い合わせる（AC-9、AC-11）。失敗したら、その回は残りを送らない。
-  - notFound の本は、manuallyEdited でなく、前の問い合わせから24時間以上たち、加えてから1,080時間以内なら、前に来たときに1回問い合わせ直す（AC-10、AC-113）。found の本は問い合わせ直さない。
+  - 登録の順番待ちは、lookupStatus が pending の本そのもの（別の待ち行列を保存しない）。
+  - 送る時は ADR 0004 の「問い合わせ直しの決まり」の (1)〜(4)：読み取ったときに ISBN ごとに1回送り、結果を加えた本に引き継ぎ、加えた直後には送らない。回（pending と期限の来た notFound を addedAt の古い順に1件ずつ送る流れ）は、前に来たときと通信が戻ったときに始め、同時に1つだけ。失敗したら、その回は残りを送らない（AC-2、AC-9、AC-11）。
+  - notFound の本は、manuallyEdited でなく、前の問い合わせから24時間以上たち、加えてから1,080時間以内なら、回のときに1回問い合わせ直す（AC-10、AC-113）。found の本は問い合わせ直さない。
 - SwiftData の版：SchemaV1（VersionedSchema）と SchemaMigrationPlan（stages は空）から始める。App Store に出す前は V1 を直してよい。出したあとは、変えるたびに SchemaV2 以降と MigrationStage を足す（ADR 0002）。
 - 前の版のストアを開けるかのテスト：v1.0 には前の版がない。SchemaV2 を足すときに、V1 のストアの見本を開いて値が残るかのテストを verifier に頼む。
 - サーバーの DB：なし。
@@ -285,7 +293,7 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 |---|---|---|---|
 | 起動 | 起動してから S-1 を操作できるまで、5回の平均で1.0秒以内 | AC-100（XCTApplicationLaunchMetric(waitUntilResponsive:)）を G3 で Perf の構成、iPhone 17 と iOS 27 のシミュレーターで測る。G4-15 で Release の構成を、iOS 26 が動くいちばん古い機種で測る | verifier（G3）、Takuma（G4） |
 | 「終える」から S-3 | 0.5秒以内（5回とも） | AC-55（H10 の os_signpost の区間）を G3 で Perf の構成。G4-15 で Release の実機 | verifier（G3）、Takuma（G4） |
-| 本棚と本の画面（本500冊・記録5,000件） | 開いてから出るまで、5回の平均で1.0秒以内 | AC-101（H10）を G3 で Perf の構成（投入は H2 の `-uitest-seed-preset perf500`）。G4-15 で Release の実機。実機への入れ方は G1-10（ADR 0005：Perf を入れて投入し、消さずに Release を上から入れる） | verifier（G3）、Takuma（G4） |
+| 本棚と本の画面（本500冊・記録5,000件） | 開いてから出るまで、5回の平均で1.0秒以内 | AC-101（H10）を G3 で Perf の構成（投入は H2 の `-uitest-seed-preset perf500`。中身は AC-101 の Given の分け方：本 A＝1冊目、id `00000000-0000-4000-8000-000000000001`、current に1,000件、2〜401冊目に10件ずつ、402〜500冊目は0件。本の画面は A を開く。値は readouts を off にした起動のあと `prevLat.*` で読む。test-hooks.md の H2 と H10）。G4-15 で Release の実機。実機への入れ方は G1-10（ADR 0005：Perf を入れて投入し、消さずに Release を上から入れる） | verifier（G3）、Takuma（G4） |
 | ウィジェットの項目を返すまで | 5回の平均で0.5秒以内（2つの種類それぞれ） | AC-102（H22）を G3 で Perf の構成。G4 で Release の実機 | verifier（G3）、Takuma（G4） |
 | 伏せてから reading まで | 2.0秒以内（伏せの待ち1.0秒を含む） | G3 は AC-44、AC-45 で待ちが1.0秒であること。G4-7 は触覚の音を録った録画 | verifier、Takuma |
 | 反応 | 操作から画面の変化まで100ms 未満。250ms 以上の hang は0件 | G3 で Instruments の Hangs（S-1、S-6、S-7 を開く流れ）。公開後は Xcode Organizer の Hangs（Apple が集める値。アプリは送らない） | verifier |
@@ -296,6 +304,8 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 | セキュリティ | ATS の例外は0件。送り先は国立国会図書館サーチの HTTPS の1つだけ。トークンと Keychain は使わない。保護の等級は既定（.complete にしない理由は ADR 0002）。App Attest は使わない（こちらのサーバーがない） | G2 で `grep -rn 'NSAllowsArbitraryLoads' ios/` が0件、通信の部品の場所の grep（AC-103）。G3 で AC-103（H29）。G4-20 | reviewer、verifier |
 | プライバシー | PrivacyInfo.xcprivacy（アプリと拡張）：トラッキングなし、収集の型は0個、required reason API は0件。App Store のプライバシー表記は「データの収集なし」（ADR 0004 の G1-12） | G2 で ADR 0002 の grep。G4 と G5 で照合 | reviewer |
 | アクセシビリティ | 文字の大きさ AX5 まで、切れる画面は0、できない操作は0 | G3 で performAccessibilityAudit（verifier）と、design-reviewer の採点表 | verifier、design-reviewer |
+
+- perf500 の数え直し（G1 の直し、2026-10-20。test-hooks.md の H2 の表のとおりに作って数えた。出力は報告）：記録 5,000件。本 A は1,000件、10件の本は400冊（2〜401冊目）、0件の本は99冊（402〜500冊目）で、AC-101 の Given と同じ。G4-15 も同じ中身（ADR 0005 の G1-10）。
 
 ## 7. 脅威モデル
 - 何を作るか（守るものと境界）
@@ -308,6 +318,7 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 - それで十分か（受け入れた危険と、その理由）
   - 最初のロック解除のあとの、ロック中のファイルの読み出しは受け入れる。理由は ADR 0002（守るものはロック画面に出るものと同じ程度で、ロック中の読み書きが要る）。見直す条件も ADR 0002。
   - 入口の印のなりすましは受け入れる。印は端末の中だけで、v1.0 は送らない（裁定 10）。
+  - 書誌の問い合わせでは、読み取った ISBN と利用者が入れた書名を、端末から国立国会図書館サーチへ送る。送る情報、送り先（ndlsearch.ndl.go.jp）、目的（書誌を得るため）を、プライバシーポリシーに書く（G5 で pdm。ADR 0004 の表の 18）。電気通信事業法の外部送信規律に当たるかは、指揮役が Takuma に確かめる（reviewer r1 の K1）。
   - 選択肢（インテント、Live Activity、カード、課金）を残すときは、この表に行を足す。
 
 | STRIDE | 起きうること | 対応（減らす / なくす / 移す / 受け入れる） | 確かめるテストか確認 |
@@ -315,7 +326,7 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 | なりすまし（S） | 国立国会図書館サーチになりすました応答（通信の途中で差し替える）で、偽の書名や著者が保存される | 減らす：HTTPS だけで、ATS の例外を置かない。証明書の確かめは OS の既定のまま。応答は文字として扱い、書名と著者は100字で切る（101字目から後ろを捨てる。ADR 0004、contracts/ndl-opensearch.yaml の対応表） | G2 の `NSAllowsArbitraryLoads` の grep が0件。長すぎる応答の単体テスト（H20 で101字の書名を返す形も使える） |
 | 改ざん（T） | ほかのアプリやページが入口の URL を開き、入口の印を偽る。写しのファイルが書き換えられる | 入口の印は受け入れる（端末の中だけ）。URL では画面を開くだけで、保存、写し、再読み込み、通信を起こさない（contracts/entry-urls.md の 3 と 5）。写しは、同じ App Group を持てるのが同じ開発者のアプリだけなので受け入れる | AC-40。G2 で reviewer が、URL を受ける処理に保存の呼び出しがないことを見る。G3 で、URL で起動する前とあとで H13 が同じ、H29 が0件、H22 の再読み込みは `launch` のほかの出どころが0（entry-urls.md の 5） |
 | 否認（R） | 該当なし：アカウント、取引、ほかの人との受け渡しがない | 受け入れる（課金を残すときは Apple の StoreKit が記録する） | なし（理由のとおり） |
-| 情報の漏れ（I） | (a) ロック画面と StandBy に一行と書名が見える (b) ロックした端末からファイルを取り出される (c) 問い合わせで送った ISBN と書名が残る、一行が送られる (d) ログに書名や一行が出る | (a) 減らす：出さない設定（AC-34）。そのときは写しに書名と一行を書かない (b) 受け入れる：ADR 0002 (c) 減らす：送るのは ISBN か書名だけで、一行は送らない（AC-103）。ID を付けない。URLSession は ephemeral に、urlCache なしとクッキーなしを足す（応答に `Cache-Control: public` が付き、既定の構成ではディスクに残るため。ADR 0004） (d) 減らす：Logger の値は既定の非公開のまま（8） | AC-34、AC-103（H29）、G2 の `grep -rn 'privacy: .public' ios/`、G4-20 |
+| 情報の漏れ（I） | (a) ロック画面と StandBy に一行と書名が見える (b) ロックした端末からファイルを取り出される (c) 問い合わせで送った ISBN と書名が残る、一行が送られる (d) ログに書名や一行が出る (e) ほかのアプリが canOpenURL で、このアプリが入っているか（読書アプリを使っていること）を調べる | (a) 減らす：出さない設定（AC-34）。そのときは写しに書名と一行を書かない (b) 受け入れる：ADR 0002 (c) 減らす：送るのは ISBN か書名だけで、一行は送らない（AC-103）。ID を付けない。URLSession は ephemeral に、urlCache なしとクッキーなしを足す（応答に `Cache-Control: public` が付き、既定の構成ではディスクに残るため。ADR 0004） (d) 減らす：Logger の値は既定の非公開のまま（8） (e) 受け入れる：分かるのは入っていることだけで、書名、一行、記録は出ない。スキームは widgetURL で開くために登録する（contracts/entry-urls.md の 1 と 5。reviewer r1 の P6） | AC-34、AC-103（H29）、G2 の `grep -rn 'privacy: .public' ios/`、G4-20 |
 | サービスの妨害（D） | 国立国会図書館サーチが遅い、止まる、大きすぎる応答や外の実体を含む XML を返す。写しが壊れて拡張が落ちる | 減らす：登録は順番待ちで、毎晩の道は通信なしで動く（AC-9、AC-62）。書名で探すのは cnt=200 の1回だけ、待ちは30秒で打ち切り、応答は 2 MB まで（ADR 0004）。XMLParser は `shouldResolveExternalEntities=false` を明示する。拡張は写しを読めなければ（ない、JSON でない、知らない版、契約に合わない）widget.unavailable で描く（contracts/widget-snapshot.schema.json） | AC-9、AC-11、AC-62。写しの壊れた形のテスト（7-3 の表の形と JSON Schema の検査） |
 | 権限の格上げ（E） | テストのつなぎ口（データの投入、保存の失敗、時計の差し替え）が App Store の版に残り、起動の引数や URL で誰でもデータを書き換えられる | なくす：つなぎ口はアプリのターゲットの `UITestHooks/` の下だけに書き、`#if UITEST_HOOKS` で包む。この条件は Debug と Perf だけにあり、Release（TestFlight、App Store）には入らない（ADR 0005） | G2 で reviewer が ADR 0005 の「G2 で reviewer が確かめる手順」（Release の build settings に `UITEST_HOOKS` がない、包まれていない置き場所の grep、Release の2進のファイルで nm と strings が0件、同じ確かめを Perf で動かすと1件以上）を動かす |
 
@@ -341,7 +352,7 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 | 指標（PRD 13、14） | 出ないとき | 代わりの出し方 | 撤退の判定に使うか |
 |---|---|---|---|
 | Day 7 継続率、Day 1 継続率 | App Store Connect の継続率が出ない（群が小さい） | 13 の注のとおり判定日を28日ずつ延ばす（2回まで）。並べて見る値として、Analytics Reports のアプリの使用のレポートから、週ごとに「使った端末の数 ÷ その週までの最初のダウンロードの数」を出す［推測。レポートの名前と列は、要求を作ってから確かめる］ | 使わない。継続率とは別の値なので、Takuma に出す材料にだけする |
-| R-1 Download to Paid Conversion | 同業比較の値が出ない | 売上とトレンドの「購入の件数 ÷ 最初のダウンロードの数」（PRD 13 の注の例）。数える期間は R-1 と同じ（公開から28日のダウンロードと、その35日後までの購入）。同じ人の買い直しと復元は数えない［推測。課金の形は選択肢（課金）で決める］ | 使う（売上の数は取引の記録で、分析の共有の同意に左右されない［推測。Apple の文書では確かめていない］） |
+| R-1 Download to Paid Conversion | 同業比較の値が出ない | 売上とトレンドの「購入の件数 ÷ 最初のダウンロードの数」（PRD 13 の注の例）。数える期間は R-1 と同じ（公開から28日のダウンロードと、その35日後までの購入）。同じ人の買い直しと復元は数えない［推測。課金の形は選択肢（課金）で決める］ | 使わない。Takuma に出す材料にだけする（売上の数が分析の共有の同意に左右されないかを、Apple の文書で確かめていないため。確かめられたら「使う」に戻す。reviewer r1 の P5） |
 | G-2 クラッシュ率 | 週の値が出ない | Analytics Reports のクラッシュとセッションのレポートから「クラッシュ数 ÷ セッション数」を出す。それも出なければ、Xcode Organizer のクラッシュの件数を版ごとに見る［推測。レポートの名前と列は、要求を作ってから確かめる］ | 前の形は使う。件数だけのときは Takuma に出す材料にだけする |
 | R-2 手取り | 売上の値なので、出ない場面は見込んでいない | 売上とトレンド、支払いと財務 | 使う |
 | G-3、G-4、R-G | App Store Connect の値を使わない | レビューと問い合わせを数える（13 の注） | 使う |
@@ -357,7 +368,7 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 |---|---|---|---|
 | 0001 iOS の土台 | 最低 iOS 26.0、Swift 6（警告0件）、ローカルのパッケージ2つ、構成3つ、v1 は強制アップデートなし | (1) iOS 26 が動く端末と、動かない端末の利用者の割合 (2) iOS 26.x のシミュレーター（G1-3。下） (3) Perf の構成で、ローカルのパッケージが -O で組まれるか（0005 と同じ） | (1) 公開後の問い合わせ（見直す条件） (2) 入れるかは Takuma。入れなければ G4 の実機だけ (3) ios/ を作る最初の PR（ios-engineer がビルドのログを貼り、G2 で reviewer が見る） |
 | 0002 保存と共有 | 主の保存先は App Group の外の SwiftData、拡張とは App Group の JSON の写しで分け合う。保護の等級は既定 | (1) ロック中に拡張が写しを読めるか (2) 既定の設定のときのストアの場所 (3) required reason API の分類（今は使わない） (4) アプリを消したときに App Group の入れ物も消えるか | (1) G4-1（Takuma。シミュレーターでは保護の等級が効かない） (2) ios/ を作る最初の PR の単体テスト (3) G2（reviewer の grep）と G5 (4) G4-17 |
-| 0003 縦書きの組み | 1字ずつの升目を ReadingCore で計算し、Text を置いて描く。W-1、W-2、S-1、S-5、H22 で同じ組み | (1) システムが描いたときの見え方と vibrant（ロック画面、ホーム画面、StandBy） (2) 字ごとのずらしで描いたときのずれ (3) 拡張のターゲットで Core Text を呼ぶビルド (4) iOS 26.x での見え方 | (1) G4-1、G4-3（Takuma）。前に見るなら ios-engineer が Xcode のプレビューで (2) ios-engineer の単体テストと G3 のスクリーンショット (3) ios/ を作る最初の PR (4) G1-3 で入れれば G3、入れなければ G4 |
+| 0003 縦書きの組み | 1字ずつの升目を ReadingCore で計算し、Text を置いて描く。W-1、W-2、S-1、S-5、H22 で同じ組み | (1) システムが描いたときの見え方と vibrant（ロック画面、ホーム画面、StandBy） (2) 字ごとのずらしで描いたときのずれ (3) 拡張のターゲットで Core Text を呼ぶビルド (4) iOS 26.x での見え方 (5) ヒラギノで Core Text が「，」「．」（FF0C、FF0E）の縦書きの位置を返すか（designer の申し送り） | (1) G4-1、G4-3（Takuma）。前に見るなら ios-engineer が Xcode のプレビューで (2) ios-engineer の単体テストと G3 のスクリーンショット (3) ios/ を作る最初の PR (4) G1-3 で入れれば G3、入れなければ G4 (5) ios/ を作る最初の PR（返さなければ立てたまま。tokens.md のとおり） |
 | 0004 書誌の問い合わせ | NDL サーチの OpenSearch に、CC BY の書誌2つだけで問い合わせる。cnt=200、30秒、2 MB、ephemeral。openBD は使わない | (1) HTTP 200 のほかの応答の形 (2) dpid で絞ったとき、ほかの提供元の値が item に混ざらないか (3) 相手が「+」を空白と読むか（`%2B` にして避ける） (4) Swift での作り（ephemeral、XMLParser、NWPathMonitor） (5) 案 D（SRU）の並べ替え | (1)(2) G4-10（Takuma の実機の登録）と公開後の問い合わせ (3) URL の形の単体テスト（ios/ を作る最初の PR） (4) G2 の前に ios-engineer の単体テスト (5) 見直す条件に当たったとき |
 | 0005 テストのつなぎ口 | つなぎ口は Debug と Perf だけに入れ、起動の引数、設定のファイル、Darwin の通知で動かし、つなぎ口の窓の要素で読む | (1) Perf でパッケージが -O で組まれるか (2) nm で Swift の型の名前が見えるか (3) TestFlight を上から入れて入れ物が残るか（G1-10 の 2） (4) 画面の外の窓で、まとまりの数を数えられるか (5) 起動の環境変数の大きさの上限（H2 の 200,000 バイト） (6) 実機で `XCUIApplication.open(_:)` が確認なしに届くか。ほかに 7-4a の報告の2つ：登録する者がいないとき通知の状態が残るか、H10 の「最初に出た時」に CATransaction の確定の時を使えるか | (1)(2) ios/ を作る最初の PR（ADR 0005 の G2 の手順で1以上になること） (3) G4-15 の前（Takuma） (4)(5) と通知、CATransaction：G2 で verifier が受け入れテストを書くときと、ios-engineer の最初の実装。結果は G3 の証拠 (6) G3 はシミュレーターだけで使う。実機は G4 |
 
@@ -378,11 +389,12 @@ PRD 12 の芯の行を写した。Live Activity と撮る道の行は、選択�
 - 設計のあとに残る、ほかの役への申し送り（指揮役から回す）
   - pdm と designer：積読の並びに使う日時（5 の決まっていないこと）。G1-13（ラテン文字の著者。7-2 の推奨は案 C）。
   - pdm と verifier：書名で探す結果の並べ直し（AC-4 の行）を AC にするか。PRD 12 に裁定 29 の読み方を書き足すこと。
-  - designer：7-3 の申し送り（帯の幅 43pt、置き換えの表、禁則、W-2 の間、S-1 の縦書きの場所の大きさ、URL が来たときの画面）、7-2 の申し送り（`settings.dataSources` の文、S-8b に最大約200件）、H22 の例の `widget.unavailable` の文（今は仮の文字）。
+  - designer：7-3 と 7-2 の申し送りは、仕様の直し（bbc61cb。決定 62〜65）で済み、ADR 0003、contracts/entry-urls.md の 3、H22 の例に写した（G1 の直し）。残りは書名のない今の本（5）のウィジェット：W-1、W-2 で一行も書名もないときの見せ方と、書名のないときの読み上げのラベル（写しに ISBN がないので `book.isbnAsTitle` は使えない）。アプリの画面は仕様で決まっている（`book.isbnAsTitle`）。
+  - 指揮役：ios/ を作る最初の PR で CLAUDE.md の `<>` の名前を決め、app.json の commands への反映を Takuma に頼む（P8。G2 の関門）。K1（外部送信規律）を Takuma に聞く。
   - verifier：7-3 と 7-4a の申し送り（docs/reviews/001-reading-session-G1-7-3-tech-lead.md、001-reading-session-G1-7-4a-tech-lead.md）。
 
 ## 確かめ（A）
-印は、7-4b で自分で確かめた所だけに付けた。tech-lead の自己確認で、合格の判定ではない（reviewer が判定する）。
+印は、7-4b と G1 の直し（reviewer r1 のあと）で自分で確かめた所だけに付けた。tech-lead の自己確認で、合格の判定ではない（reviewer が判定する）。
 - [x] 2 の表に PRD の全 AC があり、空の欄がない
   - 芯の85件は1行ずつで、空の欄はない。選択肢の51件は、裁定 24 により回す順ごとの行に置いた（残すと決めたら1行ずつ足す）。85＋51＝136 は、PRD の `grep -cE '^- AC-[0-9]+：'` の136と同じ。番号の組も一致した（報告のコマンド）。
 - [x] 3 の図のすべての要素に技術と責任が、すべての矢印に用途と通信方式がある（要素8つ、矢印9本）
