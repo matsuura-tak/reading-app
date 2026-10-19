@@ -63,3 +63,4 @@
 - 2026-10-19 001-reading-session G0 PASS Takuma が承認した（「承認するので進めて」）。PRD は 9f7c5d9（AC 136件）。実機の確かめの結果は承認の時点で届いていない（前の決定「承認の前に行う」は、この承認で置き換わった。結果は G1 以降で使う） docs/approvals/001-reading-session-G0.md
 - 2026-10-19 001-reading-session G1 前 条件つきの AC：いまはどれも外さない。回す所は、芯の G1 のあとの (iii) で決めて書く。3b（聞き取り）は結果待ちで、AC-78〜AC-80 と AC-83、または AC-87 のどちらを使うかは G2 の前に決めて書く。書誌の合格の線を確かめの計画に写した docs/reviews/001-reading-session-validation-plan.md
 - 2026-10-19 001-reading-session G1 5a 調査 designer が design/001-reading-session-research.md を書き直した（f8ed008。R 35件、競合4本、手本は Flighty）。方向は案A「紙の版面」を推す。G1 は芯と選択肢に分けて進め、5b は芯の画面だけを頼む（裁定 24）。芯の G1 の始まりは G0 承認の直後（52ca602）。PRD の事実の小さな食い違いは次の直しで（裁定 25） design/001-reading-session-research.md
+- 2026-10-19 001-reading-session G1 決定 Takuma：見た目は案A「紙の版面」、しおりの画面の2つのボタンは画面に出しておく（どちらも推奨どおり）。designer の 5b（芯の画面の仕様）は推奨の形で進めている docs/approvals/001-reading-session-G1-decisions.md
