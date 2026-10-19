@@ -64,3 +64,4 @@
 - 2026-10-19 001-reading-session G1 前 条件つきの AC：いまはどれも外さない。回す所は、芯の G1 のあとの (iii) で決めて書く。3b（聞き取り）は結果待ちで、AC-78〜AC-80 と AC-83、または AC-87 のどちらを使うかは G2 の前に決めて書く。書誌の合格の線を確かめの計画に写した docs/reviews/001-reading-session-validation-plan.md
 - 2026-10-19 001-reading-session G1 5a 調査 designer が design/001-reading-session-research.md を書き直した（f8ed008。R 35件、競合4本、手本は Flighty）。方向は案A「紙の版面」を推す。G1 は芯と選択肢に分けて進め、5b は芯の画面だけを頼む（裁定 24）。芯の G1 の始まりは G0 承認の直後（52ca602）。PRD の事実の小さな食い違いは次の直しで（裁定 25） design/001-reading-session-research.md
 - 2026-10-19 001-reading-session G1 決定 Takuma：見た目は案A「紙の版面」、しおりの画面の2つのボタンは画面に出しておく（どちらも推奨どおり）。designer の 5b（芯の画面の仕様）は推奨の形で進めている docs/approvals/001-reading-session-G1-decisions.md
+- 2026-10-19 001-reading-session G1 5b 芯の画面の仕様 designer が design/001-reading-session.md、tokens.md、screens.md を書いた（4b947e8）。芯の AC 85件すべてに画面と操作、選択肢の AC 51件は置き場所だけ。design-reviewer（採点表）と tech-lead（作れるか、契約に要るもの）に並べて判定させる docs/reviews/001-reading-session-G1-5b-designer.md
