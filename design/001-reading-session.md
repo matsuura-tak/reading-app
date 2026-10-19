@@ -2,7 +2,7 @@
 
 - 対象の PRD：docs/prd/001-reading-session.md（コミット 9f7c5d9。G0 承認済み）
 - 調査：design/001-reading-session-research.md（コミット f8ed008。この仕様より先に書いた）
-- 書いた役：designer　日付：2026-10-19。2026-10-20 に G1 の判定 r1 の指摘で直した（docs/reviews/001-reading-session-G1-design-reviewer-r1.md の指摘1〜17、docs/reviews/001-reading-session-G1-tech-lead-design-r1.md の要修正1〜3、提案1〜5、C の答え）
+- 書いた役：designer　日付：2026-10-19。2026-10-20 に G1 の判定 r1 の指摘で直した（docs/reviews/001-reading-session-G1-design-reviewer-r1.md の指摘1〜17、docs/reviews/001-reading-session-G1-tech-lead-design-r1.md の要修正1〜3、提案1〜5、C の答え）。同じ日に、tech-lead の 7（docs/adr/0003-vertical-composition.md、docs/adr/0004-bibliographic-lookup.md、contracts/entry-urls.md、contracts/widget-snapshot.schema.json、contracts/test-hooks.md）の申し送りと、design-reviewer r2 の「見たが指摘にしないもの」を入れた（裁定 28。方向、範囲、AC は変えていない。決定 62〜65 を足した）
 - 図とトークン：design/001-reading-session/screens.md（画面ごとの並びを文字で描いた図）、design/001-reading-session/tokens.md（色、文字、余白、触覚のトークン）
 - 原則の番号 B-1〜B-6 は .claude/skills/craft-designer/SKILL.md にある。R-n は調査の 8 の発見の番号。
 - 範囲：芯だけ（裁定 24。PRD 冒頭の進め方 (i)）。選択肢の画面は、芯の G1 で速さを測って v1.1 に回す所が決まってから、別に書く。
@@ -119,6 +119,10 @@
 ### 起動
 - 保存先を読めた：`idle` なら S-1、`reading` なら S-2。
 - 読めない：S-1 の中に `store.load.error` と「もう一度読み込む」だけ（AC-90）。
+- アプリが動いているときに、ウィジェット（W-1、W-2）の入口の URL（contracts/entry-urls.md）が来たとき（決定 65）
+  - シート、全画面の流れ（S-2、S-3、S-3a、S-3b、S-4）、確認のどれかが開いている：画面を何も変えない（入れた字、読んだ本、選んだ行、読み終えた画面をそのまま残す）。
+  - どれも開いていない：押し出した画面（S-6、S-7、S-10）を動きなしで閉じて S-1 にする。
+  - どちらでも、保存を変えず、知らせ、確認、alert を出さない。
 - アプリの外の入口：選択肢 (5)、(ショートカット)。回す所が決まってから書く。
 
 ## 2. 受け入れ条件と画面の対応
@@ -168,7 +172,7 @@
 | AC-37 | 選択肢 (5) | S-10 の `settings.liveActivity.off` |
 | AC-38 | 選択肢 (5) | S-10 の入口の時刻 `settings.entryTime` |
 | AC-39 | S-1 | ホーム画面のアイコンから開くと S-1。`bookmark.line`、`bookmark.page`「p.61」、押せる `bookmark.start`。自動で出るシートと alert なし |
-| AC-40 | W-1、W-2、S-1 | 入口ごとの URL で S-1 を開く（どの入口でも画面は同じ）。(3) の Live Activity の URL は選択肢 (5) |
+| AC-40 | W-1、W-2、S-1 | 入口ごとの URL で S-1 を開く（どの入口でも画面は同じ）。(3) の Live Activity の URL は選択肢 (5)。アプリが動いているときの画面は決定 65 |
 | AC-41 | 選択肢 (5) | Live Activity の中身の更新 |
 | AC-96 | S-3a → S-1 → S-5 → S-1 | 最初に一行を保存して S-1 に戻ったときに1回だけ `widgetGuide` →「閉じる」`widgetGuide.close` → S-1 |
 | AC-97 | 選択肢 (5) | 画面に何も出さない（alert なし） |
@@ -214,7 +218,7 @@
 | AC-75 | S-3 → S-4 | 「あとで挟む」`mark.later` → `result.summary` は「18分」だけ |
 | AC-76 | S-4 → S-1 | `result.summary`「p.43 → p.61」「18分」→「閉じる」`result.close` で S-1 |
 | AC-94 | 選択肢 (6) | S-3 の撮る道 |
-| AC-95 | S-3a（エラー） | 保存のボタンの上に `common.save.error`。欄の入力は残す |
+| AC-95 | S-3a（エラー） | Form のいちばん上の行に `common.save.error`（記号 exclamationmark.circle）。欄の入力は残す（5 の S-3a と、AC-91 の行と同じ場所） |
 | AC-77 | S-1 → S-9 | 「読み終えた」`bookmark.finish` → 奥付 `finish.colophon`。受賞の行は選択肢 (4) |
 | AC-78 | S-9 | `next.candidate.<id>` を最大3つ、積読から並びの決まりの順に。新しい本 N は選択肢 (4)（受賞を回したら P、Q、R） |
 | AC-79 | S-9 | 候補ごとに `next.reason` を1つ（「積読から・同じ著者」など）。「同じ賞」は選択肢 (4) |
@@ -281,10 +285,10 @@
 | 3 | S-1 の主操作は「読み始める」1つ（.borderedProminent、下端に固定して幅いっぱい）。伏せる道は近道として、ボタンのすぐ下の1行で知らせる | R-1、R-29、R-24 | B-2、https://developer.apple.com/design/human-interface-guidelines/buttons |
 | 4 | S-1 の「どこまで読んだかを入れる」「読み終えた」は、主操作の上に、.bordered（灰の塗りと tint の文字。文字は .subheadline）で横に並べて出しておく。塗りの形で押せると分かり（すぐ上の押せない「p.61」と見分けられる）、黒い塗りの .borderedProminent より目立たない。Takuma が決めた（2026-10-19。docs/approvals/001-reading-session-G1-decisions.md の「主操作より目立たない形で画面に出しておく」） | R-33、R-12、R-25 | B-2、https://developer.apple.com/design/human-interface-guidelines/buttons 、https://developer.apple.com/design/human-interface-guidelines/color |
 | 5 | 本の言葉（一行）だけを明朝（ヒラギノ明朝 ProN）の縦書きにし、アプリの言葉はシステムの書体にする。書体が2つになるのは B-4 の例外で、本の文とアプリの文を見分けるため | R-13、R-15、R-30 | B-4、https://developer.apple.com/design/human-interface-guidelines/typography |
-| 6 | 縦書きの組みは JLREQ に従う：句読点、かぎ括弧、二重かぎ括弧、丸括弧、「…」、「―」は縦書き用の字、「ー」と「〜」は90度回す、小さい仮名は字の枠の右上、行頭の禁則は追い出し（前の列の最後の字を次の列へ送る）。半角の英数字は全角に直して1字ずつ立てる。列の間は字の大きさの 0.25 倍。置き換えの表は tokens.md | R-30 | B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
-| 7 | S-1 の一行は Dynamic Type で大きくなり、accessibility1 以上と、縦に入らないときは横書きに替える | R-24 | B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
-| 8 | ウィジェットの一行は、枠に全部の字が入る固定の大きさ（W-1 は 17pt、W-2 は 20pt から、入らなければ1pt ずつ下げ、下限 13pt）。入るかの式は tech-lead が縦書きの ADR に書く。Dynamic Type で大きくしない（大きい文字の人は S-1 で読む）。W-1 のページは列の下に置かず、左端の帯（「p.9999」が入る幅で固定）の下に置き、列は帯の右から組む（列の下に置くと 76pt の高さに入らない） | R-18、R-24、R-30 | https://developer.apple.com/design/human-interface-guidelines/widgets |
-| 9 | ウィジェットに出すのは一行とページだけ。書名は読み上げのラベルにだけ入れる。押すと S-1（その本の続き）を開く（D-1） | R-18、R-14、R-15 | B-2、https://developer.apple.com/design/human-interface-guidelines/widgets |
+| 6 | 縦書きの組みは JLREQ に従う：句読点、括弧（かぎ、二重かぎ、丸、山、二重山、すみ付き、角、亀甲）、「…」「‥」、「―」は縦書き用の字、「ー」と「〜」は90度回す、小さい仮名はフォントの縦書き用の字形の位置（横書きの字形より右と上）、行頭の禁則は追い出し（前の列の最後の字を次の列へ送る。禁則の字は決定 62）。半角の印字できる字は全角に直してから表を当て、英数字は1字ずつ立てる（回す記号と、ずらす「，」「．」は決定 63）。列の間は字の大きさの 0.25 倍。置き換えの表は tokens.md、組みの手順と式は docs/adr/0003-vertical-composition.md | R-30 | B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
+| 7 | S-1 の一行は Dynamic Type で大きくなり、accessibility1 以上と、縦に入らないときは横書きに替える（縦書きの場所の大きさは決定 64） | R-24 | B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
+| 8 | ウィジェットの一行は、枠に全部の字が入る固定の大きさ（W-1 は 17pt、W-2 は 20pt から、入らなければ1pt ずつ下げ、下限 13pt）。入るかの式は ADR 0003（9 の計算）。Dynamic Type で大きくしない（大きい文字の人は S-1 で読む）。W-1 のページは列の下に置かず、左端の帯（「p.9999」が入る幅で固定。実測 43pt。ADR 0003）の下に置き、列は帯の右から組む（列の下に置くと 76pt の高さに入らない）。W-2 のページは列の下の左端に置き、列の場所とページの行の間は `space.4`（`space.8` にすると 148pt の枠で25字が 19pt から 18pt に下がる。9） | R-18、R-24、R-30 | https://developer.apple.com/design/human-interface-guidelines/widgets |
+| 9 | ウィジェットに出すのは一行とページだけ。書名は読み上げのラベルにだけ入れる。押すと S-1（その本の続き）を開く（D-1。アプリが動いているときは決定 65） | R-18、R-14、R-15 | B-2、https://developer.apple.com/design/human-interface-guidelines/widgets |
 | 10 | ウィジェットの一行は W6（vibrant で細らない太さ）。色を付けず primary の字だけにし、色はシステムに任せる | R-19、R-20 | https://developer.apple.com/design/human-interface-guidelines/widgets |
 | 11 | StandBy は W-2 を同じ形で大きく見せる。絵と色を足さない | R-19 | https://developer.apple.com/design/human-interface-guidelines/widgets |
 | 12 | 「一行と書名を隠す」がオンのときは、ウィジェットに「しおり」とページだけを出す。読み上げのラベルも同じ。アプリの中には出す | R-20、R-21 | https://developer.apple.com/design/human-interface-guidelines/live-activities 、https://developer.apple.com/design/human-interface-guidelines/controls |
@@ -302,7 +306,7 @@
 | 24 | 登録は3つの道を1つのシートの一覧に並べ、バーコードを先頭にする。1冊ごとの登録ボタンを置かない | R-8、R-10、R-5、R-7 | B-1、https://developer.apple.com/design/human-interface-guidelines/lists-and-tables |
 | 25 | 読めた本は、新しい本ごとに触覚1回と一覧の行で知らせる。本棚にある本は文字の知らせ。本でないコードは何も出さない | R-28、R-5 | https://developer.apple.com/design/human-interface-guidelines/playing-haptics |
 | 26 | 読んだ本が1冊以上あるのに S-8a を閉じるときは、確認を出す（読んだ本を加えずに捨てるため）。その間は戻るボタンを隠し（navigationBarBackButtonHidden。端からのスワイプも止まる）、シートを払って閉じる操作を止め（interactiveDismissDisabled）、出る道を「閉じる」→ 確認だけにする。閉じるの role は、0冊は .close、1冊以上は .cancel（.close は進めたものを失わない操作のため） | R-23 | https://developer.apple.com/design/human-interface-guidelines/action-sheets 、https://developer.apple.com/design/human-interface-guidelines/sheets |
-| 27 | 書名で探す結果は ISBN ごとに1行で、書名、著者、出版社（レーベル）、出版年。結果の下と、0件、通信なし、失敗のときに「手で入れる」 | R-5、R-7、R-26 | https://developer.apple.com/design/human-interface-guidelines/search-fields |
+| 27 | 書名で探す結果は ISBN ごとに1行で、書名、著者、出版社（レーベル）、出版年。並びは ADR 0004 の並べ直しのまま（書名が入れた書名と同じ → 入れた書名で始まる → ほか。同じ組の中は応答の順）で、画面では並べ替えず、並べ替えの操作も置かない（探した本が上に来る）。1回の問い合わせ（cnt=200）で返った分だけを出し、最大で約200行。結果の下と、0件、通信なし、失敗のときに「手で入れる」 | R-5、R-7、R-26 | https://developer.apple.com/design/human-interface-guidelines/search-fields |
 | 28 | 空、エラー、オフラインの画面は ContentUnavailableView で、何が起きたかと次の一手のボタンを出す | R-33、R-26 | B-1、https://developer.apple.com/design/human-interface-guidelines/writing |
 | 29 | 読み込みに0.3秒を超えたら形を先に出す（redacted の灰の帯）。読み込み中に「0冊」「0件」を出さない。2秒を超える通信の待ちには ProgressView を足す | R-33 | https://developer.apple.com/design/human-interface-guidelines/loading |
 | 30 | 通信がなくてもバーコードで加えられる。本の行に「書誌を待っています（ISBN …）」と、いつ問い合わせ直すかを書く | R-5、R-26 | B-1、https://developer.apple.com/design/human-interface-guidelines/writing |
@@ -337,6 +341,10 @@
 | 59 | 下端の主操作（S-1、S-2、S-4、S-7、S-8a、S-8b）は下端に固定し（safeAreaInset）、上の内容だけを送る。AX5 で書名や一行が長くても、主操作が画面の外に出ない | R-24 | B-2、https://developer.apple.com/design/human-interface-guidelines/accessibility |
 | 60 | 読み上げのラベルは見える文字から始める。見える文字と読み上げを変える押せる要素（記録の行）は、見える文字を accessibilityInputLabels に入れ、音声コントロールで見える文字のまま押せるようにする | R-24 | https://developer.apple.com/design/human-interface-guidelines/accessibility |
 | 61 | S-2 の始めた時刻は、読み始めた晩が今の晩と違うとき（開き直した翌朝など）だけ、月日を足す（「10月17日 21:04 から数えています。」） | R-26 | https://developer.apple.com/design/human-interface-guidelines/writing |
+| 62 | 行頭の禁則の字は、JLREQ の行頭禁則（3.1.7）の類を全部とる：終わり括弧（」 』 ） 〉 》 】 ］ 〕 ｝）、ハイフン（‐ ゠ – 〜 ～）、区切り約物（！ ？）、中点（・ ： ；）、句点（。 ．）、読点（、 ，）、繰返し記号（々 ゝ ゞ ヽ ヾ）、長音記号（ー）、小さい仮名（tokens.md の表の22字）。全角に直したあとの字と、縦書き用の字で見る（一覧は tokens.md）。JLREQ は「々」「ー」と小さい仮名を行頭に許すゆるい決まりも挙げるが、AC-28 が「ー」を禁則にしているので、同じ組の「々」と小さい仮名も禁則にそろえる。1列が4〜6字と短く、列の頭の「っ」や「！」は目立つ。追い出しが増えても字は欠けない：25字で送る字が5字まで（6列）なら、W-1 の2つの枠とも字の大きさは変わらない。6字以上（7列）になると、172×76 は 14pt に下がり、153×68 は 13pt で追い出しをせずに組む（ADR 0003 の手順 7。まれ）。W-2 の 148pt は、送りで列が増えると 19pt から 16pt に下がる（9） | R-30 | B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
+| 63 | 全角に直した記号の向きは、Unicode の縦書きの向き（UAX #50 のデータ VerticalOrientation.txt）に従う。立てる字（U）は立て、回す字（R）と、縦書き用の字形を使いなければ回す字（Tr）のうち表に縦書き用の字がないものは90度回し、縦書き用の字形を使いなければ立てる字（Tu）は立てるか、フォントの縦書き用の字形の位置へずらす。「：」「；」は90度回す（縦書き用の字形 U+FE13、FE14 がフォントにない。立てたままの「：」は縦書きの「‥」（︰）と同じ形になり見分けられない）。「－」「＝」「＜」「＞」「｛」「｝」「｜」「＿」も90度回す（立てたままの「－」は漢字の「一」、「＝」は「二」と同じ形になる）。「，」「．」は回さず、小さい仮名と同じ方法で、フォントの縦書き用の字形の位置（右上。「、」「。」と同じ所）へずらす。ほかの全角の記号（＃ ％ ＆ ＊ ＋ ／ ＠ など）と英数字は立てる | R-30 | B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
+| 64 | S-1 の縦書きの場所（ADR 0003 の A_w と A_h）は、幅＝画面の幅−32pt（左右の `space.16` の内側。393pt で 361pt）、高さ＝画面の高さ×0.4 の切り捨て（852pt で 340pt）。内側の余白、帯、ページの行はない（i＝B＝g＝R＝0。ページの「p.61」は場所の下）。列は場所の右上から組み、上にそろえる。字の大きさは `type.book.line` のまま下げず、60字が送りを含めて幅に入らないときと accessibility1 以上は横書き。高さを画面の4割にするのは、ふだんの文字の大きさで、書名から「読み始める」までを送らずに1画面に入れるため（28pt で1列12字、60字は5列。9 の計算） | R-24、R-30 | B-3、B-6、https://developer.apple.com/design/human-interface-guidelines/typography |
+| 65 | アプリが動いているときに入口の URL（W-1、W-2）が来たら、シート、全画面の流れ（S-2、S-3、S-3a、S-3b、S-4）、確認（confirmationDialog）のどれかが開いていれば、画面を何も変えない（入れた字、読んだ本、選んだ行、1回だけの読み終えた画面を、利用者が閉じる前に消さない。`reading` のときは S-2 が前にある）。どれも開いていなければ、押し出した画面（S-6、S-7、S-10）を動きなしで閉じて S-1 にする（ウィジェットの中身の続きが出る所で、「読み始める」まで1タップ）。どちらでも保存を変えず、知らせ、確認、alert を出さない（contracts/entry-urls.md の 3）。入力の有無を画面ごとに見て閉じるかを決める案は、同じ押し方で結果が変わり、確かめも増えるので採らない | R-18、R-23、R-5 | B-1、https://developer.apple.com/design/human-interface-guidelines/sheets 、https://developer.apple.com/design/human-interface-guidelines/widgets |
 
 ## 5. 画面ごとの状態
 空とエラーには「何が起きたか」と「次の一手のボタン」を書いた。読み込み中は、0.3秒を超えたら形を先に出し（redacted）、空の状態を先に出さない。知らせ（部品 N）は閉じるか次の操作まで出したまま。
@@ -344,7 +352,7 @@
 | 画面 | 通常 | 空 | 読み込み中 | エラー | オフライン | 権限を断られたとき | 一部だけ読めたとき |
 |---|---|---|---|---|---|---|---|
 | W-1 | 縦書きの一行（25字まで）を帯の右から組み、左端の帯の下に「p.61」 | 今の本なし（本0冊も）：`widget.empty`。一行なし：書名と「p.120」。ページもなし：書名だけ。一行あり・ページなし：一行だけ（帯は空けたまま、列の位置は変えない。読み上げは書名と一行） | placeholder は一行の形の灰の帯（redacted）。本の文を出さない | 写しを読めない（バックアップから戻した直後など）：`widget.unavailable`「よむまを開くと、ここに続きの一行が出ます。」。押すと S-1 | なし（通信を使わない） | なし（許可を使わない）。「一行と書名を隠す」がオン：「しおり」と「p.61」だけ（AC-34） | 26字以上の一行：縮め方で25字まで（AC-29）。今の本の書誌を待っている：一行とページは出す（書名を出さないので変わらない）。一行が日本語の字を含まない：横書き |
-| W-2 | 縦書きの一行と「p.61」（W-1 より大きい。ページは列の下の左端） | W-1 と同じ（一行あり・ページなしは一行だけ） | W-1 と同じ | W-1 と同じ | なし（通信を使わない） | なし（許可を使わない）。隠す設定は W-1 と同じ | W-1 と同じ。暗い所の StandBy はシステムが赤の単色で描く |
+| W-2 | 縦書きの一行と「p.61」（W-1 より大きい。列は上にそろえ、ページは列の下の左端。間は `space.4`） | W-1 と同じ（一行あり・ページなしは一行だけ） | W-1 と同じ | W-1 と同じ | なし（通信を使わない） | なし（許可を使わない）。隠す設定は W-1 と同じ | W-1 と同じ。暗い所の StandBy はシステムが赤の単色で描く |
 | S-1 | 書名、著者、縦書きの一行（全文）、「p.61」、「どこまで読んだかを入れる」「読み終えた」（.bordered）、下端に固定した「読み始める」、伏せる案内の1行 | 本0冊：ContentUnavailableView（`bookmark.empty.title`、`bookmark.empty.message`、「本を加える」）。今の本なし：同（`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、「本棚から選ぶ」）。どちらも「読み始める」と伏せる案内なし。一行もページもない：書名の下に `bookmark.noMark.message`（次の一手は「どこまで読んだかを入れる」）。一行あり・ページなし：一行を出し、ページの行（`bookmark.page`）を出さない。一行なし・ページあり：縦書きの所を詰め、著者の下に「p.61」 | 起動して保存先を読む間、0.3秒を超えたら書名と一行の形の灰の帯。空の状態を先に出さない | 保存先を読めない：ContentUnavailableView（`store.load.error.title`、`store.load.error`、「もう一度読み込む」）だけで、ツールバーは「設定」だけ。読み始めの保存の失敗：知らせ `session.start.error`。読み終えたの保存の失敗：知らせ `common.save.error`（S-9 を開かない） | なし（毎晩の道は通信を使わない。AC-62。通信の状態を出さない） | なし（許可を使わない）。結果待ち：Q-A で伏せる道に許可が要ると分かったら、PRD のやり直しに従う | 今の本の書誌を待っている：書名の所に「ISBN 9784101000015」、下に `book.pendingInfo`。見つからない：`book.infoNotFound` と「書名と著者を入れる」`book.edit`（.bordered。押すと S-7a を S-1 のシートで開く） |
 | S-2 | 書名、「21:04 から数えています。」（読み始めた晩が今の晩と違うときは「10月17日 21:04 から数えています。」）、数え続けることの1行、下端に固定した「終える」 | なし（今の本がないと読み始められない。AC-46） | なし（端末の中だけ。開き直したときは S-1 と同じ読み込みのあとに出す） | 終わりの保存の失敗：「終える」の上に知らせ `session.save.error`（閉じるボタンなし。もう一度「終える」を押せる。AC-60） | なし（通信を使わない） | なし（許可を使わない） | 書名がない本（書誌を待っている）：書名の代わりに「ISBN 978…」 |
 | S-3 | 書名、問い「どこまで読みましたか。」、主の道、2つ目の道、「あとで挟む」と「しおりは前のまま残ります。」 | 前のしおりがない：「あとで挟む」の下の文を `mark.later.note.empty`「しおりは空のままです。」に替える。読まずに挟むシートでは「あとで挟む」はない | なし（記録は「終える」で保存済み。AC-55 の0.5秒） | なし（この画面は保存しない。保存は S-3a、S-3b） | なし（通信を使わない） | なし（芯の道は許可を使わない。撮る道の断られたとき（AC-70）は選択肢 (6) で書く） | なし（出すのは今の本の書名と前のしおりだけ。書名がなければ「ISBN 978…」） |
@@ -358,7 +366,7 @@
 | S-7b | 晩の日付（読むだけ）、分の欄、保存、この記録を消す（文字は本文の色、記号 trash だけ赤） | なし（記録の行から開くので、記録はいつもある） | S-7a と同じ | `record.minutes.invalid`、`common.save.error`（Form のいちばん上の行）。入れた字は残す | なし（通信を使わない） | なし（許可を使わない） | なし（入れる画面。開いた記録の値をそのまま出す） |
 | S-8 | 3つの行（バーコードを続けて読む、書名で探す、手で入れる）、送るものの説明 | なし（いつも3つの道） | なし（決まった3つの行で、読み込むものがない。カメラの許可の状態はすぐ分かる） | バーコードを読めない端末：バーコードの行を押せなくし、下に `register.scanUnavailable` | なし（バーコードは通信なしでも加えられる。書名で探すは S-8b で出す） | カメラを断った：バーコードの行の下に `camera.denied` と「設定を開く」（.bordered。AC-12）。制限されている：`camera.restricted`（設定を開くボタンなし） | なし（3つの行はいつも全部出す。押せない行には、エラーと権限の列の理由の文を添える） |
 | S-8a | 上にカメラ、下に読めた本の一覧（読んだ順）、下端に固定した「n冊を本棚に加える」。読んだ本が1冊以上の間は、戻るボタンを隠し、シートを払って閉じる操作を止め、出る道は閉じる（role .cancel）→ 確認だけ（決定 26） | まだ読んでいない：一覧の所に `scan.hint`。加えるボタンは押せない（0冊）。戻る、端からのスワイプ、シートを払う操作、閉じる（role .close）で、確認なしに出られる | 読めた行は ISBN と灰の帯（書誌を探している） | 書誌の問い合わせの失敗：行に `book.pendingInfo`（加えられる）。見つからない：行に `scan.row.notFound`。本棚に加える保存の失敗（AC-91 の本を加える）：一覧の上（カメラのすぐ下）に知らせ `common.save.error`。読んだ本の一覧は残し、シートは閉じない。「n冊を本棚に加える」はもう一度押せる | 行に `book.pendingInfo`（加えられる。AC-9） | 断っているときはこの画面に来ない（S-8 に残る）。読む途中で許可を外された：S-8 に戻って `camera.denied` | 本棚にある本：知らせ `scan.duplicate`。同じ回に2度読んだ本と本でないコード：何も出さない |
-| S-8b | 検索欄（字があるときは消すボタン `search.clear`）、結果の行（書名、著者、出版社（レーベル）、出版年。1回の問い合わせで返った分だけで、続きを読み込まない）、結果の下に「手で入れる」（.bordered）、下端に固定した「この本を加える」（選ぶまで押せない） | 入れる前：`search.prompt`。0件：ContentUnavailableView（`search.noResults.title`、`search.noResults`、「手で入れる」）。結果の行がない間は「この本を加える」を出さない | 行の形の灰の帯3行。2秒を超えたら ProgressView を足す | 書誌のサービスの失敗：ContentUnavailableView（`search.error.title`、`search.error`、「もう一度探す」、「手で入れる」）。この本を加える保存の失敗（AC-91 の本を加える）：「この本を加える」のすぐ上に知らせ `common.save.error`。探した字と選んだ行は残し、シートは閉じない。もう一度押せる | ContentUnavailableView（`search.offline.title`、`search.offline`、「手で入れる」）（AC-6） | なし（許可を使わない） | ISBN のない結果は出さない。同じ ISBN は1行。レーベルのない本は出版社だけ。著者のない本は著者の行を出さない |
+| S-8b | 検索欄（字があるときは消すボタン `search.clear`）、結果の行（書名、著者、出版社（レーベル）、出版年。1回の問い合わせ（cnt=200）で返った分だけで、続きを読み込まない。最大で約200行。並びは決定 27）、結果の下に「手で入れる」（.bordered）、下端に固定した「この本を加える」（選ぶまで押せない） | 入れる前：`search.prompt`。0件：ContentUnavailableView（`search.noResults.title`、`search.noResults`、「手で入れる」）。結果の行がない間は「この本を加える」を出さない | 行の形の灰の帯3行。2秒を超えたら ProgressView を足す（cnt=200 の1回は実測 5.70秒。30秒で打ち切り、エラーの列の `search.error` にする。ADR 0004） | 書誌のサービスの失敗：ContentUnavailableView（`search.error.title`、`search.error`、「もう一度探す」、「手で入れる」）。この本を加える保存の失敗（AC-91 の本を加える）：「この本を加える」のすぐ上に知らせ `common.save.error`。探した字と選んだ行は残し、シートは閉じない。もう一度押せる | ContentUnavailableView（`search.offline.title`、`search.offline`、「手で入れる」）（AC-6） | なし（許可を使わない） | ISBN のない結果は出さない。同じ ISBN は1行。レーベルのない本は出版社だけ。著者のない本は著者の行を出さない |
 | S-8c | 書名、著者の欄、保存 | 欄は空で始まる。空のまま保存を押すと `book.title.invalid` | 保存の間は保存を1回しか受けない | `book.title.invalid`、`book.author.invalid`（欄のすぐ下）、`common.save.error`（Form のいちばん上の行。AC-91 の本を加える）。入れた字は残し、シートは閉じない | なし（手で入れる道は通信を使わない） | なし（許可を使わない） | なし（入れる画面。読み込むものがない） |
 | S-9 | 見出し「読み終えました」、奥付、次の1冊（最大3冊、理由1行、この本を読む）、戻し方の1行 | 積読0冊：ContentUnavailableView（`next.empty.title`、`next.empty.message`、「本を加える」）（AC-81）。押すと S-8（S-9 の上のシート）。加えると S-8 と S-9 が閉じて、S-1 に加えた本が出る | 0.3秒を超えたら候補の行の形の灰の帯 | 選んだ本を今の本にする保存の失敗：画面の上に知らせ `common.save.error`、S-9 のまま | なし（候補は端末の中の本だけ） | なし（許可を使わない） | 書誌を待つ候補：書名の所に「ISBN 978…」、理由は「積読から」。奥付はデータのある行だけ |
 | S-10 | 読み始め（伏せて始める）、ロック画面（一行と書名を隠す）、情報（プライバシーポリシー、書誌の出どころ、ライセンス。Link の行は末尾に arrow.up.forward） | なし（いつも同じ行） | なし（設定は端末の中） | 設定の保存の失敗：切り替えを前の値に戻し、節の下に `common.save.error` | なし（リンクは Safari が開き、開けないときは Safari が知らせる） | なし（許可を使わない。カメラの許可はシステムの設定で扱う） | 伏せる道を使えない端末（H18）：「伏せて始める」を押せなくし、下に `settings.flipToStart.unavailable` |
@@ -369,7 +377,7 @@
 - 長い一行（60字まで）：S-1 は全文（縦で入らなければ横書き）。ウィジェットは縮め方で25字まで。
 - 長い著者（100字まで）：S-1 は1行で末尾「…」、奥付は全文。
 - 0件：本0冊（S-1、S-6）、記録0件（S-7）、積読0冊（S-9）、検索0件（S-8b）は上の表のとおり。どれも「0」の数を見出しにしない。
-- とても多いとき：本500冊、1冊に記録1,000件でも、S-6 と S-7 は List の遅延の描き方で1.0秒以内（AC-101）。S-8a で読んだ本が多いときは、一覧の最後の行（いま読んだ本）が見える所まで送る。S-8b は1回の問い合わせで返った分だけを出し、続きを読み込まない（件数は書誌の ADR で決める。tech-lead の推奨は cnt=50 を1回で、ISBN のない結果を出さないので約20行。tech-lead r1 の C の問い6）。
+- とても多いとき：本500冊、1冊に記録1,000件でも、S-6 と S-7 は List の遅延の描き方で1.0秒以内（AC-101）。S-8a で読んだ本が多いときは、一覧の最後の行（いま読んだ本）が見える所まで送る。S-8b は1回の問い合わせ（cnt=200。ADR 0004）で返った分だけを出し、続きを読み込まない。ISBN のない結果と、同じ ISBN の2つ目からを除くので、最大で約200行（7-2 で「人間失格」は ISBN のある結果が110件）。List の遅延の描き方で出す。並びは決定 27 で、探した書名と同じ書名と、それで始まる書名が上に来る。結果の下の「手で入れる」が遠いときは、戻って S-8 の「手で入れる」でも入れられる（2タップ）。
 - 取り消せない操作の確認（confirmationDialog）：本を消す（記録の件数を文に入れる）、記録を消す、読んだ本を加えずに S-8a を閉じる（読んだ本がある間は、戻る、端からのスワイプ、シートを払う操作を止め、閉じるからだけにする。決定 26）。押し間違いを本棚から戻せる「読み終えた」と、記録を直せる「終える」には確認を挟まない（決定 15）。
 
 ### S-9 の、3b が届かなかったときの差分（AC-87）
@@ -381,7 +389,7 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
 
 | 画面 | 要素 | accessibilityIdentifier | VoiceOver のラベル |
 |---|---|---|---|
-| W-1、W-2 | ウィジェット全体（読み上げは1つのまとまり） | `widget.rectangular`、`widget.small`（足した。H22 で読む名前） | 「羅生門、61ページ。下人は、雨やみを待っていた。」（書名、ページ、一行。縦書き用の字は使わない。AC-99）。ページなし「羅生門。下人は、雨やみを待っていた。」。隠すとき「しおり、61ページ」。今の本なし：`widget.empty` の文 |
+| W-1、W-2 | ウィジェット全体（読み上げは1つのまとまり） | `widget.rectangular`、`widget.small`（足した。H22 で読む名前） | 「羅生門、61ページ。下人は、雨やみを待っていた。」（書名、ページ、一行。縦書き用の字は使わない。AC-99）。ページなし「羅生門。下人は、雨やみを待っていた。」。隠すとき「しおり、61ページ」。今の本なし：`widget.empty` の文。写しを読めない：`widget.unavailable` の文（contracts/widget-snapshot.schema.json の読む側の決まり）。書名から始める理由は 9 の読み上げ順 |
 | W-1、W-2 | 一行、ページ、書名（読み上げからは隠し、全体のラベルに入れる） | `widget.line`、`widget.page`、`widget.title`（足した。H22 で読む名前） | （全体のラベルに入る） |
 | S-1 | ツールバーの本棚 | `toolbar.shelf` | 「本棚」 |
 | S-1 | ツールバーの設定 | `toolbar.settings` | 「設定」 |
@@ -489,7 +497,7 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
 | S-10 | 使えない端末の文 | `settings.flipToStart.unavailable`（足した） | 文のとおり |
 | S-10 | 一行と書名を隠す | `settings.hideOnWidgets` | 「一行と書名を隠す」と、オンかオフ |
 | S-10 | プライバシーポリシー | `settings.privacyPolicy` | 「プライバシーポリシー、Safari で開きます」（末尾の記号 arrow.up.forward は読まない） |
-| S-10 | 書誌の出どころ | `settings.dataSources` | 文のとおり（仮の文は 7。書誌の ADR の文字列に替える） |
+| S-10 | 書誌の出どころ | `settings.dataSources` | 見出し「書誌の出どころ」（`settings.dataSources.header`）と文を1つのまとまりにして読む（文は 7。ADR 0004 の文） |
 | S-10 | ライセンス | `settings.dataSources.license` | 「ライセンス、CC BY 4.0、Safari で開きます」 |
 | S-10 | 入口の時刻、Live Activity が切れている文 | `settings.entryTime`、`settings.liveActivity.off` | 選択肢 (5) |
 
@@ -570,7 +578,7 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
 | `widget.description` | 今の本の、止めた一行とページを出します。 | Shows the line and page where you stopped in your current book. | ウィジェットのギャラリーの説明。足した |
 | `widget.empty` | 今の本を選ぶと、ここに続きの一行が出ます。 | Choose a book in Yomuma to see your place here. | W-1、W-2。PRD |
 | `widget.hidden` | しおり | Bookmark | W-1、W-2（隠す設定のとき、ページと一緒に）。PRD |
-| `widget.unavailable` | よむまを開くと、ここに続きの一行が出ます。 | Open Yomuma to show your place here. | W-1、W-2（写しを読めないとき）。足した |
+| `widget.unavailable` | よむまを開くと、ここに続きの一行が出ます。 | Open Yomuma to show your place here. | W-1、W-2（写しを読めないとき。読み上げのラベルも同じ文。contracts/widget-snapshot.schema.json）。足した |
 | `widget.spoken` | %1$@、%2$@。%3$@ | %1$@, %2$@. %3$@ | W-1、W-2 の読み上げ（書名、ページ、一行）。足した |
 | `widget.spoken.noPage` | %1$@。%2$@ | %1$@. %2$@ | W-1、W-2 の読み上げ（ページなし：書名、一行）。足した |
 | `shelf.navTitle` | 本棚 | Bookshelf | S-6 の題。足した |
@@ -674,8 +682,8 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
 | `settings.section.info` | 情報 | About | S-10。足した |
 | `settings.privacyPolicy` | プライバシーポリシー | Privacy Policy | S-10。PRD の識別子の文 |
 | `settings.dataSources.header` | 書誌の出どころ | Book Data | S-10。足した |
-| `settings.dataSources` | 書誌は、国立国会図書館サーチ（NDLサーチ）の API を用いて取得しています。データ提供機関：国立国会図書館。使う書誌：国立国会図書館蔵書、新着書誌情報 | Book details are retrieved using the NDL Search API. Data provider: National Diet Library, Japan. | S-10。PRD。仮の文（tech-lead r1 の C の注1 の案のまま。designer は文を作らない）。書誌の ADR で決まったら差し替える。英語の書誌の正式名と、英語の構成で日本語の名前も出すかは ADR で決める（G1-5） |
-| `settings.dataSources.license` | ライセンス（CC BY 4.0） | License (CC BY 4.0) | S-10。PRD の識別子の文 |
+| `settings.dataSources` | 書誌（書名、著者、出版社など）は、国立国会図書館サーチ（NDLサーチ）の API を用いて取得しています。書誌のデータは、NDLサーチの API から取得した「国立国会図書館蔵書」と「国立国会図書館新着書誌情報」（データ提供機関：国立国会図書館）に由来します。著者名などは、このアプリで表示用に整えています。ライセンスは、クリエイティブ・コモンズ 表示 4.0 国際 パブリック・ライセンス（CC BY 4.0）です。 | Book details (title, author, publisher, and so on) are retrieved using the NDL Search API (National Diet Library Search). The bibliographic data derives from “National Diet Library Catalog” (国立国会図書館蔵書) and “NDL newly acquired bibliographic data” (国立国会図書館新着書誌情報), provided by the National Diet Library, Japan (国立国会図書館), via the NDL Search API. Author names and other fields are formatted for display by this app. License: Creative Commons Attribution 4.0 International (CC BY 4.0). | S-10 の情報の節（`settings.dataSources.header` の下。.footnote、`color.text.secondary`、行数の上限なし）。PRD。docs/adr/0004-bibliographic-lookup.md の「クレジットの文」をそのまま写した（designer は文を作らない。G1-5 は決着）。名前を変えるときは ADR 0004 を先に直す |
+| `settings.dataSources.license` | ライセンス（CC BY 4.0） | License (CC BY 4.0) | S-10 の Link。PRD の識別子の文。開く先は、日本語の構成で https://creativecommons.org/licenses/by/4.0/deed.ja 、英語の構成で https://creativecommons.org/licenses/by/4.0/ （ADR 0004。どちらも AC-93 の始まりを満たす） |
 | `duration.minutes` | %lld分 | %lld min | 60分未満の時間。足した |
 | `duration.hoursMinutes` | %1$lld時間%2$lld分 | %1$lld hr %2$lld min | 60分以上（分が0なら `duration.hours`）。足した |
 | `duration.hours` | %lld時間 | %lld hr | 足した |
@@ -692,7 +700,7 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
 - 使うトークン（値と使い方の全部は design/001-reading-session/tokens.md）
   - 色：`color.background.primary`（systemBackground）、`color.background.grouped`（systemGroupedBackground）、`color.background.groupedRow`（secondarySystemGroupedBackground）、`color.text.primary`（label）、`color.text.secondary`（独自）、`color.action.primary.background` と `color.action.primary.label`（独自）、`color.action.tint`（独自。AccentColor）、`color.state.error`（systemRed。エラーの記号だけ）、`color.action.destructive`（systemRed。消す操作の記号 trash だけ）、`color.state.on`（systemGreen。Toggle の既定）、`color.separator`（separator。奥付の罫線）。
   - 文字：`type.book.line`（ヒラギノ明朝 ProN W3。28pt を .title に合わせて Dynamic Type で拡大縮小）、`type.book.line.widget`（ヒラギノ明朝 ProN W6。固定。W-1 は 17pt、W-2 は 20pt から下げる）、ほかはシステムの text style（.largeTitle、.title、.title2、.headline、.body、.subheadline、.footnote、.caption2）。Ultralight、Thin、Light は使わない。
-  - 余白：`space.4`、`space.8`、`space.12`、`space.16`、`space.24`、`space.32` だけ。画面の左右 16、まとまりの間 24、書名と一行の間 32、並んだボタンの間 12、下端の主操作の下 16（safe area の内側）、W-1 の内側 0 と W-2 の内側 16（どちらもシステムの既定の余白を切り（contentMarginsDisabled）、自分で付ける。アプリの中の描画（H22、S-5）と組みの計算をそろえるため。R-18）、W-1 のページの帯と列の間 4。縦書きの列の間は字の大きさの 0.25 倍（`type.book.line.columnGap`。余白のトークンでなく文字の組みの値）。
+  - 余白：`space.4`、`space.8`、`space.12`、`space.16`、`space.24`、`space.32` だけ。画面の左右 16、まとまりの間 24、書名と一行の間 32、並んだボタンの間 12、下端の主操作の下 16（safe area の内側）、W-1 の内側 0 と W-2 の内側 16（どちらもシステムの既定の余白を切り（contentMarginsDisabled）、自分で付ける。アプリの中の描画（H22、S-5）と組みの計算をそろえるため。R-18）、W-1 のページの帯と列の間 4、W-2 の列の場所とページの行の間 4。縦書きの列の間は字の大きさの 0.25 倍（`type.book.line.columnGap`。余白のトークンでなく文字の組みの値）。
 - 画面ごとの文字の段（B-4。3段を目安に4段まで）
   - S-1：一行（`type.book.line`）、書名（.headline）、著者・ページ・2つの .bordered のボタンの文字（.subheadline）、伏せる案内（.footnote）の4段。主操作の文字は .headline（書名と同じ段）。
   - S-2：書名（.title2 Bold）、始めた時刻（.body）、数え続ける1行（.subheadline）の3段。ボタンの文字は .headline。
@@ -746,14 +754,14 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
   - エラー：記号の形（exclamationmark.circle）と文で伝える。赤は記号の色だけで、文は本文の色。
   - Toggle：つまみの位置と、読み上げのオン・オフ。
   - 押せないボタン（S-8a の0冊のとき、使えない端末の行）：システムの押せない見た目と、読み上げの「利用できません」。説明の文も添える。
-  - 押せる文字と押せない文字：押せる文字は、塗り（.borderedProminent、.bordered）、記号、「>」のどれかの形を持つ。押せない文字（著者、ページ、説明、書誌の出どころ）はどれも持たない（決定 4、47）。.bordered の塗りと地の比は 3:1 に届かない（9）が、ボタンの文字が動詞で押せる物だと分かるので、塗りの比は求めない（WCAG 1.4.11 の理解文書：「the button's text is sufficient to indicate the presence of the control.」https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html 。2026-10-20 に開いた）。
+  - 押せる文字と押せない文字：押せる文字は、塗り（.borderedProminent、.bordered）、記号、「>」のどれかの形を持つ。押せない文字（著者、ページ、説明、書誌の出どころ）はどれも持たない（決定 4、47）。.bordered の塗りと地の比は 3:1 に届かない（9）が、ボタンの文字が動詞で押せる物だと分かるので、塗りの比は求めない（WCAG 1.4.11 の理解文書：「the button's text is sufficient to indicate the presence of the control.」https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html 。2026-10-20 に開いた）。ダークの黒い地では、塗りと地の比が 1.4:1 に届かない（下の表の参考の行）。G3 でダークの S-1 のスクリーンショットを見るときに、「どこまで読んだかを入れる」「読み終えた」が押せる形に見えるかを、第一印象で確かめる（design-reviewer r2 の参考6）。見えにくければ G3 の指摘として直す。
   - 消す操作：文字（「この本を消す」）と記号 trash の形で伝える。赤は記号だけ。
 - 動きを減らす設定、透明度を下げる設定のとき
   - 独自の動きはない。画面の出入りはシステムの押し出しとシートで、動きを減らす設定ではシステムが溶ける切り替えにする。伏せて始まったことは、触覚、読み上げ、起こしたときの S-2 の3つで伝え、動きに頼らない（PRD 12）。
   - ツールバーとシートの Liquid Glass は、透明度を下げる設定でシステムが不透明にする。内容の層（一行、奥付、一覧）は素材を使わないので変わらない。
   - 触覚は、iPhone の設定でシステムの触覚を切ると出ない（R-28「Make haptics optional.」）。触覚だけで伝えることはない。
 - VoiceOver の読み上げ順
-  - W-1、W-2：1つのまとまり（書名、ページ、一行）。
+  - W-1、W-2：1つのまとまり（書名、ページ、一行）。一行があるときは書名が見えないが、ラベルは書名から始める（決定 60 の「見える文字から始める」の例外）。AC-99 はラベルに書名を入れることを求め（順は決めていない）、一行だけではどの本の続きかが分からないので、本 → 場所 → 一行の順にする。見える一行とページの値はラベルにすべて入るので、WCAG 2.5.3 の「見える文字を含む」は満たす（design-reviewer r2 の参考3）。一行がない形（書名と「p.120」）と隠す形（「しおり、61ページ」）は、見える文字から始まる。
   - S-1：本棚、設定（ツールバー）→（知らせ）→ 書名 → 著者 → 一行 → ページ → どこまで読んだかを入れる → 読み終えた → 読み始める → 伏せる案内（AX のサイズでは、読み終えた → 伏せる案内 → 読み始める）。空の状態は、題 → 文 → ボタン。
   - S-2：書名 → 始めた時刻 → 数え続ける1行 →（知らせ）→ 終える。
   - S-3：問い → 書名 → 主の道 → 2つ目の道 → あとで挟む（ヒント「しおりは前のまま残ります。」）→（シートのとき）閉じる。
@@ -798,29 +806,30 @@ PRD の識別子はそのまま使った。PRD にないものは「足した」
 | 参考：プレースホルダ（システムの placeholderText） | 1.73:1 | 2.48:1（#1C1C1E）、2.41:1（#2C2C2E） | ー。4.5:1 に届かないので、プレースホルダには、なくても困らない手がかりだけを書く（決定 18） |
 | 参考：ダークの主操作を灰 #AEAEB2 に抑える案（採らない。決定 47） | ー | 黒い文字と 9.50:1、画面の地 #000000 と 9.50:1 | ー |
 
-W-1 の組みが入るかの計算（tech-lead r1 の要修正1 の式。字は25字、帯と列の間は 4pt。列の数は25÷1列の字数の切り上げで、追い出しで列が1つ増えた形も見た。値は入る最大の字の大きさと、横の余り）
-- 列の間 0.25 倍、帯 38pt：172×76 は 15pt（余り 40.0pt）、列が1つ増えても 15pt（余り 21.25pt）。153×68 は 13pt（余り 33.0pt）、列が1つ増えても 13pt（余り 16.75pt）。
-- 列の間 0.25 倍、帯 40pt：172×76 は 15pt（余り 19.25pt）（列が1つ増えた形）。153×68 は 13pt（余り 14.75pt）（同じ）。
-- 列の間 0.5 倍（比べた案）、帯 38pt：153×68 で列が1つ増えた形は 13pt（余り 0.5pt）。帯 40pt なら入らない。帯の幅の見積もりの誤差で入らなくなるので、0.25 倍にした（tokens.md）。
-- 帯の幅（「p.9999」の幅）は推測で、縦書きの ADR の spike で測る。
+ウィジェットの組みが入るかの計算（ADR 0003 の式。字は25字。帯 B は実測の 43pt（「p.9999」を 12pt Semibold、等幅の数字で描いた幅）、帯と列の間 g は 4pt。W-2 は内側 i が 16pt、ページの行 R が 20pt（13pt の行の高さ 15.67pt を切り上げた 16pt と `space.4`）。列の数は25÷1列の字数の切り上げで、追い出しで列が増えた形も見た。値は入る最大の字の大きさと、横の余り。計算のスクリプトの出力は報告に書いた）
+- 列の間 0.25 倍の W-1：172×76 は 15pt（余り 35.0pt）、列が1つ増えても 15pt（余り 16.25pt）、2つ増えると 14pt（余り 6.0pt）。153×68 は 13pt（余り 28.0pt）、列が1つ増えても 13pt（余り 11.75pt）、2つ増えると 13pt で入らず、追い出しをせずに組む（ADR 0003 の手順 7）。ADR 0003 の値と同じ。前の版で推測した帯 38〜40pt より広いので余りは小さくなったが、字の大きさは変わらない。
+- 列の間 0.25 倍の W-2：170pt は 20pt（余り 18.0pt）、列が1つ増えると 19pt（余り 0.25pt）。148pt は 19pt（余り 2.0pt）、列が1つ増えると 16pt（余り 0pt）。ページの行の間を `space.8`（R＝24pt）にすると 148pt は 18pt に下がるので、`space.4` にした（決定 8）。
+- 列の間 0.5 倍（比べた案）：153×68 で列が1つ増えた形は 13pt で入らない（110.5pt＞106pt）。172×76 も列が1つ増えると 14pt に下がる。だから 0.25 倍のままにする（tokens.md）。
+- S-1（決定 64）：393×852pt は幅 361pt、高さ 340pt で、1列の字数は 25pt で13字、28pt で12字、34pt（accessibility1 の手前の最大）で10字。60字はどれも6列以内で、幅に入る列は 34pt でも8列まで。375×667pt は高さ 266pt で、34pt は1列7字の9列が8列までに入らないので横書き。
 
 ## 10. 決まっていないこと
 - Takuma が決めた（2026-10-19。docs/approvals/001-reading-session-G1-decisions.md）：見た目の方向（案A）と、S-1 の主操作のほかの2つのボタンを画面に出しておくこと。この仕様の形のまま（決定 1、4。0 の「決まったことと、結果待ち」）。
 - 結果待ち：Q-A と実機の確かめ（`bookmark.flipHint` の文）、1b・2b・1c（S-3 の主の道）、3b（S-9 の次の1冊。差分は 5）、3d（置き方の案内を強めるか）、G4-1（ロック画面の vibrant の太さと色）。
 - tech-lead の答え（tech-lead r1 の C）を入れたものと、残り
-  - `settings.dataSources` の文字列：tech-lead の案を仮に置いた（7）。書誌の ADR で決まったら差し替える（G1-5）。
+  - `settings.dataSources` の文字列：ADR 0004 の「クレジットの文」に差し替えた（7。G1-5 は決着）。ライセンスの Link の開く先は、言語の構成ごとに ADR 0004 のとおり。
   - S-8b の検索欄：.searchable の欄には識別子を付けられないので、TextField のまま（問い2。決着）。
-  - 縦書きの組み：方針は問い3 の答え（1字ずつ 1em の升目、列は右から左、自作の Layout を使わない）。入るかの式と、置き換えの表の写しは tech-lead が縦書きの ADR に書く。見た目（置き換える字、列の間 0.25 倍、W-1 のページの帯）は tokens.md。帯の幅（「p.9999」の幅）は ADR の spike で測る。
+  - 縦書きの組み：ADR 0003 で決まった（1字ずつ 1em の升目、列は右から左、Text を置いて描く。小さい仮名と回す字は、フォントの縦書き用の字形の位置へ字ごとにずらす。帯は実測 43pt）。2026-10-20 の直しで、置き換えの表に 7-3 の字を写し（tokens.md）、禁則の字（決定 62）、回す記号（決定 63）、W-2 の列とページの間（決定 8）、S-1 の縦書きの場所（決定 64）を決めた。
   - W-1 と W-2 の余白：既定の余白を切り、W-1 は 0、W-2 は 16pt（提案5 のとおり。tokens.md）。
   - S-6 の「読み終えた」の並び：読み終えた日時を持つ（問い4）。H2 で入れ H13 で読む形は、つなぎ口の契約に tech-lead が足す。
   - コントラストを上げる設定の地：iOS 27.0 の実測に替えた（問い5。9）。systemRed の値も iOS 27.0 の実測に替えた（提案1）。iOS 26 の値は G1-3 で測る。
-  - S-8b の件数：tech-lead の推奨（cnt=50 を1回、ページ送りなし。問い6）で描いた。書誌の ADR で決める。
+  - S-8b の件数：ADR 0004 で cnt=200 を1回（ページ送りなし）に決まった。最大で約200行。並びは ADR 0004 の並べ直しのままで、決定 27 と 5 に書いた。
   - Button の role .close と .confirm：iOS 26.0 から使える（問い7。決着）。S-8a の閉じるは、読んだ本が1冊以上なら .cancel（提案4。決定 26）。
 - pdm に伝えること
   - 英語の表示名（この仕様は仮に Yomuma）。
   - PRD 17 の審査メモの言葉（「手で入れる」で一行を入れる）を、この仕様の文（「どこまで読んだかを入れる」→「一行を入れる」）に合わせる（G5 の掲載文と審査メモで）。
   - S-3a でページの欄を空のまま保存すると、ページは変えない（前の版の「空にする」を、r1 の指摘6 で、PRD にない決まりを足さない形に替えた。前のページは欄の下に消えない文で出すので、新しい一行と前のページの組み合わせになることは保存の前に分かる）。この決まりを AC にするかは pdm と verifier が決める（AC にしなくても PRD の AC とはぶつからない。AC-67 の撮る道でも前のページが残る）。
   - G1-13（ラテン文字の著者が「Fox Susan」と出る）：designer の推奨は、このままにする（表示の決まりを変えると AC-92 と取り出しの決まりを直すことになる）。英語の利用者に向けて直すなら、後の版で pdm が決まりを直す。
+  - 書名で探す結果の並べ直し（決定 27）を AC にするかは、pdm と verifier が決める（7-2 の未解決2。画面は ADR 0004 の並びをそのまま出すだけで、AC-4 の期待とはぶつからない）。
 - verifier に伝えること
   - 6 の「足した」識別子。知らせの帯は `notice` で、文の要素の識別子は文言キーと同じ名前。r1 の直しで `search.clear` と `mark.page.previous` を足し、文言キー `mark.page.placeholder.previous` をやめた。
   - S-8a で読んだ本が1冊以上の間は、戻るボタンがなく、シートを払って閉じられない。出る道は `scan.cancel` → `scan.discard.confirmButton` だけ。
@@ -828,18 +837,26 @@ W-1 の組みが入るかの計算（tech-lead r1 の要修正1 の式。字は2
   - `bookmark.page` と `result.summary` は、表示（「p.61」）と読み上げのラベル（「61ページ」）が違う。テストは値で比べる。
   - S-1 に知らせかシートが出ている間は、伏せる道を止め、`bookmark.flipHint` を出さない（AC-47 の「`session.tooShort` の知らせ」の場面）。AC-50 は知らせのない S-1 で見る。
   - 選択肢に申し送られた G1-7（古くなった Live Activity）、G1-8（有料の見た目の id と見本）、G1-15（App Intents の名前と言い方）は、回す所が決まってからの選択肢の仕様で決める。
+  - 行頭の禁則の字を JLREQ の類に広げた（決定 62、tokens.md）。AC-28 の L を出す一行（かなだけの25字）と (4)〜(6) の一行では、L＋1 字目のほかに、広げた字（小さい仮名、「々」「・」「！」「？」など）を列の頭に来うる所へ置かない（置くと追い出しが増え、字の大きさか L が変わる）。W-2 の 148pt では、送りがあると 19pt から 16pt に下がる。
+  - アプリが動いているときに入口の URL が来たときの画面は決定 65（AC にはない。AC-40 のテストはプロセスのない起動のまま）。
+  - G3 で、ダークの S-1 のスクリーンショットを残す（.bordered の2つのボタンが押せる形に見えるかを design-reviewer が見る。9）。
+- tech-lead に伝えること（2026-10-20 の直しで決めたことの写し先）
+  - ADR 0003：置き換えの表（7-3 の字に加えて、「：」「；」「－」「＝」「＜」「＞」「｛」「｝」「｜」「＿」を回し、「，」「．」をずらす。決定 63。ADR の「：」の行（そのまま立てる）は回すに替える）、行頭の禁則の字（決定 62）、W-2 の R＝20pt（16pt と `space.4`。決定 8）、S-1 の A_w と A_h（決定 64）。
+  - contracts/entry-urls.md の 3 の「決まっていないこと」：決定 65。
+  - contracts/hooks/h22-widget.schema.json の例の `widget.unavailable` の文（仮の文字）は、7 の文に替えられる。
 - 調査に足りない所（この仕様では新しい R を作らなかった）
   - この仕様のために HIG の10ページを開き、原則の欄にだけ使った（8）。R にはしていない。
   - r1 の直しのために、2026-10-20 に WCAG 1.4.11 の理解文書（https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html 。9 の .bordered の塗り）と、JLREQ の §2.3.2（R-30 と同じ文書 https://www.w3.org/TR/jlreq/ 。tokens.md の半角の英数字）を開き、根拠の文に使った。R にはしていない。JLREQ の縦書きの行間の目安は、開いた範囲（先頭の約10万字）に見つからず、見ていない。
+  - 2026-10-20 の 7 の申し送りの直しのために、Unicode の VerticalOrientation.txt（UAX #50 のデータ。Unicode 18.0.0。https://www.unicode.org/Public/UCD/latest/ucd/VerticalOrientation.txt 。HTTP 200）と、JLREQ の 3.1.7 行頭禁則（R-30 と同じ https://www.w3.org/TR/jlreq/ 。HTTP 200）を開き、決定 62、63 の根拠の文に使った。VerticalOrientation.txt は R にしていない（調査は変えない範囲のため）。
   - S-1 の主操作のほかのボタンを、競合が毎晩の画面にいくつ置いているかの数えは、調査にない（画面写真で見られた範囲だけ）。
 
 ## 確かめ（提出前に designer が印を付ける。design-reviewer はこれを信じずに確かめる）
 芯の範囲で印を付けた。選択肢の画面は、回す所が決まってから別の仕様で確かめる。
-- [x] 調査が先にあり、決定表のすべての行に R-n と原則がある（R-n は調査に実在する）（調査はコミット f8ed008。決定 61行。R 番号の照合は報告に書く）
+- [x] 調査が先にあり、決定表のすべての行に R-n と原則がある（R-n は調査に実在する）（調査はコミット f8ed008。決定 65行（2026-10-20 に 62〜65 を足した）。R 番号の照合は報告に書く）
 - [x] 全画面に、仕事、主操作1つ、使う標準部品がある（芯の 19 画面と部品 N。S-9 の主操作は候補ごとに同じ操作。3）
 - [x] 全画面の7つの状態が埋まっている（該当しない所は「なし」と理由。理由のない「なし」は0。数えたコマンドは報告）
 - [x] 押せる範囲が 44x44pt 以上。コントラストが基準を満たし、独自の色の組に数字が3通りある（コントラストを上げる設定の地と systemRed は iOS 27.0 の実測。iOS 26 の値は G1-3。.bordered の塗りの濃さは想定［推測］）
 - [x] AX5 での並びと、VoiceOver の読み上げ順が書いてある
 - [x] 性格語と差をつける点が、画面のどこに表れているか書いてある
-- [x] 文言が日英そろい、テストで使う要素に accessibilityIdentifier がある（`settings.dataSources` の文は tech-lead の案を仮に置いた。書誌の ADR で差し替える。10）
+- [x] 文言が日英そろい、テストで使う要素に accessibilityIdentifier がある（`settings.dataSources` は ADR 0004 の文に差し替えた。`widget.unavailable` は 7 にある。この直しで識別子と文言キーは足していない）
 
