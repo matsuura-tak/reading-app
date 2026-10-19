@@ -70,3 +70,4 @@
 - 2026-10-20 001-reading-session G1 仕様の直し designer が r1 の指摘を直した（DR の重大5と要修正5、TL の要修正3、提案12）。ページの欄が空なら変えない形にし、PRD に AC を足す要はない。design-reviewer に r2（最後の回）をさせる docs/reviews/001-reading-session-G1-design-fix1-designer.md
 - 2026-10-20 001-reading-session G1 デザインの判定 PASS design-reviewer r2（採点 16/16、重大0。r1 の17件は16件が直り、1件は理由で受け入れ。tech-lead の要修正3件も直った）。tech-lead r1 も PASS なので、/feature の 6 を通った（芯の範囲。裁定 24）。次は 7：tech-lead の設計メモ、契約、ADR、書誌の30件 docs/reviews/001-reading-session-G1-design-reviewer-r2.md
 - 2026-10-20 001-reading-session G1 7 開始 tech-lead の設計メモ、契約、ADR を4回に分けて頼む（裁定 27）。7-1：設計メモの下書き、ADR 0001 と 0002、書誌の確かめの本の一覧
+- 2026-10-20 001-reading-session G1 7-1 tech-lead が設計メモの下書き（芯の AC 85行）、ADR 0001（iOS の土台）と 0002（保存と共有。保護の等級は既定なので Q6 に触れない）、書誌の確かめの本の一覧35件を書いた。一覧は問い合わせの前にコミットした。次は 7-2（問い合わせ、ADR 0004、書誌の契約） docs/reviews/001-reading-session-G1-7-1-tech-lead.md
