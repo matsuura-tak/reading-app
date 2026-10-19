@@ -79,3 +79,4 @@
 - 2026-10-20 001-reading-session G1 仕様の細かい直し designer が 7 の申し送り14件を入れた（帯 43pt、置き換えの表と禁則、W-2 の間、S-1 の縦書きの場所、URL が来たときの画面、書誌の出どころの文など。決定 62〜65）。次は tech-lead に reviewer r1 の指摘を直させる docs/reviews/001-reading-session-G1-design-fix2-designer.md
 - 2026-10-20 001-reading-session G1 設計の直し tech-lead が reviewer r1 の指摘をすべて直した（perf500 を AC-101 の分け方に。書誌がまだない本は書名を省ける。問い合わせは読み取ったときに1回で、結果を加えた本に引き継ぐ。P1〜P10、K1 の1行、ADR 0003 への写し）。検査はスキーマ8つと例19件、spectral、oasdiff、照合のすべてが通った。次は designer に、書名のない今の本のウィジェットでの見せ方を決めさせる docs/reviews/001-reading-session-G1-7-fix1-tech-lead.md
 - 2026-10-20 001-reading-session G1 仕様の小さな直し designer が、書名のない今の本のウィジェットを決めた（書名の所に「今の本」。状態の名前は増やさない。文言キー2つ。決定 66）。次は tech-lead に契約の「未決」を写させ、そのあと reviewer の r2 docs/reviews/001-reading-session-G1-design-fix3-designer.md
+- 2026-10-20 001-reading-session G1 契約の小さな直し tech-lead が決定 66 を契約と設計メモに写した（書名のない今の本の「未決」0件、検査はすべて通った）。次は reviewer の設計の判定 r2（最後の回） docs/reviews/001-reading-session-G1-7-fix2-tech-lead.md
