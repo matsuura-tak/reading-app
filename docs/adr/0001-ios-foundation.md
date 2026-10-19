@@ -1,8 +1,8 @@
 # ADR 0001：iOS の土台（最低 iOS 26、Swift 6、ローカルの Swift パッケージ2つ、v1 は強制アップデートなし）
 
 - 状態：提案
-- 書いた役：tech-lead　日付：2026-10-20
-- 関係する PRD、設計メモ、契約：docs/prd/001-reading-session.md、docs/adr/features/001-reading-session.md、contracts/（7-2〜7-4 で書く）
+- 書いた役：tech-lead　日付：2026-10-20（7-1 で書き、7-4b で拡張の分離の［推測］を外し、構成の行を足した）
+- 関係する PRD、設計メモ、契約：docs/prd/001-reading-session.md、docs/adr/features/001-reading-session.md、contracts/（設計メモの 4 の表）
 - 元に戻す手間：大（最低の OS を下げると、iOS 26 の API を使う画面と、確かめる OS の組を作り直す）。パッケージの分け方を変えるのは中。最低の OS を上げるのは小。
 
 ## 背景
@@ -12,7 +12,7 @@
   - 2026-09-09 から、最低の対応 OS は iOS 13 以上。
 - 仕様（design/001-reading-session.md）は iOS 26 の API を前提にしている：Button の role .close と .confirm、ラベルなしの init(role:action:)。G1 のデザインの判定（docs/reviews/001-reading-session-G1-tech-lead-design-r1.md の G）で、iOS 26.0 を対象にした typecheck は exit 0、iOS 18.0 を対象にすると exit 1 だった。
 - PRD 12 は、G3 を iOS 27 のシミュレーターで測り、ウィジェットと伏せる道のテストは iOS 26.x でも動かす前提。最低の機種の値は G4-15 で、iOS 26 が動くいちばん古い機種で測る。
-- この機械：Xcode 27.1（27A9275）、Apple Swift 6.4。シミュレーターの runtime は iOS 27.0 だけ（iOS 26.x を入れるのは G1-3。7-4 で行う）。
+- この機械：Xcode 27.1（27A9275）、Apple Swift 6.4。シミュレーターの runtime は iOS 27.0 だけ。iOS 26.x を入れるかは G1-3 で Takuma が決める（手順と大きさは設計メモの 10。ダウンロードはしていない）。
 - 時間の枠：芯だけでも 1.3〜1.8倍の速さが要る（PRD の冒頭）。土台は、作り手が迷わない最小の形にする。
 - アプリとウィジェットの拡張は、縦書きの組みと描画を同じものにしなければならない（AC-27〜AC-31、AC-99、H22 は、アプリの中で同じ部品を描いて確かめる）。
 
@@ -20,13 +20,14 @@
 - 最低の対応 OS は iOS 26.0、端末は iPhone だけ。ビルドは Xcode 26 以降と iOS 26 以降の SDK（この機械は Xcode 27.1）。外部のライブラリは入れず、Apple のフレームワークだけを使う。
 - Swift 6 の言語モード（並行性の検査は完全）で、警告は0件（SWIFT_TREAT_WARNINGS_AS_ERRORS=YES）。`@unchecked Sendable`、`nonisolated(unsafe)`、`@preconcurrency` は使わない。使うなら、その行のコメントに理由を書く（G2 で reviewer が grep する）。
 - 作りは、アプリのターゲット、ウィジェットの拡張のターゲット、ローカルの Swift パッケージ2つ（ReadingCore、ReadingStore。名前は仮）。依存は一方向。強制アップデートは v1 では入れない。
+- ビルドの構成は3つ。Debug（手元の開発と受け入れテスト）、Perf（Release を写し、コンパイルの条件 `UITEST_HOOKS` だけを足す。速さの AC を G3 で測る）、Release（TestFlight と App Store）。Perf を置く理由、ほかの案、G2 での確かめ方は ADR 0005。
 
 | 単位 | 中身 | 使う側 | 既定の actor 分離 | 書く場所 |
 |---|---|---|---|---|
 | ReadingCore（ローカルのパッケージ） | 値の型と計算：縦書きの組み、縮め方（AC-29）、晩と分、ISBN のチェックの数字、著者の取り出し（AC-92）、名前のそろえ方、入口の URL、ウィジェットの写しの型と読み書き。W-1 と W-2 の描画の View | アプリ、ウィジェットの拡張 | nonisolated（Swift の既定のまま）。値の型は Sendable にする。View は SwiftUI の View の宣言によって MainActor になる | Package.swift に分離の設定を書かない。`swiftLanguageModes: [.v6]` は書く |
-| ReadingStore（ローカルのパッケージ） | SwiftData のモデル（VersionedSchema）、保存と読み込み、書誌の問い合わせ（URLSession と XMLParser）、ウィジェットの写しを書く側、つなぎ口のうちデータに触れる部分（テストの構成だけ。ADR 0005） | アプリだけ | MainActor | Package.swift の swiftSettings に `.defaultIsolation(MainActor.self)`。通信と XML の読みは `@concurrent` の関数で main の外に出す |
-| アプリのターゲット | 画面（S-1〜S-10、部品 N）、App の入口、入口の URL を受ける所、つなぎ口の口 | — | MainActor | ビルド設定の Default Actor Isolation を MainActor（Xcode 26 以降の新しいアプリの既定） |
-| ウィジェットの拡張のターゲット | Widget の宣言と TimelineProvider。写しを読み、ReadingCore で組んで描く | — | nonisolated［推測。TimelineProvider の要件を満たす型の分離を、7-3 の縦書きの spike で確かめる］ | ビルド設定の Default Actor Isolation を nonisolated |
+| ReadingStore（ローカルのパッケージ） | SwiftData のモデル（VersionedSchema）、保存と読み込み、書誌の問い合わせ（URLSession と XMLParser）、ウィジェットの写しを書く側。時計、通信の部品、保存の前の確かめ、再読み込み、外の URL を開く部品は init で受け取る（つなぎ口のコードはここに書かない。ADR 0005） | アプリだけ | MainActor | Package.swift の swiftSettings に `.defaultIsolation(MainActor.self)`。通信と XML の読みは `@concurrent` の関数で main の外に出す |
+| アプリのターゲット | 画面（S-1〜S-10、部品 N）、App の入口、入口の URL を受ける所。テストのつなぎ口は `UITestHooks/` の下だけで、Debug と Perf だけに入る（ADR 0005） | — | MainActor | ビルド設定の Default Actor Isolation を MainActor（Xcode 26 以降の新しいアプリの既定） |
+| ウィジェットの拡張のターゲット | Widget の宣言と TimelineProvider。写しを読み、ReadingCore で組んで描く | — | nonisolated（7-3 の spike のビルドで確かめた。下の「確かめたこと」） | ビルド設定の Default Actor Isolation を nonisolated |
 
 - 依存の向き：アプリ → ReadingStore → ReadingCore、アプリ → ReadingCore、拡張 → ReadingCore。拡張は ReadingStore を使わない（SwiftData を開かない。写しだけを読む。ADR 0002）。
 - ローカルのパッケージは Xcode のビルド設定を受け継がない。だから言語モードと分離は Package.swift に書く（spike で確かめた形。下）。
@@ -48,7 +49,7 @@
   - iOS 26 が動かない端末の人の割合は、まだ測れていない（未確認）。公開後の問い合わせの数で見直す（見直す条件）。
   - 最低の OS を後で下げるのは手間が大きいが、できなくはない（画面ごとの分岐を足す）。上げる方向は小さい。
 - 2つ目の反論：「ReadingStore を MainActor にすると、本500冊・記録5,000件の読み込みで画面が止まる。」
-  - 答え：AC-101（1.0秒以内、Release）と、反応の目標（250ms 以上の hang 0件。設計メモの 6）で測る。超えたら、読み込みを `@ModelActor` の actor に移す（この ADR を直す）。最初から actor にすると、ModelContext を画面と分け合う手間が増える。
+  - 答え：AC-101（1.0秒以内。G3 は Perf、G4 は Release。裁定 29）と、反応の目標（250ms 以上の hang 0件。設計メモの 6）で測る。超えたら、読み込みを `@ModelActor` の actor に移す（この ADR を直す）。最初から actor にすると、ModelContext を画面と分け合う手間が増える。
 
 ## 結果
 - これで楽になること
@@ -56,18 +57,20 @@
   - 拡張に入るのは ReadingCore だけなので、拡張が SwiftData を開くことがビルドの形で起きない。
   - 並行性の誤りがコンパイルで落ちる（spike で、MainActor のメソッドを nonisolated の関数から呼ぶとビルドが落ちることを確かめた）。
 - これで難しくなること、守り続けること
-  - iOS 26.x のシミュレーターがこの機械にない。G1-3 で入れる手順を確かめ、入らなければ iOS 26 での確かめを G4 の実機に回す（PRD 12 の前書き）。
+  - iOS 26.x のシミュレーターがこの機械にない。入れる手順と大きさは確かめた（設計メモの 10）。入れるかは Takuma が決め、入れなければ iOS 26 での確かめは G4 の実機だけにする（PRD の G1-3）。
   - 警告0件を保つ。Swift と Xcode を上げるたびに、警告が増えていないかを CI で見る。
   - ReadingCore の値の型は Sendable に保つ。拡張とアプリのどちらからでも呼べる形にする。
   - Package.swift の `swiftLanguageModes` と `defaultIsolation` を、パッケージを足すたびに書く。
+  - 構成を3つ保つ。Perf のバンドル ID、App Group、entitlements は Release と同じにする（ADR 0005）。
 - 元に戻すときの手順と手間
   - 最低 OS を下げる：iOS 26 の API の箇所ごとに `if #available` を足し、G3 を2つの OS で回す。大。
   - パッケージを1つにまとめる、または3つに分ける：ファイルの移動と import の直し。中（1〜2日［推測］）。
+  - 拡張の分離を MainActor に変える：ビルド設定の1行と、TimelineProvider の書き方の直し。小［推測］。
 
 ## 見直す条件
 - 公開後、iOS 26 未満の端末で入れられないという問い合わせが10件を超えた［線は推測］。
 - Apple が SDK や最低 OS の条件を上げた（毎年の発表。https://developer.apple.com/news/upcoming-requirements/ を G5 の前に読み直す）。
-- AC-100 か AC-101 が Release で線を超えた、または Instruments の Hangs で 250ms 以上の hang が出た：ReadingStore の読み込みを `@ModelActor` に移す。
+- AC-100 か AC-101 が線を超えた（G3 の Perf か G4 の Release）、または Instruments の Hangs で 250ms 以上の hang が出た：ReadingStore の読み込みを `@ModelActor` に移す。
 - 画面のコードが増え、アプリのターゲットのビルドが手元で1分を超えた［線は推測］：画面のパッケージ（3つ目）を考える。
 - サーバーを持つ版（友人など）を作ると決めた：その API の最初の版より前に、強制アップデート（アプリが版を送り、サーバーが動かせる最低の版を返す）を入れる。この ADR を置き換える。
 - 外部のライブラリが要るものが出た：contracts/dependencies.md と新しい ADR で決める。
@@ -86,10 +89,17 @@
   - `xcodebuild -scheme SpikePkg-Package -destination 'generic/platform=iOS Simulator' SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build` → exit 0、`** BUILD SUCCEEDED **`、error と warning の行は0。
   - 分離が効いているかの確かめ：ReadingStore に `nonisolated func probeCallsMainActorMethod(_ box: StoreBox) throws { try box.add(title: "x") }` を足して同じビルド → exit 65、`** BUILD FAILED **`、`error: call to main actor-isolated instance method 'add(title:)' in a synchronous nonisolated context`。確かめたあと、このファイルは消した。
   - 1回目の確かめは Sendable な let を読む形で、分離の外からも読めるのでビルドが通った（確かめにならなかった）。上の2回目で確かめ直した。
+- 拡張の分離（7-3 の spike。リポジトリの外の /private/tmp/claude-501/-Users-takumamatsuura-reading-app/54111b04-6b80-410d-9782-7fbf5f807550/scratchpad/g1-7-3/。docs/reviews/001-reading-session-G1-7-3-tech-lead.md）
+  - 作り：アプリ（Default Actor Isolation は MainActor）、ウィジェットの拡張（nonisolated）、ローカルのパッケージ1つ。拡張に Widget と TimelineProvider を置いた。
+  - `xcodebuild -project Spike.xcodeproj -scheme SpikeApp -configuration Debug -destination 'generic/platform=iOS Simulator' -derivedDataPath ../dd ARCHS=arm64 SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build` → exit 0、`** BUILD SUCCEEDED **`。
+  - 7-4b で build-ni.log を読み直した：`BUILD SUCCEEDED` が1つ。warning の行は2つで、どちらも道具の知らせ（`not stripping binary because it is signed` と `appintentsmetadataprocessor … Metadata extraction skipped`）。コンパイラーの警告は0件。プロジェクトの設定は `SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated` が1つ（拡張）、`MainActor` が3つ。
+  - SDK の宣言：TimelineProvider の `getSnapshot` と `getTimeline` の completion は `@escaping @Sendable` で、`@preconcurrency` が付く。どの actor にも属さない。
+  - `xcrun simctl spawn <端末> pluginkit -mAvvv -p com.apple.widgetkit-extension` に拡張が出た（システムに登録された）。
 - 未確認
   - iOS 26 が動く端末の一覧と、動かない端末の利用者の割合。
-  - ウィジェットの拡張の TimelineProvider を、nonisolated の既定で警告0件で書けるか（7-3 の spike）。
-  - iOS 26.x のシミュレーターの runtime を入れられるか（G1-3。7-4）。
+  - iOS 26.x のシミュレーターの runtime：入れていない（G1-3。入れるかは Takuma）。手順は Apple の文書 https://developer.apple.com/documentation/xcode/downloading-and-installing-additional-xcode-components 、大きさは Apple silicon 用で 7.99〜8.52 GB（設計メモの 10）。
+  - Perf の構成で、ローカルのパッケージが -O で組まれるか（ADR 0005。ios/ を作る最初の PR）。
+  - 拡張を MainActor にした変種で、その設定が拡張のコンパイルに渡ったか（採らない案なので、これ以上確かめない）。
 
 ## 確かめ（B）
 - [x] 案が2つ以上あり、どの案にも悪い点が書いてある

@@ -1,0 +1,4 @@
+# contracts/ の OpenAPI の形式を確かめるルール（tech-lead。G1 の 7-4b）
+# 動かし方は CLAUDE.md の「ビルド/テストのコマンド」と、設計メモ docs/adr/features/001-reading-session.md の 4。
+# Spectral の組み込みの OpenAPI のルールをそのまま使う。ルールを足す、外すときは理由をここに書く。
+extends: ["spectral:oas"]

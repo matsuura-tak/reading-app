@@ -106,7 +106,9 @@ AC-40 の場合ごとの期待値（照らし合わせ）
 - だから受け入れる（設計メモ 7 の T の行）。
 - 確かめ方
   - G2：reviewer が、URL を受ける処理から、保存、写し、再読み込み、通信の呼び出しがないことをコードで読む。
-  - G3：verifier が、URL で起動する前とあとで次を見る。H13 のデータが同じ。H29 の要求が0件。H22 の再読み込みの要求が0回。
+  - G3：verifier が、URL で起動する前とあとで次を見る。H13 のデータが同じ。H29 の要求が0件。H22 の再読み込みの要求のうち、`launch` のほかの出どころが0（7-4b で直した）。
+    - アプリは起動のたびに写しを書く（contracts/widget-snapshot.schema.json）ので、プロセスのない起動では、出どころ `launch` の1回が残る。これは URL のせいではない。
+    - 出どころの名前と数え方は contracts/test-hooks.md の H22。
 
 ## 6. spike で確かめたこと（2026-10-20）
 - 環境：Xcode 27.1、iOS 27.0 のシミュレーター（iPhone 17 Pro）。spike はリポジトリの外で行い、端末は最後に消した。
@@ -121,8 +123,7 @@ AC-40 の場合ごとの期待値（照らし合わせ）
 - 未確認（G4-18 で Takuma が見る）
   - 本物のウィジェットを押したときに、確認が出ずに開くこと。
   - 登録しなくても開くか。
-- H28 への申し送り（7-4 で決める）
-  - `simctl openurl` と Safari の道では確認が出る。H28 は次のどれかにする。
-    - (a) XCUIApplication の open(_:) を使う（確認が出るかは未確認）。
-    - (b) springboard の「開く」を押す（spike で届いた）。
-    - (c) テストの構成だけの起動引数で、同じ受け口の関数に URL を渡す（ADR 0005）。
+- H28（7-4a で決めた。形は contracts/test-hooks.md の H28 を正とする）
+  - `simctl openurl` と Safari の道では確認が出る。
+  - H28 は (a) の `XCUIApplication.open(_:)` にした。7-4a の spike 1 で、`app.terminate()` のあとに呼ぶと確認は出ず、onOpenURL に URL が届いた（ADR 0005）。
+  - 確認が出たときは (b) の springboard の「開く」に切り替える。(c) のテストの構成だけの引数は、OS の URL の道を通らないので使わない。
