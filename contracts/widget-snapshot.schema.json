@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:widget-snapshot:1",
+  "title": "ウィジェットの写し（App Group の widget-snapshot.json）大きな版 1",
+  "description": "アプリと W-1、W-2 のウィジェットの拡張が分け合う、今の本の写し。書いた役：tech-lead、2026-10-20（G1 の 7-3）。関係：ADR 0002（保存と共有）、ADR 0003（縦書きの組み）、設計メモ 5、PRD 12（App Group には今の本の書名、一行、ページ、出さない設定だけを置く）、AC-14、AC-16、AC-27〜AC-35、AC-82、AC-99、AC-102。\n\n[置き場所と書き方] App Group の入れ物の直下の widget-snapshot.json の1ファイル。UTF-8 の JSON。書くのはアプリだけ（ReadingStore の保存の後ろの1か所）、読むのは拡張だけ（アプリは書いたあとに読み直さない）。書くときは Data.write(options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])。書く時：起動のたびと、今の本、書名、一行、ページ、出さない設定、見た目の id のどれかを変えた保存のあと。書いたあとにウィジェットの再読み込みを1回だけ求める（AC-33）。今の本がなくなったら currentBook を書かない。\n\n[書く側の決まり] この文書の形どおりに書く（知らない項目を足さない）。値がない項目はキーごと書かない（null を書かない。Swift の JSONEncoder の既定）。hideOnWidgets が真のときは、書名と一行を書かない（ページだけ。拡張は持っていないものを出せない）。ISBN、著者、本の id、日時は書かない（PRD 12。ウィジェットに要らない）。\n\n[読む側の決まり] 次のときは、どれも『読めない』として文言キー widget.unavailable の文を出し、読み上げのラベルも同じ文にする。押したときの URL は入口の URL のまま（contracts/entry-urls.md）。拡張は落ちず、写しを書き直さない：(1) ファイルがない (2) 開けない（保護の等級で開けないときを含む） (3) JSON でない、型が違う、必須の項目がない (4) schemaVersion が 1 でない（知らない大きな版） (5) 値が範囲の外（書名 0字か101字以上、一行 0字か61字以上、ページ 0 か 10000 以上。字は書記素で数える） (6) hideOnWidgets が真なのに書名か一行がある。次は読み流す：知らない項目は無視する（同じ大きな版で足した項目）。null の title、line、page はないものとして読む。appearanceID が知らない値なら default で描く。\n\n[出し方] currentBook がない：widget.empty。hideOnWidgets が真：widget.hidden の文とページ（ページがなければ widget.hidden だけ）。line がある：一行の組み（ADR 0003）とページ。line がなくページがある：書名と p.ページ。どちらもない：書名だけ。\n\n[版] schemaVersion は大きな版。同じ大きな版の中では、省ける項目を足すことだけをする（項目の名前、型、意味、範囲を変えない。必須の項目を足さない）。それ以外の変更は schemaVersion を 2 にし、ADR を書く。アプリと拡張は同じ版で配られるので、版のずれはアップデートの直後の短い間だけで、アプリの起動で写しが書き直される（ADR 0002）。",
+  "$comment": "maxLength は JSON Schema では符号位置で数えるので、PRD の書記素の上限（書名 100字、一行 60字）は表せない。ここの maxLength は壊れた写しを弾くための上限で、書記素の上限は読む側が数えて確かめる（description の (5)）。",
+  "type": "object",
+  "required": ["schemaVersion", "hideOnWidgets"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "写しの大きな版。読む側は 1 のときだけ読む。"
+    },
+    "hideOnWidgets": {
+      "type": "boolean",
+      "description": "設定の「一行と書名を隠す」（settings.hideOnWidgets。AC-34）。真なら currentBook に title と line を書かない。"
+    },
+    "appearanceID": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+      "default": "default",
+      "description": "ウィジェットの見た目の id（PRD 11 の冒頭。H22 で読む）。省いたときと知らない値のときは default。有料の見た目の id は選択肢（課金）で designer が決める。"
+    },
+    "currentBook": {
+      "description": "今の本。キーがないときは今の本なし（本0冊も。AC-32）。"
+    }
+  },
+  "if": {
+    "properties": { "hideOnWidgets": { "const": true } },
+    "required": ["hideOnWidgets"]
+  },
+  "then": {
+    "properties": { "currentBook": { "$ref": "#/$defs/hiddenBook" } }
+  },
+  "else": {
+    "properties": { "currentBook": { "$ref": "#/$defs/visibleBook" } }
+  },
+  "$defs": {
+    "page": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9999,
+      "description": "しおりのページ（PRD 11 の冒頭：1〜9999 の整数）。キーがないときはページなし。"
+    },
+    "visibleBook": {
+      "type": "object",
+      "required": ["title"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "書名。前後の空白を除いた 1〜100 字（書記素）。書誌から取った書名は巻を足し、100字で切った形（ADR 0004）。ウィジェットに出すのは一行がないときだけで、横書き。読み上げのラベルにはいつも入る（AC-99）。"
+        },
+        "line": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600,
+          "description": "続きの一行の全文。前後の空白を除いた 1〜60 字（書記素）。ウィジェットの25字への縮め方は、描くときに ReadingCore が行う（AC-29）。写しには縮めない全文を書く。キーがないときは一行なし（AC-31）。"
+        },
+        "page": { "$ref": "#/$defs/page" }
+      }
+    },
+    "hiddenBook": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "page": { "$ref": "#/$defs/page" }
+      },
+      "description": "隠す設定のときの今の本。ページだけを持つ。"
+    }
+  },
+  "examples": [
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "default",
+      "currentBook": { "title": "羅生門", "line": "下人は、雨やみを待っていた。", "page": 61 }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "default",
+      "currentBook": { "title": "檸檬", "page": 120 }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "currentBook": { "title": "檸檬" }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": true,
+      "appearanceID": "default",
+      "currentBook": { "page": 61 }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "default"
+    }
+  ]
+}
