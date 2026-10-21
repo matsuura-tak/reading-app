@@ -43,3 +43,11 @@
 - 実装の変更は、ios-engineer が「できた」と報告した時点の HEAD を1つの変更として G2 に出す。その HEAD で CI が緑であることを求める。途中の push（雛形だけ、AC の一部だけ）は G2 に出さず、赤でもよい。雛形だけの変更を別に G2 に出すことはしない。
 - 受け入れテストを先に入れる verifier の変更は gates.md:55 の例外のとおり（スタックの CI は落ちるのが正しい）。
 - この裁定は元に戻せる（CI の運用の決めごと）。
+
+## 追記3（2026-10-21、tech-lead の r1 反映で新しく生まれた項目）
+裁定1の一覧に足す（G2 の最初の CI の出力で確かめ、ios-engineer が結果と代わりの案を報告に書く）：
+- (i) XcodeGen の zip を展開したまま動かして SettingPresets を見つけられるか。`xcodegen --version` の出力の形。代わり：install.sh で写してから動かす、または Mint。
+- (ii) XcodeGen の include の合わせ方（testPlans の配列、相対パス）と、target.yml がないときに generate が落ちるか。代わり：relativePaths を false にする。
+- (iii) `xcodebuild -version` の1行目の形。代わり：grep を出力に合わせて直す（app.json は Takuma）。
+- (iv) uitest.telemetry.log の accessibilityValue の長さの上限。代わり：最後の n 件だけにする。
+- (v) TestFlight のビルドに Data Protection の entitlement が入るか、実機で効くか、.complete のファイルが iCloud バックアップに入るか。G4 の前に Mac で確かめる。入らなければ ADR 0001 を開き直す。
