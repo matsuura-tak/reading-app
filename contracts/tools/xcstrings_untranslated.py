@@ -4,7 +4,7 @@
 数え方：
 - shouldTranslate が false のキーは数えない。
 - 元の言語（sourceLanguage。001 は ja）：localizations にその言語の値があり、すべての stringUnit の value が空でないこと。state は見ない。
-- そのほかの言語（en）：localizations にその言語があり、variations（plural など）と substitutions の中を含むすべての stringUnit の state が "translated" であること。needs_review、new、stale は数える。
+- そのほかの言語（en）：localizations にその言語があり、variations（plural など）と substitutions の中を含むすべての stringUnit の state が "translated" で、value が空でないこと。needs_review、new、stale と、translated でも値が空のものは数える。
 - 1つでも満たさない言語があるキーを1件と数える。標準出力の最後の行は untranslated_keys=<件数>。0件なら終了コード0、1件以上なら1。
 """
 import json
@@ -41,6 +41,8 @@ def problems(catalog):
                     found.append((key, lang, "empty value"))
             elif any(unit.get("state") != "translated" for unit in units):
                 found.append((key, lang, "not translated"))
+            elif any(not unit.get("value") for unit in units):
+                found.append((key, lang, "empty value"))
     return found
 
 

@@ -67,7 +67,7 @@ protocol TelemetrySink: Sendable {
 決まり：
 - イベント名とプロパティ名の文字は、TelemetryEvent の中の1か所（例：`var name: String` と `var properties: [String: TelemetryValue]`）でだけ作る。TelemetryValue は文字と真偽の2つだけで、区間の rawValue と Bool からだけ作る。
 - TelemetryEvent の関連値に String と Int を持たせない（題名とページを型の上で渡せなくする）。区間への分け方は各 enum の init の1か所でだけ書き、単体テストで境目（4と5、14と15、9と10、86,399秒と86,400秒など）を確かめる。
-- 実装は2つ：本番の LocalCountingTelemetrySink（UserDefaults の telemetry.localCounts のイベント名の回数を1足すだけ。ネットワークに出ない）と、Debug の HTTPTelemetrySink（下。ios/Yomutoki/Debug/ の中で、ファイル全体を #if DEBUG）。だから protocol にする。
+- 実装は2つ：本番の LocalCountingTelemetrySink（UserDefaults の telemetry.localCounts のイベント名の回数を1足すだけ。ネットワークに出ない）と、Debug の HTTPTelemetrySink（下。ios/Yomutoki/Debug/HTTPTelemetrySink.swift。ファイル全体を #if DEBUG。ADR 0005 の2つのファイルの片方）。だから protocol にする。
 - 送ることで画面を止めない。送り先の失敗は画面に何も出さない（AC-20）。
 
 ## テストの受け口（Debug ビルドで -UITest のときだけ。contracts/test-hooks.md の T6、T7、T13、T19）
@@ -79,6 +79,7 @@ protocol TelemetrySink: Sendable {
 - AC-20 の形：UITEST_TELEMETRY_URL を失敗する先（届かないポート、500 を返す受け口、応答しない受け口）にし、UITEST_TELEMETRY_CONTROL_URL を正常な受け口にすると、送り終わり（failed が増えたこと）を待てる。
 - 受け口が返す本文は読まない。204 か 200 を返せばよい。
 - UITEST_TELEMETRY_URL がないときは、-UITest でも本番と同じ LocalCountingTelemetrySink を使う（ネットワークに出ない）。
+- 代わりの確かめ方（T22。localhost に届かないときに verifier が使う）：UITEST_TELEMETRY_LOG=1 なら、どちらの送り先の前にも、渡されたイベントを順に覚える包みを挟む（HTTPTelemetrySink.swift の中）。覚えた全件と sent、failed を、UITestHooks.swift が出す要素 `uitest.telemetry.log` の accessibilityValue に1行の JSON `{"events":[…],"sent":n,"failed":m}` で出す。events の各要素は telemetry-events.schema.json の形（受け口に POST する本文と同じ）。形と使い方は contracts/test-hooks.md の T22。
 
 ## SDK を入れるとき（003 の G1。この節は今は使わない）
 - TelemetrySink の実装を1つ足し、組み立ての場所で差し替える。イベントの型と区間は変えない。

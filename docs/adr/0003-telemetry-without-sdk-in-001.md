@@ -47,7 +47,7 @@
 - A47 NWListener iOS 12.0+（受け口をテストの側に立てる見込み）、A48 NSAllowsLocalNetworking の本文「In iOS 17, iPadOS 17, and macOS 14, ATS no longer allows connections to IP addresses by default.」、A49 TN3179「The simulator doesn't support local network privacy.」（docs/reviews/001-reading-session-G0-tech-lead-r2.md:48-50）
 - Apple のプライバシー表記の分け方 https://developer.apple.com/app-store/app-privacy-details/ （G0 tech-lead r1 で開いて確認）
 - 開けなかったもの：`curl -sS -m 20 https://telemetrydeck.com/pricing/` → 「CONNECT tunnel failed, response 403」（2026-10-21）。TelemetryDeck の SDK の README と API は未確認。
-- 未確認：URLSession で localhost の受け口にシミュレーターのアプリから実際に届くか（G2 の CI で verifier の受け入れテストが確かめる）。
+- 未確認：URLSession で localhost の受け口にシミュレーターのアプリから実際に届くか（G2 の CI で verifier の受け入れテストが確かめる。裁定の追記2 の (9)）。届かなければ、送ったイベントを並べた要素 uitest.telemetry.log の accessibilityValue を XCUITest が読む形（contracts/test-hooks.md の T22。2026-10-21 に G1 reviewer r1 の重大1 で足した）に替える。
 
 ## 確かめ（B）
 - [x] 案が2つ以上あり、どの案にも悪い点が書いてある

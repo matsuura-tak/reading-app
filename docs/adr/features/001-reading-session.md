@@ -4,41 +4,41 @@
 - PRD：docs/prd/001-reading-session.md（AC-1〜AC-67。10、12、15。18 の 6 は指揮役が A に決めた）　デザイン：design/001-reading-session.md（1、3、6、10、D-57〜D-60）、design/tokens.md
 - 契約：HTTP の契約（contracts/openapi.yaml）はない。端末の中の契約は contracts/data-model.md、contracts/test-hooks.md、contracts/telemetry.md と JSON Schema（contracts/README.md の一覧）
 - ADR：0001（SwiftData、端末だけ）、0002（iOS 17.0、Xcode 26、Swift 6）、0003（計測の SDK なし）、0004（XcodeGen）、0005（テストのつなぎ口は Debug だけ）
-- API の証拠の番号 A1〜A108 は docs/reviews/001-reading-session-G1-tech-lead-r1.md、-r2.md、docs/adr/ の「確かめたこと」の番号
+- API の証拠の番号 A1〜A112 は docs/reviews/001-reading-session-G1-tech-lead-r1.md、-r2.md、docs/adr/ の「確かめたこと」の番号
 
 ## 1. 範囲、目標、非目標
-- 範囲：iPhone のアプリ1つ（ターゲット3つ：アプリ、単体テスト、受け入れテスト）。画面 S1〜S7、保存（SwiftData の Book、ReadingSession、ActiveReading）、計測のイベントの型と端末の中で数える送り先、Debug だけのテストのつなぎ口 T1〜T21。
+- 範囲：iPhone のアプリ1つ（ターゲット3つ：アプリ、単体テスト、受け入れテスト）。画面 S1〜S7、保存（SwiftData の Book、ReadingSession、ActiveReading）、計測のイベントの型と端末の中で数える送り先、Debug だけのテストのつなぎ口 T1〜T22。
 - 目標：PRD の AC-1〜AC-67 を、サーバーも外部ライブラリもなしで満たす。保存の失敗と強制終了で読書を失わない（1操作1回の save、失敗で rollback、時刻から経過を計算）。受け入れテストが時計と保存の失敗と送り先を差し替えて、sleep なしで決まった結果を確かめられる。
 - 非目標：サーバー、アカウント、iCloud の同期、計測の第三者の SDK（003 で決め直す）、通知、ウィジェット、Live Activity、バックグラウンドの処理、iPad、ローカルの Swift パッケージ、MetricKit の購読（8）。
 
 ## 2. 受け入れ条件の対応表
-operationId はすべて「なし（端末のみ）」（HTTP の API がない）。画面の ID は design/ の 1、データは contracts/data-model.md。「UI」は ios/AcceptanceTests/ の XCUITest（名前は verifier が G2 のテスト計画で決め、AC 番号を名前に入れる）。T の番号は contracts/test-hooks.md。全行で T1 か T2 を使ってデータを決めてから起動する。
+operationId はすべて「なし（端末のみ）」（HTTP の API がない）。画面の ID は design/ の 1、データは contracts/data-model.md。「UI」は ios/AcceptanceTests/ の XCUITest（名前は verifier が G2 のテスト計画で決め、AC 番号を名前に入れる）。T の番号は contracts/test-hooks.md。全行で T1 か T2 を使ってデータを決めてから起動する。T8〜T10、T18（識別子と文言のキー）はほぼ全行で使うので書かない（contracts/test-hooks.md の各行が正）。この表の T と test-hooks.md の「使う AC」は同じにする（照合の出力は 4）。T6 は、localhost に届かなければ T22 に替える（裁定の追記2 の (9)）。
 | AC | 画面（design/） | operationId | データ（エンティティ） | 確かめるテスト |
 |---|---|---|---|---|
 | AC-1 | S1（本0冊） | なし（端末のみ） | Book 0件 | UI（T1）とスクリーンショット |
 | AC-2 | S2 → S3、S1 | なし（端末のみ） | Book（title、totalPages nil、lastPage 0） | UI（T1） |
 | AC-3 | S2 | なし（端末のみ） | Book.title の整え方（data-model） | UI（T1） |
 | AC-4 | S1 → S2 → S3 → S4 | なし（端末のみ） | Book、ActiveReading | UI（T1。タップを数える） |
-| AC-5 | S1 → S4 | なし（端末のみ） | ActiveReading.startedAt、前の本 | UI（T2、T3、T20） |
+| AC-5 | S1 → S4 | なし（端末のみ） | ActiveReading.startedAt、前の本 | UI（T2、T3、T16、T20） |
 | AC-6 | S4 → S5 → S3 | なし（端末のみ） | ActiveReading（pausedAt、pausedTotalSeconds）、ReadingSession.durationSeconds | UI（T2、T3、T16） |
 | AC-7 | S4 | なし（端末のみ） | ActiveReading（経過は計算） | UI（T2、T3、T16） |
 | AC-8 | 起動 → S4 | なし（端末のみ） | ActiveReading（reading） | UI（T2、T3。終了して起動し直す） |
 | AC-9 | S4 → S5 → S3 | なし（端末のみ） | ReadingSession（endPage、pagesRead）、Book.lastPage | UI（T2） |
 | AC-10 | S5 → S3 | なし（端末のみ） | ReadingSession（endPage nil） | UI（T2） |
 | AC-11 | S5 | なし（端末のみ） | ActiveReading（finishing）、Book.totalPages | UI（T2、T17） |
-| AC-12 | S5 → S3 | なし（端末のみ） | ReadingSession.durationSeconds（分×60） | UI（T2、T17） |
+| AC-12 | S5 → S3 | なし（端末のみ） | ReadingSession.durationSeconds（分×60） | UI（T2、T3、T17） |
 | AC-13 | S4 → S3 | なし（端末のみ） | ActiveReading を消す（session_discard） | UI（T2、T3） |
 | AC-14 | S3 | なし（端末のみ） | Book、ReadingSession（計算する値） | UI（T2） |
 | AC-15 | S1 | なし（端末のみ） | ReadingSession.startedAt（今週） | UI（T2、T3、T4、T15） |
 | AC-16 | S3 → S6 → S3 | なし（端末のみ） | ReadingSession を消す。Book.lastPage は変えない | UI（T2） |
 | AC-17 | S4 → S1 → S3 | なし（端末のみ） | ActiveReading（0件か1件） | UI（T2、T17） |
 | AC-18 | 起動 → S1、S3 | なし（端末のみ） | Book、ReadingSession（ストアのファイル） | UI の2段（T2、T11。ac18-reboot.sh） |
-| AC-19 | S5 | なし（端末のみ） | ActiveReading.finishedAt、終える入力の下書き | UI（T2、T5 session_finish:*、T17） |
-| AC-20 | S2 → S3 → S4 → S5 → S3 | なし（端末のみ） | 全部（計測の送り先だけ失敗） | UI（T1、T6、T7、T13、T19） |
-| AC-21 | 全画面 | なし（端末のみ） | なし | UI（T1、T12） |
+| AC-19 | S5 | なし（端末のみ） | ActiveReading.finishedAt、終える入力の下書き | UI（T2、T3、T5 session_finish:*、T17） |
+| AC-20 | S2 → S3 → S4 → S5 → S3 | なし（端末のみ） | 全部（計測の送り先だけ失敗） | UI（T1、T6 か T22、T7、T13、T16、T19） |
+| AC-21 | 全画面 | なし（端末のみ） | なし | UI（T1、T12、T16） |
 | AC-22 | S2 → S3、S1 | なし（端末のみ） | Book 21冊 | UI（T2） |
-| AC-23 | S2、S4、S5 | なし（端末のみ） | TelemetryEvent（区間と真偽だけ） | UI（T1、T6、T13） |
-| AC-24 | S4、S5 | なし（端末のみ） | 計測の印 telemetry.weekReachedWeekStart | UI（T2、T3、T4、T6、T13） |
+| AC-23 | S2、S4、S5 | なし（端末のみ） | TelemetryEvent（区間と真偽だけ） | UI（T2、T6 か T22、T13、T16） |
+| AC-24 | S4、S5 | なし（端末のみ） | 計測の印 telemetry.weekReachedWeekStart | UI（T2、T3、T4、T6 か T22、T13、T16） |
 | AC-25 | S1 → S4 | なし（端末のみ） | ReadingSession.savedAt（前の本） | UI（T2、T3、T17） |
 | AC-26 | S1 → S4 | なし（端末のみ） | Book.addedAt（前の本） | UI（T2、T17） |
 | AC-27 | S1 | なし（端末のみ） | ActiveReading | UI（T2） |
@@ -47,14 +47,14 @@ operationId はすべて「なし（端末のみ）」（HTTP の API がない�
 | AC-30 | S5 | なし（端末のみ） | 分の範囲（finishedAt から計算） | UI（T2、T17） |
 | AC-31 | S2 | なし（端末のみ） | Book.totalPages | UI（T1） |
 | AC-32 | S5 → S3 | なし（端末のみ） | ReadingSession.endPage（9,999 まで） | UI（T2、T17） |
-| AC-33 | 起動 → S4 | なし（端末のみ） | ActiveReading（paused、pausedAt） | UI（T2、T3、T17） |
+| AC-33 | 起動 → S4 | なし（端末のみ） | ActiveReading（paused、pausedAt） | UI（T2、T3、T16、T17） |
 | AC-34 | 起動 → S4 ＋ S5 | なし（端末のみ） | ActiveReading（finishing、finishedAt）、下書きを新しく作る | UI（T2、T3、T17） |
-| AC-35 | S5 → S3 | なし（端末のみ） | ReadingSession 1件 | UI（T2、T5 session_finish:1） |
-| AC-36 | S1 | なし（端末のみ） | 今週の合計（計算） | UI（T2、T3、T4） |
+| AC-35 | S5 → S3 | なし（端末のみ） | ReadingSession 1件 | UI（T2、T3、T5 session_finish:1、T17） |
+| AC-36 | S1 | なし（端末のみ） | 今週の合計（計算） | UI（T2、T3、T4、T15） |
 | AC-37 | S3 | なし（端末のみ） | Book（記録0件） | UI（T2） |
 | AC-38 | S3 → S6 → S3 | なし（端末のみ） | ReadingSession（変えない） | UI（T2） |
 | AC-39 | 全画面（7 の文言） | なし（端末のみ） | String Catalog | 文言の表の検査（T14。Linux） |
-| AC-40 | S4 | なし（端末のみ） | 経過の秒（計算） | UI（T2、T3 で止める、T4 で ja と en） |
+| AC-40 | S4 | なし（端末のみ） | 経過の秒（計算） | UI（T2、T3 で止める、T4 で ja と en、T16） |
 | AC-41 | S4 | なし（端末のみ） | 経過＝max(0, …) | UI（T2、T3、T16 の set） |
 | AC-42 | S2 | なし（端末のみ） | Book（足さない） | UI（T2、T5 book_add） |
 | AC-43 | S3 → S6 → S7 | なし（端末のみ） | ReadingSession（残す） | UI（T2、T5 session_delete） |
@@ -64,8 +64,8 @@ operationId はすべて「なし（端末のみ）」（HTTP の API がない�
 | AC-47 | S4 → S5 → S4 → S5 | なし（端末のみ） | 下書きを消す、分の初めの値 | UI（T2、T3、T16） |
 | AC-48 | S5 → S4 | なし（端末のみ） | session_cancel_finish（下へのスワイプ） | UI（T2、T3、T16。swipeDown） |
 | AC-49 | S2 → S3 | なし（端末のみ） | Book | UI（T2） |
-| AC-50 | S1 → S4 → S5 → S3 | なし（端末のみ） | ReadingSession | UI（T2、T3） |
-| AC-51 | S1 → S4 → S3 | なし（端末のみ） | ActiveReading を消す | UI（T2、T3） |
+| AC-50 | S1 → S4 → S5 → S3 | なし（端末のみ） | ReadingSession | UI（T2、T3、T16） |
+| AC-51 | S1 → S4 → S3 | なし（端末のみ） | ActiveReading を消す | UI（T2、T3、T16） |
 | AC-52 | S3 | なし（端末のみ） | ActiveReading | UI（T2、T17） |
 | AC-53 | S2 → S1 | なし（端末のみ） | Book（足さない） | UI（T2） |
 | AC-54 | 起動 → S1（読み込みの失敗） | なし（端末のみ） | 読み込み（load） | UI（T2、T5 load:*） |
@@ -84,7 +84,7 @@ operationId はすべて「なし（端末のみ）」（HTTP の API がない�
 | AC-67 | S4 → S3 | なし（端末のみ） | ActiveReading を消す（再試行の時点で経過60秒未満） | UI（T2、T3、T5、T16） |
 
 ## 3. 構成図
-システムコンテキスト図（外とのつながりは、利用者と、CI の受け入れテストだけ。本番のアプリはネットワークに出ない。ADR 0003）
+システムコンテキスト図（外とのつながりは、利用者、CI の受け入れテスト、OS のバックアップ。本番のアプリはネットワークに出ない。ADR 0003）
 ```mermaid
 flowchart LR
   user["利用者（人）<br/>iPhone で本を足し、読む時間を計る"]
@@ -94,6 +94,8 @@ flowchart LR
   end
   user -->|"タップと文字の入力（UIKit のイベント）"| app
   runner -->|"起動の引数と環境変数、URL（XCUIApplication。Debug ビルドだけ）"| app
+  backup["OS のバックアップ（外のシステム）<br/>iCloud バックアップと、Mac か PC への端末のバックアップ<br/>端末のファイルを OS が写す。アプリのコードはない"]
+  device -->|"Library.store と UserDefaults を写す（OS が行う。暗号化は OS と利用者の設定。ADR 0001）"| backup
 ```
 コンテナ図（1つのアプリのプロセスの中。ローカルの Swift パッケージは作らないので、コンテナはアプリのターゲットの中のフォルダ）
 ```mermaid
@@ -109,8 +111,8 @@ flowchart TB
       telem["計測（Telemetry/）<br/>TelemetryEvent と TelemetrySink<br/>本番は UserDefaults で回数を数えるだけ"]
       clock["時計と暦（Domain/AppClock）<br/>Date を返す関数と Calendar<br/>本番は端末の時計と暦の設定"]
       subgraph debug["信頼の境界：テストの受け口（Debug ビルドで -UITest のときだけ。Release に入らない）"]
-        hooks["UITestHooks.swift（Debug/）<br/>#if DEBUG の1ファイル<br/>UITEST_ と readingapp-uitest:// を読み、時計、保存の失敗、送り先を差し替える"]
-        sink["HTTPTelemetrySink（Debug/）<br/>URLSession<br/>イベントを1件ずつ POST する"]
+        hooks["UITestHooks.swift（Debug/）<br/>#if DEBUG。つなぎ口の2ファイルの片方（ADR 0005）<br/>UITEST_ と readingapp-uitest:// を読み、時計、保存の失敗、送り先を差し替える"]
+        sink["HTTPTelemetrySink.swift（Debug/）<br/>URLSession。#if DEBUG。つなぎ口の2ファイルの片方<br/>イベントを1件ずつ POST する。T22 では渡されたイベントを覚える"]
       end
     end
     db[("Library.store<br/>SwiftData のファイル（Application Support）<br/>本、記録、進行中の読書")]
@@ -137,18 +139,31 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 |---|---|---|---|---|
 | なし（HTTP の operation は0件） | － | AC-1〜AC-67 は端末のみ | 不要（アカウントなし） | 対象外 |
 
-この作業で変えた契約（すべて足すだけ）：
+この作業で変えた契約（すべて足すだけ。ただし test-hooks.md の T1 の「使う AC」から AC-23、AC-53 を T2 に移したのは書き方の直しで、つなぎ口の名前、型、動きは変えていない）：
 | ファイル | 変えたこと | AC |
 |---|---|---|
 | contracts/data-model.md | 保存の操作の表の3行（終える60秒以上、60秒未満、やめる）に T5 の名前と失敗したときを入れた。時刻の決まり、終える入力の下書き、前の本（記録を消したとき）、state の知らない値の扱いを足した | AC-13、AC-46〜AC-48、AC-62〜AC-67 |
 | contracts/test-hooks.md | T5 の操作に session_begin_finish、session_cancel_finish、session_discard。T2、T3、T5、T8、T16 の使う AC に AC-62〜AC-67 | AC-62〜AC-67 |
 | contracts/telemetry.md、telemetry-events.schema.json | Save Failed の operation に同じ3つ。SaveOperation の case。Discarded は再試行で通ったときも出す | AC-62〜AC-67、PRD 15 |
 | contracts/examples/telemetry-save-failed-session-discard.json | 例を1つ足した | 同上 |
+| contracts/test-hooks.md（G1 reviewer r1 の後） | T22（UITEST_TELEMETRY_LOG と uitest.telemetry.log。T6 の代わり）、T4 に UITEST_LOCALE（-AppleLocale の代わり）を足した。つなぎ口のファイルを Debug/ の2つと決めた。使う AC を 2 の表とそろえた（T1 は 2 の表の T1 の行に合わせて AC-20 を足し、AC-23 と AC-53 を T2 に移した。ほかは足すだけ） | AC-15、AC-20、AC-23、AC-24、AC-36、AC-40、AC-44 |
+| contracts/data-model.md（同） | 題名を切った後にもう一度前後の空白を除く。ActiveReading が2件以上なら読み込みの失敗 | AC-2、AC-3、AC-54 |
+| contracts/telemetry.md（同） | T22 の覚える包みと、送り先のファイルの名前 | AC-20、AC-23、AC-24 |
+| contracts/dependencies.md、contracts/README.md（同） | XcodeGen 2.46.0 とチェックサム、ajv-cli 5.0.0 の行。README の4を ios_build と同じ確かめに直した | － |
+| contracts/tools/xcstrings_untranslated.py（同） | en の state が translated で値が空のキーも数える | AC-39 |
 
 - spectral の出力：対象外（OpenAPI がない）。代わりに contracts/README.md の1の ajv を動かした（`make contracts-check`）。結果：seed.example.json、seed-ac15.json、seed-ac33.json、telemetry の例10件、flushed.json がすべて valid、終了コード0。綴りの違う operation（"session_finishing"）は終了コード1で拒まれた。
 - oasdiff breaking の出力：新規（origin/main の contracts/ は .gitkeep と dependencies.md だけで、openapi.yaml はない）。代わりの互換の確かめ（contracts/README.md の2）：`git diff origin/main -- contracts/ | grep -cE '^-[^-]'` は 0（dependencies.md の表の行は消さずに足した）。
+- G1 reviewer r1 の後に動かしたもの（2026-10-21、この環境の Linux）：
+  - `make contracts-check`（ajv-cli@5.0.0）→ seed.example.json、seed-ac15.json、seed-ac33.json、telemetry の例10件、flushed.json がすべて valid、終了コード0（npm の deprecated の警告2行：inflight@1.0.6、glob@7.2.3。ajv-cli 5.0.0 の依存）。
+  - 互換：`git diff origin/main -- contracts/ | grep -cE '^-[^-]'` → 0。
+  - 2 の表の T と contracts/test-hooks.md の「使う AC」の照合（T ごとに AC の集合を比べるスクリプト。スクラッチパッドで動かした）→ 違いは T8、T9、T10、T18 だけ（識別子と文言のキーで、2 の表に書かないと決めたもの）。
+  - `python3 -I contracts/tools/xcstrings_untranslated.py <例>`：提案16 の例（en が translated で値が空、plural の one が空、needs_review、shouldTranslate false）→ k.enNeedsReview（not translated）、k.enPluralOneEmpty（empty value）、k.enTranslatedEmpty（empty value）、untranslated_keys=3、終了コード1。そろった例 → untranslated_keys=0、終了コード0。前の悪い例 → 7件（前は6件。k.enTranslatedEmpty を数えるようになった）、終了コード1。引数なし → 終了コード2。
+  - ios_build の後ろ半分の論理を sh で試した（PlistBuddy の代わりに true と false）：UITEST_ を持つファイルが Debug/ の2つ、AcceptanceTests/、build/ だけなら 0。Screens/ にあれば名前を出して 1。strings：ファイルなし 1、きれい 0、`UITEST_NOW` と `uitest.telemetry.log` があれば行を出して 1。PlistBuddy の反転：キーなし 0、キーあり 1、ファイルなし 1。版の検査：「Xcode 26.0」「Xcode 27.1」0、「Xcode 16.4」「Xcode 2.5」1。entitlements の値：NSFileProtectionComplete 0、NSFileProtectionCompleteUnlessOpen 1。
+  - XcodeGen の zip：`echo '4d9e…6806  <zip>' | shasum -a 256 -c -` →「OK」終了コード0。違う値 →「FAILED」終了コード1。
+  - `wc -l CLAUDE.md` → 62。CLAUDE.md と Makefile の ios_build、ios_test の行は diff で同じ。
 - 互換性を壊す変更：なし。
-- 返す enum に足した値：Save Failed の operation に3つ。読むのはテストの受け口だけで、古いアプリが読む値ではない。保存する値で enum にあたるのは ActiveReading.state（文字）で、知らない値は読み込みの失敗にして保存先を消さない（data-model.md）。単体テストを ios-engineer に頼む：state が "unknown" のストアを開くと AC-54 の表示になり、ファイルが残る。
+- 返す enum に足した値：Save Failed の operation に3つ。読むのはテストの受け口だけで、古いアプリが読む値ではない。保存する値で enum にあたるのは ActiveReading.state（文字）で、知らない値は読み込みの失敗にして保存先を消さない（data-model.md。v1.0 の前に前方互換の方針を決め直す：ADR 0001 の見直す条件）。ActiveReading が2件以上見つかったときも読み込みの失敗。単体テストを ios-engineer に頼む：state が "unknown" のストアと、ActiveReading が2件のストアを開くと AC-54 の表示になり、ファイルが残る。
 - エラーの type と文言（design/ の 7。problem+json は使わない。失敗は端末の中の保存と読み込みだけ）：
   | 失敗（T5 の名前） | 出す所と文言のキー |
   |---|---|
@@ -173,7 +188,7 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 - SwiftData の版：SchemaV1（1.0.0）。MigrationStage は0件（最初の版）。形は contracts/data-model.md。この作業で項目は変えていない。
 - 前の版のストアを開けるかのテスト：001 は最初の版なので対象なし。001 の版から次の版へ上げても記録が残ることは 002 の AC（PRD 12）。
 - サーバーの DB の変更：なし。
-- 題名の上限は形B（保存のときに先頭の100字に切る。PRD 10 が許す形）に決めた。理由：形A は UITextField を UIViewRepresentable で包む独自の部品になり、Dynamic Type と VoiceOver と焦点を作り直す範囲が増え、変換中の動きはこの環境（Mac なし）で確かめられない（裁定の (f)）。形B は標準の TextField のままで、Character の数（A95、A96）と prefix(100)（A97）で作れる。見せ方は D-57 の形B（整えたあとの字数が100を超えている間 book.add.titleLimit に book.add.titleLimit.onSave を出す。String Catalog に book.add.titleLimit を入れない）。
+- 題名の上限は形B（保存のときに先頭の100字に切る。PRD 10 が許す形）に決めた。理由：形A は UITextField を UIViewRepresentable で包む独自の部品になり、Dynamic Type と VoiceOver と焦点を作り直す範囲が増え、変換中の動きはこの環境（Mac なし）で確かめられない（裁定の (f)）。形B は標準の TextField のままで、Character の数（A95、A96）と prefix(100)（A97）で作れる。切った後にもう一度前後の空白4種を除く（切った位置の前が空白のとき、末尾に空白を残さないため。G1 reviewer r1 の提案10。contracts/data-model.md）。見せ方は D-57 の形B（整えたあとの字数が100を超えている間 book.add.titleLimit に book.add.titleLimit.onSave を出す。String Catalog に book.add.titleLimit を入れない）。
 - design 10 の 8（下へのスワイプでやめる保存に失敗したら、シートを同じ値で開き直す）：作れる見込み。作り方は contracts/data-model.md の「終える入力の下書き」。入れかけの値をシートの外（S4 の @Observable のモデル。A10）に持ち、シートを出す Bool も state と別に持つ。下へのスワイプで閉じた後の sheet(isPresented:onDismiss:content:) の onDismiss で、やめる保存を呼ぶ（A109：iOS 13.0。onDismiss の本文「The closure to execute when dismissing the sheet.」 https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:) 。2026-10-21 にドキュメントの JSON を取得、200）。失敗したら Bool を true に戻して開き直す。成功するふだんのスワイプは止めないので、AC-48 の見え方は変わらない。未確認：onDismiss の中で true に戻すと開き直るか（ios-engineer が最初の CI で確かめる）。代わりの案：(1) 次の MainActor の順番（`Task { @MainActor in … }`）で true に戻す。(2) それでも開かなければ、スワイプで閉じる前に保存する形（interactiveDismissDisabled（A60）と自前の確認）になり、AC-48 の見え方が変わるので designer と pdm に戻す（design 10 の 8 のとおり）。
 
 ## 6. 非機能の目標
@@ -187,8 +202,8 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 | 反応（全体） | 操作から画面の変化まで 100ms 未満。250ms 以上の hang は0件 | Instruments の Hangs（G4、Takuma の Mac。なければ「未計測」と書く）。公開後は Xcode Organizer の Hangs（A52） | verifier |
 | API | なし（サーバーがない）。本番のアプリが通信する箇所は0件 | `grep -rln 'URLSession' ios/Yomutoki --include='*.swift' \| grep -v '^ios/Yomutoki/Debug/' \| wc -l` が 0（G2） | reviewer |
 | オフライン（画面ごと） | S1〜S7 はすべて機内モードで使える。計測の送信の失敗は捨て、画面に何も出さない。ぶつかる相手はない（端末だけ） | AC-20（T6、T7、G3）。実機の機内モードは G4 で Takuma | verifier |
-| 電池 | バックグラウンドの処理0件。自動ロックを止めない。毎秒の書き直しは S4 が出ている間の TimelineView だけ | `grep -rnE 'BGTaskScheduler\|beginBackgroundTask\|isIdleTimerDisabled\|UIBackgroundModes' ios/` が 0件（G2） | reviewer |
-| セキュリティ | ATS の例外0件。トークンなし（アカウントなし）。ファイルの保護は OS の既定（ADR 0001 で .complete にしない理由を書いた）。App Attest は使わない（守る API がない）。つなぎ口が Release に0件 | `grep -rn 'NSAllowsArbitraryLoads' ios/` が 0件（G2）。contracts/README.md の4（Release の strings が0件、CFBundleURLTypes がない。G2 の CI） | reviewer |
+| 電池 | バックグラウンドの処理0件（ファイルの保護 .complete の前提。ADR 0001）。自動ロックを止めない。毎秒の書き直しは S4 が出ている間の TimelineView だけ | `grep -rnE 'BGTaskScheduler\|beginBackgroundTask\|isIdleTimerDisabled\|UIBackgroundModes' ios/` が 0件（G2） | reviewer |
+| セキュリティ | ATS の例外0件。トークンなし（アカウントなし）。ファイルの保護は .complete（Data Protection の entitlement、NSFileProtectionComplete。ADR 0001。バックグラウンドの処理0件が前提で、電池の行の grep で守る）。App Attest は使わない（守る API がない）。つなぎ口が Release に0件 | `grep -rn 'NSAllowsArbitraryLoads' ios/` が 0件（G2）。ios_build の entitlements の確かめ（PlistBuddy で NSFileProtectionComplete）と、Release の strings が0件、CFBundleURLTypes がない（ADR 0005、contracts/README.md の4。G2 の CI） | reviewer |
 | プライバシー | 001 の本番は端末の外にデータを送らない。PrivacyInfo.xcprivacy は NSPrivacyTracking false、NSPrivacyCollectedDataTypes は空、UserDefaults の理由を1つ書く（理由の番号は A33 の一覧で ios-engineer が確かめる）。App Store の表記は「データの収集なし」（SDK を入れる 003 で直す） | plutil -lint と照合（G2、G4）、G5 で tech-lead が表記の下書きと照合 | reviewer |
 | アクセシビリティ | AX5 で経過とすべての操作が切れない。コントラスト 4.5:1（大きい文字は 3:1）。押せる範囲 44×44pt。経過の読み上げは AC-40 の形 | G3 のスクリーンショット（ライト、ダーク、AX5、英語）を design-reviewer が測る。AC-40 は UI テスト | design-reviewer、verifier |
 | 言語 | ja と en のそろっていないキー0件 | T14（`untranslated_keys=0`）、Linux で G2 と G3 | verifier |
@@ -197,16 +212,16 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 
 ## 7. 脅威モデル
 - 何を作るか（守るものと境界）：守るのは利用者が入れた題名と読書の記録（個人の内容）。境界は2つ：端末の中（外への送信は本番で0件）と、テストの受け口（Debug ビルドで -UITest のときだけ。UITEST_ の環境変数、readingapp-uitest:// の URL、localhost への HTTP）。認証、課金、外部のサービスはない。
-- それで十分か：端末を手にした人とバックアップから読まれる危険は受け入れる（OS の画面のロックとバックアップの暗号化に任せる。ADR 0001）。Release につなぎ口が入らないことを機械で確かめるのが一番の対策。
+- それで十分か：鍵がかかった端末からストアを読まれる危険は、ファイルの保護 .complete で減らす（ADR 0001）。鍵を開けた端末を手にした人と、バックアップから読まれる危険は受け入れる（OS の画面のロックとバックアップの暗号化に任せる）。Release につなぎ口が入らないことを機械で確かめる（ios_build）のが一番の対策。
 
 | STRIDE | 起きうること | 対応（減らす / なくす / 移す / 受け入れる） | 確かめるテストか確認 |
 |---|---|---|---|
-| なりすまし（S） | ほかのアプリが readingapp-uitest://clock を開き、時計を動かして記録の時間を変える | なくす：URL scheme は Debug の Info.plist にだけあり、受けるコードは #if DEBUG（ADR 0005） | contracts/README.md の4：Release の Info.plist に CFBundleURLTypes がない、strings で readingapp-uitest が0件（G2 の CI） |
+| なりすまし（S） | ほかのアプリが readingapp-uitest://clock を開き、時計を動かして記録の時間を変える | なくす：URL scheme は Debug の Info.plist にだけあり、受けるコードは #if DEBUG（ADR 0005） | ios_build（contracts/README.md の4）：Release の Info.plist に CFBundleURLTypes がない、strings で readingapp-uitest が0件（G2 の CI） |
 | 改ざん（T） | ストアのファイルや UITEST_SEED を書き換えて、変な値（負のページ、1万字の題名）を入れる | 減らす：seed は Debug だけで、合わなければ起動で止める（T2）。本番は自分の端末の自分のデータなので、読むときに範囲の外の値で落ちないようにする（経過は max(0, …)、% は totalPages nil で出さない） | 単体テスト（範囲の外の値で落ちない）、AC-41 |
 | 否認（R） | 「消していない記録が消えた」と利用者が思う | 受け入れる：アカウントも監査の記録もない（個人の端末だけのため）。消す前に S6 で確かめる | AC-16、AC-38、AC-43 |
-| 情報の漏れ（I） | 題名やページが計測、ログ、クラッシュの報告から外に出る | なくす：TelemetryEvent に String と Int を持たせない、本番は送らない（ADR 0003）。Logger は既定の非公開、`privacy: .public` は操作と状態の名前だけ | AC-23。`grep -rn 'privacy: .public' ios/` の行ごとに理由（G2、reviewer） |
+| 情報の漏れ（I） | 題名やページが計測、ログ、クラッシュの報告から外に出る。盗まれた端末やつないだ Mac から、鍵がかかったままストアのファイルを読まれる | なくす：TelemetryEvent に String と Int を持たせない、本番は送らない（ADR 0003）。Logger は既定の非公開、`privacy: .public` は操作と状態の名前だけ。減らす：ストアのファイルの保護を .complete にする（鍵がかかっている間は読めない。ADR 0001） | AC-23。`grep -rn 'privacy: .public' ios/` の行ごとに理由（G2、reviewer）。ios_build の entitlements の確かめ（G2 の CI）。実機での効き目は未確認（Mac と実機。P-14） |
 | サービスの妨害（D） | 長い題名の貼り付け、とても長い数字、壊れたストアで落ちるか起動できなくなる | 減らす：題名は保存のときに100字に切る（形B）。数字の欄は桁が多くても落ちない（Int に変換できなければ範囲の外の誤り）。読み込みの失敗はストアを消さず再試行を出す（AC-54、AC-55） | 単体テスト（10万字の題名、20桁の数字）、AC-54、AC-55 |
-| 権限の格上げ（E） | Release で -UITest を付けて起動し、保存の失敗や時計の差し替えを動かす | なくす：つなぎ口のコードが Release の実行ファイルに入らない（#if DEBUG の1ファイル） | contracts/README.md の4（strings で UITEST_ と -UITest が0件。G2 の CI） |
+| 権限の格上げ（E） | Release で -UITest を付けて起動し、保存の失敗や時計の差し替えを動かす | なくす：つなぎ口のコードが Release の実行ファイルに入らない（Debug/ の2ファイルの #if DEBUG） | ios_build（contracts/README.md の4。strings で UITEST_、-UITest、uitest. が0件。G2 の CI） |
 
 ## 8. 観測と KPI イベント
 - iOS のログ：Logger（subsystem はバンドル ID、category は store、telemetry、ui）。.public にするのは保存の操作の名前（SaveOperation の rawValue）と状態の名前だけ（題名とページを含まないため）。題名とページは既定の非公開のまま。
@@ -229,44 +244,68 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 
 ## 9. 依存ライブラリの変更
 - ランタイムのライブラリ：なし（0件）。Package.resolved はない。
-- ビルドの道具：XcodeGen を足した（contracts/dependencies.md の1行と詳しい列。ADR 0004）。解決とビルドの出力：未確認（この環境は Linux で brew が動かない）。最初の CI の ios_build のログ（`xcodegen --version`、`xcodegen generate`、`xcodebuild -version`、ビルドの結果）を ios-engineer が報告に貼る。
+- ビルドの道具：XcodeGen 2.46.0（GitHub Releases の zip を SHA-256 で確かめてから使う。contracts/dependencies.md の1行と詳しい列。ADR 0004）。zip の取得とチェックサムはこの環境で確かめた（ADR 0004 の A112）。実行とビルドの出力は未検証（裁定の追記2 の (1)。実行ファイルは macOS 用）。最初の CI の ios_build のログ（shasum の OK、`xcodegen --version`、`xcodegen generate`、`xcodebuild -version`、ビルドの結果）を ios-engineer が報告に貼る。
+- 契約の検査の道具：ajv-cli 5.0.0 を表に足した（contracts/dependencies.md。ADR なし）。解決と実行の出力は 4。
 - 後で Swift パッケージを足すときの注意：XcodeGen の作るプロジェクトの中にできる Package.resolved は .gitignore で無視されるので、置き場所（例：ios/ の直下に写してコミットし、CI で比べる）を、その ADR で決める。
 
 ## 10. ADR と未確認
 - この機能で書いた ADR：0001〜0005（7a で書いた。この作業で新しい ADR はない。題名の上限の形B は PRD 10 が許した2つの形の片方で、元に戻すのは小さいので ADR にせずこのメモの 5 に書いた）。
-- 未確認の項目、確かめる方法、確かめる役（ios-engineer は実装の最初の push の後の CI で確かめ、出た / 出ない、使った代わりの案を報告に書く。裁定の3）：
+- 未確認の項目、確かめる方法、確かめる役。この表はどれも裁定（docs/reviews/001-reading-session-G1-ruling.md の裁定1、追記、追記2）に名前があり、G1 を止めない。ios-engineer は実装の最初の push の後の CI で確かめ、出た / 出ない、使った代わりの案を報告に書く（裁定の3）。G3 まで残れば G3 は通らない：
+  | 項目（裁定の番号） | 確かめ方 | 代わりの案 |
+  |---|---|---|
+  | 裁定1 の (a)〜(g)（session.state.* が見えるか、システムの部品の識別子、.contain の「削除」、S5 の swipeDown、alert の「キャンセル」、題名の上限（形B にしたので変換中の動きは対象外）、AC-49 の push と AC-54 の読み込みの失敗） | CI のスクリーンショットと UI テストの結果 | design 6 の (a)〜(g)、裁定1 |
+  | D-46、D-48、D-53（追記） | CI のスクリーンショット（ライト、ダーク、コントラストを上げる設定） | 追記の2段の案、Text の並び、safeAreaInset か D-53 をやめる |
+  | XcodeGen の実行とビルドの出力（追記2 の (1)。確かめ（A）の9） | ios_build のログ（shasum の OK、xcodegen --version、generate、xcodebuild） | 下の表の1行目 |
+  | D-60 の開き直し（追記2 の (2)。5） | UI テストで swipeDown と UITEST_FAIL=session_cancel_finish:1 | 5 の (1)。それでも開かなければ、やめる保存の失敗のときだけシートを閉じない（AC-48 の見え方は変わらない） |
+  | シミュレーターの名前「iPhone 16」（追記2 の (3)） | ios_test のログの `xcrun simctl list devices available` | 一覧の iOS 26 の iPhone に替え、CLAUDE.md と Makefile と app.json（Takuma）をそろえる |
+  | 手で書いた xctestplan が -testPlan で動くか（追記2 の (4)） | CI。identifier は `grep -n 'YomutokiAcceptanceTests' ios/Yomutoki.xcodeproj/project.pbxproj` で見る | Xcode の形に合わせて書き直す。だめなら -testPlan をやめ、`-only-testing:YomutokiTests` と `-only-testing:YomutokiAcceptanceTests` にする |
+  | CODE_SIGNING_ALLOWED=NO で UI テストのランナーが動くか（追記2 の (5)） | CI | シミュレーター向けの自動署名を許す設定（テストの行だけ `CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO`） |
+  | macos-latest の Xcode が 26 か（追記2 の (6)） | ios_build の版の検査（26 未満なら落ちる） | `xcode-select` で 26 を選ぶ行をコマンドに足す（app.json は Takuma） |
+  | T2 の環境変数の長さ、T16 の open の確認、T4 の -AppleLocale、T20 の signpost（追記2 の (7)） | CI | T21 の形（ファイルから読む）、launchEnvironment の再起動、T4 の UITEST_LOCALE、AC-5 の値の確かめだけに留める |
+  | ビルドの設定の名前 SWIFT_DEFAULT_ACTOR_ISOLATION、SWIFT_TREAT_WARNINGS_AS_ERRORS（追記2 の (8)） | ios_build のログ | CI の出力のエラーから正しい名前に直す。警告は ADR 0002 のとおりログの warning を数える |
+  | シミュレーターのアプリから localhost の受け口に届くか（追記2 の (9)。T6） | AC-20、AC-23、AC-24 の UI テスト | T22（uitest.telemetry.log の accessibilityValue を XCUITest が読む） |
+  | contracts/README.md の4（ios_build の Release の確かめ）の行が macOS で動くか（追記2 の (10)） | ios_build のログ | 成果物のパスか道具の出力の形が違えば、CLAUDE.md、Makefile、README、app.json（Takuma）を同じに直す |
+- この改訂（G1 reviewer r1 の後）で生まれた、まだ裁定にない未確認（Mac がないので CI か実機でしか確かめられない。どれも代わりの案がある。指揮役に裁定への追記を頼む）：
   | 項目 | 確かめ方 | 代わりの案 |
   |---|---|---|
-  | 裁定の (a)〜(g)（session.state.* が見えるか、システムの部品の識別子、.contain の「削除」、S5 の swipeDown、alert の「キャンセル」、題名の上限（形B にしたので変換中の動きは対象外）、AC-49 の push と AC-54 の読み込みの失敗） | CI のスクリーンショットと UI テストの結果 | design 6 の (a)〜(g)、docs/reviews/001-reading-session-G1-ruling.md |
-  | D-46（ツールバーの .borderedProminent の色）、D-48（secondaryLabel を Color の値で替えられるか）、D-53（数字のキーボードの上のツールバー） | CI のスクリーンショット（ライト、ダーク、コントラストを上げる設定） | 裁定の追記の2段の案、Text の並び、safeAreaInset か D-53 をやめる |
-  | D-60 の開き直し（5） | UI テストで swipeDown と UITEST_FAIL=session_cancel_finish:1 | 5 の (1)(2) |
-  | シミュレーターの名前「iPhone 16」 | ios_test のログの `xcrun simctl list devices available` | 一覧の iOS 26 の iPhone に替え、CLAUDE.md と Makefile と app.json をそろえる |
-  | xctestplan を手で書いて xcodebuild の -testPlan で動くか（中の target の identifier を XcodeGen の作る値に合わせる必要があるか） | CI。identifier は `grep -n 'YomutokiAcceptanceTests' ios/Yomutoki.xcodeproj/project.pbxproj` で見る | -testPlan をやめ、`-only-testing:YomutokiTests` と `-only-testing:YomutokiAcceptanceTests` にする |
-  | CODE_SIGNING_ALLOWED=NO で UI テストのランナーが動くか | CI | テストの行だけ `CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO` に替える |
-  | macos-latest の Xcode が 26 か | ios_build のログの `xcodebuild -version` | CI で Xcode を選ぶ手順（.github/ は Takuma） |
-  | 環境変数の長さ（T2）、XCUIApplication.open の確認のダイアログ（T16）、-AppleLocale の効き方（T4）、OSSignposter と XCTOSSignpostMetric（T20） | CI | contracts/test-hooks.md の各行の備考 |
+  | XcodeGen の zip を展開したまま動かして SettingPresets を見つけるか、`xcodegen --version` の形（ADR 0004） | ios_build のログ | `build/tools/xcodegen/install.sh build/tools/prefix` で写してから動かす。zip が使えなければ Mint（`mint run yonaskolb/xcodegen@2.46.0`） |
+  | include の合わせ方（target.yml のスキームの testPlans の配列、target.yml からの相対のパス）と、target.yml がないときに generate が落ちるか（ADR 0004） | xcodegen generate の後の `xcodebuild -list` と ios_test の出力 | include の relativePaths を false にし、パスを ios/ から書く |
+  | `xcodebuild -version` の1行目が「Xcode 26.0」の形か（ADR 0002 の版の検査） | ios_build のログ | grep の形を出力に合わせて直す |
+  | uitest.telemetry.log の accessibilityValue の長さの上限（T22） | AC-20、AC-23、AC-24 の UI テスト（T22 に替えたときだけ） | 値を最後の n 件だけにする形を契約に足す |
+  | ファイルの保護（ADR 0001）：TestFlight のビルドに entitlement が入るか、実機で効くか、.complete のファイルが iCloud バックアップに入るか | G4 の前に Mac で `codesign -d --entitlements -`（P-14）。バックアップは Apple Platform Security の文書で | 入らなければ ADR 0001 を開き直す（ファイルごとの setResourceValue の案） |
+- CI で決まらないもの：
+  | 項目 | 確かめ方 | 代わりの案 |
+  |---|---|---|
+  | iOS 17 で1回確かめる場所（ADR 0002） | G3 の後に指揮役が Takuma に聞く | iOS 17 の実機で G4 の確認リスト、またはランタイムを入れた CI の手動の実行 |
   | 基準の機種（6） | P-11 の Takuma の答え | 暫定のまま G4 で CI の値を参考にする（P-14） |
   | PrivacyInfo.xcprivacy の UserDefaults の理由の番号 | A33 の一覧を ios-engineer が開く | － |
-  | ビルドの設定の名前（SWIFT_DEFAULT_ACTOR_ISOLATION、SWIFT_TREAT_WARNINGS_AS_ERRORS） | ios_build のログ | ADR 0002 の表のとおり、CI のログの warning を数える |
 
 ## 11. 実装の決まり（ios-engineer へ）
 1. 色は Color の値で渡す（tech-lead r2 の提案1）。トークンは Asset Catalog の Color Set（design/tokens.md 1）か Color.primary などの Color の値にし、`.foregroundStyle(.primary)` のような階層の形（HierarchicalShapeStyle）を文字の色に使わない（A90）。確かめ：`grep -rnE 'foregroundStyle\(\.(primary|secondary|tertiary)' ios/Yomutoki` が 0件。
 2. 自動保存を切る：ModelContainer を作った直後に `mainContext.autosaveEnabled = false`（A4）。1つの操作は1回の save（A3）、失敗したら rollback（A5）。確かめ：`grep -rn 'autosaveEnabled = false' ios/Yomutoki` が1件。
 3. 保存が通ってから画面とメモリの状態を変える（tech-lead r2 の提案3）。操作の時刻は保存が通った回の時刻（再試行ならその時刻。PRD 10）。失敗した回の値を残さない。
-4. 題名は形B（5）。単体テスト：100字と101字、結合した絵文字、CRLF と U+2028、前後の全角空白、10万字の貼り付け。
+4. 題名は形B（5）。単体テスト：100字と101字、結合した絵文字、CRLF と U+2028、前後の全角空白、10万字の貼り付け、切った後に末尾の空白を除く例（99字＋U+3000＋1字は99字になる）。
 5. 60秒未満で終える保存の再試行は、押した時点の経過で session_discard か session_begin_finish に分ける（D-59、PRD 18 の 6 の A）。T5 の数は、その回に試した操作の数を使う。
 6. 終える入力の下書きとシートの Bool は S4 のモデルに持つ（5、contracts/data-model.md）。
 7. 時計は AppClock（`now: () -> Date`）と Calendar を組み立ての場所で入れる。Date() をほかで直接呼ばない（つなぎ口が効かなくなるため）。確かめ：`grep -rn 'Date()' ios/Yomutoki --include='*.swift'` の行が AppClock と Debug/ の中だけ。
 8. 計測の型は contracts/telemetry.md のとおり。関連値に String と Int を持たせない。
 9. 最初の CI で、裁定の (a)〜(g) と D-46、D-48、D-53、D-60 と 10 の表の未確認を確かめ、結果と使った代わりの案を報告に書く（裁定の3）。G3 まで残れば G3 は通らない。
+10. ファイルの保護（ADR 0001）：project.yml の Yomutoki の entitlements に `com.apple.developer.default-data-protection: NSFileProtectionComplete` を書く（path は Yomutoki/Yomutoki.entitlements。ios_build がこのパスを PlistBuddy で読む）。バックグラウンドの処理（BGTaskScheduler、beginBackgroundTask、UIBackgroundModes）を足さない。
+11. T4 の UITEST_LOCALE と T22（UITEST_TELEMETRY_LOG と uitest.telemetry.log）は最初から作る（verifier が CI の結果で切り替えるため。contracts/test-hooks.md）。つなぎ口のコードは Debug/UITestHooks.swift と Debug/HTTPTelemetrySink.swift の2つだけ（ADR 0005。ios_build の grep で落ちる）。
+12. G2 に出す単位（裁定の追記2 の要修正4）：実装の変更は、ios-engineer が「できた」と報告した HEAD を1つの変更として G2 に出す。途中の push は G2 に出さない。その HEAD で CI が緑であること。途中の push（雛形だけ、AC の一部だけ）は赤でもよい。雛形だけの変更を別に G2 に出すことはしない。verifier の受け入れテストの変更は gates.md の例外のとおり（スタックの CI は落ちるのが正しい）。
 
 雛形の作り方（ios-engineer が ios/ に作る。tech-lead はコードを書かない）：
 - ios/project.yml（XcodeGen。ADR 0004）：name Yomutoki。options の deploymentTarget は iOS 17.0、disabledValidations に missingTestPlans（受け入れテストの xctestplan を verifier が書く前でも generate できる。XcodeGen の ProjectSpec に「Disable checking if test plan paths exist. This can be useful if your test plans haven't been created yet.」とある。https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/Docs/ProjectSpec.md を 2026-10-21 に取得）。
-- 設定：SWIFT_VERSION 6.0、TARGETED_DEVICE_FAMILY 1、アプリのターゲットの既定の actor 分離は MainActor（ADR 0002）、警告をエラーにする設定（名前は未確認）。Info.plist は Debug と Release で分ける（ADR 0004）。
-- ターゲット：Yomutoki（application、ios/Yomutoki/）、YomutokiTests（bundle.unit-test、ios/YomutokiTests/）、YomutokiAcceptanceTests（bundle.ui-testing、ios/AcceptanceTests/）。
-- スキーム Yomutoki の test の testPlans：YomutokiTests/Unit.xctestplan（defaultPlan、ios-engineer が書く。中身は YomutokiTests だけ）と AcceptanceTests/Acceptance.xctestplan（verifier が書く。中身は YomutokiAcceptanceTests だけで、AC-18 の2つのテストは skippedTests に入れる）。XcodeGen は xctestplan を作らないので手で書く（ProjectSpec の Test Plan の節）。
+- 設定：SWIFT_VERSION 6.0、TARGETED_DEVICE_FAMILY 1、アプリのターゲットの既定の actor 分離は MainActor（ADR 0002）、警告をエラーにする設定（名前は未確認）。Info.plist は Debug と Release で分ける（ADR 0004）。entitlements は 10。
+- ターゲット：Yomutoki（application、ios/Yomutoki/）、YomutokiTests（bundle.unit-test、ios/YomutokiTests/）、YomutokiAcceptanceTests（bundle.ui-testing、ios/AcceptanceTests/。定義は verifier の ios/AcceptanceTests/target.yml。project.yml は `include: [AcceptanceTests/target.yml]` を持ち、:REPLACE を使わない。ADR 0004）。
+- スキーム Yomutoki の test の testPlans：YomutokiTests/Unit.xctestplan（defaultPlan、ios-engineer が書く。中身は YomutokiTests だけ）と AcceptanceTests/Acceptance.xctestplan（verifier が書き、target.yml のスキームの testPlans に足す。include で配列の後ろに足される。中身は YomutokiAcceptanceTests だけで、AC-18 の2つのテストは skippedTests に入れる）。XcodeGen は xctestplan を作らないので手で書く（ProjectSpec の Test Plan の節）。
 - AC-18 の2段は verifier の ios/AcceptanceTests/ac18-reboot.sh（引数はシミュレーターの名前。データを作るテストだけ → `xcrun simctl shutdown` と `boot` → 確かめるテストだけ。どれも -retry-tests-on-failure なし）。
-- 順番：ios-engineer の雛形（project.yml、空のアプリ、Unit.xctestplan）→ verifier の Acceptance.xctestplan、ac18-reboot.sh、受け入れテスト（red）→ 実装。Acceptance.xctestplan と ac18-reboot.sh がないうちは ios_test が落ちる。
+- 順番：ios-engineer の雛形（project.yml、空のアプリ、Unit.xctestplan、entitlements、Debug/ の2ファイル）→ verifier の target.yml、Acceptance.xctestplan、ac18-reboot.sh、受け入れテスト（red）→ 実装。target.yml がないうちは xcodegen generate が落ち（推測）、ios_build も ios_test も落ちる。雛形だけの変更は G2 に出さない（12）。
+
+申し送り（G1 reviewer r1 の提案17、18）：
+- verifier へ：AC-18 の2つのテストは Acceptance.xctestplan の skippedTests に入り、ac18-reboot.sh で別に動く。G3 の「飛ばされていない」（docs/org/gates.md の G3）に対しては、検証レポートに ac18-reboot.sh の出力から動いた数（2）と結果を数えて書き、xcresult の skipped にこの2つが入るのは決めたとおりだと同じ所に書く。
+- verifier へ：受け入れテストのターゲットとテスト計画の定義は ios/AcceptanceTests/target.yml に書く（ADR 0004。:REPLACE を使わない。sources の excludes に target.yml、*.xctestplan、*.sh を入れてバンドルに写さない）。T6 が CI で届かなければ T22 に、-AppleLocale が効かなければ UITEST_LOCALE に替え、テスト計画に書く。
+- 指揮役へ：CI の ios ジョブの上限は60分（.github/workflows/ios.yml）。ios_build は Debug と Release の2回のビルドを含み、ios_test は受け入れテスト約90本、AC-20 の30秒待ち×3、シミュレーターの再起動を含む。最初の CI で ios_build と ios_test の時間を ios-engineer に測らせ、合わせて50分を超えそうなら Takuma に上限の変更かジョブの分け方を頼む。
 
 ## 確かめ（A）
 - [x] 2 の表に PRD の全 AC があり、空の欄がない（AC-1〜AC-67 の67行。`grep -cE '^\| AC-[0-9]+ \|'` で 67）
@@ -277,4 +316,4 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 - [x] 6 のすべての行に数字と測り方がある
 - [x] 7 が STRIDE の6行か「新しい境界なし」のどちらか。受け入れた危険に理由がある
 - [x] 8 で、PRD 15 の全イベントに送る場所がある（9イベント、すべてアプリ）
-- [ ] 新しい依存に、解決とビルドの出力があり、dependencies.md の全列が埋まっている（未解決：XcodeGen は列を埋めたが、解決とビルドの出力はこの環境で取れない。最初の CI の ios_build のログで確かめる）
+- [ ] 新しい依存に、解決とビルドの出力があり、dependencies.md の全列が埋まっている（未検証：裁定の追記2 の (1) により G1 を止めず、G2 の最初の CI の出力で確かめる。XcodeGen 2.46.0 は全列を埋め、zip の取得と SHA-256 までこの環境で確かめた。実行とビルドの出力はまだない。ajv-cli 5.0.0 は全列を埋め、`make contracts-check` の出力が 4 にある）
