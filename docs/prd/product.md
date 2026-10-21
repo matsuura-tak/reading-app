@@ -1,6 +1,6 @@
 # アプリ全体：よむとき（仮）
 
-- 状態：下書き（r2。001-reading-session の G0 と一緒に判定する）
+- 状態：G0 で判定済み（2026-10-21。docs/approvals/001-reading-session-G0.md）。機能ごとの PRD で変わるときに直す
 - 書いた役：pdm　日付：2026-10-21　調べた日：2026-10-21
 - 出発点：.claude/org/app.json の idea「読む時間そのものが美しくなる、デザイン賞を狙う読書アプリ」。Takuma の指標は「稼ぐこと」と「Red Dot 賞」（docs/approvals/000-takuma-standing-approval.md）。idea は出発点として扱い、4 で別の形と比べた。
 
