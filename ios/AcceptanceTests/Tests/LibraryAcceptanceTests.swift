@@ -63,6 +63,11 @@ final class LibraryAcceptanceTests: XCTestCase {
             Wait.exists(field, "book.add.title")
             if viaPaste {
                 s.paste(text, into: "book.add.title")
+                // 貼り付けが黙って失敗すると空文字の例と同じになるので、欄に何か入ったことを見る（空の欄の value は placeholder になる）
+                let placeholder = field.placeholderValue ?? ""
+                XCTAssertTrue(
+                    Wait.until(NSPredicate(format: "value != nil AND value != %@ AND value != %@", "", placeholder), field),
+                    "前提：\(name) の貼り付けで欄が空でなくなった（今の value「\(s.fieldText("book.add.title"))」）")
             } else if !text.isEmpty {
                 field.tap()
                 field.typeText(text)
@@ -84,15 +89,15 @@ final class LibraryAcceptanceTests: XCTestCase {
 
     /// AC-4：本が0冊から、題名の入力を除いて3回以下のタップで reading になり、題名は「坊っちゃん」。
     /// 題名の欄に入るタップとキーボードの操作は数えない（AC-4 の Then）。
+    /// 注：タップの数を数える変数は置かない（手順で決まった数なので、比べても必ず通るため）。合否は、数えるタップを
+    /// 3回（library.addBook、book.save、book.startReading）だけした後に reading になり、題名が「坊っちゃん」になる流れで決まる。
     @MainActor
     func test_AC4_zeroBooksToReadingInThreeTapsOrFewer() throws {
         let s = AppSession.launch(.fresh)
-        var taps = 0
 
         let add = s.el("library.addBook")
         Wait.exists(add, "library.addBook")
-        add.tap()
-        taps += 1
+        add.tap()  // 1回目
 
         let title = s.el("book.add.title")
         Wait.exists(title, "book.add.title")
@@ -101,17 +106,14 @@ final class LibraryAcceptanceTests: XCTestCase {
 
         let save = s.el("book.save")
         Wait.exists(save, "book.save")
-        save.tap()
-        taps += 1
+        save.tap()  // 2回目
 
         let start = s.el("book.startReading")
         Wait.exists(start, "book.startReading")
-        start.tap()
-        taps += 1
+        start.tap()  // 3回目（ここまでで数えるタップは3回）
 
         s.expectState(.reading)
-        Wait.label(s.el("reading.title"), equals: Fixture.botchan, "読書中の本の題名")
-        XCTAssertLessThanOrEqual(taps, 3, "題名の入力を除くタップの数")
+        Wait.label(s.el("reading.title"), equals: Fixture.botchan, "3回のタップの後、読書中の本の題名")
         s.shot("AC4_読書中", self)
     }
 

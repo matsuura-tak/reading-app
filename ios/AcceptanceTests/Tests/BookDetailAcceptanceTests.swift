@@ -217,6 +217,7 @@ final class BookDetailAcceptanceTests: XCTestCase {
             s.tap("book.startReading", file: file, line: line)
         }
         s.expectSaveFailed(fromHome ? "ホームで読み始めの失敗" : "本の詳細で読み始めの失敗", file: file, line: line)
+        s.noteRetryLabel(fromHome ? L10n.homePrimary(Fixture.botchan, L10n.errorRetryStart) : L10n.errorRetryStart, fromHome ? "AC56_ホーム" : "AC56_本の詳細")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
         return s
     }
 

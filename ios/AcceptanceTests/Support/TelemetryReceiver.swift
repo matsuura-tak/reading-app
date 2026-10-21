@@ -1,10 +1,16 @@
 import Foundation
+// @preconcurrency：SDK の版によっては Network の型（NWListener、NWConnection など）の Sendable の注釈がそろっておらず、
+// Swift 6 の言語モード（target.yml の SWIFT_VERSION 6.0）でハンドラーの閉包が誤りになることがあるため、警告に下げる。
+// 並行の安全は、下の TelemetryReceiver の lock と直列の queue で守る。
 @preconcurrency import Network
 import XCTest
 
 /// 計測の受け口（contracts/telemetry.md の「テストの受け口」、test-hooks.md の T6、T7、T13、T19）。
 /// テストの側に NWListener（A47）で localhost の HTTP の受け口を立て、POST /events と POST /flushed を受ける。
 /// 127.0.0.1 は使わない（A48）。アプリには http://localhost:<port> を渡す。
+/// @unchecked Sendable の理由：NWListener と NWConnection のハンドラーは queue（直列）から呼ばれ、テストの側（MainActor）からも
+/// requests などを読む。可変の状態（listener、connections、received、boundPort）は、すべて lock の中で読み書きする。
+/// mode、queue、lock は let。これをコンパイラーに示す方法がないので、@unchecked にして lock で守る。
 final class TelemetryReceiver: @unchecked Sendable {
     enum Mode: Sendable {
         /// 204 を返す
@@ -52,8 +58,10 @@ final class TelemetryReceiver: @unchecked Sendable {
         newListener.newConnectionHandler = { [weak self] connection in
             self?.accept(connection)
         }
-        newListener.start(queue: queue)
+        lock.lock()
         listener = newListener
+        lock.unlock()
+        newListener.start(queue: queue)
         guard XCTWaiter.wait(for: [ready], timeout: timeout) == .completed, let port = newListener.port?.rawValue else {
             throw ReceiverError.notReady
         }
@@ -65,9 +73,10 @@ final class TelemetryReceiver: @unchecked Sendable {
     func stop() {
         lock.lock()
         let open = connections
+        let current = listener
         connections = []
         lock.unlock()
-        listener?.cancel()
+        current?.cancel()
         open.forEach { $0.cancel() }
     }
 

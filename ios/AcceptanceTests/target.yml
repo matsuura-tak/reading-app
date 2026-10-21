@@ -32,10 +32,10 @@ schemes:
         YomutokiAcceptanceTests: [test]
     test:
       # 判定の実行で再試行しない（xctestplan に testRepetitionMode を書かない）。
-      # Unit.xctestplan は ios-engineer が ios/YomutokiTests/ に置く。defaultPlan は project.yml の側で決める（ここでは付けない。
-      # 両方に付けると既定が2つになるため）。どちらにも付けなければ、最初の計画（Unit）が既定になる（ProjectSpec の Test Plan）。
+      # ここには受け入れテストの2つの計画だけを書く。Unit.xctestplan は ios-engineer が project.yml の側に defaultPlan: true 付きで書く
+      # （設計メモ 11。tech-lead の G2 r1 の決定）。既定の計画は project.yml の defaultPlan で決まる（include は target.yml が先に合わさり、
+      # project.yml が上に重なる）。ここで defaultPlan を付けないのは、既定が2つになるのを避けるため。
       testPlans:
-        - path: ../YomutokiTests/Unit.xctestplan
         - path: Acceptance.xctestplan
         # AC-18 の2段（ac18-reboot.sh）だけで使う計画。Acceptance.xctestplan では skippedTests に入れてある。
         - path: AC18Reboot.xctestplan

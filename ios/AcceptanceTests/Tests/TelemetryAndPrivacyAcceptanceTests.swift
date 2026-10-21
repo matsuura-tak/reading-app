@@ -68,13 +68,26 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
 
     /// AC-21：初めて開いてから、本を追加し、読書を1回終えて保存するまでに、権限を求めるシステムのダイアログは0回。
     /// 権限は前もって未回答に戻しておく（T12。resetAuthorizationStatus は起動の前に呼ぶ）。
+    /// 手順の区切りの4か所で数えるのに加え、手順の途中に出た割り込みも addUIInterruptionMonitor で記録して落とす。
     @MainActor
     func test_AC21_noPermissionPromptsDuringFirstSession() throws {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let beforeLaunch = XCUIApplication()
-        for resource in [XCUIProtectedResource.camera, .photos, .location] {
+        // 4つの case の名前は Apple の文書（XCUIAutomation の XCUIProtectedResource の一覧）で確かめた（2026-10-21）。
+        // iOS 17 のシミュレーターでリセットが効くこと（userTracking を含む）は CI で確かめる。
+        for resource in [XCUIProtectedResource.camera, .photos, .location, .userTracking] {
             beforeLaunch.resetAuthorizationStatus(for: resource)
         }
+        // 割り込み（システムのダイアログ）が出たら、種類と label を記録して XCTFail する。true は「処理した」の印で、閉じはしない。
+        // 閉包は MainActor のこの関数の中で作るので、element と interruptions は MainActor で読み書きする（CI でコンパイルを確かめる）。
+        var interruptions: [String] = []
+        let monitor = addUIInterruptionMonitor(withDescription: "AC-21：権限などのシステムのダイアログ") { element in
+            let found = "type \(element.elementType.rawValue)「\(element.label)」"
+            interruptions.append(found)
+            XCTFail("AC-21：手順の途中でシステムのダイアログが出た：\(found)")
+            return true
+        }
+        defer { removeUIInterruptionMonitor(monitor) }
         let s = AppSession.launch(.fresh)
         func expectNoPrompt(_ step: String) {
             XCTAssertEqual(springboard.alerts.count, 0, "\(step)：システムのダイアログ")
@@ -92,13 +105,15 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
         s.finishAndSave(title: Fixture.botchan)
         Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "読書を1回終えて保存した")
         expectNoPrompt("終えて保存した後")
+        XCTAssertEqual(interruptions, [], "addUIInterruptionMonitor が記録した割り込み")
     }
 
     // MARK: AC-23
 
     /// AC-23：App First Opened は送り済み（T2 の flags）で本が0冊。題名「坊っちゃん」で追加し、読み始め、5分読んで、ページ72で終える。
     /// 15 の名前のイベントは Book Added、Reading Session Started、Reading Session Finished の3件。届いたものの全体に「坊っちゃん」が0回
-    /// （UTF-8 のままと、パーセントエンコードした形）。プロパティの値で 72 と等しいものは0個。
+    /// （UTF-8 のままと、パーセントエンコードした形の大文字と小文字）。JSON を読み直した events の全部の値にも0回
+    /// （\uXXXX で書き出された題名は本文の文字では見つからないため）。プロパティの値で 72 と等しいものは0個。
     @MainActor
     func test_AC23_telemetryHasNoTitleOrPageValues() throws {
         let probe = try TelemetryProbe(eventsMode: .ok, separateControl: false, test: self)
@@ -118,12 +133,39 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
             named.sorted(), ["Book Added", "Reading Session Finished", "Reading Session Started"],
             "15 の名前のイベント（届いた順：\(snapshot.names)）")
 
+        // パーセントエンコードの形は UTF-8 のバイト列から自分で作る。addingPercentEncoding(withAllowedCharacters: .alphanumerics) は
+        // Unicode の L*、M*、N* を許すので、5文字とも Lo の「坊っちゃん」を変えずに返す（G2 r1 の重大1）。
+        let encodedUpper = Fixture.botchan.utf8.map { String(format: "%%%02X", $0) }.joined()
+        let encodedLower = encodedUpper.lowercased()
+        XCTAssertNotEqual(encodedUpper, Fixture.botchan, "前提：パーセントエンコードの形は元の文字と違う")
+        XCTAssertEqual(encodedUpper, "%E5%9D%8A%E3%81%A3%E3%81%A1%E3%82%83%E3%82%93", "前提：パーセントエンコード（大文字）の形")
+        XCTAssertEqual(encodedLower, "%e5%9d%8a%e3%81%a3%e3%81%a1%e3%82%83%e3%82%93", "前提：パーセントエンコード（小文字）の形")
+        let titleForms = [("UTF-8", Fixture.botchan), ("パーセントエンコード（大文字）", encodedUpper), ("パーセントエンコード（小文字）", encodedLower)]
+
         let everything = snapshot.rawTexts.joined(separator: "\n")
-        let encodedUpper = Fixture.botchan.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
-        XCTAssertFalse(encodedUpper.isEmpty, "前提：パーセントエンコードの形を作れた")
-        XCTAssertEqual(everything.components(separatedBy: Fixture.botchan).count - 1, 0, "UTF-8 の「坊っちゃん」の数")
-        XCTAssertEqual(everything.components(separatedBy: encodedUpper).count - 1, 0, "パーセントエンコード（大文字）の数")
-        XCTAssertEqual(everything.components(separatedBy: encodedUpper.lowercased()).count - 1, 0, "パーセントエンコード（小文字）の数")
+        for (form, text) in titleForms {
+            XCTAssertEqual(everything.components(separatedBy: text).count - 1, 0, "届いたものの全体で \(form) の「坊っちゃん」の数")
+        }
+
+        // JSON を読み直した events の全部の値（キーと入れ子も）を見る。\uXXXX で書き出された題名は、読み直すと「坊っちゃん」に戻る。
+        var titleFound: [String] = []
+        func findTitle(_ value: Any, _ path: String) {
+            switch value {
+            case let object as [String: Any]:
+                for (key, child) in object {
+                    findTitle(key, "\(path).<key>")
+                    findTitle(child, "\(path).\(key)")
+                }
+            case let array as [Any]:
+                for (index, child) in array.enumerated() { findTitle(child, "\(path)[\(index)]") }
+            case let text as String:
+                for (form, title) in titleForms where text.contains(title) { titleFound.append("\(path)（\(form)）") }
+            default:
+                break
+            }
+        }
+        for (index, event) in snapshot.events.enumerated() { findTitle(event, "events[\(index)]") }
+        XCTAssertEqual(titleFound, [], "読み直した events の値に「坊っちゃん」が出た場所")
 
         var equalTo72: [String] = []
         for event in snapshot.events {
@@ -173,6 +215,6 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
         let reached = snapshot.events.filter { ($0["name"] as? String) == "Reading Week Reached" }
         XCTAssertEqual(reached.count, 1, "Reading Week Reached の数（届いた順：\(snapshot.names)）")
         let threshold = (reached.first?["properties"] as? [String: Any])?["threshold_min"]
-        XCTAssertEqual(threshold.map { "\($0)" }, "60", "threshold_min")
+        XCTAssertEqual(threshold as? String, "60", "threshold_min は文字の \"60\"（contracts/telemetry.md）")
     }
 }

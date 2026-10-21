@@ -83,6 +83,7 @@ final class ReadingScreenAcceptanceTests: XCTestCase {
         s.expectState(.reading, file: file, line: line)
         s.tap("reading.pause", file: file, line: line)
         s.expectSaveFailed("一時停止の保存の失敗", file: file, line: line)
+        s.noteRetryLabel(L10n.errorRetryPause, "AC58_一時停止")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
         s.advance(seconds: 60, file: file, line: line)
         return s
     }
@@ -123,6 +124,7 @@ final class ReadingScreenAcceptanceTests: XCTestCase {
         s.expectState(.paused, file: file, line: line)
         s.tap("reading.resume", file: file, line: line)
         s.expectSaveFailed("再開の保存の失敗", file: file, line: line)
+        s.noteRetryLabel(L10n.errorRetryResume, "AC60_再開")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
         s.advance(seconds: 60, file: file, line: line)
         return s
     }
@@ -163,6 +165,7 @@ final class ReadingScreenAcceptanceTests: XCTestCase {
         s.expectState(paused ? .paused : .reading, file: file, line: line)
         s.tap("reading.finish", file: file, line: line)
         s.expectSaveFailed("「終える」の保存の失敗", file: file, line: line)
+        s.noteRetryLabel(L10n.errorRetryFinish, paused ? "AC62_終える_一時停止中" : "AC62_終える_読書中")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
         s.advance(seconds: 60, file: file, line: line)
         return s
     }
@@ -237,6 +240,7 @@ final class ReadingScreenAcceptanceTests: XCTestCase {
         expectElapsed(s, 30...30, "前提：経過 0:30", file: file, line: line)
         s.tap("reading.finish", file: file, line: line)
         s.expectSaveFailed("60秒未満で終える保存の失敗", file: file, line: line)
+        s.noteRetryLabel(L10n.errorRetryFinish, "AC66_60秒未満で終える")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
         s.advance(seconds: 10, file: file, line: line)
         return s
     }

@@ -5,6 +5,8 @@
 #   2. xcrun simctl shutdown と boot（起動し終わるまで bootstatus で待つ）
 #   3. 確かめる実行（AC18RebootTests/test_AC18_2_libraryRemainsAfterReboot だけ。UITEST_RESET も UITEST_SEED も渡さない）
 # 再試行はしない（xcodebuild に再試行の引数を付けない）。どこかで落ちたら、その終了コードで終わる。
+# 動いたテストの数は xcodebuild の出力（<結果の場所>/<テスト名>.log に tee で残す）の「Executed 1 test, with 0 failures」で確かめる。
+# 0本のまま成功で終わった（xctestplan のターゲットの ID や -only-testing の名前が合わない）ときは 65 で終わる。
 # 結果のファイル（.xcresult）はリポジトリの外に置く（既定は ${TMPDIR:-/tmp}/ac18-reboot。AC18_RESULTS_DIR で変えられる）。
 set -euo pipefail
 
@@ -36,8 +38,9 @@ mkdir -p "$RESULTS_DIR"
 run_one() {
   local test_name="$1"
   local bundle="$RESULTS_DIR/$test_name.xcresult"
-  rm -rf "$bundle"
-  echo "ac18-reboot: run $TARGET/$test_name"
+  local log="$RESULTS_DIR/$test_name.log"
+  rm -rf "$bundle" "$log"
+  echo "ac18-reboot: run $TARGET/$test_name (log=$log)"
   set +e
   xcodebuild test \
     -project "$IOS_DIR/Yomutoki.xcodeproj" \
@@ -46,12 +49,22 @@ run_one() {
     -destination "id=$UDID" \
     -only-testing:"$TARGET/$test_name" \
     -resultBundlePath "$bundle" \
-    CODE_SIGNING_ALLOWED=NO
-  local code=$?
+    CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$log"
+  local code="${PIPESTATUS[0]}"
   set -e
   echo "ac18-reboot: $test_name exit=$code"
-  return "$code"
+  if [ "$code" -ne 0 ]; then
+    return "$code"
+  fi
+  if ! grep -q 'Executed 1 test, with 0 failures' "$log"; then
+    echo "ac18-reboot: $test_name の出力に「Executed 1 test, with 0 failures」がない（動いたテストが1本ではない。$log）" >&2
+    return 65
+  fi
+  PASSED=$((PASSED + 1))
+  return 0
 }
+
+PASSED=0
 
 # 1. データを作る実行
 run_one test_AC18_1_seedLibraryBeforeReboot || exit $?
@@ -64,4 +77,8 @@ xcrun simctl bootstatus "$UDID"
 
 # 3. 確かめる実行
 run_one test_AC18_2_libraryRemainsAfterReboot || exit $?
-echo "ac18-reboot: passed 2 of 2 (seed, verify after reboot)"
+if [ "$PASSED" -ne 2 ]; then
+  echo "ac18-reboot: 通った実行は $PASSED 本（2本のはず）" >&2
+  exit 1
+fi
+echo "ac18-reboot: passed $PASSED of 2 (seed, verify after reboot)"

@@ -1,4 +1,5 @@
 import Foundation
+import XCTest
 
 /// テストを動かす言語。Acceptance.xctestplan の構成（ja_JP、en_US）が、テストを動かす側の環境変数 ACCEPTANCE_LANG で渡す。
 enum Lang: String, Sendable {
@@ -153,4 +154,26 @@ enum L10n {
 
     /// 範囲の秒（両端を含む）の label の並び。AC の「11:00 以上 11:05 以下」をそのまま表す。
     static func elapsedLabels(_ seconds: ClosedRange<Int>) -> [String] { seconds.map { elapsedLabel($0) } }
+}
+
+// MARK: 再試行のボタンの文（design 6 の error.retry の行と、7 の error.retry.start などのキー。AC の Then の外）
+
+@MainActor
+extension AppSession {
+    /// error.retry の label が、design 6 の文（どの操作の再試行か：error.retry.start、.pause、.resume、.finish、.cancel）と同じかを見る。
+    /// AC-56〜AC-66 の Then が求めるのは「error.retry が1個」まで。ボタンの文は design の決まりで、PRD の AC の Then の外にある。
+    /// そのため、違っても AC の判定に数えない。XCTAssert にしないのは、continueAfterFailure = false で、AC の Then を
+    /// 見る前にテストが止まるのを避けるため。違ったときは「DESIGN_retryLabel_<場面>」の添付（.keepAlways）を残す。
+    /// G3 で xcresult から添付を書き出してその数を数え、verification.md に「提案」（design 6 との食い違い）として1件ずつ書く（test-plan の 5）。
+    func noteRetryLabel(_ expected: String, _ scene: String) {
+        let retry = el("error.retry")
+        if Wait.until(NSPredicate(format: "label == %@", expected), retry, timeout: Wait.optional) { return }
+        let now = retry.exists ? retry.label : "要素なし"
+        XCTContext.runActivity(named: "DESIGN_retryLabel_\(scene)：「\(expected)」ではなく「\(now)」") { activity in
+            let attachment = XCTAttachment(string: "design 6 の文：\(expected)\n今の label：\(now)")
+            attachment.name = "DESIGN_retryLabel_\(scene)"
+            attachment.lifetime = .keepAlways
+            activity.add(attachment)
+        }
+    }
 }

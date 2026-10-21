@@ -237,6 +237,7 @@ final class FinishInputAcceptanceTests: XCTestCase {
         s.replaceText("session.finish.page", with: "72", file: file, line: line)
         s.tap("session.finish.cancel", file: file, line: line)
         s.expectSaveFailed("やめる保存の失敗", file: file, line: line)
+        s.noteRetryLabel(L10n.errorRetryCancel, "AC64_やめる")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
         s.advance(seconds: 60, file: file, line: line)
         return s
     }
