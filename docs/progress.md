@@ -13,3 +13,4 @@
 - 2026-10-21 全体 開始 Takuma の包括承認を記録。この依頼はブランチ claude/cool-ptolemy-17gnb3 で進める（環境は Linux、Mac なし） docs/approvals/000-takuma-standing-approval.md
 - 2026-10-21 001-reading-session G0 r1 verifier PASS（要修正15件）、tech-lead FAIL（競合の URL をこの環境のネットワーク方針で開けず。裁定 docs/reviews/001-reading-session-G0-ruling.md）。pdm が直して r2 へ。Takuma に接続の許可を依頼中 docs/reviews/001-reading-session-G0-tech-lead-r1.md
 - 2026-10-21 001-reading-session G0 PASS（tech-lead r2、verifier r2。競合 URL の確認は裁定で未検証）。Takuma の包括承認で承認 docs/approvals/001-reading-session-G0.md
+- 2026-10-21 001-reading-session G1 デザインの判定 PASS（design-reviewer r2 16/16、tech-lead r2。CI でしか確かめられない動きは裁定 docs/reviews/001-reading-session-G1-ruling.md）。次は tech-lead の設計メモと契約 docs/reviews/001-reading-session-G1-design-reviewer-r2.md
