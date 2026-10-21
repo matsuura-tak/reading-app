@@ -265,14 +265,14 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
   | ビルドの設定の名前 SWIFT_DEFAULT_ACTOR_ISOLATION、SWIFT_TREAT_WARNINGS_AS_ERRORS（追記2 の (8)） | ios_build のログ | CI の出力のエラーから正しい名前に直す。警告は ADR 0002 のとおりログの warning を数える |
   | シミュレーターのアプリから localhost の受け口に届くか（追記2 の (9)。T6） | AC-20、AC-23、AC-24 の UI テスト | T22（uitest.telemetry.log の accessibilityValue を XCUITest が読む） |
   | contracts/README.md の4（ios_build の Release の確かめ）の行が macOS で動くか（追記2 の (10)） | ios_build のログ | 成果物のパスか道具の出力の形が違えば、CLAUDE.md、Makefile、README、app.json（Takuma）を同じに直す |
-- この改訂（G1 reviewer r1 の後）で生まれた、まだ裁定にない未確認（Mac がないので CI か実機でしか確かめられない。どれも代わりの案がある。指揮役に裁定への追記を頼む）：
+- この改訂（G1 reviewer r1 の後）で生まれた未確認。裁定の追記3 (i)〜(v) に入った（docs/reviews/001-reading-session-G1-ruling.md:47-53。Mac がないので CI か実機でしか確かめられない。どれも代わりの案がある）：
   | 項目 | 確かめ方 | 代わりの案 |
   |---|---|---|
-  | XcodeGen の zip を展開したまま動かして SettingPresets を見つけるか、`xcodegen --version` の形（ADR 0004） | ios_build のログ | `build/tools/xcodegen/install.sh build/tools/prefix` で写してから動かす。zip が使えなければ Mint（`mint run yonaskolb/xcodegen@2.46.0`） |
-  | include の合わせ方（target.yml のスキームの testPlans の配列、target.yml からの相対のパス）と、target.yml がないときに generate が落ちるか（ADR 0004） | xcodegen generate の後の `xcodebuild -list` と ios_test の出力 | include の relativePaths を false にし、パスを ios/ から書く |
-  | `xcodebuild -version` の1行目が「Xcode 26.0」の形か（ADR 0002 の版の検査） | ios_build のログ | grep の形を出力に合わせて直す |
-  | uitest.telemetry.log の accessibilityValue の長さの上限（T22） | AC-20、AC-23、AC-24 の UI テスト（T22 に替えたときだけ） | 値を最後の n 件だけにする形を契約に足す |
-  | ファイルの保護（ADR 0001）：TestFlight のビルドに entitlement が入るか、実機で効くか、.complete のファイルが iCloud バックアップに入るか | G4 の前に Mac で `codesign -d --entitlements -`（P-14）。バックアップは Apple Platform Security の文書で | 入らなければ ADR 0001 を開き直す（ファイルごとの setResourceValue の案） |
+  | (i) XcodeGen の zip を展開したまま動かして SettingPresets を見つけるか、`xcodegen --version` の形（ADR 0004） | ios_build のログ | `build/tools/xcodegen/install.sh build/tools/prefix` で写してから動かす。zip が使えなければ Mint（`mint run yonaskolb/xcodegen@2.46.0`） |
+  | (ii) include の合わせ方（target.yml のスキームの testPlans の配列、target.yml からの相対のパス。ADR 0004）。target.yml がないときに generate が落ちることは確認済み（XcodeGen 2.46.0 の Sources/ProjectSpec/SpecFile.swift:95、:100-105。G1 reviewer r2 の参考2） | xcodegen generate の後の `xcodebuild -list` と ios_test の出力 | include の relativePaths を false にし、パスを ios/ から書く |
+  | (iii) `xcodebuild -version` の1行目が「Xcode 26.0」の形か（ADR 0002 の版の検査） | ios_build のログ | grep の形を出力に合わせて直す |
+  | (iv) uitest.telemetry.log の accessibilityValue の長さの上限（T22） | AC-20、AC-23、AC-24 の UI テスト（T22 に替えたときだけ） | 値を最後の n 件だけにする形を契約に足す |
+  | (v) ファイルの保護（ADR 0001）：TestFlight のビルドに entitlement が入るか、実機で効くか、.complete のファイルが iCloud バックアップに入るか | G4 の前に Mac で `codesign -d --entitlements -`（P-14）。バックアップは Apple Platform Security の文書で | 入らなければ ADR 0001 を開き直す（ファイルごとの setResourceValue の案） |
 - CI で決まらないもの：
   | 項目 | 確かめ方 | 代わりの案 |
   |---|---|---|
@@ -293,19 +293,25 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 10. ファイルの保護（ADR 0001）：project.yml の Yomutoki の entitlements に `com.apple.developer.default-data-protection: NSFileProtectionComplete` を書く（path は Yomutoki/Yomutoki.entitlements。ios_build がこのパスを PlistBuddy で読む）。バックグラウンドの処理（BGTaskScheduler、beginBackgroundTask、UIBackgroundModes）を足さない。
 11. T4 の UITEST_LOCALE と T22（UITEST_TELEMETRY_LOG と uitest.telemetry.log）は最初から作る（verifier が CI の結果で切り替えるため。contracts/test-hooks.md）。つなぎ口のコードは Debug/UITestHooks.swift と Debug/HTTPTelemetrySink.swift の2つだけ（ADR 0005。ios_build の grep で落ちる）。
 12. G2 に出す単位（裁定の追記2 の要修正4）：実装の変更は、ios-engineer が「できた」と報告した HEAD を1つの変更として G2 に出す。途中の push は G2 に出さない。その HEAD で CI が緑であること。途中の push（雛形だけ、AC の一部だけ）は赤でもよい。雛形だけの変更を別に G2 に出すことはしない。verifier の受け入れテストの変更は gates.md の例外のとおり（スタックの CI は落ちるのが正しい）。
+13. project.yml とスキームの決まり（tech-lead の G2 r1）：
+   - project.yml の name は Yomutoki のまま変えない。xctestplan のターゲットの ID はこの名前から作られる（md5("NT_PBXNativeTarget-Yomutoki-YomutokiAcceptanceTests_1") の先頭24文字 DC1C774817D8D1F9A3D54A52 が Acceptance.xctestplan と AC18Reboot.xctestplan の identifier。tech-lead の G2 r1 の証拠）。
+   - スキーム Yomutoki は最上位の schemes: に書く（target.yml の schemes.Yomutoki と合わさるため）。Yomutoki のターゲットの scheme: では作らない（同じ名前のスキームが別にでき、合わさらない見込み。推測）。
+   - Unit.xctestplan は ios/YomutokiTests/Unit.xctestplan に置き、project.yml の schemes.Yomutoki.test.testPlans に `path: YomutokiTests/Unit.xctestplan, defaultPlan: true` で書く。project.yml の側に Acceptance.xctestplan と AC18Reboot.xctestplan を書かない（ADR 0004 の grep で include の1行の外に AcceptanceTests が出ないこと）。
+   - 最初の CI で、ios/ の中で `grep -E '[0-9A-F]{24} /\* YomutokiAcceptanceTests \*/ = \{' Yomutoki.xcodeproj/project.pbxproj` の ID を xctestplan の identifier（DC1C774817D8D1F9A3D54A52）と照らし、結果を報告に書く。違えば報告する（xctestplan は verifier が直す）。
 
 雛形の作り方（ios-engineer が ios/ に作る。tech-lead はコードを書かない）：
 - ios/project.yml（XcodeGen。ADR 0004）：name Yomutoki。options の deploymentTarget は iOS 17.0、disabledValidations に missingTestPlans（受け入れテストの xctestplan を verifier が書く前でも generate できる。XcodeGen の ProjectSpec に「Disable checking if test plan paths exist. This can be useful if your test plans haven't been created yet.」とある。https://raw.githubusercontent.com/yonaskolb/XcodeGen/master/Docs/ProjectSpec.md を 2026-10-21 に取得）。
 - 設定：SWIFT_VERSION 6.0、TARGETED_DEVICE_FAMILY 1、アプリのターゲットの既定の actor 分離は MainActor（ADR 0002）、警告をエラーにする設定（名前は未確認）。Info.plist は Debug と Release で分ける（ADR 0004）。entitlements は 10。
 - ターゲット：Yomutoki（application、ios/Yomutoki/）、YomutokiTests（bundle.unit-test、ios/YomutokiTests/）、YomutokiAcceptanceTests（bundle.ui-testing、ios/AcceptanceTests/。定義は verifier の ios/AcceptanceTests/target.yml。project.yml は `include: [AcceptanceTests/target.yml]` を持ち、:REPLACE を使わない。ADR 0004）。
-- スキーム Yomutoki の test の testPlans：YomutokiTests/Unit.xctestplan（defaultPlan、ios-engineer が書く。中身は YomutokiTests だけ）と AcceptanceTests/Acceptance.xctestplan（verifier が書き、target.yml のスキームの testPlans に足す。include で配列の後ろに足される。中身は YomutokiAcceptanceTests だけで、AC-18 の2つのテストは skippedTests に入れる）。XcodeGen は xctestplan を作らないので手で書く（ProjectSpec の Test Plan の節）。
-- AC-18 の2段は verifier の ios/AcceptanceTests/ac18-reboot.sh（引数はシミュレーターの名前。データを作るテストだけ → `xcrun simctl shutdown` と `boot` → 確かめるテストだけ。どれも -retry-tests-on-failure なし）。
-- 順番：ios-engineer の雛形（project.yml、空のアプリ、Unit.xctestplan、entitlements、Debug/ の2ファイル）→ verifier の target.yml、Acceptance.xctestplan、ac18-reboot.sh、受け入れテスト（red）→ 実装。target.yml がないうちは xcodegen generate が落ち（推測）、ios_build も ios_test も落ちる。雛形だけの変更は G2 に出さない（12）。
+- スキーム Yomutoki の test の testPlans：Unit.xctestplan は project.yml の側に `defaultPlan: true` 付きで書く（ios-engineer。中身は YomutokiTests だけ。13）。Acceptance.xctestplan と AC18Reboot.xctestplan は target.yml のスキームの testPlans が持つ（verifier。defaultPlan を付けない。Acceptance の中身は YomutokiAcceptanceTests だけで、AC-18 の2つのテストは skippedTests に入れる。AC18Reboot は ac18-reboot.sh だけが使う）。include は target.yml が先に合わさり、project.yml が上に重なる（ProjectSpec の Include の節。A107）。配列は後ろに足され重複は消えないので、合わさった testPlans は Acceptance、AC18Reboot、Unit の順になり、既定の計画は project.yml の defaultPlan で決まる（既定が2つ以上だと SpecValidation で落ちる。2.46.0 の SpecValidation.swift:235-242。tech-lead の G2 r1）。XcodeGen は xctestplan を作らないので手で書く（ProjectSpec の Test Plan の節）。
+- AC-18 の2段は verifier の ios/AcceptanceTests/ac18-reboot.sh（引数はシミュレーターの名前。`-testPlan AC18Reboot` と -only-testing で、データを作るテストだけ → `xcrun simctl shutdown` と `boot` → 確かめるテストだけ。どれも -retry-tests-on-failure なし）。
+- AC-39 は verifier の ios/AcceptanceTests/ac39-xcstrings.sh（T14 の xcstrings_untranslated.py を包む。Linux でも動く）。ios_test に入っておらず、G3 で verifier が手で動かす。CI に入れるなら Takuma が app.json の ios_test の頭に `bash ios/AcceptanceTests/ac39-xcstrings.sh &&` を足す（そのとき tech-lead が CLAUDE.md と Makefile を同じ1行に直す）。
+- 順番：ios-engineer の雛形（project.yml、空のアプリ、Unit.xctestplan、entitlements、Debug/ の2ファイル）と verifier の target.yml、Acceptance.xctestplan、AC18Reboot.xctestplan、ac18-reboot.sh、ac39-xcstrings.sh、受け入れテスト（red）→ 実装。001 では verifier の分が G2 で先にできたので、ios-engineer は target.yml がある状態で雛形を作る。target.yml がないと xcodegen generate が落ち（確認済み。XcodeGen 2.46.0 の Sources/ProjectSpec/SpecFile.swift:95、:100-105。G1 reviewer r2 の参考2）、ios_build も ios_test も落ちる。雛形だけの変更は G2 に出さない（12）。
 
 申し送り（G1 reviewer r1 の提案17、18）：
 - verifier へ：AC-18 の2つのテストは Acceptance.xctestplan の skippedTests に入り、ac18-reboot.sh で別に動く。G3 の「飛ばされていない」（docs/org/gates.md の G3）に対しては、検証レポートに ac18-reboot.sh の出力から動いた数（2）と結果を数えて書き、xcresult の skipped にこの2つが入るのは決めたとおりだと同じ所に書く。
 - verifier へ：受け入れテストのターゲットとテスト計画の定義は ios/AcceptanceTests/target.yml に書く（ADR 0004。:REPLACE を使わない。sources の excludes に target.yml、*.xctestplan、*.sh を入れてバンドルに写さない）。T6 が CI で届かなければ T22 に、-AppleLocale が効かなければ UITEST_LOCALE に替え、テスト計画に書く。
-- 指揮役へ：CI の ios ジョブの上限は60分（.github/workflows/ios.yml）。ios_build は Debug と Release の2回のビルドを含み、ios_test は受け入れテスト約90本、AC-20 の30秒待ち×3、シミュレーターの再起動を含む。最初の CI で ios_build と ios_test の時間を ios-engineer に測らせ、合わせて50分を超えそうなら Takuma に上限の変更かジョブの分け方を頼む。
+- 指揮役へ（CI の時間。tech-lead の G2 r1 の 5）：CI の ios ジョブの上限は60分（.github/workflows/ios.yml:52 の timeout-minutes）。見積もり（推測）は、受け入れテスト160本（80本×ja と en の2つの構成。AC-20 の30秒待ちを含む）で53〜107分、ios_test のビルド5〜8分、単体テスト2〜3分、ac18-reboot.sh 4〜6分、ios_build 6〜10分で、合計70〜135分。60分を超えるおそれが高い。Takuma に頼む：ios.yml の timeout-minutes を 150 にするか、ジョブを分ける（例：ios_build、単体テスト、受け入れテストを別のジョブにし、app.json の commands も分ける）。縮める案（未確認）：-parallel-testing-enabled YES。最初の CI で ios-engineer が ios_build と ios_test の時間を測り、報告に書く。
 
 ## 確かめ（A）
 - [x] 2 の表に PRD の全 AC があり、空の欄がない（AC-1〜AC-67 の67行。`grep -cE '^\| AC-[0-9]+ \|'` で 67）

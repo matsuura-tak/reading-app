@@ -48,7 +48,7 @@ XcodeGen の入れ方：
 受け入れテストの定義の置き場所：
 | 案 | 良い点 | 悪い点 | 選ばなかった理由 |
 |---|---|---|---|
-| ios/AcceptanceTests/target.yml を include（選んだ） | 受け入れテストのターゲットとテスト計画を verifier のフォルダに置ける（CLAUDE.md の「受け入れテストのフォルダの中の設定だけで動く」）。ios-engineer の project.yml の変更で受け入れテストの定義が変わりにくい | 合わさった結果は xcodegen generate の後でしか見えない。project.yml の側で同じスキームやターゲットに書き足せば、まだ影響できる（G2 で読む）。target.yml がないうちは generate が落ちる（推測） | － |
+| ios/AcceptanceTests/target.yml を include（選んだ） | 受け入れテストのターゲットとテスト計画を verifier のフォルダに置ける（CLAUDE.md の「受け入れテストのフォルダの中の設定だけで動く」）。ios-engineer の project.yml の変更で受け入れテストの定義が変わりにくい | 合わさった結果は xcodegen generate の後でしか見えない。project.yml の側で同じスキームやターゲットに書き足せば、まだ影響できる（G2 で読む）。target.yml がないと generate が落ちる（確認済み。XcodeGen 2.46.0 の Sources/ProjectSpec/SpecFile.swift:95、:100-105。G1 reviewer r2 の参考2） | － |
 | 全部を ios/project.yml に書く | 1ファイルで読める | 受け入れテストを動かす設定が ios-engineer のファイルに入り、テストを弱める変更を G2 で探す対象から漏れやすい（G1 reviewer r1 の要修正6） | 役の境目と合わない |
 
 ## いちばん強い反論と、それでも選んだ理由
@@ -59,7 +59,8 @@ XcodeGen の入れ方：
 - これで楽になること：Linux でもプロジェクトの変更（ファイルの追加、ターゲットの設定）を YAML の差分で書いて見られる。Info.plist を構成ごとに分けられる。CI の XcodeGen がいつも同じ中身になる。
 - これで難しくなること、守り続けること：
   - ios/project.yml はテストの設定として扱う（スキーム、ビルドの設定、Info.plist の分け方、entitlements、include の行がテストの動きを変えるため）。G2 の reviewer は project.yml の差分を全部読む。受け入れテストのターゲットとテスト計画の定義は ios/AcceptanceTests/target.yml（verifier）にあり、project.yml で `:REPLACE` を使う変更、include の行を消す変更、YomutokiAcceptanceTests か Acceptance.xctestplan に触れる行を足す変更は、G2 で理由を確かめる（`grep -nE 'REPLACE|AcceptanceTests|Acceptance\.xctestplan' ios/project.yml` の行が include の1行だけであること）。
-  - target.yml を verifier が書くまで、xcodegen generate は落ちる見込み（include の先がない。推測）。雛形だけの変更は G2 に出さない（裁定の追記2 の要修正4）ので、止める理由にしない。
+  - target.yml がないと、xcodegen generate は落ちる（include の先がない。確認済み。XcodeGen 2.46.0 の Sources/ProjectSpec/SpecFile.swift:95、:100-105。G1 reviewer r2 の参考2）。雛形だけの変更は G2 に出さない（裁定の追記2 の要修正4）ので、止める理由にしない。
+  - スキーム Yomutoki の testPlans は、Unit.xctestplan を project.yml の側に `defaultPlan: true` 付きで、Acceptance.xctestplan と AC18Reboot.xctestplan を target.yml の側に書く。include は target.yml が先に合わさり、project.yml が上に重なる（A107 の Include の節。配列は後ろに足され、重複は消えない）。project.yml の name は Yomutoki のままにし、スキーム Yomutoki は最上位の schemes: に書く（xctestplan のターゲットの ID がこの名前から作られるため。tech-lead の G2 r1。設計メモ 11 の 13）。
   - ソースのファイルを足したら、project.yml の sources の場所の下に置く（XcodeGen がフォルダを読む）。ビルドとテストのコマンドは xcodegen generate を先に動かす形にする（CLAUDE.md と app.json の commands。app.json は Takuma が書く。P-12）。作ったプロジェクトは .gitignore に入れる。
 - 元に戻すときの手順と手間：CI で作った Yomutoki.xcodeproj を成果物として取り出してコミットし、project.yml と target.yml を消す。手間は中（半日程度と推測。以後の変更は Xcode が要る）。
 
@@ -78,7 +79,8 @@ XcodeGen の入れ方：
 - A112 2.46.0 の zip（2026-10-21 に https://github.com/yonaskolb/XcodeGen/releases/download/2.46.0/xcodegen.zip を curl -L で取得）：4,278,764 バイト、SHA-256 `4d9e34b62172d645eed6457cac13fc222569974098ef4ee9c3368bedf0196806`（sha256sum）。中身（python3 -m zipfile -l）：xcodegen/bin/xcodegen（14,229,032 バイト。file の出力「Mach-O universal binary with 2 architectures: x86_64、arm64」）、xcodegen/share/xcodegen/SettingPresets、xcodegen/install.sh（bin と share を PREFIX に写すだけ）、LICENSE。ファイルの日付は 2026-07-16。この環境は Linux なので動かしていない。
 - 開けなかったもの：Homebrew の formula（`curl https://formulae.brew.sh/api/formula/xcodegen.json` → 「CONNECT tunnel failed, response 403」）。brew は使わないことにした。
 - A104 CFBundleURLTypes iOS 2.0（https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleurltypes 。本文「A list of URL schemes (http, ftp, and so on) supported by the app.」。2026-10-21 に JSON を取得）
-- 未確認：zip を展開したまま bin/xcodegen を動かして SettingPresets を見つけるか（install.sh が bin と share を同じ親に写すので、展開したままでも同じ並びと推測。だめなら `build/tools/xcodegen/install.sh build/tools/prefix` で写してから動かす）。`xcodegen --version` の出力の形。include の先がないときに generate が落ちるか。Swift Package だけで iOS のアプリと UI テストを作れるか。Tuist の文書。CI の macos-latest の Xcode の版。`brew install mint` が通るか（使わない案）。
+- 未確認：zip を展開したまま bin/xcodegen を動かして SettingPresets を見つけるか（install.sh が bin と share を同じ親に写すので、展開したままでも同じ並びと推測。だめなら `build/tools/xcodegen/install.sh build/tools/prefix` で写してから動かす）。`xcodegen --version` の出力の形。Swift Package だけで iOS のアプリと UI テストを作れるか。Tuist の文書。CI の macos-latest の Xcode の版。`brew install mint` が通るか（使わない案）。
+- 確認済み（2.46.0 のソース。G1 reviewer r2 の参考2）：include の先（target.yml）がないと generate が落ちる（Sources/ProjectSpec/SpecFile.swift:95、:100-105）。
 - spike：Mac がないので、していない。最初の CI の実行が spike を兼ねる（ios-engineer が出力を報告に貼る。裁定の追記2 の (1)）。
 
 ## 確かめ（B）
