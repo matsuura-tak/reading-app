@@ -1,0 +1,65 @@
+{
+  "configurations" : [
+    {
+      "id" : "E9FC4882-F157-4F32-A083-70A5E20DE97B",
+      "name" : "ja_JP",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "ACCEPTANCE_LANG",
+            "value" : "ja"
+          },
+          {
+            "key" : "ACCEPTANCE_TELEMETRY_PATH",
+            "value" : "http"
+          }
+        ],
+        "language" : "ja",
+        "region" : "JP"
+      }
+    },
+    {
+      "id" : "677D58EB-5324-4439-9EA8-C82308F240A7",
+      "name" : "en_US",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "ACCEPTANCE_LANG",
+            "value" : "en"
+          },
+          {
+            "key" : "ACCEPTANCE_TELEMETRY_PATH",
+            "value" : "http"
+          }
+        ],
+        "language" : "en",
+        "region" : "US"
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-UITest"
+      }
+    ],
+    "preferredScreenCaptureFormat" : "screenshots",
+    "testExecutionOrdering" : "random",
+    "uiTestingScreenshotsLifetime" : "keepAlways"
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "AC18RebootTests\/test_AC18_1_seedLibraryBeforeReboot()",
+        "AC18RebootTests\/test_AC18_2_libraryRemainsAfterReboot()"
+      ],
+      "target" : {
+        "containerPath" : "container:Yomutoki.xcodeproj",
+        "identifier" : "DC1C774817D8D1F9A3D54A52",
+        "name" : "YomutokiAcceptanceTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,0 +1,41 @@
+# 受け入れテストのターゲットとテスト計画の定義（verifier が書く。docs/adr/0004-project-generation-xcodegen.md）。
+# ios/project.yml から `include: [AcceptanceTests/target.yml]` で読まれる。パスはこのファイルからの相対（Include の relativePaths の既定）。
+# :REPLACE は使わない。XcodeGen 2.46.0 の Docs/ProjectSpec.md（Target、Target Source の excludes、Scheme、Test Action、Test Plan）に従う。
+# スキームの test の testPlans のパスも、このファイルからの相対で読まれる（XcodeGen 2.46.0 の Scheme.Test の pathProperties に testPlans がある）。
+
+targets:
+  YomutokiAcceptanceTests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: .
+        excludes:
+          - target.yml
+          - "*.xctestplan"
+          - "*.sh"
+    dependencies:
+      - target: Yomutoki
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.yomutoki.acceptancetests
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Yomutoki
+
+schemes:
+  Yomutoki:
+    build:
+      targets:
+        Yomutoki: all
+        YomutokiAcceptanceTests: [test]
+    test:
+      # 判定の実行で再試行しない（xctestplan に testRepetitionMode を書かない）。
+      # Unit.xctestplan は ios-engineer が ios/YomutokiTests/ に置く。defaultPlan は project.yml の側で決める（ここでは付けない。
+      # 両方に付けると既定が2つになるため）。どちらにも付けなければ、最初の計画（Unit）が既定になる（ProjectSpec の Test Plan）。
+      testPlans:
+        - path: ../YomutokiTests/Unit.xctestplan
+        - path: Acceptance.xctestplan
+        # AC-18 の2段（ac18-reboot.sh）だけで使う計画。Acceptance.xctestplan では skippedTests に入れてある。
+        - path: AC18Reboot.xctestplan
