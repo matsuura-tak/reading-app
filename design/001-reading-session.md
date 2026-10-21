@@ -271,7 +271,7 @@ CI の出力で決めること（この環境に Mac がないため。指揮役
 - (b) alert のボタン（S6 の「キャンセル」「記録を消す」、S7 の「OK」）、S2 の確認のダイアログ（confirmationDialog）のボタン、編集モードの「削除」、戻るボタン、EditButton に識別子が付くか。CI の出力で決める。代わりの案は、7 の文字で探す（ja と en のどちらで動かすかはテストの設定に合わせる。session.delete.cancel は common.cancel「キャンセル」、session.delete.confirm は session.delete.confirm「記録を消す」、book.add.discard.confirm は「追加せずに閉じる」、S7 は common.ok「OK」）。編集モードの「削除」はシステムの文字で、String Catalog では決められない。
 - (c) 記録の行を入れ物（.accessibilityElement(children: .contain)）にしたとき、VoiceOver の行のアクションに「削除」が出るか。CI の出力で決める（XCUITest でアクションの一覧を読めなければ G4 で人が実機で確かめる）。代わりの案は、行の3つの子（session.row.date、session.row.minutes、session.row.page）のそれぞれに accessibilityAction(named:) で「削除」（session.row.delete の文）を付け、同じ S6 を開く。「編集」からも消せるので、消す道は残る。
 - (d) S5 を下へスワイプして閉じられるか（AC-48）。CI の出力で決める。代わりの案は、欄の上でなくナビゲーションバーに対して swipeDown() を行う（欄の上だとスクロールやキーボードを閉じる動きになるおそれ）。
-- (e) S6 の「キャンセル」（session.delete.cancel）が出るか（AC-38）。S6 は alert にした（D-16）ので出る見込み。CI の出力で決める。代わりの案は、出ない形（confirmationDialog に戻した場合など）なら、確認の外側をタップして閉じる操作を「消さない」とする（PRD の AC-38 の When の注記と同じ）。テストはどちらか1つの形で書く。
+- (e) S6 の「キャンセル」（session.delete.cancel）が出るか（AC-38）。S6 は alert にした（D-16）ので出る見込み。CI の出力で決める。代わりの案は、出ない形（confirmationDialog に戻した場合など）なら、確認の外側をタップして閉じる操作を「消さない」とする（PRD の AC-38 の When の注記と同じ）。テストはどちらか1つの形で書く。S2 の確認のダイアログ（confirmationDialog。D-18）も同じで、「キャンセル」が出ない形なら、外側をタップするとダイアログだけが閉じ、S2 の入力は残る（AC-53 は「追加せずに閉じる」の側だけを使うので、AC の手順は変わらない）。
 - (f) 題名の上限を変換中の文字に当てない作り（PRD 10）。tech-lead の設計メモで形A か形B を決め、CI の出力で確かめる。代わりの案は形B（保存のときに切る）。見せ方は 1 と D-57、部品は 3 の S2。
 - (g) AC-49 の、S2 を閉じてから追加した本の S3 を push する動き（push が落ちないか）。AC-54 の、読み込みの失敗を画面に出せるか（@Query と ModelContainer の失敗の扱い）。どちらも作りは tech-lead が決め、CI の出力で確かめる。画面の形は 1 と 5 のまま変えない。
 
@@ -557,7 +557,7 @@ AC-47〜AC-61 で使う名前（PRD 11 の識別子と文言。識別子は上�
   - 知らせ（AccessibilityNotification.Announcement）：読書を保存して S3 に出たとき session.saved.announcement を1回。60秒未満で S3 に出たとき session.finish.tooShort を1回。誤りの文が出たとき、その文を1回（同じ誤りが続く間は繰り返さない）。保存に失敗したとき（S2、S5、読み始め、一時停止、再開）error.saveFailed を1回。再試行がまた失敗したときも1回（画面が変わらないので、失敗したことを知らせる）。題名の上限の知らせが出たとき、その文を1回（出たまま打ち続けても繰り返さない）。
   - 飾りの記号（books.vertical、エラーの区画と読み込みの失敗の exclamationmark.triangle）は読まない。ラベルは、画面に見える文字を先頭に入れる（S1 の主操作と、その場所の error.retry は題名から始まる）。
 - 英語が長くなったとき（疑似言語 Double-Length で確かめる画面。G3 で S1〜S7 の全画面を Double-Length で撮る）：
-  - 7 の72キーのうち、英語が日本語の2倍を超えるキーは36（文字数で数えた。複数形は other の形。python3 の数え方は報告）。置き場所ごとの対応：
+  - 7 の72キーのうち、英語が日本語の2倍を超えるキーは37（数え方：7 の表の「日本語」と「英語」の列の文字数を python3 の len で比べた。複数形は other の形だけを数え、（ ）の中の注は除いた。%lld などの書式の記号もそのまま数えた）。下の一覧はその37キーのすべてと、2倍に届かないが同じ行に並ぶ session.row.pages（1.5倍）。置き場所ごとの対応：
     - 1行の部品の中に入るもの：home.title「Reading」（大きい見出し。1行に収まる）、reading.state.reading「Reading」、session.finish.navTitle「Finish Reading」（シートの題。システムが切る）、book.stat.totalTime、book.stat.totalPages（値の行の項目名。AX サイズと幅が足りないときは値と縦に並べ替える）、home.weekTotal.label「This Week」（同じ）。
     - ボタン：action.resume「Return to Reading」、action.resumePaused「Return to Paused Reading」、action.continue、action.start（S1、S3 の主操作。2行目は切らずに折り返す）、reading.resume「Resume」、error.retry.pause「Try Pausing Again」、error.retry.resume「Try Resuming Again」（S4 の横並び。収まらなければ ViewThatFits で縦並び）、session.delete.confirm「Delete Session」（alert。システムが縦に並べ替える）、book.add.discard.confirm「Close Without Adding」（確認のダイアログ。システムが折り返す）、session.row.delete「Delete」（スワイプ。記号だけを見せる）。
     - S5 の LabeledContent の項目名：session.finish.page.label「Current Page」、session.finish.minutes.label「Minutes Read」は欄と横に並ぶ。項目名を切らずに折り返し、欄の幅が足りなければ AX サイズと同じく項目名の下に欄を置く（ViewThatFits）。Double-Length で確かめる画面に入れる（design-reviewer r1 の提案7）。
