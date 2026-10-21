@@ -3,7 +3,8 @@
 - 書いた役：tech-lead　日付：2026-10-21
 - 決めた ADR：docs/adr/0003-telemetry-without-sdk-in-001.md（001 は第三者の SDK を入れない。本番は端末の中で数えるだけ。テストは Debug の localhost の HTTP）
 - 機械で確かめる形：contracts/telemetry-events.schema.json（POST /events の本文1件）、contracts/telemetry-flushed.schema.json（POST /flushed の本文）、例は contracts/examples/telemetry-*.json と contracts/examples/flushed.json
-- 元：PRD 15 の表と、その下の Save Failed と Load Failed の段落。PRD 13 の I-1 の数え方
+- 元：PRD 15 の表と、その下の Save Failed と Load Failed の段落（session_begin_finish、session_cancel_finish、session_discard の段落を含む）。PRD 13 の I-1 の数え方
+- 改訂：2026-10-21 Save Failed の operation に session_begin_finish、session_cancel_finish、session_discard を足した（AC-62〜AC-67。足すだけ）
 
 ## イベントとプロパティ
 名前とプロパティ名は PRD 15 のまま。値は下の区間の文字か true / false だけ。数の生の値、題名、ページを入れない（AC-23）。threshold_min も文字の "60" で送る（すべての値を区間の文字か真偽にそろえるため）。
@@ -14,9 +15,9 @@
 | Reading Session Started | is_first_session（Bool）、start_source（"home"、"book_detail"、"after_add"） | 読み始めの保存が通ったとき（再試行で通ったときを含む）。失敗した回は出さない（PRD 15）。is_first_session は telemetry.firstSessionStarted が false なら true にして、印を true にする。start_source は design 1 の決まり（S1 の主操作、S3、S2 で追加した直後の S3） |
 | Reading Session Finished | duration_bucket（"1-4"、"5-14"、"15-29"、"30-59"、"60-119"、"120+"）、page_entered（Bool）、pages_bucket（"0"、"1-9"、"10-29"、"30-99"、"100+"。page_entered が true のときだけ。false なら項目ごと送らない）、minutes_edited（Bool）、was_paused（Bool）、is_first_5min（Bool）、since_first_open（"0-24h"、"1-7d"、"8d+"） | 記録の保存が通ったとき |
 | Reading Session Restored | reason（"relaunch"）、state（"reading"、"paused"、"finishing"） | 起動して（再試行を含む）読み込みが通り、進行中の読書があったとき。起動ごとに1件 |
-| Reading Session Discarded | reason（"too_short"） | 経過60秒未満で「終える」を押し、進行中の読書を消す保存が通ったとき（AC-13、AC-51） |
+| Reading Session Discarded | reason（"too_short"） | 経過60秒未満で「終える」を押し、進行中の読書を消す保存が通ったとき（再試行で通ったときを含む。AC-13、AC-51、AC-67）。失敗した回は出さず、Save Failed（session_discard）だけを出す（PRD 15） |
 | Reading Week Reached | threshold_min（"60"） | 記録の保存が通った後、その記録の startedAt の週の合計が3,600秒以上になり、telemetry.weekReachedWeekStart がその週の始まりより前（かない）とき。出したら印をその週の始まりにする（AC-24。同じ週に2回出さない） |
-| Save Failed | operation（"book_add"、"session_start"、"session_pause"、"session_resume"、"session_finish"、"session_delete"） | その保存が失敗するたびに1件（再試行の失敗も1件ずつ） |
+| Save Failed | operation（"book_add"、"session_start"、"session_pause"、"session_resume"、"session_finish"、"session_delete"、"session_begin_finish"、"session_cancel_finish"、"session_discard"） | その保存が失敗するたびに1件（再試行の失敗も1件ずつ）。session_begin_finish は「終える」（経過60秒以上）で reading か paused から finishing へ移る保存、session_cancel_finish は終える入力をやめる保存（「キャンセル」と下へのスワイプ）、session_discard は60秒未満で終えて進行中の読書を消す保存。60秒未満で終える保存の再試行は、押した時点の経過で分ける（60秒未満なら session_discard、60秒以上なら session_begin_finish。D-59、PRD 18 の 6 の A）。operation はその回に試した保存の名前にする |
 | Load Failed | なし | 保存先の読み込みが失敗するたびに1件（起動のときと、error.loadFailed.retry でまた失敗したとき。AC-54） |
 
 区間の決め方（境目は下の値を含み、上の値を含まない形で書く）：
@@ -57,7 +58,7 @@ enum PagesBucket: String, Sendable { case zero = "0", p1to9 = "1-9", p10to29 = "
 enum SinceFirstOpenBucket: String, Sendable { case within24h = "0-24h", days1to7 = "1-7d", days8OrMore = "8d+" } // init(seconds: TimeInterval)
 enum StartSource: String, Sendable { case home, bookDetail = "book_detail", afterAdd = "after_add" }
 enum RestoredState: String, Sendable { case reading, paused, finishing }
-enum SaveOperation: String, Sendable { case bookAdd = "book_add", sessionStart = "session_start", sessionPause = "session_pause", sessionResume = "session_resume", sessionFinish = "session_finish", sessionDelete = "session_delete" }
+enum SaveOperation: String, Sendable { case bookAdd = "book_add", sessionStart = "session_start", sessionPause = "session_pause", sessionResume = "session_resume", sessionFinish = "session_finish", sessionDelete = "session_delete", sessionBeginFinish = "session_begin_finish", sessionCancelFinish = "session_cancel_finish", sessionDiscard = "session_discard" }
 
 protocol TelemetrySink: Sendable {
     func send(_ event: TelemetryEvent) async

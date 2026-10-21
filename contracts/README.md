@@ -15,9 +15,9 @@
 | contracts/telemetry.md | 計測の9イベント、区間の決め方、Swift の型の名前の案、テストの受け口の送り方 | ios-engineer、verifier |
 | contracts/telemetry-events.schema.json | POST /events の本文（イベント1件）の JSON Schema | verifier、ios-engineer |
 | contracts/telemetry-flushed.schema.json | POST /flushed の本文の JSON Schema | verifier |
-| contracts/examples/telemetry-*.json、flushed.json | 上の2つの例（9イベントと送り終わり） | verifier、ios-engineer |
+| contracts/examples/telemetry-*.json、flushed.json | 上の2つの例（9イベントと送り終わり。Save Failed は session_start と session_discard の2例） | verifier、ios-engineer |
 | contracts/tools/xcstrings_untranslated.py | String Catalog の ja と en のそろっていないキーを数える（AC-39、T14） | verifier |
-| contracts/dependencies.md | 使ってよい依存ライブラリの表（001 は空） | 全員 |
+| contracts/dependencies.md | 使ってよい依存ライブラリの表（ランタイムのライブラリは0件。ビルドの道具 XcodeGen の1行） | 全員 |
 
 ## 確かめ方（リポジトリの根で動かす）
 1. JSON Schema と例が合うこと（Linux で動く。Node が要る）：

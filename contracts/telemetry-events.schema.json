@@ -96,7 +96,7 @@
       "additionalProperties": false,
       "required": ["operation"],
       "properties": {
-        "operation": { "enum": ["book_add", "session_start", "session_pause", "session_resume", "session_finish", "session_delete"] }
+        "operation": { "enum": ["book_add", "session_start", "session_pause", "session_resume", "session_finish", "session_delete", "session_begin_finish", "session_cancel_finish", "session_discard"] }
       }
     }
   }
