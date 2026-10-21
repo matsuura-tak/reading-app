@@ -373,6 +373,52 @@ struct LibraryStoreTests {
         #expect(await h.events() == [.loadFailed])
     }
 
+    @Test("ファイルの保存先に ActiveReading が2件あれば読み込みの失敗。ストアのファイルと行は残る（data-model.md:36）")
+    func twoActiveReadingsOnDiskFailLoadAndKeepFile() async throws {
+        let fileManager = FileManager.default
+        let directory = fileManager.temporaryDirectory.appending(
+            path: "YomutokiTests-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? fileManager.removeItem(at: directory) }
+        let storeURL = directory.appending(path: LibraryContainer.storeFileName, directoryHint: .notDirectory)
+        let schema = Schema(versionedSchema: SchemaV1.self)
+        func openStore() throws -> ModelContainer {
+            let configuration = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)
+            return try ModelContainer(
+                for: schema, migrationPlan: LibraryMigrationPlan.self, configurations: configuration)
+        }
+
+        // 壊れたストアを作る（保存の層は2件目を作らないので、ModelContext で直に入れる）。
+        do {
+            let writer = try openStore()
+            let context = writer.mainContext
+            let book = Book(title: "坊っちゃん", totalPages: 300, addedAt: StoreHarness.base)
+            context.insert(book)
+            for _ in 0..<2 {
+                let active = ActiveReading(state: "reading", startedAt: StoreHarness.base)
+                context.insert(active)
+                active.book = book
+            }
+            try context.save()
+        }
+
+        // 起動し直したときと同じく、別の ModelContainer でファイルを開いて読む。
+        let h = try StoreHarness(container: openStore())
+        h.store.load()
+        #expect(h.store.loadState == .failed)
+        #expect(h.store.books.isEmpty)
+        #expect(h.store.active == nil)
+        #expect(await h.events() == [.loadFailed])
+
+        // ファイルは消さず、どの行も直さない。
+        #expect(fileManager.fileExists(atPath: storeURL.path(percentEncoded: false)))
+        let reader = try openStore()
+        let actives = try reader.mainContext.fetch(FetchDescriptor<ActiveReading>())
+        #expect(actives.count == 2)
+        #expect(actives.allSatisfy { $0.state == "reading" })
+        #expect(try reader.mainContext.fetchCount(FetchDescriptor<Book>()) == 1)
+    }
+
     @Test("state が知らない値なら読み込みの失敗")
     func unknownStateFailsLoad() throws {
         let container = try LibraryContainer.makeInMemory()

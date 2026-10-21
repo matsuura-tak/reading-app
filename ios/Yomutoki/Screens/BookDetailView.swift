@@ -16,6 +16,8 @@ struct BookDetailView: View {
     @State private var pendingDelete: SessionSnapshot?
     @State private var isDeleteConfirmPresented: Bool
     @State private var isDeleteFailedPresented: Bool
+    /// 読み込みが1秒を超えたら ProgressView を足す（D-39。S1 と同じ作り）。
+    @State private var showsLoadingIndicator = false
 
     init(
         bookID: UUID, startFailed: Bool = false, pendingDelete: SessionSnapshot? = nil, deleteFailed: Bool = false
@@ -88,9 +90,19 @@ struct BookDetailView: View {
         .redacted(reason: .placeholder)
         .accessibilityHidden(true)
         .overlay {
-            ProgressView {
-                Text("common.loading")
-                    .foregroundStyle(Color.primary)
+            if showsLoadingIndicator {
+                ProgressView {
+                    Text("common.loading")
+                        .foregroundStyle(Color.primary)
+                }
+            }
+        }
+        .task {
+            do {
+                try await Task.sleep(for: .seconds(1))
+                showsLoadingIndicator = true
+            } catch {
+                // 画面が消えて止まった。何もしない。
             }
         }
     }

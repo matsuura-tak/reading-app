@@ -9,7 +9,7 @@ struct FinishSessionView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @FocusState private var focusedField: Field?
 
-    private enum Field: Hashable {
+    private nonisolated enum Field: Hashable {
         case page
         case minutes
     }

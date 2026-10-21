@@ -12,9 +12,11 @@ struct AddBookView: View {
     /// 追加の保存に失敗した（AC-42）。
     @State private var saveFailed: Bool
     @State private var isDiscardConfirmPresented = false
+    /// 追加の保存が通った（design S2「保存の間は追加を無効」）。閉じるまでの二度押しで2冊できないようにする。
+    @State private var didSave = false
     @FocusState private var focusedField: Field?
 
-    private enum Field: Hashable {
+    private nonisolated enum Field: Hashable {
         case title
         case totalPages
     }
@@ -61,7 +63,7 @@ struct AddBookView: View {
                                 Text("error.retry")
                             }
                             .secondaryBorderedButton()
-                            .disabled(!canSave)
+                            .disabled(!canSave || didSave)
                             .accessibilityIdentifier("error.retry")
                         }
                     }
@@ -127,7 +129,7 @@ struct AddBookView: View {
                         Text("book.save")
                     }
                     .accentProminentButton()
-                    .disabled(!canSave)
+                    .disabled(!canSave || didSave)
                     .accessibilityIdentifier("book.save")
                 }
             }
@@ -161,10 +163,11 @@ struct AddBookView: View {
 
     /// 「追加」と「もう一度保存」（AC-2、AC-42、AC-49）。通ったら閉じて、追加した本の S3 を積む。
     private func save() {
-        guard canSave else { return }
+        guard canSave, !didSave else { return }
         let totalPages = NumberInput.value(totalPagesText, in: ReadingMath.totalPagesRange)
         do {
             let bookID = try store.addBook(title: title, totalPages: totalPages)
+            didSave = true
             saveFailed = false
             router.bookAdded(bookID)
         } catch let error as StoreError {

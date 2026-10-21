@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// 終える入力の下書き（contracts/data-model.md の「終える入力の下書き」。保存しない。SwiftData にも UserDefaults にも入れない）。
-struct FinishDraft: Equatable {
+nonisolated struct FinishDraft: Equatable {
     var pageText = ""
     var minutesText = ""
     /// 分の欄の初めの値（finishedAt での経過の分。AC-30、AC-34）。
@@ -9,14 +9,14 @@ struct FinishDraft: Equatable {
 }
 
 /// S4 のエラーの区画を出している操作（1画面に1つ。最後に失敗した操作。D-51、D-58）。
-enum ReadingFailure: Equatable {
+nonisolated enum ReadingFailure: Equatable {
     case pause
     case resume
     case finish
 }
 
 /// S5 のエラーの区画を出している操作（D-14、D-60）。
-enum FinishFailure: Equatable {
+nonisolated enum FinishFailure: Equatable {
     case save
     case cancel
 }
@@ -275,7 +275,9 @@ struct ReadingView: View {
     private func elapsedBlock(_ active: ActiveSnapshot) -> some View {
         let stateKey: LocalizedStringKey = active.state == .paused ? "reading.state.paused" : "reading.state.reading"
         return VStack(spacing: Space.s) {
-            TimelineView(.periodic(from: active.startedAt, by: 1)) { _ in
+            // 刻みは端末の時刻で動くので、起点も端末の今にする（startedAt は AppClock の時刻で、先の時刻だと刻みが始まらない）。
+            // 表示する経過は AppClock の今で計算し、止めた時計の描き直しは clockRevision で行う。
+            TimelineView(.periodic(from: .now, by: 1)) { _ in
                 elapsedText(seconds: elapsedSeconds(active, revision: clockRevision), paused: active.state == .paused)
             }
             Text(stateKey)

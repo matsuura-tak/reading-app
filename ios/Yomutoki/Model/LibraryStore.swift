@@ -236,19 +236,20 @@ final class LibraryStore {
     /// 60秒未満なら読書を消す保存（session_discard）、60秒以上なら finishing へ移る保存（session_begin_finish）。
     func finish() throws -> FinishOutcome {
         guard let current = active, current.state != .finishing else { throw StoreError.invalidState }
-        if current.elapsedSeconds(now: clock.now()) < ReadingMath.minimumSessionSeconds {
-            let bookID = try discardTooShort()
+        // 今の時刻は1回だけ読み、分ける判定と中の保存で同じ値を使う（60秒をまたいでも invalidState にしない）。
+        let now = clock.now()
+        if current.elapsedSeconds(now: now) < ReadingMath.minimumSessionSeconds {
+            let bookID = try discardTooShort(now: now)
             return .discarded(bookID: bookID)
         }
-        try beginFinish()
+        try beginFinish(now: now)
         return .finishing
     }
 
-    /// 終える（経過60秒以上）：finishedAt＝今、state を finishing（AC-45、AC-62、AC-63）。
-    func beginFinish() throws {
+    /// 終える（経過60秒以上）：finishedAt＝now（finish() が読んだ今の時刻）、state を finishing（AC-45、AC-62、AC-63）。
+    func beginFinish(now: Date) throws {
         let context = try loadedContext()
         guard let model = activeModel, var next = active, next.state != .finishing else { throw StoreError.invalidState }
-        let now = clock.now()
         guard next.elapsedSeconds(now: now) >= ReadingMath.minimumSessionSeconds else { throw StoreError.invalidState }
         if next.state == .paused, let pausedAt = next.pausedAt {
             next.pausedTotalSeconds += max(0, now.timeIntervalSince(pausedAt))
@@ -265,13 +266,14 @@ final class LibraryStore {
     }
 
     /// 終える（経過60秒未満）：記録せずに進行中の読書を消す（AC-13、AC-51、AC-66、AC-67）。消した本の ID を返す。
+    /// now は finish() が読んだ今の時刻。
     @discardableResult
-    func discardTooShort() throws -> UUID {
+    func discardTooShort(now: Date) throws -> UUID {
         let context = try loadedContext()
         guard let model = activeModel, let current = active, current.state != .finishing else {
             throw StoreError.invalidState
         }
-        guard current.elapsedSeconds(now: clock.now()) < ReadingMath.minimumSessionSeconds else {
+        guard current.elapsedSeconds(now: now) < ReadingMath.minimumSessionSeconds else {
             throw StoreError.invalidState
         }
         context.delete(model)

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// 積む画面（design 1 の S3 と S4）。S4 は進行中の読書（1件だけ）を出すので、本の ID を持たない。
-enum Route: Hashable {
+nonisolated enum Route: Hashable {
     case book(UUID)
     case reading
 }
