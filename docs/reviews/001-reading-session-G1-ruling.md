@@ -20,3 +20,9 @@
 ## いちばん強い反論と、それでも進める理由
 - 反論：識別子が見えないことが実装の後に分かると、受け入れテストと実装の両方を直すことになり、手戻りが大きい。
 - それでも進める理由：どの項目にも代わりの案があり、どちらの作りでも PRD の AC は変わらない。確かめる手段（CI の macOS）は実装の最初の push で手に入る。待つ理由がない。
+
+## 追記（2026-10-21、tech-lead r2 の要修正1）
+裁定1の一覧に次の3つを足す。どれも Mac がないため G2 の CI の出力（スクリーンショット）で確かめ、ios-engineer が結果と使った代わりの案を報告に書く。
+- D-46：ツールバーの .borderedProminent に付けた .tint(color.accent.fill) と .foregroundStyle(color.text.onAccent) を iOS 26 のツールバーが使うか。代わり（2段）：ラベルの色だけ無視されたら Asset Catalog の代わりの値（design/tokens.md）に替える。塗りも無視されたら確定のボタンを .confirmationAction の文字のボタンに戻す（AccentColor = color.accent.text）。
+- D-48：List、Form、LabeledContent、ContentUnavailableView、ProgressView が既定で付ける secondaryLabel を、中の Text の .foregroundStyle（Color の値）で替えられるか。代わり：その所だけ標準の Text の並びにし、.accessibilityElement(children: .combine) でまとめる。
+- D-53：ToolbarItemPlacement.keyboard が .numberPad のキーボードとシートの中で出るか。代わり：(a) safeAreaInset(edge: .bottom) に .bordered の「保存」、(b) D-53 をやめる（結び付いた AC はない）。
