@@ -280,6 +280,10 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
   | (iii) `xcodebuild -version` の1行目が「Xcode 26.0」の形か（ADR 0002 の版の検査） | ios_build のログ | grep の形を出力に合わせて直す |
   | (iv) uitest.telemetry.log の accessibilityValue の長さの上限（T22） | AC-20、AC-23、AC-24 の UI テスト（T22 に替えたときだけ） | 値を最後の n 件だけにする形を契約に足す |
   | (v) ファイルの保護（ADR 0001）：TestFlight のビルドに entitlement が入るか、実機で効くか、.complete のファイルが iCloud バックアップに入るか | G4 の前に Mac で `codesign -d --entitlements -`（P-14）。バックアップは Apple Platform Security の文書で | 入らなければ ADR 0001 を開き直す（ファイルごとの setResourceValue の案） |
+  | (vi) View の中に入れた `private nonisolated enum Field`（ios/Yomutoki/Screens/FinishSessionView.swift:12、AddBookView.swift:19）に、Swift 6 の言語モードと既定の MainActor の分離で警告が出ないか | ios_build のログ（warning の数。ADR 0002 の警告0件） | nonisolated を外す（SE-0434 で既定の分離のままでも通る見込み。未確認） |
+  | (vii) ReadingView.swift:280 の `TimelineView(.periodic(from: .now, by: 1))` の `.now` が `Date.now` として型が決まるか | ios_build のログ（コンパイルのエラー） | `.periodic(from: Date.now, by: 1)` と明示する（11 の 7 の例外のまま） |
+  | (viii) ios/YomutokiTests/LibraryStoreTests.swift:376-420 の twoActiveReadingsOnDiskFailLoadAndKeepFile が、同じ SQLite のファイルを3つの ModelContainer で開く（書く用は do の範囲で手放す。読む用 h と確かめる用 reader は同時に開いている）。SwiftData でこれが通るか | ios_test の単体テスト（Unit.xctestplan）の結果 | 読む用の container を手放してから確かめる用を開く（例：h の確かめを do の範囲に入れる。今のコードは既に確かめる用を読む用の後に開いているので、順だけでは足りない） |
+- (vi)〜(viii) は 2026-10-21 に足した（ios-engineer の実装の報告で、Mac でしか確かめられないと分かったもの）。裁定の追記3 にはまだ名前がないが、上の表と同じに扱う（最初の CI で確かめ、出た / 出ない、使った代わりの案を報告に書く。G3 まで残れば G3 は通らない）。
 - CI で決まらないもの：
   | 項目 | 確かめ方 | 代わりの案 |
   |---|---|---|
@@ -289,12 +293,13 @@ HTTP の契約はない（サーバーがない。ADR 0001、0003）。契約は
 
 ## 11. 実装の決まり（ios-engineer へ）
 1. 色は Color の値で渡す（tech-lead r2 の提案1）。トークンは Asset Catalog の Color Set（design/tokens.md 1）か Color.primary などの Color の値にし、`.foregroundStyle(.primary)` のような階層の形（HierarchicalShapeStyle）を文字の色に使わない（A90）。確かめ：`grep -rnE 'foregroundStyle\(\.(primary|secondary|tertiary)' ios/Yomutoki` が 0件。
-2. 自動保存を切る：ModelContainer を作った直後に `mainContext.autosaveEnabled = false`（A4）。1つの操作は1回の save（A3）、失敗したら rollback（A5）。確かめ：`grep -rn 'autosaveEnabled = false' ios/Yomutoki` が1件。
+2. 自動保存を切る：ModelContainer を作った直後に `mainContext.autosaveEnabled = false`（A4）。1つの操作は1回の save（A3）、失敗したら rollback（A5）。確かめ：`grep -rn 'autosaveEnabled = false' ios/Yomutoki` が2件（本番の Model/LibraryStore.swift が1件、Debug/UITestHooks.swift の SeedWriter が1件。Debug/ の外では1件）。2026-10-21 に1件から直した（G2 の code reviewer r1 の提案13）。
 3. 保存が通ってから画面とメモリの状態を変える（tech-lead r2 の提案3）。操作の時刻は保存が通った回の時刻（再試行ならその時刻。PRD 10）。失敗した回の値を残さない。
 4. 題名は形B（5）。単体テスト：100字と101字、結合した絵文字、CRLF と U+2028、前後の全角空白、10万字の貼り付け、切った後に末尾の空白を除く例（99字＋U+3000＋1字は99字になる）。
 5. 60秒未満で終える保存の再試行は、押した時点の経過で session_discard か session_begin_finish に分ける（D-59、PRD 18 の 6 の A）。T5 の数は、その回に試した操作の数を使う。
 6. 終える入力の下書きとシートの Bool は S4 のモデルに持つ（5、contracts/data-model.md）。
 7. 時計は AppClock（`now: () -> Date`）と Calendar を組み立ての場所で入れる。Date() をほかで直接呼ばない（つなぎ口が効かなくなるため）。確かめ：`grep -rn 'Date()' ios/Yomutoki --include='*.swift'` の行が AppClock と Debug/ の中だけ。
+   - 追記（2026-10-21、G2 の code reviewer r1 の提案7）：例外：TimelineView の刻みの起点 `.periodic(from: .now, by:)` は端末の時刻でよい（ReadingView.swift。AppClock の時刻が端末より先だと刻みが始まらないため。下の 10 の (vii) で `Date.now` と書いたときも同じ）。表示と保存の値には使わず、経過は AppClock の今で計算する。確かめの grep（`Date()`）は変えない。
 8. 計測の型は contracts/telemetry.md のとおり。関連値に String と Int を持たせない。
 9. 最初の CI で、裁定の (a)〜(g) と D-46、D-48、D-53、D-60 と 10 の表の未確認を確かめ、結果と使った代わりの案を報告に書く（裁定の3）。G3 まで残れば G3 は通らない。
 10. ファイルの保護（ADR 0001）：project.yml の Yomutoki の entitlements に `com.apple.developer.default-data-protection: NSFileProtectionComplete` を書く（path は Yomutoki/Yomutoki.entitlements。ios_build がこのパスを PlistBuddy で読む）。バックグラウンドの処理（BGTaskScheduler、beginBackgroundTask、UIBackgroundModes）を足さない。

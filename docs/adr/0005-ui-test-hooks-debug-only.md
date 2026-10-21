@@ -23,6 +23,12 @@
   - Release の Info.plist に CFBundleURLTypes がない（PlistBuddy の Print が失敗することを `!` で反転して確かめる）。
   - 確かめる先のファイルがないときに通ってしまわないよう、strings と PlistBuddy の前に `test -f` を置く。
 - localhost の受け口に届かないと CI で分かったとき（裁定の追記2 の (9)）は、T22（送ったイベントを並べた要素 `uitest.telemetry.log` の accessibilityValue を XCUITest が読む）に替える。-AppleLocale が効かないと分かったとき（同 (7)）は、T4 の UITEST_LOCALE に替える。どちらも ios-engineer が最初から作っておき、verifier が CI の結果で切り替える（契約の名前と形は contracts/test-hooks.md の T4 と T22）。
+- 追記（2026-10-21、G2 の code reviewer r1 の要修正1。上の文は変えず、例外を足す）：
+  - 例外1（呼び出しの場所）：design 6 の (a) の代わりの案（session.state.* の 1pt の要素 UITestMarker。contracts/test-hooks.md の T8）は、Debug/ の2つのファイルの中だけでは置けない。S5 はシートで表示の階層が別なので、根の UITestOverlay だけでは S5 の上に置けない。根の画面の要素も、同じ画面の識別子と同じ状態の名前（RootView の stateName）を使うため RootView に置く。そのため ios/Yomutoki/Screens/RootView.swift（根の画面）と ios/Yomutoki/Screens/FinishSessionView.swift（S5 のシート）の2か所から、`#if DEBUG` の中で UITestMarker を呼ぶことを許す。UITestMarker の定義は Debug/UITestHooks.swift のまま。
+  - 例外2（引数）：引数 showsStateMarker（Bool。既定は false。true を渡すのは組み立ての場所 YomutokiApp の `#if DEBUG` の中だけ）が、Release のコードの RootView、ReadingView、FinishSessionView を通ることを許す。1pt の要素を置くかどうかだけを決める表示の要素で、本番の答え（保存、時計、計測、画面の流れ）を変える分岐ではないため。
+  - 対象外：各 Screens の #Preview と ios/Yomutoki/Screens/PreviewSupport.swift の `#if DEBUG` は Xcode のプレビューのためで、テストのつなぎ口ではない（UITEST_ の名前、readingapp-uitest://、uitest. の要素を持たない）。この ADR の対象にしない。
+  - 確かめ方は変えない（上の CI の3つ：UITEST_ を持つ Swift のファイルが2ファイルと ios/AcceptanceTests/ の外に0件、Release の strings に UITEST_、readingapp-uitest、-UITest、uitest. が0件、Release の Info.plist に CFBundleURLTypes がない）。
+  - 下の「いちばん強い反論」の「#if DEBUG の中は2ファイルに限る」は、この例外の2か所と #Preview を加えて読む。G2 の reviewer は Debug/ の2ファイルの差分に加え、`grep -rnE 'UITestMarker|showsStateMarker' ios/Yomutoki --include='*.swift' | grep -v '/Debug/'` の行が、組み立ての場所 App/YomutokiApp.swift の `#if DEBUG` の中の1行（true を渡す所）と、RootView.swift、ReadingView.swift、FinishSessionView.swift の中だけで、UITestMarker の呼び出しが `#if DEBUG` の中の2件だけかを見る（2026-10-21 の HEAD で、この形の16行を確かめた）。
 
 ## 検討した案
 | 案 | 良い点 | 悪い点 | 選ばなかった理由 |
@@ -48,6 +54,7 @@
 - 環境変数の長さの上限で UITEST_SEED が渡せないと分かった（そのとき T2 の代わりの案に替える）。
 - localhost の受け口に届かない、または -AppleLocale が効かないと CI の出力で分かった（そのとき T22、UITEST_LOCALE に替える。上の決定）。
 - 受け入れテストを Release ビルドで走らせる必要が出た。
+- 追記（2026-10-21）：決定の例外の2か所（RootView.swift、FinishSessionView.swift）の `#if DEBUG` に、1pt の要素の外のもの（本番の答えを変える分岐、UITEST_ の名前）が入った（そのとき Debug/ に移すか、この ADR を開き直す）。
 
 ## 確かめたこと
 - A22 XCUIApplication（launchArguments、launchEnvironment）https://developer.apple.com/documentation/xcuiautomation/xcuiapplication
