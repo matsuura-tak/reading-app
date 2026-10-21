@@ -2,6 +2,7 @@
 
 - 書いた役：designer　日付：2026-10-21　最初に使う機能：001-reading-session（design/001-reading-session.md）
 - 改訂：2026-10-21 G1 r1 の判定（docs/reviews/001-reading-session-G1-design-reviewer-r1.md の指摘1〜3）を受けて、アクセントを塗り用（color.accent.fill）と文字用（color.accent.text）に分け、塗り用のダークの値を替えた。17pt 以下の文字は color.text.primary だけにし、color.text.secondary は一時停止中の経過時間（.largeTitle）だけにした。placeholder を使わないことにした。5 のコントラストの表を、システムの色とシステムが描く部品の組まで広げた
+- 改訂（G1 の契約の後）：2026-10-21 tech-lead r2 の提案2（docs/reviews/001-reading-session-G1-tech-lead-r2.md）を受けて、1 の代わりの値に、コントラストを上げる設定のダークでシステムが白いラベルを描いた場合の1組を足し、5 の A1 の注に数字を足した
 - 色、文字、余白は、この表の名前だけを使う。画面の仕様と実装に、色の値や文字の大きさを直接書かない。
 - 色はシステムの色を先に使う。独自の色は「しおりの色」の2つ（塗り用と文字用）と、その塗りの上に載せる文字の色の、あわせて3つだけ（HIG Color「Make sure all your app's colors work well in light, dark, and increased contrast contexts」https://developer.apple.com/design/human-interface-guidelines/color ）。
 - 根拠の R 番号は design/001-reading-session-research.md の 8、B 番号は .claude/skills/craft-designer/SKILL.md の 1。
@@ -18,11 +19,11 @@
 | color.text.secondary | 一時停止中の経過時間（type.timer、.largeTitle の 34pt。18pt 以上の文字で、基準は 3:1）だけ。17pt 以下の文字には使わない | secondaryLabel | secondaryLabel | システムが切り替える | R-11。値と比は 5 の B2、B3 |
 | color.text.placeholder | 001 では使わない。入力欄に placeholder を置かず、必須と任意は見出しと footer の文で伝える | placeholderText | placeholderText | システムが切り替える | R-11。値と比は 5 の B4（どの組も 4.5:1 に届かない） |
 | color.separator | 行の区切り（List の既定） | separator | separator | システムが切り替える | B-2（独自の線を引かない） |
-| color.accent.fill（しおりの色・塗り / Bookmark Fill） | 目立つボタン（.borderedProminent）の塗りだけ：S1、S3 の下端の主操作と、そこに出る error.retry、S1 の空の状態の「本を追加」と読み込みの失敗の「もう一度読み込む」、S4 の「終える」、S2 と S5 の確定のボタン（「追加」「保存」）。文字には使わない | #7A4427 | #9F5833 | #5E3219 / #E3B994 | R-10「choosing your brand color as the app accent color can be an effective way」「In dark environments, colors appear bright and saturated.」、R-9「strive for a contrast ratio of 7:1」、R-11、B-5。HIG Color「the system applies the app accent color to the background in prominent buttons — such as the Done button」 |
+| color.accent.fill（しおりの色・塗り / Bookmark Fill） | 目立つボタン（.borderedProminent）の塗りだけ：S1、S3 の下端の主操作と、そこに出る error.retry、S1 の空の状態の「本を追加」と読み込みの失敗の「もう一度読み込む」、S4 の「終える」とその場所に出る error.retry「もう一度終える」、S2 と S5 の確定のボタン（「追加」「保存」）。文字には使わない | #7A4427 | #9F5833 | #5E3219 / #E3B994 | R-10「choosing your brand color as the app accent color can be an effective way」「In dark environments, colors appear bright and saturated.」、R-9「strive for a contrast ratio of 7:1」、R-11、B-5。HIG Color「the system applies the app accent color to the background in prominent buttons — such as the Done button」 |
 | color.accent.text（しおりの色・文字 / Bookmark） | アプリの AccentColor（システムの tint）。システムが押せる文字と記号に付ける所だけ：ナビゲーションバーの文字のボタン（戻る、「キャンセル」、「編集」、「＋」。iOS の版によってはシステムが label の色で描く）、alert のボタン（S6、S7）、入力欄のカーソル。押せない文字（状態、見出し、文）には使わない | #7A4427 | #CF9D78 | #5E3219 / #E3B994 | R-10、R-9、R-11、B-5。HIG Buttons「a primary button uses an app's accent color」 |
 | color.text.onAccent | color.accent.fill の塗りの上のラベル。アプリが .foregroundStyle で決め、システムの既定に任せない | #FFFFFF | #FFFFFF | #FFFFFF / #000000 | R-9、R-11。HIG Color の Liquid Glass color（既定のコントラストではラベルが白、コントラストを上げると黒の例） |
 | color.status.error | 入力の誤りと保存の失敗の印（記号 exclamationmark.triangle）だけに使う。文字には使わない | systemRed（HIG の値 255,56,60） | systemRed（255,66,69） | systemRed（233,21,45 / 255,97,101） | R-10「Avoid relying solely on color」、R-11 |
-| color.fill.secondaryButton | 主操作でないボタン（.bordered、tint は color.text.primary）の塗りと文字：S4 の一時停止と再開、S4 に出る error.retry、S2 と S5 のエラーの区画の error.retry、S5 のキーボードの上の「保存」、S3 の「読書に戻る」（別の本が読書中のとき） | システムが tint から作る塗り | 同じ | システムが切り替える | HIG Buttons「Use style — not size — to visually distinguish the preferred choice」、B-5 |
+| color.fill.secondaryButton | 主操作でないボタン（.bordered、tint は color.text.primary）の塗りと文字：S4 の一時停止と再開、その場所に出る error.retry（「もう一度一時停止」「もう一度再開」）、S2 と S5 のエラーの区画の error.retry、S5 のキーボードの上の「保存」、S3 の「読書に戻る」（別の本が読書中のとき） | システムが tint から作る塗り | 同じ | システムが切り替える | HIG Buttons「Use style — not size — to visually distinguish the preferred choice」、B-5 |
 
 実装での当て方（tech-lead と ios-engineer へ）：
 - Asset Catalog の AccentColor（アプリ全体の tint）には color.accent.text の4つの値を入れる。システムが自分で tint を付ける所（戻る、alert のボタン、カーソルなど）は、これで文字用の値になる。
@@ -41,6 +42,10 @@
 - 文字用のダーク #CF9D78 は、前の版の #C99671 より少し明るくした。alert や素材の背景がシステムの灰色4（#3A3A3C）まで明るくなっても 4.73:1 を保つため（#C99671 では 4.37:1）。
 - コントラストを上げる設定：ライトは塗りを暗く（#5E3219）して白い文字 10.79:1、ダークは塗りを明るく（#E3B994）して黒い文字 11.63:1。どちらも形と背景の差も既定より大きくなる。ダークで黒い文字にしたのは、HIG Color の画像の説明（コントラストを上げると Done のラベルが黒）と同じ向きにするため。
 - 代わりの値（G2 の CI で決める）：ツールバーの確定のボタンで、システムがアプリのラベルの色を使わず、コントラストを上げる設定のライトで黒いラベルを描いたときだけ、コントラストを上げる（ライト）の値を color.accent.fill #AD6137、color.text.onAccent #000000 に替える（黒 4.54:1、白 4.62:1 のどちらでも 4.5:1。形は #EBEBF0 に対して 3.89:1）。Asset Catalog の値を替えるだけで、コードは変えない。
+- 代わりの値のダーク（G2 の CI で決める。tech-lead r2 の提案2）：ツールバーの確定のボタンで、システムがアプリのラベルの色を使わず、コントラストを上げる設定のダークで白いラベルを描いたとき（今の値では #FFFFFF / #E3B994 = 1.81:1）だけ、コントラストを上げる（ダーク）の値を color.accent.fill #AD6137、color.text.onAccent #FFFFFF に替える。式は 5 の冒頭のとおり（L = 0.2126R + 0.7152G + 0.0722B、比 = (明るい方の L + 0.05) / (暗い方の L + 0.05)）。
+  - 満たす幅：白い文字で 4.5:1 以上は L ≤ 1.05 / 4.5 − 0.05 = 0.183。黒い背景（#000000、L = 0）に対して形が 3:1 以上は L ≥ 3 × 0.05 − 0.05 = 0.100。コントラストを上げる設定のシートの背景（#242426、L = 0.0178）に対して形が 3:1 以上は L ≥ 3 × 0.0678 − 0.05 = 0.153。システムが黒を描いても 4.5:1 を保つ（L ≥ 4.5 × 0.05 − 0.05 = 0.175）ため、0.175〜0.183 から選んだ。
+  - 選んだ値：#AD6137（L = 0.1771。ライトの代わりの値と同じ色）。白い文字 (1 + 0.05) / (0.1771 + 0.05) = 4.62:1、黒い文字 (0.1771 + 0.05) / (0 + 0.05) = 4.54:1、形 / #000000（S1、S3 の帯と S4）= 4.54:1、形 / #242426（シートのバー）= (0.1771 + 0.05) / (0.0178 + 0.05) = 3.35:1。基準（文字 4.5:1、形 3:1）をすべて満たす。7:1（R-9 の目標）は形の 3:1 と両立しない（1 の「塗り用と文字用を分けた理由」と同じ）。
+  - 替えたときの見え方：コントラストを上げる設定のダークだけ、塗りが既定のダーク（#9F5833、L = 0.146）より少し明るい栗色になり、ラベルは白のまま。Asset Catalog の High Contrast（Dark）の値は1か所なので、S1、S3、S4 の塗りのボタンも同じ値になる（どれも白い文字で 4.62:1、黒い背景に対して形 4.54:1）。ライトの代わりの値とは別々に替えてよい。コードは変えない。
 
 使わない色：上の表にない色、グラデーション、影、半透明の独自の色。
 
@@ -99,8 +104,8 @@
 ### A. 独自の色の組
 | 組（前景 / 背景）と使う所 | ライト | ダーク | コントラストを上げる（ライト / ダーク） | 基準 | 結果 |
 |---|---|---|---|---|---|
-| A1 color.text.onAccent / color.accent.fill：S1、S3 の主操作の文字（2行目は .subheadline の Regular）、S1、S3 の error.retry、S1 の「本を追加」「もう一度読み込む」、S4 の「終える」、S2 と S5 の確定のボタン「追加」「保存」 | #FFFFFF / #7A4427 = 7.83:1 | #FFFFFF / #9F5833 = 5.36:1 | #FFFFFF / #5E3219 = 10.79:1、#000000 / #E3B994 = 11.63:1 | 4.5:1 | 満たす（ダークは 7:1 の目標に届かない。理由は 1 の「塗り用と文字用を分けた理由」） |
-| A1 の注：システムが既定でラベルを白にし、アプリの色を使わなかった場合 | #FFFFFF / #7A4427 = 7.83:1 | #FFFFFF / #9F5833 = 5.36:1 | 白なら 10.79:1 / 1.81:1。黒なら 1.95:1 / 11.63:1 | 4.5:1 | 既定のライトとダークは満たす。コントラストを上げる設定はアプリの色が使われることを G2 の CI のスクリーンショットで確かめ、ライトで黒が描かれたら 1 の代わりの値（#000000 / #AD6137 = 4.54:1）に替える。なお .tint(color.accent.fill) を付け忘れると、塗りが AccentColor（文字用）の値になり、ダークで #FFFFFF / #CF9D78 = 2.40:1 で満たさない（1 の「実装での当て方」）。G2 の CI のダークのスクリーンショットで確かめる |
+| A1 color.text.onAccent / color.accent.fill：S1、S3 の主操作の文字（2行目は .subheadline の Regular）、S1、S3 の error.retry、S1 の「本を追加」「もう一度読み込む」、S4 の「終える」と「もう一度終える」、S2 と S5 の確定のボタン「追加」「保存」 | #FFFFFF / #7A4427 = 7.83:1 | #FFFFFF / #9F5833 = 5.36:1 | #FFFFFF / #5E3219 = 10.79:1、#000000 / #E3B994 = 11.63:1 | 4.5:1 | 満たす（ダークは 7:1 の目標に届かない。理由は 1 の「塗り用と文字用を分けた理由」） |
+| A1 の注：システムが既定でラベルを白にし、アプリの色を使わなかった場合 | #FFFFFF / #7A4427 = 7.83:1 | #FFFFFF / #9F5833 = 5.36:1 | 白なら 10.79:1 / 1.81:1。黒なら 1.95:1 / 11.63:1 | 4.5:1 | 既定のライトとダークは満たす。コントラストを上げる設定はアプリの色が使われることを G2 の CI のスクリーンショットで確かめ、ライトで黒が描かれたら 1 の代わりの値（#000000 / #AD6137 = 4.54:1）に替える。ダークで白が描かれたら（今の値では #FFFFFF / #E3B994 = 1.81:1）、1 の代わりの値のダーク（#FFFFFF / #AD6137 = 4.62:1。形は #AD6137 / #000000 = 4.54:1、#AD6137 / #242426 = 3.35:1。#AD6137 の L = 0.1771、#242426 の L = 0.0178 を、この節の冒頭の式に入れた値）に替える。なお .tint(color.accent.fill) を付け忘れると、塗りが AccentColor（文字用）の値になり、ダークで #FFFFFF / #CF9D78 = 2.40:1 で満たさない（1 の「実装での当て方」）。G2 の CI のダークのスクリーンショットで確かめる |
 | A2 color.accent.fill の形 / 置かれる背景：S1、S3 の帯（grouped）、S4（screen）、S2 と S5 のシートのバー | #7A4427 / #F2F2F7 = 7.01:1、#7A4427 / #FFFFFF = 7.83:1 | #9F5833 / #000000 = 3.92:1、#9F5833 / #1C1C1E = 3.17:1 | #5E3219 / #EBEBF0 = 9.08:1、#5E3219 / #FFFFFF = 10.79:1 / #E3B994 / #000000 = 11.63:1、#E3B994 / #242426 = 8.58:1 | 3:1（形） | 満たす |
 | A3 color.accent.text / 背景：ナビゲーションバーの文字のボタン（戻る、キャンセル、編集、＋）、S2 と S5 の確定のボタンが文字で描かれる版 | #7A4427 / #FFFFFF = 7.83:1、#7A4427 / #F2F2F7 = 7.01:1 | #CF9D78 / #000000 = 8.75:1、#CF9D78 / #1C1C1E = 7.09:1、#CF9D78 / #2C2C2E = 5.80:1 | #5E3219 / #FFFFFF = 10.79:1、#5E3219 / #EBEBF0 = 9.08:1 / #E3B994 / #000000 = 11.63:1、#E3B994 / #242426 = 8.58:1、#E3B994 / #363638 = 6.68:1 | 4.5:1 | 満たす |
 | A3 の alert の見積もり：S6 の「キャンセル」「記録を消す」、S7 の「OK」 | #7A4427 / #E5E5EA = 6.23:1 | #CF9D78 / #3A3A3C = 4.73:1 | #5E3219 / #D8D8DC = 7.59:1 / #E3B994 / #444446 = 5.38:1 | 4.5:1 | 満たす（見積もり。G3 のスクリーンショットで測る） |
