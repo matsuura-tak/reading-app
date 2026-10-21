@@ -44,3 +44,9 @@ verifier r2 の Q3・Q4、tech-lead r2 の追加の質問は、推奨どおり�
 5. P-12：.claude/org/app.json の commands（ios_build、ios_test）に、G1 で tech-lead が出す値を書く。
 6. P-13：TelemetryDeck の新しいアカウントの無料枠（接続が許されれば tech-lead が確かめる）。
 7. P-14：Mac と Xcode を持っているか。
+
+## 追記（2026-10-21、G1 の途中）：AC-47〜AC-55 と 18 の 5
+- 対象：docs/prd/001-reading-session.md のコミット d8bdc9015fed2e48b95c81b1e8a4d2f0443e7ea5（AC-47〜AC-55、10 の題名の上限と検索を置かないこと、18 の 5）。
+- 経緯：G1 のデザイン仕様（design/001-reading-session.md）が決めた画面の動き（終える入力のキャンセル、保存の後の画面、読み込みの失敗）に PRD の AC がなかったので、pdm が足した。AC-1〜AC-46、13、14 は変えていない。
+- 承認：Takuma の包括承認（docs/approvals/000-takuma-standing-approval.md）に基づき、18 の 5（題名の上限は100字）を推奨どおりに決め、追記を承認の範囲に含める。
+- 再判定の扱い：G0 の判定役を呼び直さず、G1 の判定で覆う。tech-lead は G1 の構成の判定（手順6）で AC-47〜AC-55 の実現性を見る。verifier は受け入れテストを書くとき（手順9）に AC-47〜AC-55 のテスト可能性を見て、決められない AC があれば止まって報告する。design-reviewer は仕様の2章の対応表に AC-47〜AC-55 があるかを見る。
