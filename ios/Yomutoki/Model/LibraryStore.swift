@@ -57,7 +57,7 @@ nonisolated enum LibraryLoadState: Equatable, Sendable {
 @Observable
 final class LibraryStore {
     private(set) var loadState: LibraryLoadState = .loading
-    /// 本の一覧の順（data-model.md、D-31）：進行中の読書の本を先頭に、ほかは最後の記録の savedAt（なければ addedAt）の新しい順。
+    /// 本の一覧の順（D-31）：前の本を先頭に、ほかは最後の記録の savedAt（なければ addedAt）の新しい順（ordered）。
     private(set) var books: [BookSnapshot] = []
     /// 本ごとの記録（読み始めた時刻の新しい順。D-32）。
     private(set) var sessionsByBook: [UUID: [SessionSnapshot]] = [:]
@@ -131,7 +131,12 @@ final class LibraryStore {
     /// 前の本（PRD 10、data-model.md）：進行中の読書があればその本。なければ残っている記録のうち savedAt がいちばん新しい記録の本。
     /// 記録が0件なら addedAt がいちばん新しい本。保存せず、読むたびにこの順で出す。
     var previousBookID: UUID? {
-        if let active { return active.bookID }
+        Self.previousBookID(in: books, activeBookID: active?.bookID)
+    }
+
+    /// 前の本の決め方（previousBookID と本の一覧の順で同じものを使う）。
+    static func previousBookID(in books: [BookSnapshot], activeBookID: UUID?) -> UUID? {
+        if let activeBookID { return activeBookID }
         var latestSaved: BookSnapshot?
         for book in books {
             guard let saved = book.lastSavedAt else { continue }
@@ -445,12 +450,14 @@ final class LibraryStore {
             pausedAt: row.pausedAt, finishedAt: row.finishedAt, wasPaused: row.wasPaused)
     }
 
-    /// 本の一覧の順（data-model.md の「本の一覧の順」、D-31）。
+    /// 本の一覧の順（design D-31。指揮役の決定）：前の本（previousBookID と同じ決め方）を先頭に、
+    /// ほかは最後の記録の savedAt（記録がなければ addedAt）の新しい順。
     static func ordered(_ books: [BookSnapshot], activeBookID: UUID?) -> [BookSnapshot] {
-        books.sorted { lhs, rhs in
-            let lhsActive = lhs.id == activeBookID
-            let rhsActive = rhs.id == activeBookID
-            if lhsActive != rhsActive { return lhsActive }
+        let previous = previousBookID(in: books, activeBookID: activeBookID)
+        return books.sorted { lhs, rhs in
+            let lhsFirst = lhs.id == previous
+            let rhsFirst = rhs.id == previous
+            if lhsFirst != rhsFirst { return lhsFirst }
             let lhsKey = lhs.lastSavedAt ?? lhs.addedAt
             let rhsKey = rhs.lastSavedAt ?? rhs.addedAt
             if lhsKey != rhsKey { return lhsKey > rhsKey }

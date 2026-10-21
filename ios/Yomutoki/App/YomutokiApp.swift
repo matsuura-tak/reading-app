@@ -25,12 +25,13 @@ struct YomutokiApp: App {
     private var root: some View {
         #if DEBUG
         if let hooks = appEnvironment.hooks {
-            ContentView().modifier(UITestOverlay(hooks: hooks))
+            // -UITest のときだけ、design 6 の (a) の代わりの案（session.state.* の 1pt の要素）も置く。
+            RootView(showsStateMarker: true).modifier(UITestOverlay(hooks: hooks))
         } else {
-            ContentView()
+            RootView()
         }
         #else
-        ContentView()
+        RootView()
         #endif
     }
 }
@@ -91,12 +92,5 @@ final class AppEnvironment {
         started = true
         telemetry.appLaunched()
         store.load()
-    }
-}
-
-/// 仮の画面。13b で S1〜S7 の根の View に置き換える。
-struct ContentView: View {
-    var body: some View {
-        Text(verbatim: "Yomutoki")
     }
 }

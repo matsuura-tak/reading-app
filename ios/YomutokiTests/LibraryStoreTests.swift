@@ -160,6 +160,31 @@ struct LibraryStoreTests {
         #expect(h.store.book(id: kokoro)?.sessionCount == 0)
     }
 
+    @Test("本の一覧の順：前の本が先頭、ほかは最後の記録（なければ追加）の新しい順（D-31。指揮役の決定）")
+    func bookOrder() throws {
+        let h = try StoreHarness()
+        h.store.load()
+        let kokoro = try h.store.addBook(title: "こころ", totalPages: nil)
+        h.advance(60)
+        let botchan = try h.store.addBook(title: "坊っちゃん", totalPages: 300)
+        #expect(h.store.books.map(\.id) == [botchan, kokoro])
+
+        h.advance(60)
+        try h.store.startReading(bookID: kokoro, source: .bookDetail)
+        h.advance(600)
+        _ = try h.store.finish()
+        try h.store.finishSession(endPage: nil, minutes: 10)
+        h.advance(60)
+        let neko = try h.store.addBook(title: "吾輩は猫である", totalPages: nil)
+        // 記録のない「吾輩は猫である」は追加が新しいが、前の本（最後に記録を保存した「こころ」）が先頭。
+        #expect(h.store.previousBookID == kokoro)
+        #expect(h.store.books.map(\.id) == [kokoro, neko, botchan])
+
+        // 読書中の本が先頭。ほかは「吾輩は猫である」の追加（780秒）が「こころ」の記録の保存（720秒）より新しい。
+        try h.store.startReading(bookID: botchan, source: .home)
+        #expect(h.store.books.map(\.id) == [botchan, neko, kokoro])
+    }
+
     @Test("今週の合計は今週に読み始めた記録だけを秒で足す（AC-15、AC-36）")
     func weekTotal() throws {
         let h = try StoreHarness()

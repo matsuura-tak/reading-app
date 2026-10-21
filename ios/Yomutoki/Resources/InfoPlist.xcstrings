@@ -1,0 +1,24 @@
+{
+  "sourceLanguage" : "ja",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "ホーム画面のアプリの名前（指揮役の決定：ja「よむとき」、en「Yomutoki」）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yomutoki"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "よむとき"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

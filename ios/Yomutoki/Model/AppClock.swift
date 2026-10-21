@@ -24,10 +24,21 @@ nonisolated struct AppClockKey: EnvironmentKey {
     static let defaultValue = AppClock.system
 }
 
+nonisolated struct AppClockRevisionKey: EnvironmentKey {
+    static let defaultValue = 0
+}
+
 nonisolated extension EnvironmentValues {
     /// 画面が経過を計算するときの時計。暦（calendar、timeZone、locale）は SwiftUI の環境の値をそのまま使う。
     var appClock: AppClock {
         get { self[AppClockKey.self] }
         set { self[AppClockKey.self] = newValue }
+    }
+
+    /// 時計が外から動かされた回数。本番の時計では 0 のまま。Debug の時計の差し替え（T16）が動かしたときだけ増え、
+    /// 経過を出す画面は、毎秒の書き直しを待たずに AppClock の今の値で描き直す（止めた時計でも値が変わるように）。
+    var appClockRevision: Int {
+        get { self[AppClockRevisionKey.self] }
+        set { self[AppClockRevisionKey.self] = newValue }
     }
 }

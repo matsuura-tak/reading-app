@@ -789,6 +789,7 @@ struct UITestOverlay: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .environment(\.appClockRevision, hooks.clockApplied)
             .onOpenURL { url in hooks.handle(url: url) }
             .overlay(alignment: .topLeading) {
                 VStack(alignment: .leading, spacing: 0) {
