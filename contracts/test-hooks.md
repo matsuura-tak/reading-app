@@ -1,0 +1,46 @@
+# テストのつなぎ口（001-reading-session）
+
+- 書いた役：tech-lead　日付：2026-10-21
+- 決めた ADR：docs/adr/0005-ui-test-hooks-debug-only.md（-UITest のときだけ、1ファイルの #if DEBUG）、docs/adr/0003-telemetry-without-sdk-in-001.md（計測の受け口）
+- 元：docs/reviews/001-reading-session-G0-verifier-r1.md の T1〜T12、-r2.md の T13〜T20。T21 は tech-lead が足した（PRD 12 の大きなデータ）。
+- 形：contracts/seed.schema.json（UITEST_SEED）、contracts/telemetry.md と telemetry-*.schema.json（受け口）、contracts/data-model.md（入るデータの意味）
+
+## 共通の決まり
+- すべて、起動の引数に `-UITest` があるときだけ働く（A22 の launchArguments）。-UITest がなければ UITEST_ の環境変数があっても読まない。
+- 読むコードは ios/Yomutoki/Debug/UITestHooks.swift（案）の1ファイルで、ファイル全体を `#if DEBUG` で囲む。Release の実行ファイルに入らないことを CI で確かめる（contracts/README.md の4）。
+- -UITest のとき、知らない `UITEST_` の名前、形の合わない値、seed.schema.json に合わない UITEST_SEED、data-model.md の最後の節の制約に合わないデータがあれば、起動の直後に止める（fatalError に名前と理由を書く）。黙って無視しない。
+- XCUIApplication の launchEnvironment は次の launch() にも同じものが渡る。1回だけ入れたいもの（UITEST_RESET、UITEST_SEED）は、テストが次の起動の前に消す（例 `app.launchEnvironment["UITEST_SEED"] = nil`）。
+
+起動の順番（アプリの中）：
+1. -UITest を見る。なければ 2〜4 を飛ばす。
+2. UITEST_TIME_ZONE、UITEST_FIRST_WEEKDAY、UITEST_NOW、UITEST_CLOCK_FROZEN で時計と暦を作る。
+3. UITEST_RESET=1 なら、ストアのファイル（Application Support/Yomutoki/ の中）と UserDefaults の telemetry. で始まるキーを消す。
+4. UITEST_SEED か UITEST_SEED_BULK があれば、3 と同じく消してから入れる（RESET を兼ねる）。入れる保存は UITEST_FAIL の数に入れない。
+5. 計測の印 telemetry.firstOpenedAt がなければ App First Opened を出す（contracts/telemetry.md）。
+6. 保存先を読み込む。UITEST_FAIL の load はここで数える。
+7. 画面を出す。-UITest のときは URL scheme（T16）を受け付ける。
+
+## つなぎ口の表
+| T | 名前 | 型 | 例 | 使う AC | Release での扱い | 未確認と備考 |
+|---|---|---|---|---|---|---|
+| T1 | UITEST_RESET | 文字 "1" だけ | `UITEST_RESET=1` | 全テスト。とくに AC-1〜AC-4、AC-21、AC-23、AC-31、AC-53 | 入らない（#if DEBUG。strings で0件） | 本、記録、進行中の読書、計測の印（data-model.md の計測の印の全キー）を空にする |
+| T2 | UITEST_SEED | JSON の文字（contracts/seed.schema.json） | contracts/seed.example.json の中身をそのまま1行にした文字 | AC-5、AC-7〜AC-19、AC-22〜AC-30、AC-32〜AC-38、AC-41、AC-43〜AC-45、AC-49〜AC-52、AC-54〜AC-61（verifier のテスト計画で確定する） | 入らない | 環境変数の長さの上限は未確認。AC-22 の20冊の JSON（約3KB）が渡るかを G2 の CI で確かめる。渡らなければ代わりに UITEST_SEED_FILE=<シミュレーターから読めるファイルの絶対パス>を足す（シミュレーターのアプリが Mac のファイルを読めるかも未確認） |
+| T3 | UITEST_NOW、UITEST_CLOCK_FROZEN | UITEST_NOW：壁時計の時刻（`YYYY-MM-DDTHH:MM:SS`、オフセットなし、UITEST_TIME_ZONE で読む）。UITEST_CLOCK_FROZEN：文字 "1" だけ | `UITEST_NOW=2026-10-21T21:30:00`、`UITEST_CLOCK_FROZEN=1` | AC-5〜AC-8、AC-12、AC-13、AC-15、AC-19、AC-24、AC-25、AC-33〜AC-36、AC-40、AC-41、AC-44〜AC-48、AC-50、AC-51、AC-57〜AC-61 | 入らない | 起動のときの「今」を UITEST_NOW にし、そこから実時間で進む（裏に回っている間も進む）。UITEST_CLOCK_FROZEN=1 なら止めたまま。UITEST_NOW がなければ端末の時計。強制終了して起動し直す AC（AC-8、AC-33、AC-34）は、次の起動に新しい UITEST_NOW を渡す |
+| T4 | 起動の引数 -AppleLanguages、-AppleLocale と UITEST_FIRST_WEEKDAY | 引数：`-AppleLanguages "(ja)"` か `"(en)"`、`-AppleLocale ja_JP` か `en_US`。UITEST_FIRST_WEEKDAY：1〜7 の整数（1 が日曜、2 が月曜。Calendar.firstWeekday。A18） | `UITEST_FIRST_WEEKDAY=2` | AC-15、AC-24、AC-36、AC-40、AC-44 | -AppleLanguages と -AppleLocale はシステムが読む引数で、アプリのコードはない。UITEST_FIRST_WEEKDAY は入らない | -AppleLocale の効き方は未確認（G2 の CI）。UITEST_FIRST_WEEKDAY がなければ端末の暦の設定（PRD 18 の 2） |
+| T5 | UITEST_FAIL | `<操作>:<回数>` をカンマで並べた文字。操作は load、book_add、session_start、session_pause、session_resume、session_finish、session_delete。回数は1〜99（その回数だけ失敗し、次から通る）か `*`（毎回失敗）。同じ操作を2回書いたら止める | `UITEST_FAIL=session_finish:1`、`UITEST_FAIL=load:1,book_add:2`、`UITEST_FAIL=session_start:*` | AC-19（session_finish:*）、AC-35（session_finish:1）、AC-42（book_add）、AC-43（session_delete）、AC-54（load:*）、AC-55（load:1）、AC-56、AC-57（session_start:1）、AC-58、AC-59（session_pause:1）、AC-60、AC-61（session_resume:1） | 入らない | 保存の層の入口（save() と読み込みの直前）で投げ、rollback する。画面の動きと計測（Save Failed、Load Failed）は本物の失敗と同じ道を通る。load の失敗は保存先のファイルに触らない（AC-55）。数は起動ごと（起動し直すと環境変数どおりに戻る）。「終える」「終える入力をやめる」「60秒未満で終える」の保存の失敗は、まだ名前がない（data-model.md の保存の操作、報告の未解決） |
+| T6 | UITEST_TELEMETRY_URL | http の URL（スキーム、ホスト localhost、ポート。末尾の / なし） | `UITEST_TELEMETRY_URL=http://localhost:8765` | AC-20、AC-23、AC-24 | 入らない。Release はネットワークに出ない（ADR 0003） | 送り方と本文は contracts/telemetry.md の「テストの受け口」。シミュレーターのアプリから localhost に届くかは未確認（G2 の CI）。127.0.0.1 は使わない（A48） |
+| T7 | 名前を足さない（T6 と T19 の組み合わせ） | － | 届かない先 `http://localhost:9`、500 を返す受け口、応答しない受け口のどれかを UITEST_TELEMETRY_URL にし、UITEST_TELEMETRY_CONTROL_URL は正常な受け口にする | AC-20 | 入らない | 受け口は verifier がテストの側に立てる（A47 の NWListener など） |
+| T8 | 状態の名前の識別子 session.state.idle / reading / paused / finishing | accessibilityIdentifier（design/001-reading-session.md の 6） | `app.otherElements["session.state.reading"].exists` | AC-4、AC-5、AC-7、AC-8、AC-10、AC-11、AC-13、AC-17、AC-19、AC-29〜AC-34、AC-46〜AC-48、AC-50、AC-51、AC-56〜AC-61 | 識別子は Release にも残る（利用者に見えない。A64）。代わりの案の 1pt の要素（design 6 の (a)）は -UITest のときだけで、入らない | 見えるかは裁定の (a)（G2 の CI） |
+| T9 | 値を出す要素の識別子（book.totalTime、home.weekTotal、book.lastPage、book.progress など） | accessibilityIdentifier と value か label（design 6） | `book.totalTime` の value「60分」 | AC-2、AC-4、AC-5、AC-9、AC-10、AC-12、AC-14〜AC-18、AC-22 | 同上（残る） | design 6 が正。契約には写さない |
+| T10 | 文言のキーと同じ識別子 | accessibilityIdentifier（design 6）と文字（design 7） | `session.finish.pageOutOfRange` | AC-1、AC-11、AC-13、AC-19 | 同上（残る） | design 6 の例外（error.retry など）に従う |
+| T11 | 端末の再起動の手順（verifier が持つ） | テストの手順（simctl shutdown と boot。A53） | データを作る実行と確かめる実行を分け、間でシミュレーターを再起動する | AC-18 | アプリのコードはない | 2つ目の実行は UITEST_RESET も UITEST_SEED も渡さない |
+| T12 | 権限を未回答に戻す手順（verifier が持つ） | テストの手順（resetAuthorizationStatus(for:)、SpringBoard のアラートを数える） | － | AC-21 | アプリのコードはない | 001 は権限を1つも求めない。テストの受け口は localhost なので Local Network の許可は出ない（A49 はシミュレーターについて） |
+| T13 | POST /flushed と UITEST_TELEMETRY_CONTROL_URL | 本文 `{"sent": n, "failed": m}`（contracts/telemetry-flushed.schema.json。起動してからの累計）。URL は T6 と同じ形 | `UITEST_TELEMETRY_CONTROL_URL=http://localhost:8766`、本文 `{"sent":3,"failed":0}` | AC-20、AC-23、AC-24 | 入らない | 送る待ち行列が空になるたびに送る。CONTROL_URL がなければ UITEST_TELEMETRY_URL に送る。テストは sent + failed が期待の数に届くまで待ってから数を確かめる |
+| T14 | String Catalog の検査 | ファイル：ios/Yomutoki/Resources/Localizable.xcstrings（案。InfoPlist.xcstrings を作ったら同じ場所に置き、一緒に数える）。コマンド：`python3 -I contracts/tools/xcstrings_untranslated.py ios/Yomutoki/Resources/*.xcstrings` | 出力の最後の行 `untranslated_keys=0`、終了コード0 | AC-39 | ビルドに関係しない（ファイルの検査。Linux で動く） | 数え方：shouldTranslate が false のキーは除く。元の言語 ja は state を見ず、値が空でないことだけを見る。en は variations（plural など）と substitutions の中を含むすべての stringUnit の state が translated であること（needs_review、new、stale は数える）。ja か en のどちらかが欠けたキーを1件と数える。ios_test に入らないので、app.json に足すかは Takuma（P-12） |
+| T15 | UITEST_TIME_ZONE | IANA の時間帯の名前（TimeZone(identifier:) で作れるもの） | `UITEST_TIME_ZONE=Asia/Tokyo` | AC-15、AC-36、AC-44。UITEST_SEED と UITEST_NOW を使う全テスト | 入らない | アプリの Calendar（A43）、日付と時刻の表示、seed と UITEST_NOW の壁時計の読み方に使う。夏時間の切り替えの時刻は使わない（Asia/Tokyo を勧める） |
+| T16 | 時計の URL scheme `readingapp-uitest://clock` | URL。1つの URL に1つの操作：`advance=<秒>`（-86400〜86400 の整数。負は戻す）、`freeze=1`（今の値で止める）、`freeze=0`（今の値から実時間で進める）、`set=<壁時計の時刻>`（止めているかは変えない） | `readingapp-uitest://clock?advance=600`、`readingapp-uitest://clock?freeze=1`、`readingapp-uitest://clock?set=2026-10-21T20:50:00` | AC-5、AC-6、AC-7、AC-33、AC-40、AC-41、AC-45〜AC-48、AC-57〜AC-61 | URL scheme は Debug の Info.plist にだけ書く（Release の Info.plist に CFBundleURLTypes がない）。受けるコードは入らない | XCUIApplication.open(_:)（A23、A55）で送り、onOpenURL（A16）で受ける。裏に回したまま送ると、前に出てから効く（AC-7 は「裏の間に進んだ」と同じ値になる）。効いたことを待つため、-UITest のときだけ 1pt の要素 `uitest.clock.applied` を置き、label を「起動してから効いた操作の数」にする。open で確認のダイアログが出るかは未確認（G2 の CI）。出たら代わりに、-UITest のときだけ決まった幅で時計を動かすボタン（`uitest.clock.advance.<秒>` など）を置き、この行を足す形で直す |
+| T17 | UITEST_SEED に足した項目 | sessions[].savedAt、books[].addedAt、active.pausedAt、active.finishedAt、active.pausedTotalSeconds（seed.schema.json） | contracts/examples/seed-ac33.json（paused、pausedAt あり） | AC-11、AC-12、AC-19、AC-25、AC-26、AC-30、AC-32〜AC-35 | 入らない（T2 と同じ） | finishing の分の欄の初めの値は保存せず、finishedAt から計算する（data-model.md）。AC-25 は「こころ」を先に、「坊っちゃん」を後に addedAt で入れる（verifier r2） |
+| T18 | 識別子と文言キーに足したもの | design/001-reading-session.md の 6 と 7（home.resumeReading、book.progress、reading.elapsed、book.add.title、session.finish.minutes、session.delete.cancel、session.row.id.<UUID>、home.bookCount など） | `reading.elapsed` の label「12分30秒」 | AC-2、AC-3、AC-10、AC-22、AC-27〜AC-29、AC-31、AC-34、AC-37、AC-38、AC-40〜AC-42 | 識別子は残る（T8 と同じ） | design 6 が正。契約には写さない。システムの部品の識別子は裁定の (b) |
+| T19 | UITEST_TELEMETRY_TIMEOUT | 1〜60 の整数（秒）。既定は30 | `UITEST_TELEMETRY_TIMEOUT=3` | AC-20 | 入らない | アプリの1回の送信の待ち時間。待ち切れたら失敗として捨て、送り直さない（failed に数える）。応答しない受け口は、接続を受けたまま返さず、30秒たったら接続を閉じる（verifier の受け口の動き）。AC-20 の「30秒応答しない先」をそのまま試すなら既定の30のまま |
+| T20 | os_signpost の区間 | subsystem "yomutoki"、category "perf"、区間の名前 "FirstElapsedShown"（OSSignposter。A103） | テスト：`XCTOSSignpostMetric(subsystem: "yomutoki", category: "perf", name: "FirstElapsedShown")`（A50） | AC-5（PRD 12 の0.5秒） | Release にも残す（signpost は軽く、テストの文字を含まない）。subsystem は Bundle ID と別の固定の文字なので、Bundle ID を替えても変わらない | 始まり：home.startReading、book.startReading、読み始めの error.retry の操作の最初。終わり：その後に reading.elapsed が初めて出たとき。OSSignposter の区間を XCTOSSignpostMetric が拾うかは未確認（G3）。拾わなければ os_signpost の関数に替え、名前は変えない |
+| T21 | UITEST_SEED_BULK（tech-lead が足した） | `books=<1〜600>,sessions=<0〜12000>` | `UITEST_SEED_BULK=books=500,sessions=10000` | AC なし（PRD 12 の本500冊、記録10,000件でホームと本の詳細が1.0秒以内。XCTClockMetric） | 入らない | アプリが決まった形で作る：題名「本 001」〜、総ページ数300、最後のページ0、記録は本に順に配り、startedAt は UITEST_NOW の前の365日に均等、長さ1,800秒、ページなし。UITEST_SEED と一緒に渡したら止める |

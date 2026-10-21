@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.invalid/yomutoki/contracts/telemetry-events.schema.json",
+  "title": "計測のイベント1件（Debug の受け口への POST /events の本文。本番の型 TelemetryEvent と同じ名前と値）",
+  "description": "PRD 15 の9イベント。プロパティの値は区間の文字か true / false だけ。題名とページの生の値は入らない（AC-23）。contracts/telemetry.md。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "properties"],
+  "properties": {
+    "name": {
+      "enum": [
+        "App First Opened",
+        "Book Added",
+        "Reading Session Started",
+        "Reading Session Finished",
+        "Reading Session Restored",
+        "Reading Session Discarded",
+        "Reading Week Reached",
+        "Save Failed",
+        "Load Failed"
+      ]
+    },
+    "properties": { "type": "object" }
+  },
+  "oneOf": [
+    { "properties": { "name": { "const": "App First Opened" }, "properties": { "$ref": "#/definitions/none" } } },
+    { "properties": { "name": { "const": "Book Added" }, "properties": { "$ref": "#/definitions/bookAdded" } } },
+    { "properties": { "name": { "const": "Reading Session Started" }, "properties": { "$ref": "#/definitions/sessionStarted" } } },
+    { "properties": { "name": { "const": "Reading Session Finished" }, "properties": { "$ref": "#/definitions/sessionFinished" } } },
+    { "properties": { "name": { "const": "Reading Session Restored" }, "properties": { "$ref": "#/definitions/sessionRestored" } } },
+    { "properties": { "name": { "const": "Reading Session Discarded" }, "properties": { "$ref": "#/definitions/sessionDiscarded" } } },
+    { "properties": { "name": { "const": "Reading Week Reached" }, "properties": { "$ref": "#/definitions/weekReached" } } },
+    { "properties": { "name": { "const": "Save Failed" }, "properties": { "$ref": "#/definitions/saveFailed" } } },
+    { "properties": { "name": { "const": "Load Failed" }, "properties": { "$ref": "#/definitions/none" } } }
+  ],
+  "definitions": {
+    "none": { "type": "object", "maxProperties": 0 },
+    "bookAdded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["has_total_pages", "book_count_bucket"],
+      "properties": {
+        "has_total_pages": { "type": "boolean" },
+        "book_count_bucket": { "enum": ["1", "2-5", "6-20", "21+"] }
+      }
+    },
+    "sessionStarted": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["is_first_session", "start_source"],
+      "properties": {
+        "is_first_session": { "type": "boolean" },
+        "start_source": { "enum": ["home", "book_detail", "after_add"] }
+      }
+    },
+    "sessionFinished": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["duration_bucket", "page_entered", "minutes_edited", "was_paused", "is_first_5min", "since_first_open"],
+      "properties": {
+        "duration_bucket": { "enum": ["1-4", "5-14", "15-29", "30-59", "60-119", "120+"] },
+        "page_entered": { "type": "boolean" },
+        "pages_bucket": { "enum": ["0", "1-9", "10-29", "30-99", "100+"] },
+        "minutes_edited": { "type": "boolean" },
+        "was_paused": { "type": "boolean" },
+        "is_first_5min": { "type": "boolean" },
+        "since_first_open": { "enum": ["0-24h", "1-7d", "8d+"] }
+      },
+      "if": { "properties": { "page_entered": { "const": true } } },
+      "then": { "required": ["pages_bucket"] },
+      "else": { "not": { "required": ["pages_bucket"] } }
+    },
+    "sessionRestored": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason", "state"],
+      "properties": {
+        "reason": { "enum": ["relaunch"] },
+        "state": { "enum": ["reading", "paused", "finishing"] }
+      }
+    },
+    "sessionDiscarded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason"],
+      "properties": { "reason": { "enum": ["too_short"] } }
+    },
+    "weekReached": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["threshold_min"],
+      "properties": { "threshold_min": { "enum": ["60"] } }
+    },
+    "saveFailed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operation"],
+      "properties": {
+        "operation": { "enum": ["book_add", "session_start", "session_pause", "session_resume", "session_finish", "session_delete"] }
+      }
+    }
+  }
+}
