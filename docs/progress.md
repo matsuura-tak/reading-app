@@ -15,3 +15,4 @@
 - 2026-10-21 001-reading-session G0 PASS（tech-lead r2、verifier r2。競合 URL の確認は裁定で未検証）。Takuma の包括承認で承認 docs/approvals/001-reading-session-G0.md
 - 2026-10-21 001-reading-session G1 デザインの判定 PASS（design-reviewer r2 16/16、tech-lead r2。CI でしか確かめられない動きは裁定 docs/reviews/001-reading-session-G1-ruling.md）。次は tech-lead の設計メモと契約 docs/reviews/001-reading-session-G1-design-reviewer-r2.md
 - 2026-10-21 001-reading-session G1 PASS（design-reviewer r2 16/16、tech-lead r2、reviewer r2。CI でしか確かめられない動きは裁定 docs/reviews/001-reading-session-G1-ruling.md の一覧で G2 に送る）。次は verifier の受け入れテスト docs/reviews/001-reading-session-G1-reviewer-r2.md
+- 2026-10-21 001-reading-session 受け入れテスト G2 r1 tech-lead PASS、reviewer FAIL（AC-23 を直した。残りはコンパイルと赤の実行で、CI でしか確かめられない）。draft PR https://github.com/matsuura-tak/reading-app/pull/2 を作成。Takuma待ち：app.json の commands（P-12）、ios.yml の timeout docs/reviews/001-reading-session-G2-tests-reviewer-r1.md
