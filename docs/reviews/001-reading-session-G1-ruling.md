@@ -26,3 +26,20 @@
 - D-46：ツールバーの .borderedProminent に付けた .tint(color.accent.fill) と .foregroundStyle(color.text.onAccent) を iOS 26 のツールバーが使うか。代わり（2段）：ラベルの色だけ無視されたら Asset Catalog の代わりの値（design/tokens.md）に替える。塗りも無視されたら確定のボタンを .confirmationAction の文字のボタンに戻す（AccentColor = color.accent.text）。
 - D-48：List、Form、LabeledContent、ContentUnavailableView、ProgressView が既定で付ける secondaryLabel を、中の Text の .foregroundStyle（Color の値）で替えられるか。代わり：その所だけ標準の Text の並びにし、.accessibilityElement(children: .combine) でまとめる。
 - D-53：ToolbarItemPlacement.keyboard が .numberPad のキーボードとシートの中で出るか。代わり：(a) safeAreaInset(edge: .bottom) に .bordered の「保存」、(b) D-53 をやめる（結び付いた AC はない）。
+
+## 追記2（2026-10-21、reviewer r1 の重大1と要修正4）
+### 裁定1の一覧に足す項目（G2 の最初の CI の出力で確かめ、ios-engineer が結果と代わりの案を報告に書く）
+- (1) XcodeGen を入れた出力とビルドの出力（設計メモの確かめ（A）の9）。
+- (2) D-60 の、スワイプで閉じたシートを同じ値で開き直す動き。代わり：開き直せなければ、やめる保存の失敗のときだけシートを閉じないようにする（AC-48 の見え方は変わらない）。
+- (3) シミュレーターの名前。代わり：`xcrun simctl list devices available` の出力から決め、CLAUDE.md と app.json の値を直す（app.json は Takuma）。
+- (4) 手で書いた .xctestplan が -testPlan で動くか。代わり：Xcode の形に合わせて書き直す。
+- (5) CODE_SIGNING_ALLOWED=NO で UI テストが動くか。代わり：シミュレーター向けの自動署名を許す設定に変える。
+- (6) macos-latest の Xcode が 26 か。代わり：`xcode-select` で 26 を選ぶ行をコマンドに足す（app.json は Takuma）。
+- (7) T2 の環境変数の長さ、T16 の open で出る確認、T4 の -AppleLocale、T20 の signpost。代わり：長さは T21（ファイルから読む）、open の確認は URL でなく launchEnvironment の再起動、-AppleLocale は UITEST_LOCALE の環境変数を tech-lead が足す、signpost は AC-5 の値の確かめだけに留める。
+- (8) ビルドの設定の名前。代わり：CI の出力のエラーから正しい名前に直す。
+- (9) シミュレーターのアプリから localhost の受け口に届くか。代わり：tech-lead が契約に足す（-UITest のときだけ、送ったイベントを並べた要素を accessibilityValue で出し、XCUITest が読む）。
+- (10) contracts/README.md の4の macOS のコマンド。
+### 要修正4（実装の途中の CI が赤になる期間）
+- 実装の変更は、ios-engineer が「できた」と報告した時点の HEAD を1つの変更として G2 に出す。その HEAD で CI が緑であることを求める。途中の push（雛形だけ、AC の一部だけ）は G2 に出さず、赤でもよい。雛形だけの変更を別に G2 に出すことはしない。
+- 受け入れテストを先に入れる verifier の変更は gates.md:55 の例外のとおり（スタックの CI は落ちるのが正しい）。
+- この裁定は元に戻せる（CI の運用の決めごと）。
