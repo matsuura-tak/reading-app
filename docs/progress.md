@@ -10,3 +10,4 @@
 
 ## 記録
 - 組織を導入した。最初の機能は Takuma が /feature で始める。
+- 2026-10-21 全体 開始 Takuma の包括承認を記録。この依頼はブランチ claude/cool-ptolemy-17gnb3 で進める（環境は Linux、Mac なし） docs/approvals/000-takuma-standing-approval.md
