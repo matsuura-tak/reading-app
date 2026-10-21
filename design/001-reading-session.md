@@ -1,9 +1,10 @@
 # デザイン仕様 001-reading-session：読んだ時間とページを残して、続きから読む
 
-- 対象の PRD：docs/prd/001-reading-session.md（G0 承認済み。docs/approvals/001-reading-session-G0.md）
+- 対象の PRD：docs/prd/001-reading-session.md（G0 承認済み。docs/approvals/001-reading-session-G0.md）。PRD の G1 の追記（コミット d8bdc90。AC-47〜AC-55、10 の題名の長さと改行、やらないこと「本の検索」。承認の記録の追記で承認の範囲に入った）を反映した版
 - 調査：design/001-reading-session-research.md（コミット f8ae3e8。この仕様より先にコミット済み）
 - トークン：design/tokens.md（色、文字、余白。この仕様はトークンの名前だけを使う）
 - 書いた役：designer　日付：2026-10-21
+- 改訂：2026-10-21 PRD の G1 の追記に合わせて、1、2（AC-47〜AC-55）、3、4（D-44、D-45 を足した）、5、6、7（book.add.titleLimit を足した）、8、9、10 を直した
 - 図：design/001-reading-session/screens.md（文字で描いた画面の図）
 - 原則の番号 B-1〜B-6 は .claude/skills/craft-designer/SKILL.md にある。R-n は調査の 8 の番号。
 - 方向性は調査の 7 で選んだ案A「しおりと時計」。性格語は「静か」「確か」「すぐ」「おだやか」（調査の 5）。差をつける点は、差1「しおりの往復」と差2「読む間、画面は退く」（調査の 6）。
@@ -25,11 +26,13 @@
 ### 流れ
 ```
 起動
+ ├─ 保存先を読み込めない               → S1 の読み込みの失敗（error.loadFailed.*）。S4 と S5 は積まない（AC-54）
  ├─ reading か paused の読書が残っている → S1 の上に S4 を積んで開く
  ├─ finishing の読書が残っている       → S1 の上に S4 を積み、その上に S5 を開く
  └─ それ以外                            → S1
 
 S1 ホーム
+ ├─ 読み込みの失敗：「もう一度読み込む」(error.loadFailed.retry) → 読み込み中の形 → 読めたら上の「起動」と同じに分かれる（AC-55）／また失敗したら同じ表示。「＋」は出さない（D-44）
  ├─ 本が0冊：空の状態の「本を追加」(library.addBook) ──────→ S2
  ├─ 本が1冊以上：右上の「＋」(library.addBook) ────────────→ S2
  ├─ 本の行をタップ ─────────────────────────────────────→ S3（その本）
@@ -37,13 +40,13 @@ S1 ホーム
  └─ 下端の主操作（reading か paused）「題名／読書に戻る」(home.resumeReading) → S4
 
 S2 本を追加（sheet）
- ├─ 「追加」(book.save) が成功 → sheet を閉じ、追加した本の S3 を push（スタック：S1 > S3）
+ ├─ 「追加」(book.save) が成功 → sheet を閉じ、追加した本の S3 を push（スタック：S1 > S3。AC-49）
  ├─ 「追加」が失敗           → S2 のまま。先頭にエラーの区画（error.saveFailed、error.retry）
- └─ 「キャンセル」(book.add.cancel) → 入力が空なら閉じる。入力があれば確認（book.add.discard.confirm）してから閉じる
+ └─ 「キャンセル」(book.add.cancel) → 入力が空なら閉じる。入力があれば確認（book.add.discard.confirm）してから閉じる（AC-53）
 
 S3 本の詳細
  ├─ idle：主操作「72ページから読む」(book.startReading) → この本で読み始め、S4 を push（S1 > S3 > S4）
- ├─ この本が読書中：主操作「読書に戻る」(book.resumeReading) → S4
+ ├─ この本が読書中：主操作「読書に戻る」(book.resumeReading) → S4（AC-52）
  ├─ 別の本が読書中：book.startReading は無効。すぐ上に理由の文（book.start.busy）
  └─ 記録の行の「削除」（スワイプか、「編集」から）→ S6 →「記録を消す」→ 成功：行が消える／失敗：S7
 
@@ -51,27 +54,29 @@ S4 読書中
  ├─ 「一時停止」(reading.pause) ⇄ 「再開」(reading.resume)：S4 のまま
  ├─ 戻る（システムの戻るボタン、画面の端からのスワイプ）→ 前の画面。読書は続く
  ├─ 「終える」(reading.finish)、経過が60秒以上 → S5（finishing）
- └─ 「終える」、経過が60秒未満 → 記録せず idle。S4 をその本の S3 に置き換え、S3 の先頭に知らせ（session.finish.tooShort）
+ └─ 「終える」、経過が60秒未満 → 記録せず idle。S4 をその本の S3 に置き換え、S3 の先頭に知らせ（session.finish.tooShort。AC-13、AC-51）
 
 S5 読書を終える（sheet）
- ├─ 「保存」(session.finish.save) が成功 → sheet を閉じ、S4 をその本の S3 に置き換える。新しい記録は一覧の先頭
+ ├─ 「保存」(session.finish.save) が成功 → sheet を閉じ、S4 をその本の S3 に置き換える。新しい記録は一覧の先頭（AC-50）
  ├─ 「保存」が失敗 → S5 のまま。先頭にエラーの区画（error.saveFailed、error.retry）
- └─ 「キャンセル」(session.finish.cancel) か、シートを下へスワイプ → sheet を閉じ、S4（reading）
+ └─ 「キャンセル」(session.finish.cancel) か、シートを下へスワイプ → sheet を閉じ、S4（reading。AC-46、AC-48）
 ```
 
 置き換えの決まり：S4 から S3 へ移るとき、スタックに同じ本の S3 があればそこまで戻る（S1 > S3 > S4 → S1 > S3）。なければ S4 を S3 に置き換える（S1 > S4 → S1 > S3）。どちらも戻るボタンで S1 に戻れる。
 
 ### 指示書と PRD が設計に委ねた点の決定
 - AC-4 の道：本が0冊の S1 →（1）library.addBook → S2。題名の欄 book.add.title には開いた時点で入力の焦点があり、キーボードが出ている（題名の入力に含める）→ 題名「坊っちゃん」→（2）book.save → S3 →（3）book.startReading → S4（reading）。タップは3回。
-- 本を保存した後の画面（AC-22 の「保存の後の画面」）：追加した本の S3。シートとアラートは0個。理由：PRD 10 の「前の本」は最後に記録を保存した本なので、2冊目からは S1 の主操作が追加した本にならない（AC-25）。追加した本で読み始めるまでを1回のタップにするには、その本の画面に出るのがいちばん短い。
+- 本を保存した後の画面（AC-22 の「保存の後の画面」、AC-49）：追加した本の S3。シートとアラートは0個。理由：PRD 10 の「前の本」は最後に記録を保存した本なので、2冊目からは S1 の主操作が追加した本にならない（AC-25）。追加した本で読み始めるまでを1回のタップにするには、その本の画面に出るのがいちばん短い。
 - 終える入力の形：S4 の上の sheet（モーダル）。S5 が出ている間は、S1 と別の本の S3 に行けない。だから AC-17 と AC-27 の finishing の通りは「S5 のキャンセル（session.finish.cancel）で reading に戻してから」になる（承認の記録 docs/approvals/001-reading-session-G0.md の裁定）。このとき状態は reading なので、Then の値は reading の通りと同じになる。
-- 「やめる」の出口の形：S5 のツールバーの左（ToolbarItemPlacement.cancellationAction）の「キャンセル」。ButtonRole.cancel、識別子 session.finish.cancel。シートを下へスワイプしても同じ動きにする。どちらも確認を出さない（AC-46 の When が1回の操作のため）。PRD の言葉「やめる」は、画面ではシステムの言い方「キャンセル」で出す。
-- やめた後に残す値：今のページは残さない（PRD 10、AC-46）。分の欄も残さない。次に「終える」を押したときは、その時点の経過の分数を入れ直す。理由：やめた後も読書は進むので、前の値を残すと実際より短い記録に気づかずに保存させてしまう（性格語「確か」）。PRD に AC がないので、報告の「未解決」で pdm に AC を頼む。
-- 読書を保存した後の画面：その本の S3。新しい記録が一覧の先頭に出て、合計時間と最後のページが変わる。VoiceOver には session.saved.announcement（「24分を記録しました。」）を1回知らせる。祝う表示は出さない（調査の 5 の「淡々」、R-22）。
+- 「やめる」の出口の形：S5 のツールバーの左（ToolbarItemPlacement.cancellationAction）の「キャンセル」。ButtonRole.cancel、識別子 session.finish.cancel。シートを下へスワイプしても同じ動きにする（AC-48）。どちらも確認を出さない（AC-46 の When が1回の操作のため）。PRD の言葉「やめる」は、画面ではシステムの言い方「キャンセル」で出す。
+- やめた後に残す値：今のページは残さない（PRD 10、AC-46）。分の欄も残さない。次に「終える」を押したときは、その時点の経過の分数を入れ直す。理由：やめた後も読書は進むので、前の値を残すと実際より短い記録に気づかずに保存させてしまう（性格語「確か」）。この決まりは PRD の AC-47 になった。
+- 読書を保存した後の画面（AC-50）：その本の S3。新しい記録が一覧の先頭に出て、合計時間と最後のページが変わる。VoiceOver には session.saved.announcement（「24分を記録しました。」）を1回知らせる。祝う表示は出さない（調査の 5 の「淡々」、R-22）。
+- 読み込みに失敗した S1（AC-54）：error.loadFailed の題、文、「もう一度読み込む」だけを出し、右上の「＋」（library.addBook）も出さない。理由：読み込めない保存先とは別の所へ本を書くおそれがある（pdm の推奨と同じ）。読み込めなかった本と記録が戻る前に新しい本を足させず、次の一手を「もう一度読み込む」の1つにする（D-44）。
+- 題名が100字（PRD 10 の上限）に届いたときの見せ方（PRD 10 が designer に委ねた）：残りの字数は出さず、100字に届いたときだけ題名の欄の下に「題名は100字までです。超えた分は入りません。」（book.add.titleLimit）を出す。誤りとして扱わず、「追加」は有効のまま（D-45）。
 - 計測の start_source（PRD 15）：S1 の主操作から始めたら home、S3 から始めたら book_detail、S2 で追加した直後の S3 から（その S3 を離れる前に）始めたら after_add。計測の作りは tech-lead が決める。
 
 ## 2. 受け入れ条件と画面の対応
-識別子は 6、文言のキーは 7。
+AC-1〜AC-55 のすべて。識別子は 6、文言のキーは 7。AC-47〜AC-55 で使う名前の一覧は 6 の最後。
 
 | AC | 画面 | 操作 |
 |---|---|---|
@@ -121,13 +126,22 @@ S5 読書を終える（sheet）
 | AC-44 | S1 | home.weekTotal の value「20分」 |
 | AC-45 | S4 → S5 → S3 | reading.finish を押した時刻で経過を止める。S5 にいた60秒は数えない。新しい行「2分」 |
 | AC-46 | S5 → S4 → S5 | 72 を入れた S5 で session.finish.cancel → S4（reading、経過 10:00）→ 続けて reading.finish → S5 の session.finish.page は空、session.finish.minutes はその時点の経過の分数 |
+| AC-47 | S4 → S5 → S4 → S5 | 経過 10:00 で reading.finish → S5 の session.finish.minutes「10」を「5」に直す → session.finish.cancel → S4（reading）→ 5分後に reading.finish → S5（finishing）の session.finish.minutes の value は「15」。直した「5」も前の初めの値「10」も残さない（D-4） |
+| AC-48 | S5 → S4 | session.finish.page に 72 → 2分後にシートを下へスワイプ → 確認を出さずに S4（reading）。reading.elapsed の label は「10分0秒」か「10分1秒」（S5 にいた間は数えない）。session.finish.save は0個。S4 の戻るから「坊っちゃん」の S3 を開くと book.sessionCount「記録 2件」のまま。session.finish.cancel と同じ結果（D-3） |
+| AC-49 | S2 → S3 | book.add.title に「こころ」→ book.save → S2 を閉じ（book.add.title は0個）、「こころ」の S3。book.title「こころ」、book.startReading（「読み始める」）は押せる位置にある。S1 の前の本（坊っちゃん）でなく、追加した本の S3 に出る（D-5） |
+| AC-50 | S1 → S4 → S5 → S3 | home.startReading → 経過 10:00 で reading.finish → session.finish.save → S5 と S4 を閉じ、「坊っちゃん」の S3（1 の置き換えの決まり。S1 > S3）。book.title「坊っちゃん」、book.sessionCount「記録 2件」、状態 idle（D-6） |
+| AC-51 | S1 → S4 → S3 | home.startReading → 経過 0:59 で reading.finish → S5 を出さずに「坊っちゃん」の S3。先頭に session.finish.tooShort が1つ。book.sessionCount「記録 1件」のまま。アラートは出さない。状態 idle（D-6） |
+| AC-52 | S3 | 「坊っちゃん」が reading か paused のとき、その S3 の主操作は book.resumeReading（有効）だけ。label は reading で action.resume「読書に戻る」、paused で action.resumePaused「一時停止中の読書に戻る」。book.startReading と book.start.busy は出さない。finishing のときは S5 の session.finish.cancel で reading に戻し、S4 の戻る（S3 から始めていれば S3 に戻る。S1 なら本の行から S3）で開く。label は「読書に戻る」（D-33） |
+| AC-53 | S2 → S1 | book.add.title に「こころ」→ book.add.cancel → 確認のダイアログ（題 book.add.discard.title）の book.add.discard.confirm → S2 を閉じ（book.add.title は0個）、S1。home.bookCount「1冊」のまま、「こころ」の本の行（library.book.）は0個（D-18） |
+| AC-54 | 起動 → S1（読み込みの失敗） | 保存先を読めない → S1 に ContentUnavailableView（error.loadFailed.title、error.loadFailed.message、ボタン error.loadFailed.retry）が1つずつ。library.empty.title、home.bookCount、home.weekTotal、home.startReading は0個。あわせて home.resumeReading、右上の「＋」（library.addBook）、本の行も出さず、S4 も積まない（D-44） |
+| AC-55 | S1（読み込みの失敗）→ S1 → S3 | error.loadFailed.retry を1回 → 読み込み中の形 → 読めたら S1 の通常。error.loadFailed.title は0個、home.bookCount「2冊」。「坊っちゃん」の S3 の book.totalTime「60分」、「こころ」の S3 の book.totalTime「40分」。保存先は消していない（error.loadFailed.message のとおり。D-44） |
 
 ## 3. 画面の仕事と主操作、標準部品
 主操作は1画面に1つで、アクセントの塗り（color.accent）を使うのはその1つだけ。
 
 | 画面 | 仕事（1文） | 主操作 | 使う標準部品 | 標準から外れる所（本来の部品、理由、対応） |
 |---|---|---|---|---|
-| S1 ホーム | 前の本の続きを1回で読み始め、今週読んだ時間と本の一覧を見る | 下端のボタン home.startReading（読書中は home.resumeReading） | NavigationStack、List（insetGrouped）、Section、LabeledContent、NavigationLink、toolbar（ToolbarItem の Button、SF Symbol plus）、ContentUnavailableView（0冊、読み込みの失敗）、Button（.borderedProminent、controlSize .large）、safeAreaInset(edge: .bottom)、redacted(reason: .placeholder)、ProgressView | 主操作の置き場所。本来の部品：ToolbarItem(placement: .bottomBar)。理由：ラベルが2行（前の本の題名と「72ページから読む」。差1）で、ツールバーの1行の項目に入らない。対応：中身は標準の Button と標準のスタイルなので、Dynamic Type、ダーク、コントラストを上げる設定、VoiceOver に追従する。帯の背景は不透明な color.background.grouped で、透明度を下げる設定でも見え方は変わらない。AX サイズでは帯をやめ、リストの先頭の行に移す（9） |
+| S1 ホーム | 前の本の続きを1回で読み始め、今週読んだ時間と本の一覧を見る | 下端のボタン home.startReading（読書中は home.resumeReading。本が0冊なら空の状態の library.addBook、読み込みの失敗なら error.loadFailed.retry だけ） | NavigationStack、List（insetGrouped）、Section、LabeledContent、NavigationLink、toolbar（ToolbarItem の Button、SF Symbol plus）、ContentUnavailableView（0冊、読み込みの失敗）、Button（.borderedProminent、controlSize .large）、safeAreaInset(edge: .bottom)、redacted(reason: .placeholder)、ProgressView | 主操作の置き場所。本来の部品：ToolbarItem(placement: .bottomBar)。理由：ラベルが2行（前の本の題名と「72ページから読む」。差1）で、ツールバーの1行の項目に入らない。対応：中身は標準の Button と標準のスタイルなので、Dynamic Type、ダーク、コントラストを上げる設定、VoiceOver に追従する。帯の背景は不透明な color.background.grouped で、透明度を下げる設定でも見え方は変わらない。AX サイズでは帯をやめ、リストの先頭の行に移す（9） |
 | S2 本を追加 | 題名だけで本を登録する | 追加（book.save） | sheet、NavigationStack、Form、Section（header、footer）、TextField（総ページ数は .keyboardType(.numberPad)）、toolbar（.cancellationAction、.confirmationAction）、FocusState（開いたら題名に焦点）、interactiveDismissDisabled（入力があるとき）、confirmationDialog | なし |
 | S3 本の詳細 | その本の合計と記録を確かめ、その本で読み始める | 下端のボタン book.startReading（この本が読書中なら book.resumeReading） | List（insetGrouped）、Section、LabeledContent、EditButton と onDelete、swipeActions（Button role .destructive、SF Symbol trash）、confirmationDialog、alert、safeAreaInset の Button（.borderedProminent）、redacted | (1) 主操作の置き場所は S1 と同じ（本来の部品と理由も S1 と同じ。同じ働きの主操作を同じ場所に置く）。(2) 題名を、ナビゲーションバーの大きい見出しでなく、リストの先頭の行に .title2 で置く。本来の部品：navigationTitle の大きい見出し。理由：大きい見出しは長い題名を1行で切るので、全部を出せない（R-12「Keep text truncation to a minimum」）。対応：その行に accessibilityAddTraits(.isHeader)。ナビゲーションバーにも同じ題名を inline で置く（戻る先の名前と、スクロールした後の画面の名前のため） |
 | S4 読書中 | 読んでいる間の経過を確かめ、一時停止するか終える | 終える（reading.finish） | NavigationStack の push 先、Text（経過は .largeTitle と monospacedDigit）、TimelineView（毎秒の書き直し）、Button（終えるは .borderedProminent、一時停止と再開は .bordered）、dynamicTypeSize の isAccessibilitySize と ViewThatFits による並びの切り替え、ScrollView（AX サイズのとき） | なし |
@@ -140,10 +154,10 @@ S5 読書を終える（sheet）
 |---|---|---|
 | D-1 読書中（S4）は push にし、全画面のモーダルにしない。戻るで S1 に戻っても読書は続く（AC-17、AC-27 の道） | R-3「Davies leaned on platform conventions」、R-6「Restore the previous state」 | HIG Modality「Present content modally only when there's a clear benefit.」https://developer.apple.com/design/human-interface-guidelines/modality 、B-1 |
 | D-2 読書を終える入力（S5）は S4 の上の sheet。同時に出すモーダルは1つ | R-3「only the current step」 | HIG Sheets「A sheet helps people perform a scoped task that's closely related to their current context.」「Display only one sheet at a time from the main interface.」https://developer.apple.com/design/human-interface-guidelines/sheets |
-| D-3 S5 の出口は左上の「キャンセル」と下へのスワイプ。どちらも確認なしで reading に戻る | R-1「Help people recover from mistakes.」 | HIG Sheets「The Cancel (or Close) button dismisses a sheet without saving any changes.」「Support swiping to dismiss a sheet.」（https://developer.apple.com/design/human-interface-guidelines/sheets） |
-| D-4 キャンセルの後、今のページと分の欄は残さず、次は新しい経過の分数で入れ直す | R-1、R-7「Provide reasonable default settings」 | HIG Entering data「You can also prefill fields with reasonable default values」https://developer.apple.com/design/human-interface-guidelines/entering-data 、B-1 |
-| D-5 本を追加した後は、追加した本の S3 に出る | R-3「How quickly can I get you back to preparing the meal」 | B-1 |
-| D-6 読書を保存した後と、60秒未満で終えた後は、その本の S3 に出る。祝う表示は出さず、新しい行と合計の変化で返す。60秒未満の知らせは S3 の先頭の文にし、アラートにしない | R-1「Provide clear feedback.」、R-22、R-18 | HIG Alerts「Avoid using an alert merely to provide information.」https://developer.apple.com/design/human-interface-guidelines/alerts 、B-2 |
+| D-3 S5 の出口は左上の「キャンセル」と下へのスワイプ。どちらも確認なしで reading に戻る（AC-46、AC-48） | R-1「Help people recover from mistakes.」 | HIG Sheets「The Cancel (or Close) button dismisses a sheet without saving any changes.」「Support swiping to dismiss a sheet.」（https://developer.apple.com/design/human-interface-guidelines/sheets） |
+| D-4 キャンセルの後、今のページと分の欄は残さず、次は新しい経過の分数で入れ直す（AC-46、AC-47） | R-1、R-7「Provide reasonable default settings」 | HIG Entering data「You can also prefill fields with reasonable default values」https://developer.apple.com/design/human-interface-guidelines/entering-data 、B-1 |
+| D-5 本を追加した後は、追加した本の S3 に出る（AC-49） | R-3「How quickly can I get you back to preparing the meal」 | B-1 |
+| D-6 読書を保存した後と、60秒未満で終えた後は、その本の S3 に出る。祝う表示は出さず、新しい行と合計の変化で返す。60秒未満の知らせは S3 の先頭の文にし、アラートにしない（AC-50、AC-51） | R-1「Provide clear feedback.」、R-22、R-18 | HIG Alerts「Avoid using an alert merely to provide information.」https://developer.apple.com/design/human-interface-guidelines/alerts 、B-2 |
 | D-7 S1 の主操作は、前の本の題名と「72ページから読む」を1つのボタンにする（差1 の「開く」）。ページが0なら「続きを読む」か「読み始める」 | R-2「making sure they aren't too literal or abstract」、R-14、R-21 | HIG Buttons「In general, use a button that has a prominent visual style for the most likely action in a view.」https://developer.apple.com/design/human-interface-guidelines/buttons 、B-1 |
 | D-8 S1 と S3 の主操作は画面の下端に置き、片手の親指で届く場所にする | R-24、R-23 | HIG Accessibility（操作の的 44x44pt）https://developer.apple.com/design/human-interface-guidelines/accessibility 、B-3 |
 | D-9 目立つ主操作は1画面に1つで、アクセントの塗りはその1つだけ | R-10「Refrain from adding color to the background of multiple controls.」 | B-2、B-5 |
@@ -155,7 +169,7 @@ S5 読書を終える（sheet）
 | D-15 記録の削除の失敗は alert（S7）で知らせる。削除は確認のダイアログから始まり、消そうとした行の位置が決まらないので、近くに文を置けない | R-8 | HIG Alerts「an alert can tell people about a problem」（https://developer.apple.com/design/human-interface-guidelines/alerts） |
 | D-16 記録を消すときは確認（S6）を出す。確認の文に、合計時間から引く分数と、最後のページが変わらないことを書く | R-1「Help people recover from mistakes.」 | HIG Action sheets「Use an action sheet — not an alert — to offer choices related to an intentional action.」「Make destructive choices visually prominent.」https://developer.apple.com/design/human-interface-guidelines/action-sheets |
 | D-17 記録の削除は、スワイプのほかに、画面に見える「編集」（EditButton）からもできる | R-1 | HIG Accessibility「Offer alternatives to gestures.」、HIG Lists and tables「In iOS and iPadOS, people must enter an edit mode before they can select table items.」https://developer.apple.com/design/human-interface-guidelines/lists-and-tables |
-| D-18 S2 に入力があるときは、スワイプで閉じさせず、キャンセルで「追加せずに閉じる」を確かめる | R-1 | HIG Sheets「If people have unsaved changes in the sheet when they begin swiping to dismiss it, use an action sheet to let them confirm their action.」（https://developer.apple.com/design/human-interface-guidelines/sheets） |
+| D-18 S2 に入力があるときは、スワイプで閉じさせず、キャンセルで「追加せずに閉じる」を確かめる（AC-53） | R-1 | HIG Sheets「If people have unsaved changes in the sheet when they begin swiping to dismiss it, use an action sheet to let them confirm their action.」（https://developer.apple.com/design/human-interface-guidelines/sheets） |
 | D-19 本が0冊の S1 は ContentUnavailableView で、状態の説明と「本を追加」の1つだけ。説明の画面、設定、ログインを挟まない | R-7、R-5「nothing extraneous」、R-8「Provide clear next steps on any blank screens.」 | HIG Onboarding https://developer.apple.com/design/human-interface-guidelines/onboarding 、ContentUnavailableView https://developer.apple.com/documentation/swiftui/contentunavailableview |
 | D-20 今週0件は「0分」と出すだけ。目標、連続日数、「まだ読めていません」の文を出さない | R-4「less about hard comparisons and more about progress」、R-22 | HIG Writing「Match your tone to the context.」、B-2（https://developer.apple.com/design/human-interface-guidelines/writing） |
 | D-21 S4 に置くのは、題名、「72ページから」、経過、状態の文字、一時停止（再開）、終えるの6つだけ。合計、一覧、統計、色の面、動く飾りを置かない（差2） | R-3「displaying only the current step」、R-4「keep their focus on the counter rather than their screen」 | B-1、B-2 |
@@ -168,9 +182,9 @@ S5 読書を終える（sheet）
 | D-28 文字は text style だけ。大きさの段は1画面4つまで。書体は1つ | R-12「Minimize the number of typefaces you use」 | B-4、HIG Typography（https://developer.apple.com/design/human-interface-guidelines/typography） |
 | D-29 Liquid Glass はシステムがバーとシートに付ける分だけ。内容の層と下端の主操作の帯には使わない | R-13「Don't use Liquid Glass in the content layer.」 | HIG Materials https://developer.apple.com/design/human-interface-guidelines/materials |
 | D-30 S1 の見出しは「読書」。アプリ名にしない | R-3「leaned on platform conventions」 | HIG Toolbars「Don't title windows with your app name.」https://developer.apple.com/design/human-interface-guidelines/toolbars |
-| D-31 本の一覧は、最後に記録を保存した時刻（記録がなければ追加した時刻）の新しい順。並べ替えと検索は置かない。前の本が先頭に来る | R-3「I spent a lot of time figuring out what to leave out」、R-2「deciding what not to include」 | B-2、HIG Lists and tables「Keep item text succinct」（https://developer.apple.com/design/human-interface-guidelines/lists-and-tables） |
+| D-31 本の一覧は、最後に記録を保存した時刻（記録がなければ追加した時刻）の新しい順。並べ替えと検索は置かない（検索は PRD 10 のやらないこと）。前の本が先頭に来る | R-3「I spent a lot of time figuring out what to leave out」、R-2「deciding what not to include」 | B-2、HIG Lists and tables「Keep item text succinct」（https://developer.apple.com/design/human-interface-guidelines/lists-and-tables） |
 | D-32 記録の行は、読み始めた時刻の新しい順。中身は日付と時刻、分、ページ（入れた記録だけ）の3つ。読書の速さや予測は出さない | R-1「Provide clear feedback.」、R-18 | B-1、HIG Lists and tables（https://developer.apple.com/design/human-interface-guidelines/lists-and-tables） |
-| D-33 別の本が読書中なら、S3 の主操作を無効にし、すぐ上に理由と次の一手（その読書を終える）を文で出す。その本が読書中なら主操作を「読書に戻る」に変える | R-8「be clear about what someone can do to fix it」 | B-1 |
+| D-33 別の本が読書中なら、S3 の主操作を無効にし、すぐ上に理由と次の一手（その読書を終える）を文で出す。その本が読書中なら主操作を「読書に戻る」に変える（AC-17、AC-52） | R-8「be clear about what someone can do to fix it」 | B-1 |
 | D-34 文言は「です・ます」で短く、ボタンは動詞。感嘆符、「私たち」、「おっと」を使わず、責めない | R-8、R-26 | HIG Writing（https://developer.apple.com/design/human-interface-guidelines/writing） |
 | D-35 数を含む文は String Catalog の複数形で書き、文字列をつなげない。題名などを入れる文は書式のキー（%@）で語順を言語ごとに決める | R-8 | HIG Writing、B-6（https://developer.apple.com/design/human-interface-guidelines/writing） |
 | D-36 AX サイズで横並びを縦並びに変え、S1 と S3 の主操作の帯をリストの先頭に移す | R-11「enlarge text by at least 200 percent」、R-12 | HIG Typography「Consider adjusting your layout at large font sizes.」「keep primary elements toward the top of a view even when the font size is very large」（https://developer.apple.com/design/human-interface-guidelines/typography） |
@@ -181,27 +195,29 @@ S5 読書を終える（sheet）
 | D-41 一時停止と再開は .bordered で文字は color.text.primary。終えると同じ大きさにし、形（塗りの有無）で主と従を分ける | R-10 | HIG Buttons「Use style — not size — to visually distinguish the preferred choice among multiple options.」（https://developer.apple.com/design/human-interface-guidelines/buttons） |
 | D-42 長い題名は、S1 の行で3行、S1 の主操作で2行、S4 で3行まで出して末尾を「…」で切る。S3 では切らずに全部出す | R-12「Keep text truncation to a minimum as font size increases.」 | HIG Typography「Avoid truncating text in scrollable regions unless people can open a separate view to read the rest of the content.」（https://developer.apple.com/design/human-interface-guidelines/typography） |
 | D-43 押せるものは、システムの部品の既定の大きさのまま使い、すべて 44x44pt 以上にする | R-11 | HIG Accessibility（iOS の既定 44x44pt）（https://developer.apple.com/design/human-interface-guidelines/accessibility） |
+| D-44 保存先を読み込めないときの S1 は、ContentUnavailableView の題（error.loadFailed.title）、文（error.loadFailed.message）、ボタン「もう一度読み込む」（error.loadFailed.retry）だけにする。右上の「＋」（library.addBook）、今週、冊数、本の行、下端の主操作、空の状態、読書中の S4 は出さない。押すと読み込み中の形に戻り、読めたら起動と同じに分かれる（AC-54、AC-55） | R-8「Provide clear next steps on any blank screens.」「be clear about what someone can do to fix it」、R-6「Restore the previous state when your app restarts so people can continue where they left off.」 | B-1、B-2、ContentUnavailableView https://developer.apple.com/documentation/swiftui/contentunavailableview |
+| D-45 題名が100字（PRD 10 の上限）に届いたら、題名の欄の下（Section の footer）に book.add.titleLimit を type.note、color.text.secondary で出し、VoiceOver に1回知らせる。100字より短くしたら消す。残りの字数は出さない。誤りとして扱わない（記号 exclamationmark.triangle と color.status.error を使わず、「追加」は有効のまま） | R-2「Every feature you add to your product, asks something of the person using it. It asks for their time, their attention, and their trust.」、R-8「display it as close to the problem as possible」、R-1「Provide clear feedback.」 | HIG Entering data「provide feedback as soon as you detect a problem」https://developer.apple.com/design/human-interface-guidelines/entering-data 、B-2、B-5 |
 
 ## 5. 画面ごとの状態
 空とエラーには「何が起きたか」と「次の一手のボタン」を書いた。オフラインは全画面で同じ理由：001 の画面は通信を使わず、通信は計測の送信だけで、送れなくても画面に何も出さない（AC-20、PRD 12）。権限は全画面で同じ理由：001 は権限を1つも求めない（AC-21）。
 
 | 画面 | 通常 | 空 | 読み込み中 | エラー | オフライン | 権限を断られたとき | 一部だけ読めたとき |
 |---|---|---|---|---|---|---|---|
-| S1 ホーム | 本が1冊以上。上から「今週」の行（home.weekTotal）、冊数の見出し（home.bookCount）、本の行（題名だけ。新しい順）。右上に「＋」。下端に主操作（idle は home.startReading、reading と paused は home.resumeReading） | 本が0冊：ContentUnavailableView（記号 books.vertical、library.empty.title、library.empty.message、ボタン library.addBook）。何が起きたか＝本がまだない、次の一手＝本を追加。「今週」、冊数、「＋」、主操作は出さない（AC-1）。本はあるが今週の記録が0件：home.weekTotal は「0分」（AC-36。これは通常の形のまま） | 最初の読み込みが終わるまで、「今週」の行と本の行3つを redacted の形で出す。値の代わりに「0分」「0冊」と空の状態は出さない。主操作は出さない。1秒を超えたら、形の上に ProgressView（ラベル common.loading）を足す（PRD 12 の線は1.0秒） | 保存先を開けない（読み込みの失敗）：ContentUnavailableView（記号 exclamationmark.triangle、error.loadFailed.title、error.loadFailed.message、ボタン error.loadFailed.retry「もう一度読み込む」）。何が起きたか＝読み込めなかった、記録は消していない。次の一手＝もう一度読み込む。PRD に AC がない（10 と報告の「未解決」） | 通常と同じ（上の理由） | なし（上の理由） | なし。本と記録は端末の中の1つの保存先から一度に読み、一部だけ届く経路がない。読めなければ「エラー」の列になる |
-| S2 本を追加 | 題名の欄に焦点。総ページ数は任意。題名が入るまで「追加」は無効 | 開いた直後（両方の欄が空）：「追加」は無効。誤りの文は出さない（AC-3）。キャンセルは確認なしで閉じる | なし。読むデータがない。保存の間は「追加」を無効にし、二度押しで2冊できないようにする | (1) 総ページ数が範囲の外か数字でない：欄の下に book.add.totalPagesOutOfRange、「追加」は無効、入れた文字は残す（AC-31）。次の一手＝直す。(2) 保存の失敗：先頭にエラーの区画（error.saveFailed、error.saveFailed.book、ボタン error.retry「もう一度保存」）。題名と総ページ数は残す。S2 は閉じない（AC-42）。次の一手＝もう一度保存 | 通常と同じ（上の理由） | なし（上の理由） | なし。入力だけの画面で、読み込むものがない |
-| S3 本の詳細 | 先頭に題名（book.title、全部出す）。次に値の行（最後のページ、進み具合と総ページ数は総ページ数があるときだけ、合計時間）。記録の見出し（book.sessionCount）と記録の行（新しい順）。下端に主操作（idle は book.startReading、この本が読書中なら book.resumeReading、別の本が読書中なら無効の book.startReading とすぐ上の book.start.busy）。60秒未満で終えた直後は、先頭に session.finish.tooShort の文 | 記録が0件：「記録 0件」の見出しの下に、一覧の代わりに book.sessions.empty の文。何が起きたか＝まだ記録がない、次の一手＝下端の「読み始める」（有効。AC-37）。合計時間は「0分」、総ページ数があれば進み具合は「0%」。「編集」は出さない | S1 と同じ考え：値の行と記録の行3つを redacted の形で出し、「0件」「0分」を出さない。1秒を超えたら ProgressView | (1) 記録の削除の失敗：S7（alert。題 error.saveFailed、本文 error.saveFailed.delete、ボタン「OK」）。行は残る（AC-43）。次の一手＝もう一度消す（本文に書く）。(2) 読み込みの失敗：S1 と同じ ContentUnavailableView | 通常と同じ（上の理由） | なし（上の理由） | なし（S1 と同じ理由） |
+| S1 ホーム | 本が1冊以上。上から「今週」の行（home.weekTotal）、冊数の見出し（home.bookCount）、本の行（題名だけ。新しい順）。右上に「＋」。下端に主操作（idle は home.startReading、reading と paused は home.resumeReading） | 本が0冊：ContentUnavailableView（記号 books.vertical、library.empty.title、library.empty.message、ボタン library.addBook）。何が起きたか＝本がまだない、次の一手＝本を追加。「今週」、冊数、「＋」、主操作は出さない（AC-1）。本はあるが今週の記録が0件：home.weekTotal は「0分」（AC-36。これは通常の形のまま） | 最初の読み込みが終わるまで、「今週」の行と本の行3つを redacted の形で出す。値の代わりに「0分」「0冊」と空の状態は出さない。主操作は出さない。1秒を超えたら、形の上に ProgressView（ラベル common.loading）を足す（PRD 12 の線は1.0秒） | 保存先を開けない（読み込みの失敗）：ContentUnavailableView（記号 exclamationmark.triangle、error.loadFailed.title、error.loadFailed.message、ボタン error.loadFailed.retry「もう一度読み込む」）。何が起きたか＝読み込めなかった、記録は消していない。次の一手＝もう一度読み込む。このとき右上の「＋」（library.addBook）、今週、冊数、本の行、下端の主操作、空の状態（library.empty.*）は出さず、読書中の S4 も積まない（AC-54、D-44）。押すと読み込み中の形に戻り、読めたら通常（読書中が残っていれば S4 を積む。D-25）、また失敗したら同じ表示（AC-55） | 通常と同じ（上の理由） | なし（上の理由） | なし。本と記録は端末の中の1つの保存先から一度に読み、一部だけ届く経路がない。読めなければ「エラー」の列になる |
+| S2 本を追加 | 題名の欄に焦点。総ページ数は任意。題名が入るまで「追加」は無効。題名が100字に届いたら、欄の下に book.add.titleLimit（誤りではないので「追加」は有効のまま。上限は確定した文字に当てるので、変換中の文字では知らせを出さない。D-45、PRD 10） | 開いた直後（両方の欄が空）：「追加」は無効。誤りの文は出さない（AC-3）。キャンセルは確認なしで閉じる | なし。読むデータがない。保存の間は「追加」を無効にし、二度押しで2冊できないようにする | (1) 総ページ数が範囲の外か数字でない：欄の下に book.add.totalPagesOutOfRange、「追加」は無効、入れた文字は残す（AC-31）。次の一手＝直す。(2) 保存の失敗：先頭にエラーの区画（error.saveFailed、error.saveFailed.book、ボタン error.retry「もう一度保存」）。題名と総ページ数は残す。S2 は閉じない（AC-42）。次の一手＝もう一度保存 | 通常と同じ（上の理由） | なし（上の理由） | なし。入力だけの画面で、読み込むものがない |
+| S3 本の詳細 | 先頭に題名（book.title、全部出す）。次に値の行（最後のページ、進み具合と総ページ数は総ページ数があるときだけ、合計時間）。記録の見出し（book.sessionCount）と記録の行（新しい順）。下端に主操作（idle は book.startReading、この本が読書中なら book.resumeReading、別の本が読書中なら無効の book.startReading とすぐ上の book.start.busy）。60秒未満で終えた直後は、先頭に session.finish.tooShort の文 | 記録が0件：「記録 0件」の見出しの下に、一覧の代わりに book.sessions.empty の文。何が起きたか＝まだ記録がない、次の一手＝下端の「読み始める」（有効。AC-37）。合計時間は「0分」、総ページ数があれば進み具合は「0%」。「編集」は出さない | S1 と同じ考え：値の行と記録の行3つを redacted の形で出し、「0件」「0分」を出さない。1秒を超えたら ProgressView | (1) 記録の削除の失敗：S7（alert。題 error.saveFailed、本文 error.saveFailed.delete、ボタン「OK」）。行は残る（AC-43）。次の一手＝もう一度消す（本文に書く）。(2) 読み込みの失敗：S1 と同じ ContentUnavailableView。主操作と「編集」は出さない（D-44 と同じ理由） | 通常と同じ（上の理由） | なし（上の理由） | なし（S1 と同じ理由） |
 | S4 読書中 | reading：題名（reading.title）、「72ページから」（reading.fromPage。最後のページが0なら出さない）、経過（reading.elapsed、color.text.primary）、「読書中」（reading.state、color.accent）、「一時停止」と「終える」。paused：経過と状態の文字を color.text.secondary にし、「一時停止中」、ボタンは「再開」 | なし。本を決めてから入る画面で、空になる中身がない | なし。経過は開始の時刻から計算するので、開いた時点で値が出る（AC-5 の0.5秒）。起動して戻すときも同じ | 画面に出すエラーはない。端末の時計が開始より前に戻ったら経過は 0:00 にし、負の値もエラーも出さない（AC-41）。読み始め、一時停止、再開の保存に失敗したときの扱いは PRD に AC がない（報告の「未解決」で tech-lead に確かめる） | 通常と同じ（上の理由） | なし（上の理由） | なし。読書中の読書は1件だけで、一部だけ読む経路がない |
 | S5 読書を終える | 先頭の見出しに題名（session.finish.book）。「今のページ」（焦点あり、空、placeholder は common.optional「任意」）とヒント（session.finish.page.hint）。「読んだ時間（分）」（経過の分数が入っている）とヒント（session.finish.minutes.hint）。値が正しい間は「保存」が有効 | 今のページが空：そのまま保存できる（AC-10）。ヒントで「入れずに保存もできます。」と伝える | なし。読むデータは開いた時点で決まっている。保存の間は「保存」を無効にし、二重の記録を作らない | (1) 今のページが範囲の外か数字でない：欄の下に session.finish.pageOutOfRange、「保存」は無効、finishing のまま（AC-11、AC-32）。(2) 分が範囲の外か数字でない：session.finish.minutesOutOfRange、同じ（AC-30）。(3) 保存の失敗：先頭にエラーの区画（error.saveFailed、error.saveFailed.session、ボタン error.retry「もう一度保存」）。ページと分は残す。終えた時刻で止めた経過も変えない（AC-19、AC-35）。次の一手＝もう一度保存か、キャンセルで読書に戻る | 通常と同じ（上の理由） | なし（上の理由） | なし。入力の画面で、読むのは読書中の1件だけ |
 | S6 記録を消す確認 | 題 session.delete.title、本文 session.delete.message（引く分数と、最後のページは変わらないこと、元に戻せないこと）、「記録を消す」（destructive）、「キャンセル」 | なし。記録の行から開くので、対象は必ず1件ある | なし。読むものがない | 消すことに失敗したら S7 | 通常と同じ（上の理由） | なし（上の理由） | なし（対象は1件） |
 | S7 記録を消せなかった知らせ | 題 error.saveFailed、本文 error.saveFailed.delete、「OK」 | なし（知らせだけ） | なし | これ自体がエラーの表示 | 通常と同じ（上の理由） | なし（上の理由） | なし（知らせだけ） |
 
 ### 長い文字、0件、多い件数、取り消せない操作
-- 長い題名（PRD は長さの上限を決めていない）：S1 の本の行は3行、S1 の主操作の1行目は2行、S4 の題名は3行まで出し、末尾を「…」で切る。S3 の先頭の題名と、VoiceOver のラベルは全部を出す。S5 の見出しは2行まで。S3 のナビゲーションバーの題名はシステムどおり1行で切れる。題名の中の改行とタブは、表示では空白として1行に流す。
+- 長い題名（PRD 10：題名は100字まで。1字は見た目の1文字＝書記素で数える）：S1 の本の行は3行、S1 の主操作の1行目は2行、S4 の題名は3行まで出し、末尾を「…」で切る。S3 の先頭の題名と、VoiceOver のラベルは全部を出す。S5 の見出しは2行まで。S3 のナビゲーションバーの題名はシステムどおり1行で切れる。題名の中の改行は、保存のときに1つずつ半角の空白1つに置き換わる（PRD 10）ので、表示に改行は出ない。残ったタブは、表示では空白として1行に流す。100字に届いたときの S2 の見せ方は D-45。
 - 0件：本0冊は S1 の空の状態、今週0件は「0分」、記録0件は S3 の空の状態（上の表）。どれも責める文を出さない。
-- 多い件数（PRD 12：本500冊、記録10,000件）：S1 と S3 は List の行を表示する分だけ作るので、件数で並びは変わらない。冊数と件数の見出しは「500冊」「記録 10,000件」と出す（分、冊、件は端末の地域の書式の桁区切り。ページの数は桁区切りなし。7 の決まり）。検索と並べ替えは置かない（PRD にない。報告の「未解決」に提案として書く）。
+- 多い件数（PRD 12：本500冊、記録10,000件）：S1 と S3 は List の行を表示する分だけ作るので、件数で並びは変わらない。冊数と件数の見出しは「500冊」「記録 10,000件」と出す（分、冊、件は端末の地域の書式の桁区切り。ページの数は桁区切りなし。7 の決まり）。検索と並べ替えは置かない（検索は PRD 10 のやらないこと。並べ替えも PRD にない）。
 - 長い経過：60分以上は h:mm:ss（例 1:00:00、30:00:00）。AX5 で横に入らなければ、文字の大きさを最小 0.5 倍まで縮めて1行に収め、切らない。
 - 取り消せない操作：記録を消すことだけ。必ず S6 で確かめる（AC-16、AC-38）。S6 の本文に、合計から引く分数、最後のページが変わらないこと、元に戻せないことを書く。本を消す操作は 001 にない。
-- 取り消せる操作には確認を出さない：S5 のキャンセル（読書は残る）、一時停止と再開、S4 の戻る（読書は続く）。
+- 取り消せる操作には確認を出さない：S5 のキャンセルと下へのスワイプ（読書は残る。AC-46、AC-48）、一時停止と再開、S4 の戻る（読書は続く）。
 
 ## 6. 要素と識別子
 決まり
@@ -212,6 +228,7 @@ S5 読書を終える（sheet）
 - 経過の表示（T18 の経過の要素）：reading.elapsed の label は読み上げの形（7 の経過の表）。テストは label で経過を読む。見える文字（m:ss、h:mm:ss）と label は、7 の表のとおり1対1で対応する。value は付けない（付けると VoiceOver が「12:30」を時刻として読み上げるおそれがあるため）。
 - 記録の行（T18 の新しい記録の行の見分け方）：行の入れ物の識別子は session.row.id.<記録の UUID を小文字にした文字>。行の中に session.row.date、session.row.minutes、session.row.page（ページを入れた記録だけ）がある。行は読み始めた時刻の新しい順に並ぶので、新しい記録は S3 で最初に見つかる「session.row.id.」で始まる要素。子の識別子（session.row.date など）は「session.row.id.」で始まらないので、前方一致で行だけを数えられる。
 - 本の行：library.book.<本の UUID を小文字にした文字>。label は題名。
+- 利用者が入れた文字と計算した値を出す要素（book.title、reading.title、session.finish.book の題名、TextField の value、値の行の value）は文言のキーを持たない。題名と値をそのまま出す。欄と値の行の label は 7 のキー（例：session.finish.minutes の label は session.finish.minutes.label、book.totalTime の label は book.stat.totalTime）。
 - 一覧の冊数（T18）：home.bookCount の label（「21冊」）を読む。画面の外の行は XCUITest に出ないことがあるので、行は数えない。
 - 保存の後の画面（T18、AC-22）：S3。目印は book.title と、book.startReading か book.resumeReading のどちらか1つが押せる位置にあること（hittable）。
 - システムが作る部品（confirmationDialog と alert のボタン、編集モードの削除ボタン、戻るボタン、EditButton）には、識別子が付かないことがある。付かないときは 7 の文字（ラベル）で探す。tech-lead が G1 で確かめる（報告の「未解決」）。
@@ -228,10 +245,12 @@ S5 読書を終える（sheet）
 | S1 | 冊数の見出し | home.bookCount | 「21冊」（見出し） |
 | S1 | 本の行 | library.book.<UUID> | 題名（ボタン。システムの「詳細へ進む」の特性） |
 | S1 | 主操作（idle） | home.startReading | 「坊っちゃん、72ページから読む」（キー home.primary.a11y。題名が先頭） |
-| S1 | 主操作（reading か paused） | home.resumeReading | 「坊っちゃん、読書に戻る」か「坊っちゃん、一時停止中の読書に戻る」 |
+| S1 | 主操作（reading か paused） | home.resumeReading | 「坊っちゃん、読書に戻る」か「坊っちゃん、一時停止中の読書に戻る」（home.primary.a11y と action.resume か action.resumePaused） |
 | S1 | 読み込み中の形 | home.loading | 「読み込み中」（1秒を超えて ProgressView を出したとき） |
-| S1、S3 | 読み込みの失敗の題、文、ボタン | error.loadFailed.title、error.loadFailed.message、error.loadFailed.retry | 文のとおり。ボタンは「もう一度読み込む」 |
+| S1、S3 | 読み込みの失敗の題、文、ボタン | error.loadFailed.title、error.loadFailed.message、error.loadFailed.retry | 文のとおり（題は見出し）。ボタンは「もう一度読み込む」。このとき library.addBook、library.empty.*、home.weekTotal、home.bookCount、library.book.*、home.startReading、home.resumeReading は出さない（D-44） |
+| S1、S3 | 読み込みの失敗の記号 exclamationmark.triangle | なし | 読まない（飾り。何が起きたかは題で伝える） |
 | S2 | 題名の欄 | book.add.title | label「題名」、value は入れた文字（空のときは placeholder「必須」） |
+| S2 | 題名の上限の知らせ（100字に届いたときだけ） | book.add.titleLimit | 文のとおり（出たときに1回読み上げる） |
 | S2 | 総ページ数の欄 | book.add.totalPages | label「総ページ数」、value は入れた文字（空のときは placeholder「任意」） |
 | S2 | 総ページ数のヒント | book.add.totalPagesHint | 文のとおり |
 | S2 | 総ページ数の誤りの文 | book.add.totalPagesOutOfRange | 文のとおり（出たときに1回読み上げる） |
@@ -256,7 +275,7 @@ S5 読書を終える（sheet）
 | S3 | 行のスワイプの削除 | session.row.delete | 「削除」 |
 | S3 | 編集（記録が1件以上のとき） | book.edit | 「編集」（システム） |
 | S3 | 主操作（idle） | book.startReading | 「72ページから読む」「続きを読む」「読み始める」のどれか |
-| S3 | 主操作（この本が読書中） | book.resumeReading | 「読書に戻る」か「一時停止中の読書に戻る」 |
+| S3 | 主操作（この本が読書中） | book.resumeReading | reading（finishing をやめた後を含む）は「読書に戻る」（action.resume）、paused は「一時停止中の読書に戻る」（action.resumePaused） |
 | S3 | 主操作が無効の理由（別の本が読書中） | book.start.busy | 文のとおり。主操作の直前に読む |
 | S6 | 記録を消す | session.delete.confirm | 「記録を消す」 |
 | S6 | キャンセル（AC-38 の「消さない」） | session.delete.cancel | 「キャンセル」 |
@@ -281,6 +300,17 @@ S5 読書を終える（sheet）
 
 PRD の仮の名前（library.addBook、book.save、home.startReading、home.resumeReading、book.startReading、book.progress、book.totalPages、home.weekTotal、session.row.page、error.retry、session.finish.cancel）は、すべてそのまま使った。足した名前は上の表のとおり。
 
+AC-47〜AC-55 で使う名前（PRD 11 の識別子と文言。識別子は上の表、キーは 7 にある。括弧の中は 7 のキー）
+- AC-47：session.finish.minutes（label は session.finish.minutes.label、value「15」）、session.finish.cancel（common.cancel）、reading.finish（reading.finish）、session.state.finishing
+- AC-48：session.finish.page（label は session.finish.page.label）、シートの下へのスワイプ（識別子なし。session.finish.cancel と同じ動き）、reading.elapsed（label は reading.elapsed.ms「10分0秒」「10分1秒」）、session.finish.save（0個）、book.sessionCount（book.sessionCount「記録 2件」）、session.state.reading
+- AC-49：book.add.title（label は book.add.titleField）、book.save（book.save）、book.title（題名そのもの。キーなし）、book.startReading（「こころ」は記録0件で最後のページ0なので action.start「読み始める」）
+- AC-50：home.startReading（home.primary.a11y と action.*）、reading.finish、session.finish.save、book.title、book.sessionCount「記録 2件」、session.state.idle
+- AC-51：home.startReading、reading.finish、session.finish.save（0個）、book.title、session.finish.tooShort（session.finish.tooShort）、book.sessionCount「記録 1件」、アラートは出さない、session.state.idle
+- AC-52：book.resumeReading（action.resume「読書に戻る」、action.resumePaused「一時停止中の読書に戻る」）、book.startReading と book.start.busy（0個。book.start.busy のキーは別の本が読書中のときだけ使う）、session.finish.cancel
+- AC-53：book.add.title、book.add.cancel（common.cancel）、book.add.discard.confirm（book.add.discard.confirm。ダイアログの題は book.add.discard.title）、home.bookCount（home.bookCount「1冊」）、library.book.<UUID>（label は題名）
+- AC-54：error.loadFailed.title、error.loadFailed.message、error.loadFailed.retry（どれも同じ名前のキー）。0個のもの：library.empty.title、home.bookCount、home.weekTotal、home.startReading（D-44 で library.addBook、home.resumeReading、library.book.* も出さない）
+- AC-55：error.loadFailed.retry、error.loadFailed.title（0個）、home.bookCount「2冊」、book.totalTime（label は book.stat.totalTime、value は format.minutes「60分」「40分」）
+
 ## 7. 文言
 決まり
 - 文は「です・ます」で短く。ボタンは動詞。英語のボタンと題は title-style capitalization、文は sentence case。感嘆符、「私たち」「we」、「おっと」「oops」を使わない（R-8、調査の 5）。
@@ -301,8 +331,8 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
 | action.readFromPage | %lldページから読む | Read from Page %lld | S1 の主操作の2行目、S3 の主操作（最後のページが1以上） |
 | action.continue | 続きを読む | Continue Reading | 同上（最後のページが0で、記録が1件以上） |
 | action.start | 読み始める | Start Reading | 同上（最後のページが0で、記録が0件） |
-| action.resume | 読書に戻る | Back to Reading | S1 と S3 の主操作（reading） |
-| action.resumePaused | 一時停止中の読書に戻る | Back to Paused Reading | S1 と S3 の主操作（paused） |
+| action.resume | 読書に戻る | Back to Reading | S1 と S3 の主操作（reading。finishing をやめた後を含む。AC-52） |
+| action.resumePaused | 一時停止中の読書に戻る | Back to Paused Reading | S1 と S3 の主操作（paused。AC-52） |
 | home.primary.a11y | %1$@、%2$@ | %1$@, %2$@ | S1 の主操作の VoiceOver のラベル（1つ目は題名、2つ目は上の action.*） |
 | common.loading | 読み込み中 | Loading | S1、S3 の ProgressView |
 | book.add.navTitle | 本を追加 | Add Book | S2 の題 |
@@ -312,6 +342,7 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
 | common.optional | 任意 | Optional | S2 の総ページ数の欄と、S5 の今のページの欄の placeholder |
 | book.add.totalPagesHint | 入れると、進み具合を％で出します。 | Add this to see your progress as a percentage. | S2 の総ページ数の下 |
 | book.add.totalPagesOutOfRange | 1から9999までの数字で入れてください。 | Enter a number from 1 to 9999. | S2 の総ページ数の下（範囲の外か数字でないとき。ヒントと入れ替える） |
+| book.add.titleLimit | 題名は%lld字までです。超えた分は入りません。 | one: Titles can have up to %lld character. Extra characters aren't added. ／ other: Titles can have up to %lld characters. Extra characters aren't added. | S2 の題名の欄の下（欄の字数が上限の100字に届いている間だけ。%lld は100。D-45） |
 | book.save | 追加 | Add | S2 の確定のボタン |
 | common.cancel | キャンセル | Cancel | S2 と S5 の左上、S6 の取り消し |
 | book.add.discard.title | この本を追加せずに閉じますか？ | Close without adding this book? | S2 の確認のダイアログの題 |
@@ -321,7 +352,7 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
 | error.saveFailed.session | 読書は消えていません。読んだ時間も変わっていません。もう一度保存してください。 | Your reading session is still here, and the time hasn't changed. Try saving again. | S5 のエラーの区画 |
 | error.saveFailed.delete | 記録は消えていません。もう一度消してください。 | The session wasn't deleted. Try deleting it again. | S7 の本文 |
 | error.retry | もう一度保存 | Save Again | S2 と S5 のエラーの区画のボタン |
-| error.loadFailed.title | 本と記録を読み込めませんでした | Couldn't Load Your Books | S1、S3 の読み込みの失敗 |
+| error.loadFailed.title | 本と記録を読み込めませんでした | Couldn't Load Your Books | S1、S3 の読み込みの失敗（AC-54） |
 | error.loadFailed.message | 端末の中の記録は消していません。もう一度読み込んでください。 | Nothing on this iPhone was deleted. Try loading again. | 同上 |
 | error.loadFailed.retry | もう一度読み込む | Load Again | 同上のボタン |
 | common.ok | OK | OK | S7 のボタン |
@@ -381,7 +412,7 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
   - 色：color.background.screen（S4）、color.background.grouped（S1、S2、S3、S5、下端の主操作の帯）、color.background.row、color.text.primary、color.text.secondary、color.text.placeholder、color.separator、color.accent（主操作の塗り、シートの確定のボタン、「もう一度保存」、S4 の「読書中」、カーソル）、color.text.onAccent（主操作の文字）、color.status.error（誤りの記号だけ）、color.fill.secondaryButton（S4 の一時停止と再開）。
   - 文字と、画面ごとの大きさの段（4段まで。B-4）：
     - S1：type.navTitle（.largeTitle）、type.body と type.primaryTitle（17pt の段）、type.secondary（.subheadline。主操作の2行目）、type.note（.footnote。冊数の見出し）。4段。
-    - S2：システムの inline の題、type.body（欄）、type.note（ヒントと誤り）。エラーの区画の題は .headline（17pt の段）。3段。
+    - S2：システムの inline の題、type.body（欄）、type.note（ヒント、誤り、題名の上限の知らせ）。エラーの区画の題は .headline（17pt の段）。3段。
     - S3：type.bookHeading（.title2 の太字）、type.body（値と行の分とページ、主操作）、type.secondary（記録の日付、60秒未満の知らせ）、type.note（見出し、無効の理由）。4段。
     - S4：type.readingTitle（.title3）、type.secondary（「72ページから」、状態の文字）、type.timer（.largeTitle、等幅の数字）、type.body（ボタン）。4段。
     - S5：S2 と同じ3段。
@@ -397,7 +428,7 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
   - 塗りの記号（.fill）は使わない（選ぶ状態とタブがないため）。
 - 性格語が表れている場所（語ごとに画面と要素）：
   - 静か：S4 に置くのは6つの要素だけで、色の面と動きがない（D-21、D-22）。読書を保存した後に祝う表示を出さない（D-6）。アクセントの塗りは1画面に1つ（D-9）。
-  - 確か：S5 のヒントに経過の分数を出す（session.finish.minutes.hint）。保存の失敗の文で、読書と時間が残っていることを言う（error.saveFailed.session）。S6 の本文で、引く分数と最後のページが変わらないことを言う（session.delete.message）。起動したら読書中の画面に戻る（D-25）。
+  - 確か：S5 のヒントに経過の分数を出す（session.finish.minutes.hint）。保存の失敗の文で、読書と時間が残っていることを言う（error.saveFailed.session）。S6 の本文で、引く分数と最後のページが変わらないことを言う（session.delete.message）。起動したら読書中の画面に戻る（D-25）。読み込めなかったときは、端末の中の記録を消していないことを言う（error.loadFailed.message、D-44）。題名が100字に届いたら、超えた分が入らないことを欄の下で言う（book.add.titleLimit、D-45）。
   - すぐ：S1 の主操作が1回で読み始めになる（home.startReading、AC-5）。S2 は開いた時点で題名の欄に焦点（D-10）。S5 は開いた時点で今のページの欄に数字のキーボード（D-11）。本を追加したらその本の S3 に出る（D-5）。
   - おだやか：今週0件は「0分」とだけ出す（AC-36、D-20）。60秒未満は責めない知らせ（session.finish.tooShort）。S5 はキャンセルで読書に戻れ、分を短く直せる（D-3、AC-12）。誤りの文は「〜で入れてください」の形で、責めない（D-13）。
 - 差をつける点が表れている場所：
@@ -431,7 +462,7 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
 ## 9. アクセシビリティ
 - いちばん大きい文字（AX5）で並びを変える場所（dynamicTypeSize が isAccessibilitySize のとき。HIG Typography「consider using a stacked layout where text appears above secondary items」）：
   - S1：下端の主操作の帯をやめ、リストの最初の行に主操作を置く（題名は2行まで、2行目は切らない）。今週の行は「今週」の下に「60分」を置く縦並び。本の行の題名は3行まで。
-  - S2：欄は1行の幅いっぱいのまま。ヒントと誤りの文は折り返す。
+  - S2：欄は1行の幅いっぱいのまま。ヒント、誤りの文、題名の上限の知らせは折り返す。
   - S3：下端の主操作の帯をやめ、先頭の題名のすぐ下に主操作（とその上の無効の理由）を置く。値の行は、項目名の下に値を置く縦並び。記録の行は、日付、分、ページを縦に3行で並べる。
   - S4：全体を ScrollView に入れる。「一時停止」と「終える」の横並びを縦並びにし、上に「終える」、下に「一時停止」（HIG Alerts「at the top in a stack of buttons」）。経過は1行のまま、入らなければ最小 0.5 倍まで縮める。題名は3行まで。
   - S5：「今のページ」「読んだ時間（分）」の項目名の下に欄を置く縦並び。
@@ -449,16 +480,17 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
 - VoiceOver の読み上げ順（見た目の順。読み上げの順を入れ替えない）：
   - S1（本が1冊以上）：「読書」（見出し）→「本を追加」→「今週、60分」→「21冊」（見出し）→ 本の行（題名）を上から → 主操作「坊っちゃん、72ページから読む」。AX サイズでは主操作が「今週」の前に来る。
   - S1（本が0冊）：「読書」→「本がまだありません」（見出し）→ 文 →「本を追加」。記号は読まない。
-  - S2：「キャンセル」→「本を追加」（見出し）→「追加」→（エラーの区画）→「題名」（見出し）→「題名」の欄 →「総ページ数」（見出し）→「総ページ数」の欄 → ヒントか誤りの文。
+  - S1（読み込みの失敗）：「読書」→「本と記録を読み込めませんでした」（見出し）→ 文 →「もう一度読み込む」。記号は読まない。「本を追加」はない（D-44）。
+  - S2：「キャンセル」→「本を追加」（見出し）→「追加」→（エラーの区画）→「題名」（見出し）→「題名」の欄 →（題名の上限の知らせ）→「総ページ数」（見出し）→「総ページ数」の欄 → ヒントか誤りの文。
   - S3：戻る →（ナビゲーションバーの題名）→「編集」→ 題名（見出し）→（60秒未満の知らせ）→「最後のページ、72」→「進み具合、24%」→「総ページ数、300」→「合計時間、60分」→「記録 3件」（見出し）→ 記録の行（日付 → 分 → ページ）を新しい順に →（無効の理由）→ 主操作。記録の行のどの要素にいても、アクションに「削除」が出る（スワイプの代わり。出ないときは「編集」から消せる）。
   - S4：戻る → 題名（見出し）→「72ページから」→「12分30秒」→「読書中」→「一時停止」→「終える」。経過は、指を置いたときに今の値を1回読むだけ。毎秒の読み上げと知らせは出さない（PRD 12）。
   - S5：「キャンセル」→「読書を終える」（見出し）→「保存」→（エラーの区画）→ 題名（見出し）→「今のページ」の欄 → ヒントか誤りの文 →「読んだ時間（分）」の欄 → ヒントか誤りの文。
-  - 知らせ（AccessibilityNotification.Announcement）：読書を保存して S3 に出たとき session.saved.announcement を1回。60秒未満で S3 に出たとき session.finish.tooShort を1回。誤りの文が出たとき、その文を1回（同じ誤りが続く間は繰り返さない）。保存に失敗したとき error.saveFailed を1回。
-  - 飾りの記号（books.vertical）は読まない。ラベルは、画面に見える文字を先頭に入れる（S1 の主操作は題名から始まる）。
+  - 知らせ（AccessibilityNotification.Announcement）：読書を保存して S3 に出たとき session.saved.announcement を1回。60秒未満で S3 に出たとき session.finish.tooShort を1回。誤りの文が出たとき、その文を1回（同じ誤りが続く間は繰り返さない）。保存に失敗したとき error.saveFailed を1回。題名が100字に届いて book.add.titleLimit が出たとき、その文を1回（100字のまま打ち続けても繰り返さない）。
+  - 飾りの記号（books.vertical、読み込みの失敗の exclamationmark.triangle）は読まない。ラベルは、画面に見える文字を先頭に入れる（S1 の主操作は題名から始まる）。
 - 英語が長くなったとき（疑似言語 Double-Length で確かめる画面）：
   - S1 の主操作（「Back to Paused Reading」と長い題名。2行で切れずに収まるか）、今週の行。
   - S4 の2つのボタン（横並びで「Pause」「Finish」が倍になっても1行に収まるか。収まらなければ縦並びに切り替える。dynamicTypeSize だけでなく、幅が足りないときも縦並びにする＝ViewThatFits）。
-  - S3 の値の行と主操作の無効の理由、S5 のヒントと誤りの文、S6 の本文、S2 のヒント。
+  - S3 の値の行と主操作の無効の理由、S5 のヒントと誤りの文、S6 の本文、S2 のヒントと題名の上限の知らせ、S1 の読み込みの失敗（ContentUnavailableView の題と文。システムが折り返す）。
   - 日本語より英語が2倍を超えて長くなる文言と置き場所：「読書」→「Reading」（S1 の大きい見出し。1行に収まる）、「再開」→「Resume」と「終える」→「Finish」（S4 のボタン。上の ViewThatFits）、「今週」→「This Week」（S1 の行の項目名。値と縦に並べ替えられる）、「任意」→「Optional」（S5 の欄の placeholder。欄の幅に収まる）。どれも折り返しか並べ替えで切れない。
 - 押せる範囲：すべてシステムの部品の既定の大きさ（ツールバーのボタン、リストの行、controlSize .large のボタン、TextField の行）を使い、44x44pt 以上。小さくする指定をしない（D-43）。
 
@@ -479,19 +511,20 @@ PRD の仮の名前（library.addBook、book.save、home.startReading、home.res
 計算に使った道具：python3 で WCAG 2 の相対輝度の式（design-reviewer の手引きのコマンドと同じ式）。例 `python3 -c "…" FFFFFF 7A4427` → 7.83。全部の組のコマンドと出力は報告に書いた。誤りの記号（3:1 の基準）のライトは 3.20:1 で余裕が小さい。記号の意味は文でも伝えるので、色が見えなくても意味は失われない。
 
 ## 10. 決まっていないこと
-どれも報告の「未解決」にも書いた。
-1. PRD に AC がないこと（pdm に足してほしい）：(a) S5 のキャンセルの後、分の欄も残さず、次は新しい経過の分数で入れ直す。(b) S5 を下へスワイプしても session.finish.cancel と同じ。(c) 本を追加した後と、読書を保存した後と、60秒未満で終えた後は、その本の S3 に出る。(d) この本が読書中のとき、S3 の主操作は book.resumeReading。(e) S2 に入力があるとき、キャンセルで「追加せずに閉じる」を確かめる。(f) 読み込みの失敗の表示（error.loadFailed.*）。
-2. tech-lead に確かめてほしいこと：(a) 画面の根の入れ物の識別子 session.state.* が XCUITest から見え、子の識別子を上書きしないか（spike）。(b) confirmationDialog と alert のボタン、編集モードの削除ボタンに識別子が付くか。iOS の版で confirmationDialog の「キャンセル」が出ない場合の「消さない」の操作。(c) 記録の行を入れ物（.contain）にしたとき、VoiceOver の行のアクションに「削除」が出るか。(d) 経過の読み上げをシステムの整形でなく String Catalog のキーで作ること（AC-40 の期待する文字を 7 の表で固定するため）。(e) 読み始め、一時停止、再開の保存に失敗したときの扱いと、読み込みの失敗が起こりうるか。読み込みに失敗しても保存先を消さないこと。(f) 数字の欄の決まり（全角の数字を受け付け、ほかの文字は誤りにする。とても長い数字で落ちない）。
+残っているものは報告の「未解決」にも書いた。
+1. PRD に AC がなかったこと：前の版の (a)〜(f) は、PRD の G1 の追記で AC になった。(a) 分の欄も残さない → AC-47。(b) 下へのスワイプ → AC-48。(c) 保存と追加と60秒未満の後の S3 → AC-49、AC-50、AC-51。(d) この本が読書中の S3 の主操作 → AC-52。(e) 追加せずに閉じる確認 → AC-53。(f) 読み込みの失敗 → AC-54、AC-55。対応は 2 の表。まだ AC がないのは、読み始め、一時停止、再開の保存に失敗したときの扱い（下の 2(e)）と、題名の上限の知らせ（D-45。PRD 10 は「AC はない」としている）。
+2. tech-lead に確かめてほしいこと：(a) 画面の根の入れ物の識別子 session.state.* が XCUITest から見え、子の識別子を上書きしないか（spike）。(b) confirmationDialog と alert のボタン、編集モードの削除ボタンに識別子が付くか。iOS の版で confirmationDialog の「キャンセル」が出ない場合の「消さない」の操作。(c) 記録の行を入れ物（.contain）にしたとき、VoiceOver の行のアクションに「削除」が出るか。(d) 経過の読み上げをシステムの整形でなく String Catalog のキーで作ること（AC-40 の期待する文字を 7 の表で固定するため）。(e) 読み始め、一時停止、再開の保存に失敗したときの扱い。読み込みの失敗を作るつなぎ口（AC-54、AC-55。PRD 11 は T5 に load を足す案を tech-lead が contracts/ に書くとしている）。読み込みに失敗しても保存先を消さず、別の保存先も作らないこと（D-44）。(f) 数字の欄の決まり（全角の数字を受け付け、ほかの文字は誤りにする。とても長い数字で落ちない）。(g) 題名の上限（PRD 10）：書記素で数え、変換中の確定していない文字には当てないこと（PRD 10 の要確認）。book.add.titleLimit を出す条件（欄の字数が100）を同じ数え方にすること。100字を超えて貼り付けたら先頭の100字だけが入ること。
 3. verifier に伝えること：経過は reading.elapsed の label（読み上げの形）で読む。見える文字との対応は 7 の表。
 4. Takuma に見てほしい見た目：しおりの色（栗色）。報告の「未解決」に推奨と反論を書いた。
-5. 題名の長さの上限と、題名の中の改行の扱い（保存のときに空白に置き換えるか）は PRD にない。表示の決まりだけ 5 に書いた。
-6. 本が500冊のときの検索は置かない（PRD にない）。必要なら次の機能の PRD で扱う提案にする。
+5. 題名の長さと改行は PRD 10 で決まった（100字まで、書記素で数える、超える分は入らない、中の改行は保存のときに半角の空白1つに置き換える）。5 の「長い文字」をこれに合わせ、100字に届いたときの見せ方を D-45 と 7 の book.add.titleLimit に決めた。作りの確かめは上の 2(g)。
+6. 検索は 001 では置かない（PRD 10 のやらないこと）。D-31 と 5 の「多い件数」をこれに合わせた。
 
 ## 確かめ（提出前に designer が印を付ける。design-reviewer はこれを信じずに確かめる）
-- [x] 調査が先にあり、決定表のすべての行に R-n と原則がある（R-n は調査に実在する）（調査はコミット f8ae3e8。4 の D-1〜D-43 のすべての行に R-n と、HIG の URL か B-n がある）
-- [x] 全画面に、仕事、主操作1つ、使う標準部品がある（3 の S1〜S7。標準から外れる所は S1、S3、S5 に本来の部品、理由、対応を書いた）
-- [x] 全画面の7つの状態が埋まっている（5 の S1〜S7。該当しない所は「なし」と理由）
+2 の表は AC-1〜AC-55 の55行（G1 の追記の後に印を付け直した）。
+- [x] 調査が先にあり、決定表のすべての行に R-n と原則がある（R-n は調査に実在する）（調査はコミット f8ae3e8。4 の D-1〜D-45 のすべての行に R-n と、HIG の URL か B-n がある。足した D-44 は R-8、R-6、D-45 は R-2、R-8、R-1）
+- [x] 全画面に、仕事、主操作1つ、使う標準部品がある（3 の S1〜S7。S1 の主操作は状態ごとに1つ：通常、0冊、読み込みの失敗。標準から外れる所は S1、S3、S5 に本来の部品、理由、対応を書いた）
+- [x] 全画面の7つの状態が埋まっている（5 の S1〜S7。該当しない所は「なし」と理由。S1 のエラーを AC-54、AC-55 と D-44 に合わせた）
 - [x] 押せる範囲が 44x44pt 以上。コントラストが基準を満たし、独自の色の組に数字が3通りある（9 と tokens.md の 5。コントラストを上げる設定はライトとダークの両方の値を書いた）
-- [x] AX5 での並びと、VoiceOver の読み上げ順が書いてある（9）
+- [x] AX5 での並びと、VoiceOver の読み上げ順が書いてある（9。S1 の読み込みの失敗と、S2 の題名の上限の知らせを足した）
 - [x] 性格語と差をつける点が、画面のどこに表れているか書いてある（8）
-- [x] 文言が日英そろい、テストで使う要素に accessibilityIdentifier がある（7 と 6。システムの部品で識別子が付かないものは 6 の決まりと 10 の 2(b)）
+- [x] 文言が日英そろい、テストで使う要素に accessibilityIdentifier がある（7 と 6。book.add.titleLimit を足した。AC-47〜AC-55 の名前は 6 の最後の一覧。システムの部品で識別子が付かないものは 6 の決まりと 10 の 2(b)）
