@@ -51,3 +51,10 @@
 - (iii) `xcodebuild -version` の1行目の形。代わり：grep を出力に合わせて直す（app.json は Takuma）。
 - (iv) uitest.telemetry.log の accessibilityValue の長さの上限。代わり：最後の n 件だけにする。
 - (v) TestFlight のビルドに Data Protection の entitlement が入るか、実機で効くか、.complete のファイルが iCloud バックアップに入るか。G4 の前に Mac で確かめる。入らなければ ADR 0001 を開き直す。
+
+## 追記4（2026-10-21、ios-engineer 13b の報告から）
+裁定1の一覧に足す（G2 の最初の CI で確かめ、ios-engineer が結果と代わりの案を報告に書く。設計メモ 10 の2つめの表と同じ4点）：
+- ContentUnavailableView の中の Text に付けた識別子が残るか（AC-1、AC-54）。代わり：VStack で組み直す。
+- String(localized:defaultValue:locale:) で分、冊、件に桁区切りが付くか。代わり：数を先に文字にし、複数形は数の引数で選ぶ。
+- 起動時に finishing を戻すとき、S4 の push と同時に S5 を開けるか（AC-34）。代わり：S4 の onAppear の次の描き直しで開く。
+- XcodeGen で en が knownRegions に入り、InfoPlist.xcstrings で表示名が地域ごとに替わるか。代わり：project.yml の localizations を明示する。
