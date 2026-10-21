@@ -231,3 +231,68 @@ extension AppSession {
         return rows.first
     }
 }
+
+// MARK: 後半（AC-31〜AC-67）で足した部品
+
+@MainActor
+extension Wait {
+    /// isEnabled が expected になるのを待つ（AC-31、AC-37、AC-52。押せるかの変化は入力の後に遅れて来ることがある）。
+    static func enabled(
+        _ element: XCUIElement, _ expected: Bool, _ what: String,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
+        let predicate = NSPredicate(format: "exists == true AND isEnabled == %@", NSNumber(value: expected))
+        if !until(predicate, element) {
+            let now = element.exists ? String(element.isEnabled) : "要素なし"
+            XCTFail("\(what)：isEnabled が \(expected) にならない（今は \(now)）", file: file, line: line)
+        }
+    }
+}
+
+@MainActor
+extension AppSession {
+    /// 保存の失敗の区画（design 6：題 error.saveFailed と、再試行 error.retry）が1個ずつ出ていること（AC-42、AC-56〜AC-66 の Then）。
+    func expectSaveFailed(_ step: String, file: StaticString = #filePath, line: UInt = #line) {
+        Wait.label(el("error.saveFailed"), equals: L10n.errorSaveFailed, "\(step)：error.saveFailed", file: file, line: line)
+        Wait.exists(el("error.retry"), "\(step)：error.retry", file: file, line: line)
+        XCTAssertEqual(count("error.saveFailed"), 1, "\(step)：error.saveFailed は1個", file: file, line: line)
+        XCTAssertEqual(count("error.retry"), 1, "\(step)：error.retry は1個", file: file, line: line)
+    }
+
+    /// 保存の失敗の区画が消えたこと（再試行が通った後。AC-35、AC-57〜AC-65、AC-67 の「error.saveFailed は0個」）。
+    func expectNoSaveFailed(_ step: String, file: StaticString = #filePath, line: UInt = #line) {
+        Wait.gone(el("error.saveFailed"), "\(step)：error.saveFailed", file: file, line: line)
+        XCTAssertEqual(count("error.saveFailed"), 0, "\(step)：error.saveFailed は0個", file: file, line: line)
+    }
+
+    /// S4 か S5 から本の S3 へ行き、記録の数を見る（test-plan 2 の「件数を見る」。AppSession.goToBookDetail を使う）。
+    func expectSessionCount(
+        _ n: Int, bookId: String, _ step: String, file: StaticString = #filePath, line: UInt = #line
+    ) {
+        goToBookDetail(id: bookId, file: file, line: line)
+        Wait.label(el("book.sessionCount"), equals: L10n.sessionCount(n), "\(step)：book.sessionCount", file: file, line: line)
+    }
+
+    /// S3 の記録の行をスワイプして「削除」を押し、S6 を開く（AC-38、AC-43）。システムの部品は識別子か 7 の文字で探す（design 6 の (b)）。
+    func beginDeleteSession(id: String, file: StaticString = #filePath, line: UInt = #line) {
+        let row = el("session.row.id.\(id)")
+        Wait.exists(row, "記録の行 \(id)", file: file, line: line)
+        row.swipeLeft()
+        let delete = systemButton(id: "session.row.delete", text: L10n.sessionRowDelete)
+        Wait.exists(delete, "行の「削除」", file: file, line: line)
+        delete.tap()
+    }
+}
+
+@MainActor
+extension AppSession {
+    /// S1 > S3 > S4 の S4 から S3 へ戻る（AC-57。design 1 の S3 からの読み始め）。戻るボタンの文字は S3 のナビゲーションバーの題名
+    /// （本の題名。design 5 の長い題名）か、システムの「戻る」。システムの部品なので文字で探す（design 6 の (b)）。
+    func goBack(toBookTitled title: String, file: StaticString = #filePath, line: UInt = #line) {
+        let labels = [title] + L10n.backButtonLabels
+        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
+        Wait.exists(back, "S3 への戻るボタン", file: file, line: line)
+        back.tap()
+        Wait.label(el("book.title"), equals: title, "戻った本の詳細", file: file, line: line)
+    }
+}

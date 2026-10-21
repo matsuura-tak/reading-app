@@ -1,0 +1,86 @@
+# 赤の証拠 001-reading-session（実装の前の受け入れテストの実行）
+# 書いた役：verifier（後半）　日付：2026-10-21 19:27:07 UTC
+# コミット（HEAD。後半の変更はまだコミットしていない作業ツリー）：037a2765ce17f771d7a8e2bcc060a9c0d1b217ea
+
+## 1. 環境
+$ uname -srm
+Linux 6.18.44-fc-v139 x86_64
+$ for c in xcodebuild xcrun swift swiftc; do command -v $c || echo "$c: not found"; done
+xcodebuild: not found
+xcrun: not found
+swift: not found
+swiftc: not found
+$ ls ios/
+AcceptanceTests
+$ ls ios/Yomutoki 2>&1
+ls: cannot access 'ios/Yomutoki': No such file or directory
+exit=2
+
+結論：この環境は Linux で、Mac も Xcode も Swift もない。ios/ には受け入れテスト（ios/AcceptanceTests/）しかなく、アプリの実装（ios/Yomutoki/）も ios/project.yml もまだない。
+XCUITest（AC-1〜AC-38、AC-40〜AC-67 の82本）は、この環境では実行できない。PASS にも FAIL にもしていない。
+
+## 2. 実行しなかったコマンド（CLAUDE.md の commands.ios_test。CI の macOS で動かす）
+cd ios && ../build/tools/xcodegen/bin/xcodegen generate \
+  && xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Unit -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGNING_ALLOWED=NO \
+  && xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Acceptance -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGNING_ALLOWED=NO \
+  && bash AcceptanceTests/ac18-reboot.sh 'iPhone 16'
+（前に XcodeGen 2.46.0 の取得と SHA-256 の確かめがある。全文は CLAUDE.md の「iOS のテスト」）
+
+落ちるべき理由（見込み）：実装がまだないので、次のどちらかの段階で落ちる。
+  (1) ビルドの段階：ios/project.yml と ios/Yomutoki/ がないので xcodegen generate が落ちる（ターゲット Yomutoki がない）。受け入れテストのターゲットはアプリに依存する（target.yml の dependencies）。
+  (2) 実装の雛形だけがある段階：起動はするが、design/ の 6 の識別子（library.empty.title、session.state.*、reading.elapsed、error.saveFailed、error.loadFailed.title など）が見つからず、Wait.exists / Wait.label の「が出ない」「label が … にならない」で落ちる。
+書き間違い（つなぎ口の名前違い、seed の形の誤り）で落ちないことは、この環境で次の3つで確かめた（3〜5）。Swift のコンパイルは CI の最初の実行で確かめる。
+
+## 3. AC-39（Linux で動く。この環境で実行した）
+$ bash ios/AcceptanceTests/ac39-xcstrings.sh
+test_AC39_stringCatalogFullyTranslated: FAIL（ios/Yomutoki/Resources/*.xcstrings が1つもない）
+exit=1
+落ちた理由：ios/Yomutoki/Resources/*.xcstrings（String Catalog）がまだない＝機能がまだない。スクリプトの書き間違いではないことは、リポジトリの外の写し（scratchpad）に1キーの Localizable.xcstrings を置いて、translated なら PASS（exit=0、untranslated_keys=0）、en が needs_review なら FAIL（exit=1、untranslated_keys=1）になることで確かめた。
+
+## 4. つなぎ口の名前（UITEST_）が contracts/test-hooks.md の中にあること
+$ grep -rhoE 'UITEST_[A-Z_]+' ios/AcceptanceTests | sort -u
+UITEST_CLOCK_FROZEN
+UITEST_FAIL
+UITEST_FIRST_WEEKDAY
+UITEST_LOCALE
+UITEST_NOW
+UITEST_RESET
+UITEST_SEED
+UITEST_TELEMETRY_CONTROL_URL
+UITEST_TELEMETRY_LOG
+UITEST_TELEMETRY_TIMEOUT
+UITEST_TELEMETRY_URL
+UITEST_TIME_ZONE
+$ comm -23 <(上の結果) <(grep -hoE 'UITEST_[A-Z_]+' contracts/test-hooks.md | sort -u)   # 契約にない名前
+（0行）
+
+## 5. 後半のテストが使う seed が contracts/seed.schema.json に合うこと
+Support/Fixture.swift と各テストの組み方を python に写して23個の JSON を作り（data-model.md の最後の節の制約も数えて0件）、ajv で確かめた：
+$ npx -y ajv-cli@5.0.0 validate -s contracts/seed.schema.json -d "<scratchpad>/seeds2/*.json"
+<scratchpad>/seeds2/AddBook-AC42-AC53-oneBook.json valid
+<scratchpad>/seeds2/AddBook-AC49.json valid
+<scratchpad>/seeds2/BookDetail-AC36.json valid
+<scratchpad>/seeds2/BookDetail-AC37.json valid
+<scratchpad>/seeds2/BookDetail-AC38-AC43.json valid
+<scratchpad>/seeds2/BookDetail-AC44.json valid
+<scratchpad>/seeds2/BookDetail-AC51-AC56-AC57.json valid
+<scratchpad>/seeds2/BookDetail-AC52-finishing.json valid
+<scratchpad>/seeds2/BookDetail-AC52-paused.json valid
+<scratchpad>/seeds2/BookDetail-AC52-reading.json valid
+<scratchpad>/seeds2/FinishInput-AC32.json valid
+<scratchpad>/seeds2/FinishInput-AC34.json valid
+<scratchpad>/seeds2/FinishInput-AC35.json valid
+<scratchpad>/seeds2/FinishInput-AC45.json valid
+<scratchpad>/seeds2/FinishInput-AC46-AC47-AC64-AC65.json valid
+<scratchpad>/seeds2/FinishInput-AC48.json valid
+<scratchpad>/seeds2/FinishInput-AC50.json valid
+<scratchpad>/seeds2/Load-AC54-AC55.json valid
+<scratchpad>/seeds2/ReadingScreen-AC33-AC60-AC61-AC62b-AC63b.json valid
+<scratchpad>/seeds2/ReadingScreen-AC40.json valid
+<scratchpad>/seeds2/ReadingScreen-AC41.json valid
+<scratchpad>/seeds2/ReadingScreen-AC58-AC59-AC62a-AC63a.json valid
+<scratchpad>/seeds2/ReadingScreen-AC66-AC67.json valid
+exit=0
+
+## 6. CI（macOS）でこのファイルに足すこと
+G2 の最初の CI の ios_test の出力（xcodebuild の終了コード、Executed N tests, with M failures、落ちたテストごとの1行目のメッセージ）をここに貼り、落ちた理由が「機能がまだない」（ビルドの段階か、識別子が見つからない段階）であることを1行で書く。コンパイルの誤りで落ちていたら受け入れテストを直してから貼り直す。

@@ -2,7 +2,8 @@
 
 - 書いた役：verifier　日付：2026-10-21
 - 実装のコードを見ずに書いた：はい（ios/ の実装はまだない。ios/AcceptanceTests/ の外は開いていない）
-- この版の範囲：前半。計画の全章（2 は AC-1〜AC-67 の全行。後半のテストの名前もここで決めた）と、ios/AcceptanceTests/ の設定、共通の部品、AC-1〜AC-30 のテスト。AC-31〜AC-67 のテストと 8 の赤の証拠は後半で書く。
+- この版の範囲：前半と後半（2026-10-21）。前半は計画の全章（2 は AC-1〜AC-67 の全行）、ios/AcceptanceTests/ の設定、共通の部品、AC-1〜AC-30 のテスト。後半は AC-31〜AC-67 のテスト（AC-39 は ac39-xcstrings.sh）、Support/UIHelpers.swift の末尾に足した小さな部品（Wait.enabled、expectSaveFailed、expectNoSaveFailed、expectSessionCount、beginDeleteSession、goBack(toBookTitled:)。前半の部品は変えていない）、8 の赤の証拠、2 の「…」で略した名前を全部の名前に書き直したこと（値は変えていない）。
+- 後半で読み足したファイル：contracts/tools/xcstrings_untranslated.py（AC-39）、contracts/data-model.md の「保存の操作」と「計算する値」、design/001-reading-session.md の 1（S1 > S3 > S4 の積み方）と 5 の長い題名の行（S3 のナビゲーションバーの題名は本の題名）。
 - 読んだファイル（PRD、design/、contracts/ と、指示書が挙げた ADR と判定の記録だけ）：
   - docs/prd/001-reading-session.md（9〜12、15）
   - design/001-reading-session.md（1、5、6、7、9、10）、design/tokens.md、design/001-reading-session/screens.md（見出し）
@@ -55,47 +56,47 @@
 | AC-14 | R3 | 代表の1例と境界値（丸め） | 10分、20分、30分、最後のページ72/300。丸めの境界は90秒×3件 | 画面 | Stats::test_AC14_bookTotalsAreShown、Stats::test_AC14_totalAddsSecondsBeforeFlooring | book.totalTime「60分」、book.sessionCount「記録 3件」、book.lastPage「72」、book.progress「24%」。90秒×3件は「4分」（PRD 10 の丸め） |
 | AC-15 | R3 | デシジョンテーブル（週の始め×記録の日） | 月曜始まり（UITEST_FIRST_WEEKDAY=2）、10-18（日）40分、10-19（月）25分、10-20（火）35分 | 画面 | Stats::test_AC15_weekTotalExcludesLastWeek | home.weekTotal の value「60分」（日曜始まりなら100分になる組） |
 | AC-16 | R1、R3 | 状態遷移（記録2件→1件） | 20分と30分、最後のページ72。30分を消して確認で消す | 画面 | Stats::test_AC16_deleteSessionKeepsLastPage | 30分の行が消え20分の行は残る、「記録 1件」、book.totalTime「20分」、book.lastPage「72」。起動し直しても同じ |
-| AC-17 | R5 | 状態遷移（3状態）×別の本 | 「坊っちゃん」が reading（5:00）、paused（5:00、1分止めた）、finishing（10:00。キャンセルしてから） | 画面 | Reading::test_AC17_cannotStartAnotherBookWhileReading、…WhilePaused、…WhileFinishing | 「こころ」の book.startReading の isEnabled が false、押しても状態は変わらず reading.title は0個。ホームの home.resumeReading が1個で label が「坊っちゃん」で始まる、home.startReading が0個 |
+| AC-17 | R5 | 状態遷移（3状態）×別の本 | 「坊っちゃん」が reading（5:00）、paused（5:00、1分止めた）、finishing（10:00。キャンセルしてから） | 画面 | Reading::test_AC17_cannotStartAnotherBookWhileReading、Reading::test_AC17_cannotStartAnotherBookWhilePaused、Reading::test_AC17_cannotStartAnotherBookWhileFinishing | 「こころ」の book.startReading の isEnabled が false、押しても状態は変わらず reading.title は0個。ホームの home.resumeReading が1個で label が「坊っちゃん」で始まる、home.startReading が0個 |
 | AC-18 | R1 | 状態（端末の再起動） | seed.example.json と同じ5件 → simctl shutdown と boot → RESET も SEED もなしで起動 | 画面（2段） | AC18::test_AC18_1_seedLibraryBeforeReboot、AC18::test_AC18_2_libraryRemainsAfterReboot（ac18-reboot.sh） | 再起動の後、home.bookCount「2冊」、本の行が2つ、「坊っちゃん」の book.totalTime「60分」と「記録 3件」、「こころ」の「40分」と「記録 2件」（計5件） |
 | AC-19 | R1 | 状態（保存の失敗） | UITEST_FAIL=session_finish:*、経過10:00 で終えた finishing。失敗の後に時計を120秒進める | 画面 | Finish::test_AC19_saveFailureKeepsFinishingSession | error.saveFailed の label「変更を保存できませんでした」、error.retry がある、finishing のまま、session.finish.minutes の value「10」（120秒後も「10」）、最後に「記録 1件」（変わらない） |
-| AC-20 | R8 | 同値分割（失敗の3種） | 送り先が http://localhost:9、500 を返す受け口、30秒応答しない受け口（UITEST_TELEMETRY_TIMEOUT=3）。CONTROL は正常な受け口 | 画面 | Telemetry::test_AC20_allOperationsWorkWhenTelemetryIsUnreachable、…Returns500、…Hangs | 追加、読み始め、終えて保存、本の詳細の各手順の後に app.alerts と app.sheets が0個、識別子が error. で始まる要素が0個。「記録 1件」。送信4件の失敗（/flushed の failed＝4、sent＝0）を待った後も同じ |
+| AC-20 | R8 | 同値分割（失敗の3種） | 送り先が http://localhost:9、500 を返す受け口、30秒応答しない受け口（UITEST_TELEMETRY_TIMEOUT=3）。CONTROL は正常な受け口 | 画面 | Telemetry::test_AC20_allOperationsWorkWhenTelemetryIsUnreachable、Telemetry::test_AC20_allOperationsWorkWhenTelemetryReturns500、Telemetry::test_AC20_allOperationsWorkWhenTelemetryHangs | 追加、読み始め、終えて保存、本の詳細の各手順の後に app.alerts と app.sheets が0個、識別子が error. で始まる要素が0個。「記録 1件」。送信4件の失敗（/flushed の failed＝4、sent＝0）を待った後も同じ |
 | AC-21 | R11 | 代表の1例（権限） | 起動の前に camera、photos、location を未回答に戻す。追加、読み始め、5分、終えて保存 | 画面 | Telemetry::test_AC21_noPermissionPromptsDuringFirstSession | 各手順の後に SpringBoard の alerts が0個、アプリの alerts が0個。「記録 1件」 |
 | AC-22 | R11 | 境界値（20冊→21冊） | seed で20冊、21冊目「坊っちゃん」 | 画面 | Library::test_AC22_twentyFirstBookHasNoLimitOrPaywall | 前提「20冊」。保存の後 app.alerts と app.sheets が0個、book.add.title が0個、book.startReading が押せる（isHittable）。戻ったホームの home.bookCount「21冊」 |
 | AC-23 | R6 | 代表の1例（全体を数える） | flags で App First Opened 送り済み、本0冊。「坊っちゃん」を追加、読み始め、5分、ページ72で終える | 画面 | Telemetry::test_AC23_telemetryHasNoTitleOrPageValues | 15 の名前のイベントは Book Added、Reading Session Started、Reading Session Finished の3件。届いた要求の全体で「坊っちゃん」が0回、パーセントエンコード（大文字と小文字）が0回。プロパティの値で 72（数か文字）が0個 |
 | AC-24 | R3 | 境界値（50分→65分→75分） | 月曜始まり、今週50分、15分の読書と10分の読書を続けて終える | 画面 | Telemetry::test_AC24_weekReachedIsSentOncePerWeek | 前提 home.weekTotal「50分」。送信5件の後、Reading Week Reached がちょうど1件、threshold_min が「60」 |
 | AC-25 | R5 | デシジョンテーブル（追加の順×保存の順） | 「こころ」を先に、「坊っちゃん」を後に追加。最後の記録は「坊っちゃん」2日前、「こころ」1日前 | 画面 | Reading::test_AC25_previousBookIsTheLastSavedOne | home.startReading で reading、reading.title「こころ」 |
 | AC-26 | R5 | デシジョンテーブル（記録0件） | 「坊っちゃん」の後に「こころ」を追加、記録0件 | 画面 | Reading::test_AC26_withoutSessionsPreviousBookIsTheLastAdded | reading、reading.title「こころ」 |
-| AC-27 | R5 | 状態遷移（3状態） | AC-17 と同じ3通り（finishing はキャンセルしてから） | 画面 | Reading::test_AC27_homeShowsOnlyResumeWhileReading、…WhilePaused、…WhileFinishing | home.startReading が0個、home.resumeReading が1個で label が「坊っちゃん」で始まる |
+| AC-27 | R5 | 状態遷移（3状態） | AC-17 と同じ3通り（finishing はキャンセルしてから） | 画面 | Reading::test_AC27_homeShowsOnlyResumeWhileReading、Reading::test_AC27_homeShowsOnlyResumeWhilePaused、Reading::test_AC27_homeShowsOnlyResumeWhileFinishing | home.startReading が0個、home.resumeReading が1個で label が「坊っちゃん」で始まる |
 | AC-28 | R3 | 同値分割（総ページ数なし） | 「こころ」総ページ数なし、最後のページ40、記録2件 | 画面 | Stats::test_AC28_noProgressWithoutTotalPages | book.lastPage「40」、book.progress が0個 |
 | AC-29 | R3 | 境界値（前より小さいページ） | 300/72 で今のページ50 | 画面 | Finish::test_AC29_lowerPageMeansRereading | 「記録 2件」、新しい行の session.row.page「0ページ進んだ」、book.lastPage「50」、book.progress「16%」 |
 | AC-30 | R9、R2 | 境界値（0、1、180、181） | 経過180分の finishing | 画面 | Finish::test_AC30_minutesOutsideOneToElapsedAreRejected | 0 と 181：session.finish.minutesOutOfRange の label「1から180までの数字で入れてください。」、finishing のまま。1 と 180：誤りの文が消え session.finish.save が有効。最後に「記録 1件」 |
 
-後半（名前と値をここで決めた。テストは後半で書く。AddBook＝AddBookAcceptanceTests.swift、FinishInput＝FinishInputAcceptanceTests.swift、ReadingScreen＝ReadingScreenAcceptanceTests.swift、Detail＝BookDetailAcceptanceTests.swift、Load＝LoadFailureAcceptanceTests.swift）
+後半（名前と値は前半で決め、テストは後半で書いた。AddBook＝AddBookAcceptanceTests.swift、FinishInput＝FinishInputAcceptanceTests.swift、ReadingScreen＝ReadingScreenAcceptanceTests.swift、Detail＝BookDetailAcceptanceTests.swift、Load＝LoadFailureAcceptanceTests.swift）
 | AC | リスク | 技法 | 試す値（境界、遷移、ルールの列） | 種類（API / 画面） | ファイル::テストの名前 | 確かめる結果（具体的な値） |
 |---|---|---|---|---|---|---|
 | AC-31 | R9 | 境界値（0、1、9999、10000） | 題名「坊っちゃん」、総ページ数を順に入れる | 画面 | AddBook::test_AC31_totalPagesOutsideOneTo9999AreRejected | 0 と 10000：book.save の isEnabled が false、book.add.totalPagesOutOfRange の label「1から9999までの数字で入れてください。」。1 と 9999：book.save の isEnabled が true。閉じた後も本0冊（library.empty.title） |
 | AC-32 | R9 | 境界値（9999 と 10000） | 総ページ数なし、最後のページ40、finishing | 画面 | FinishInput::test_AC32_pageAbove9999IsRejectedWithoutTotalPages | 10000：session.finish.pageOutOfRange「0から9999までの数字で入れてください。」、finishing。9999：保存でき「記録 2件」、book.lastPage「9999」、idle（G0 r2 の読み） |
 | AC-33 | R1、R2、R7 | 状態（paused で強制終了） | seed-ac33.json の形（5:00 で止めた）、5分後に起動 | 画面 | ReadingScreen::test_AC33_pausedIsRestoredAfterForceQuit | paused、reading.title「坊っちゃん」、label「5分0秒」 |
-| AC-34 | R1、R2、R7 | 状態（finishing で強制終了） | 10:00 で終えた finishing、5分後に起動 | 画面 | FinishInput::test_AC34_finishingIsRestoredAfterForceQuit | finishing、session.finish.minutes「10」、session.finish.page の value が空、最後に「記録 1件」 |
-| AC-35 | R1 | 状態遷移（失敗→再試行1回） | UITEST_FAIL=session_finish:1、記録2件、10:00 の finishing | 画面 | FinishInput::test_AC35_retryAfterOneFailureAddsExactlyOne | 再試行1回の後 book.sessionCount「記録 3件」、idle、error.saveFailed が0個 |
+| AC-34 | R1、R2、R7 | 状態（finishing で強制終了） | 10:00 で終えた finishing、今のページに 72 を入れてから強制終了（入れかけの値は保存しない。PRD 10。欄が空であることに意味を持たせるため）、5分後に起動 | 画面 | FinishInput::test_AC34_finishingIsRestoredAfterForceQuit | finishing、session.finish.minutes「10」、session.finish.page の value が空、最後に「記録 1件」 |
+| AC-35 | R1 | 状態遷移（失敗→再試行1回） | UITEST_FAIL=session_finish:1、記録2件、10:00 の finishing | 画面 | FinishInput::test_AC35_retryAfterOneFailureAddsExactlyOne | 再試行1回の後 book.sessionCount「記録 3件」、idle、error.saveFailed が0個。起動し直しても「記録 3件」 |
 | AC-36 | R3 | 同値分割（今週0件） | 月曜始まり、先週（10-18）40分だけ | 画面 | Detail::test_AC36_weekTotalIsZeroWithoutSessionsThisWeek | home.weekTotal の value「0分」 |
 | AC-37 | R3 | 同値分割（記録0件） | 「坊っちゃん」300/0、記録0件 | 画面 | Detail::test_AC37_bookWithoutSessionsShowsEmptyState | book.totalTime「0分」、book.sessionCount「記録 0件」、book.progress「0%」、book.sessions.empty の label「まだ記録はありません。読書を終えると、ここに残ります。」、book.startReading の isEnabled が true |
 | AC-38 | R11 | 状態遷移（確認で取り消す） | 20分と30分、30分の行の削除 → S6 の「キャンセル」（session.delete.cancel。なければ文字「キャンセル」） | 画面 | Detail::test_AC38_cancelDeleteKeepsSession | 「記録 2件」、book.totalTime「50分」 |
 | AC-39 | R10 | 代表の1例（表の検査） | ios/Yomutoki/Resources/*.xcstrings（T14） | 文言の表 | ac39-xcstrings.sh::test_AC39_stringCatalogFullyTranslated | `python3 -I contracts/tools/xcstrings_untranslated.py ios/Yomutoki/Resources/*.xcstrings` の最後の行が `untranslated_keys=0`、終了コード0 |
 | AC-40 | R10 | ペアワイズ（言語2×経過1） | 経過750秒で止めた reading。ja_JP と en_US の構成 | 画面 | ReadingScreen::test_AC40_elapsedLabelReadsMinutesAndSeconds | reading.elapsed の label が ja「12分30秒」、en「12 minutes, 30 seconds」 |
 | AC-41 | R2 | 境界（開始より前の時刻） | reading 経過5:00（読み始め 21:25、今 21:30）の後、時計を読み始めの10分前の 2026-10-21T21:15:00 に set（T16） | 画面 | ReadingScreen::test_AC41_clockSetBackShowsZeroNotNegative | label「0分0秒」、label が「-」で始まる要素が0個、reading のまま |
-| AC-42 | R1 | 状態（保存の失敗） | UITEST_FAIL=book_add:*、本1冊、題名「こころ」 | 画面 | AddBook::test_AC42_bookAddFailureKeepsTitle | error.saveFailed「変更を保存できませんでした」、error.retry、book.add.title の value「こころ」。閉じた後の home.bookCount「1冊」 |
-| AC-43 | R1 | 状態（保存の失敗） | UITEST_FAIL=session_delete:*、20分と30分 | 画面 | Detail::test_AC43_deleteFailureKeepsSession | S7 の error.saveFailed（なければ文字）、OK の後「記録 2件」、book.totalTime「50分」 |
+| AC-42 | R1 | 状態（保存の失敗） | UITEST_FAIL=book_add:*、本1冊、題名「こころ」 | 画面 | AddBook::test_AC42_bookAddFailureKeepsTitle | error.saveFailed「変更を保存できませんでした」と error.retry（label「もう一度保存」）が1個ずつ、book.add.title の value「こころ」。閉じた後の home.bookCount「1冊」、label「こころ」の本の行が0個 |
+| AC-43 | R1 | 状態（保存の失敗） | UITEST_FAIL=session_delete:*、20分と30分 | 画面 | Detail::test_AC43_deleteFailureKeepsSession | S7 の error.saveFailed（なければ文字）、OK の後「記録 2件」、book.totalTime「50分」。起動し直しても同じ |
 | AC-44 | R3 | 境界（週の境目をまたぐ記録） | 日曜始まり（1）、今日 2026-10-25（日）21:30。土 23:50 に始めた30分、日 9:00 に始めた20分 | 画面 | Detail::test_AC44_sessionAcrossWeekBoundaryCountsInStartWeek | home.weekTotal「20分」 |
 | AC-45 | R2 | 状態遷移（finishing の間は止まる） | reading 2:00、終えて60秒後に保存 | 画面 | FinishInput::test_AC45_timeInFinishInputIsNotCounted | 新しい行の session.row.minutes「2分」 |
 | AC-46 | R2 | 状態遷移（finishing→reading） | 10:00 で終えてページ72、2分後に session.finish.cancel、続けて終える | 画面 | FinishInput::test_AC46_cancelFinishReturnsToReading | reading、label「10分0秒」か「10分1秒」、記録の数は変わらない。次の S5 の session.finish.page の value が空 |
 | AC-47 | R2 | 状態遷移（下書きを捨てる） | 10:00 で終え、分を 10→5、やめて5分後に終える | 画面 | FinishInput::test_AC47_cancelFinishResetsMinutesDraft | finishing、session.finish.minutes の value「15」 |
-| AC-48 | R2 | 状態遷移（スワイプで閉じる） | 記録2件、10:00 で終えてページ72、2分後に下へスワイプ（D の (d)：だめならナビゲーションバーに swipeDown） | 画面 | FinishInput::test_AC48_swipeDownDismissEqualsCancel | reading、label「10分0秒」か「10分1秒」、session.finish.save が0個、「記録 2件」 |
+| AC-48 | R2 | 状態遷移（スワイプで閉じる） | 記録2件、10:00 で終えてページ72、2分後に S5 のナビゲーションバー（session.finish.cancel を含むバー）を swipeDown（design 6 の (d)：欄の上でなくバーで下へスワイプする。1つの形で書いた） | 画面 | FinishInput::test_AC48_swipeDownDismissEqualsCancel | reading、label「10分0秒」か「10分1秒」、session.finish.save が0個、「記録 2件」 |
 | AC-49 | R4 | 代表の1例 | 記録1件の「坊っちゃん」、S2 で「こころ」を追加 | 画面 | AddBook::test_AC49_afterAddShowsNewBookDetail | book.add.title が0個、book.title「こころ」、book.startReading が1個で isHittable が true |
 | AC-50 | R4 | 状態遷移（finishing→idle） | 記録1件、home.startReading、10分、終えて保存 | 画面 | FinishInput::test_AC50_afterSaveShowsBookDetail | session.finish.save と reading.finish が0個、book.title「坊っちゃん」、「記録 2件」、idle |
 | AC-51 | R4、R2 | 境界値（59秒） | 記録1件、home.startReading、59秒で終える | 画面 | Detail::test_AC51_tooShortShowsNoticeOnBookDetail | session.finish.save が0個、book.title「坊っちゃん」、session.finish.tooShort が1個、「記録 1件」、alerts が0個、idle |
-| AC-52 | R5 | 状態遷移（3状態） | 「坊っちゃん」が reading、paused、finishing（キャンセル後） | 画面 | Detail::test_AC52_bookDetailOffersResumeWhileReading、…WhilePaused、…AfterCancellingFinish | book.resumeReading が1個で isEnabled true、book.startReading と book.start.busy が0個。label は reading と finishing 後「読書に戻る」、paused「一時停止中の読書に戻る」 |
-| AC-53 | R11 | 状態遷移（追加をやめる） | 本1冊、「こころ」を入れて book.add.cancel → book.add.discard.confirm（なければ文字「追加せずに閉じる」） | 画面 | AddBook::test_AC53_discardingAddKeepsBookCount | book.add.title が0個、home.bookCount「1冊」、label「こころ」の本の行が0個 |
+| AC-52 | R5 | 状態遷移（3状態） | 「坊っちゃん」が reading、paused、finishing（キャンセル後） | 画面 | Detail::test_AC52_bookDetailOffersResumeWhileReading、Detail::test_AC52_bookDetailOffersResumeWhilePaused、Detail::test_AC52_bookDetailOffersResumeAfterCancellingFinish | book.resumeReading が1個で isEnabled true、book.startReading と book.start.busy が0個。label は reading と finishing 後「読書に戻る」、paused「一時停止中の読書に戻る」 |
+| AC-53 | R11 | 状態遷移（追加をやめる） | 本1冊、「こころ」を入れて book.add.cancel → book.add.discard.confirm（なければ文字「追加せずに閉じる」） | 画面 | AddBook::test_AC53_discardingAddKeepsBookCount | book.add.title が0個、home.bookCount「1冊」、label「こころ」の本の行が0個。起動し直しても同じ |
 | AC-54 | R7、R1 | 状態（読み込みの失敗） | seed.example.json と同じ5件、UITEST_FAIL=load:* | 画面 | Load::test_AC54_loadFailureShowsRetryInsteadOfEmpty | error.loadFailed.title「本と記録を読み込めませんでした」、error.loadFailed.message、error.loadFailed.retry「もう一度読み込む」が1個ずつ。library.empty.title、home.bookCount、home.weekTotal、home.startReading が0個 |
 | AC-55 | R7、R1 | 状態遷移（失敗→再試行1回） | UITEST_FAIL=load:1 | 画面 | Load::test_AC55_loadRetryRestoresLibrary | error.loadFailed.title が0個、home.bookCount「2冊」、「坊っちゃん」の book.totalTime「60分」、「こころ」の「40分」 |
 | AC-56 | R5、R1 | 状態（保存の失敗）×入口2つ | UITEST_FAIL=session_start:1、記録1件。home.startReading と book.startReading | 画面 | Detail::test_AC56_startFailureFromHomeKeepsIdle、Detail::test_AC56_startFailureFromBookDetailKeepsIdle | error.saveFailed と error.retry が1個ずつ、session.state.idle が1個、reading.elapsed が0個、「記録 1件」 |
@@ -104,8 +105,8 @@
 | AC-59 | R2 | 状態遷移（失敗→再試行→60秒） | AC-58 の後に error.retry、60秒 | 画面 | ReadingScreen::test_AC59_pauseRetryStopsAtRetryTime | paused、label「11分0秒」か「11分1秒」、error.saveFailed が0個、「記録 1件」 |
 | AC-60 | R2 | 状態（再開の失敗） | UITEST_FAIL=session_resume:1、5:00 の paused、再開して60秒 | 画面 | ReadingScreen::test_AC60_resumeFailureKeepsPaused | error.saveFailed と error.retry が1個ずつ、paused、label「5分0秒」、「記録 1件」 |
 | AC-61 | R2 | 状態遷移（失敗→60秒→再試行→60秒） | AC-60 の後に error.retry、60秒 | 画面 | ReadingScreen::test_AC61_resumeRetryStartsAtRetryTime | reading、label「6分0秒」か「6分1秒」、error.saveFailed が0個、「記録 1件」 |
-| AC-62 | R2、R1 | 状態（「終える」の失敗）×元の状態2つ | UITEST_FAIL=session_begin_finish:1。(a) reading 10:00、(b) 5:00 の paused。終えて60秒 | 画面 | ReadingScreen::test_AC62_beginFinishFailureWhileReading、…WhilePaused | error.saveFailed と error.retry が1個ずつ、session.finish.save と session.state.finishing が0個。(a) reading、label「11分0秒」か「11分1秒」。(b) paused、label「5分0秒」。「記録 1件」 |
-| AC-63 | R2 | 状態遷移（失敗→再試行→60秒） | AC-62 の2通り、error.retry、60秒 | 画面 | ReadingScreen::test_AC63_beginFinishRetryWhileReading、…WhilePaused | finishing、session.finish.save が1個、session.finish.minutes の value (a)「11」(b)「5」、error.saveFailed が0個、「記録 1件」 |
+| AC-62 | R2、R1 | 状態（「終える」の失敗）×元の状態2つ | UITEST_FAIL=session_begin_finish:1。(a) reading 10:00、(b) 5:00 の paused。終えて60秒 | 画面 | ReadingScreen::test_AC62_beginFinishFailureWhileReading、ReadingScreen::test_AC62_beginFinishFailureWhilePaused | error.saveFailed と error.retry が1個ずつ、session.finish.save と session.state.finishing が0個。(a) reading、label「11分0秒」か「11分1秒」。(b) paused、label「5分0秒」。「記録 1件」 |
+| AC-63 | R2 | 状態遷移（失敗→再試行→60秒） | AC-62 の2通り、error.retry、60秒 | 画面 | ReadingScreen::test_AC63_beginFinishRetryWhileReading、ReadingScreen::test_AC63_beginFinishRetryWhilePaused | finishing、session.finish.save が1個、session.finish.minutes の value (a)「11」(b)「5」、error.saveFailed が0個、「記録 1件」 |
 | AC-64 | R1、R2 | 状態（やめるの失敗） | UITEST_FAIL=session_cancel_finish:1、10:00 で終えてページ72、session.finish.cancel、60秒 | 画面 | FinishInput::test_AC64_cancelFinishFailureKeepsInput | error.saveFailed と error.retry が1個ずつ、session.finish.save が1個、finishing（reading は0個）、page の value「72」、minutes の value「10」、「記録 1件」 |
 | AC-65 | R2 | 状態遷移（失敗→再試行） | AC-64 の後に error.retry | 画面 | FinishInput::test_AC65_cancelFinishRetryReturnsToReading | session.finish.save が0個、reading、label「10分0秒」か「10分1秒」、error.saveFailed が0個、「記録 1件」 |
 | AC-66 | R2、R1 | 境界（60秒未満の失敗） | UITEST_FAIL=session_discard:1、reading 0:30、終えて10秒 | 画面 | ReadingScreen::test_AC66_discardFailureKeepsReading | error.saveFailed と error.retry が1個ずつ、reading、label「0分40秒」か「0分41秒」、session.finish.tooShort と session.finish.save が0個、「記録 1件」 |
@@ -116,7 +117,7 @@
 | 状態 | 選んだもの | 作り方 | どのテストで、または理由 |
 |---|---|---|---|
 | 初めて起動 | 自動 | UITEST_RESET=1（T1）。AppSession.launch(.fresh) | AC-1、AC-2、AC-3、AC-4、AC-20、AC-21。後半は AC-31 |
-| データがある | 自動 | UITEST_SEED（T2、T17）。seed は Support/Fixture.swift で組み、同じ形を python で写して ajv で seed.schema.json に合うことを確かめた（21件 valid） | AC-5〜AC-19、AC-22〜AC-30。後半は AC-32〜AC-38、AC-40〜AC-67。500冊と10,000件は 9 |
+| データがある | 自動 | UITEST_SEED（T2、T17）。seed は Support/Fixture.swift で組み、同じ形を python で写して ajv で seed.schema.json に合うことを確かめた（21件 valid）。後半のテストの seed も同じ方法で23件 valid（8 と red.log の 5） | AC-5〜AC-19、AC-22〜AC-30。後半は AC-32〜AC-38、AC-40〜AC-67。500冊と10,000件は 9 |
 | 前の版からの更新（版を飛ばす更新も） | 範囲外 | － | 001 が最初の版（PRD 12「前の版からの更新：なし」）。前のタグがない。002 で AC にする |
 | オフライン、サーバーエラー（500、タイムアウト） | 自動 | 計測の送り先を http://localhost:9、500 を返す受け口、応答しない受け口に向ける（T6、T7、T19）。001 の通信は計測だけ。実機の機内モードは G4 の人 | AC-20 の3本。AC-23、AC-24 は正常な受け口 |
 | 権限を断った（その場で、あとから設定で） | 自動 | 起動の前に resetAuthorizationStatus(for:)（camera、photos、location）で未回答に戻し、SpringBoard の alerts を数える（T12） | AC-21。001 は権限を1つも求めない（PRD 10）ので「その場で断る」「あとから設定で断る」の動きはなく、求めないことを確かめる |
@@ -180,14 +181,15 @@
 | AC-17、AC-27 | 別の本の詳細と、読書中のホーム（3状態） | AC17_<状態>_こころの詳細.png、AC27_<状態>_ホーム.png |
 | AC-19 | S5 の保存の失敗 | AC19_保存の失敗.png |
 | AC-20 | 3通りの送り先の後の S3 | AC20_届かない先.png、AC20_500.png、AC20_応答しない先.png |
-| AC-54〜AC-67（後半） | 読み込みの失敗と、各保存の失敗の区画 | AC54_読み込みの失敗.png ほか（後半で決める） |
+| AC-31〜AC-67（後半） | 範囲の外、読み込みの失敗、各保存の失敗の区画と再試行の後、強制終了から戻った画面 | AC31_総ページ数0.png、AC31_総ページ数10000.png、AC32_ページ10000.png、AC33_起動し直した後.png、AC34_起動し直した後.png、AC35_再試行の後.png、AC36_今週0分.png、AC37_記録0件の詳細.png、AC38_消す確認.png、AC40_経過12分30秒.png、AC41_時計を戻した後.png、AC42_本の追加の失敗.png、AC43_削除の失敗.png、AC44_週をまたぐ記録.png、AC45_記録の行.png、AC46_やめた後.png、AC47_次の終える入力.png、AC48_スワイプで閉じた後.png、AC49_追加した本の詳細.png、AC50_保存の後.png、AC51_1分未満の知らせ.png、AC52_<reading|paused|finishing>_本の詳細.png、AC53_追加をやめる確認.png、AC54_読み込みの失敗.png、AC55_再試行の後.png、AC56_<ホーム|本の詳細>_読み始めの失敗.png、AC57_<ホーム|本の詳細>_読み始めの再試行の後.png、AC58_一時停止の失敗.png、AC59_一時停止の再試行の後.png、AC60_再開の失敗.png、AC61_再開の再試行の後.png、AC62_<reading|paused>_終えるの失敗.png、AC63_<reading|paused>_終えるの再試行の後.png、AC64_やめる保存の失敗.png、AC65_やめる再試行の後.png、AC66_60秒未満で終える失敗.png、AC67_60秒未満の再試行の後.png（テストの XCTAttachment の名前） |
 | 全画面 | design/ の S1〜S7 の全状態を、通常はライト、ダーク、AX5、英語の4通り | <画面>_<状態>_<light|dark|ax5|en>.png（G3） |
 
 ## 8. 赤の証拠（実装の前に落ちたこと）
-- 後半で書く（AC-31〜AC-67 のテストを書いた後に、全部のテストについてまとめて書く）。
-- この環境（Linux。Mac、Xcode、Swift がない）では xcodebuild を動かせないので、赤の実行は CI（macOS）で行う。ログ：docs/verification/001-reading-session/evidence/red.log（後半）
-- 実行したコマンドと終了コード：後半
-- 落ちた理由（1行。「機能がまだない」ことを示す）：後半
+- XCUITest の82本（AC-1〜AC-38、AC-40〜AC-67）：**この環境では実行できない**。環境は Linux 6.18 x86_64 で、xcodebuild、xcrun、swift、swiftc がない（red.log の 1）。ios/ には ios/AcceptanceTests/ しかなく、ios/Yomutoki/ と ios/project.yml もまだない。赤の実行は G2 の CI（macOS）で、CLAUDE.md の commands.ios_test（Acceptance.xctestplan と ac18-reboot.sh）で行う。PASS にも FAIL にもしていない。
+- 落ちるべき理由（見込み）：実装がまだないので、(1) ビルドの段階（xcodegen generate でターゲット Yomutoki がない）か、(2) 雛形だけの段階で design 6 の識別子が見つからない（Wait.exists「が出ない」、Wait.label「label が … にならない」）で落ちる。CI の出力（終了コード、Executed N tests, with M failures、落ちたテストの最初のメッセージ）を red.log の 6 に足し、コンパイルの誤りで落ちていたら受け入れテストを直してから貼り直す。
+- AC-39（Linux で動く。この環境で実行した）：`bash ios/AcceptanceTests/ac39-xcstrings.sh` → 終了コード1、`test_AC39_stringCatalogFullyTranslated: FAIL（ios/Yomutoki/Resources/*.xcstrings が1つもない）`。落ちた理由：String Catalog がまだない＝機能がまだない。書き間違いでないことは、リポジトリの外の写しに1キーの .xcstrings を置き、translated なら exit=0（untranslated_keys=0）、en が needs_review なら exit=1（untranslated_keys=1）になることで確かめた。
+- 書き間違いで落ちないための、この環境での確かめ（red.log の 4、5）：つなぎ口の UITEST_ の名前12個がすべて contracts/test-hooks.md にある（comm の差0行）。後半のテストが使う seed 23個を Fixture.swift どおりに python で写し、`npx -y ajv-cli@5.0.0 validate -s contracts/seed.schema.json` で23個とも valid（終了コード0）、data-model.md の最後の節の制約（lastPage と endPage が totalPages 以下、bookId、state と pausedAt と finishedAt の組、題名100字）も0件。Seeds.libraryOfFive は contracts/seed.example.json と books、sessions が一致。Swift のコンパイルは CI の最初の実行で確かめる（括弧の対応だけはこの環境で全16ファイル確かめた）。
+- ログ：docs/verification/001-reading-session/evidence/red.log
 
 ## 9. 範囲の外
 - 本500冊、記録10,000件でホームと本の詳細が1.0秒以内（PRD 12）：AC がない。UITEST_SEED_BULK（T21）と XCTClockMetric で測れるが、合否の線を持つ AC ではないので、この計画のテストに入れない。測るかは指揮役が G3 で決める。
@@ -199,10 +201,10 @@
 
 ## 確かめ（提出前に verifier が印を付ける。reviewer はこれを信じずに確かめる）
 - [x] 読んだファイルが PRD、design/、contracts/ だけで、冒頭に全部並んでいる。（ほかに指示書が挙げた ADR、判定の記録、テンプレート、XcodeGen と XcodeProj の公開のソースを読んだ。冒頭に並べた）
-- [ ] PRD のすべての AC 番号が、2章とテストの名前にある。AC のないテストがない。（2章は67行すべてある。テストの名前は前半の AC-1〜AC-30 だけ。後半で AC-31〜AC-67 を書いてから印を付ける）
+- [x] PRD のすべての AC 番号が、2章とテストの名前にある。AC のないテストがない。（PRD の AC 67個とテストの名前の AC 67個が comm で差0。2章のテストの名前83個とコードの名前83個（XCUITest 82本と ac39-xcstrings.sh の関数1つ）が comm で差0）
 - [x] 2章の全行に、技法、試す値、具体的な値の結果がある。「正しく」「適切に」だけの結果がない。
 - [x] 影響「大」のリスクのすべてに、自動テスト、3章の行、6章のチャーターがある。（R1〜R7。R6 は前半の AC-23、R7 は前半の AC-8 と後半の AC-54、AC-55）
 - [x] 3章の9行すべてに選んだものがあり、範囲外には理由がある。
 - [x] 4章のつなぎ口がすべて contracts/ にあるか、「未解決」に依頼として書いた。（すべて contracts/ にある）
-- [x] 受け入れテストのフォルダで、sleep、skip、xfail、XCTExpectFailure、retry、@testable import が0件（grep のコマンドと件数を報告に書いた）。（xctestplan の skippedTests の2行を除く）
-- [ ] 8章の赤の証拠があり、落ちた理由が書き間違いではなく「機能がまだない」こと。（後半。この環境では実行できない）
+- [x] 受け入れテストのフォルダで、sleep、skip、xfail、XCTExpectFailure、retry、@testable import が0件（grep のコマンドと件数を報告に書いた）。（xctestplan の skippedTests の2行を除く。retry に当たるのは、アプリの再試行の識別子 error.retry と error.loadFailed.retry、その文字の L10n.errorRetry*、errorLoadFailedRetry、2章で決めたテストの名前（AC-35、AC-57、AC-59、AC-61、AC-63、AC-65、AC-67 の「Retry」。AC の中身がアプリの再試行）と、target.yml の「再試行しない」の注記1行だけ。テストを動かす側の再試行（-retry-tests-on-failure、testRepetitionMode）は0件）
+- [x] 8章の赤の証拠があり、落ちた理由が書き間違いではなく「機能がまだない」こと。（XCUITest の82本は「この環境では実行できない。CI（macOS）で動かす」と red.log に書いた。G2 の CI の出力を red.log の 6 に足すまで、赤の実行は済んでいない。AC-39 はこの環境で実行し、String Catalog がないことで終了コード1）
