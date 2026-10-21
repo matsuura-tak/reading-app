@@ -11,3 +11,4 @@
 ## 記録
 - 組織を導入した。最初の機能は Takuma が /feature で始める。
 - 2026-10-21 全体 開始 Takuma の包括承認を記録。この依頼はブランチ claude/cool-ptolemy-17gnb3 で進める（環境は Linux、Mac なし） docs/approvals/000-takuma-standing-approval.md
+- 2026-10-21 001-reading-session G0 r1 verifier PASS（要修正15件）、tech-lead FAIL（競合の URL をこの環境のネットワーク方針で開けず。裁定 docs/reviews/001-reading-session-G0-ruling.md）。pdm が直して r2 へ。Takuma に接続の許可を依頼中 docs/reviews/001-reading-session-G0-tech-lead-r1.md
