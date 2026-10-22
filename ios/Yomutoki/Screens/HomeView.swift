@@ -31,7 +31,9 @@ struct HomeView: View {
                     }
                 }
             }
-            .onDisappear { startFailed = false }
+            .onChange(of: router.path) { _, path in
+                if !path.isEmpty { startFailed = false }
+            }
     }
 
     @ViewBuilder private var content: some View {
