@@ -5,7 +5,6 @@ import SwiftUI
 struct AddBookView: View {
     @Environment(LibraryStore.self) private var store
     @Environment(AppRouter.self) private var router
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.locale) private var locale
     @State private var title: String
     @State private var totalPagesText: String
@@ -137,7 +136,7 @@ struct AddBookView: View {
                 Text("book.add.discard.title"), isPresented: $isDiscardConfirmPresented, titleVisibility: .visible
             ) {
                 Button(role: .destructive) {
-                    dismiss()
+                    router.isAddBookPresented = false
                 } label: {
                     Text("book.add.discard.confirm")
                 }
@@ -185,7 +184,7 @@ struct AddBookView: View {
         if hasInput {
             isDiscardConfirmPresented = true
         } else {
-            dismiss()
+            router.isAddBookPresented = false
         }
     }
 }
