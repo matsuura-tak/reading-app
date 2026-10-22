@@ -14,5 +14,6 @@ PR の本文と CI の失敗ログに記された、未設定の実行コマン�
 - `.claude/org/app.json`：`commands.ios_build` を `make ios-build`、`commands.ios_test` を `make ios-test` にする。
 - `.github/workflows/ios.yml`：iOS ジョブの時間上限を60分から150分にする。既存のビルド・テストとガードは維持する。
 - `.claude/org/lock.json`：上記の許可されたワークフロー変更のハッシュだけを更新する。キットの版や他の管理対象は変えない。このローカル差分は将来のキット更新時に整合を確認する。
+- 初回 CI のログで iPhone 16 が存在しないことを確認したため、Makefile と CLAUDE.md のテスト先を、実在する iPhone 17 に変更する。実装とテストの内容は変更しない。
 
 `org-guard` は所有者が設定変更を確認するためのチェックなので、今回の差分で失敗することを隠さず、そのまま残す。アプリの動作検証、G2・G3 の判定、main へのマージや公開を完了したことにはしない。
