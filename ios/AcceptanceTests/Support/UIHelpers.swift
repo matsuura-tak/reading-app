@@ -1,7 +1,8 @@
 import UIKit
 import XCTest
 
-/// 待ち方。sleep は使わず、要素や値の変化を XCTNSPredicateExpectation（A27）と waitForExistence で待つ。
+/// 待ち方。存在・消失・単一のラベルは XCUIElement の標準 API で待つ。
+/// 複合条件は XCTNSPredicateExpectation（A27）。sleep は使わない。
 /// 待ち時間はこの型の定数だけ。
 @MainActor
 enum Wait {
@@ -26,15 +27,19 @@ enum Wait {
     }
 
     static func gone(_ element: XCUIElement, _ what: String, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertTrue(until(NSPredicate(format: "exists == false"), element), "\(what) が消えない", file: file, line: line)
+        XCTAssertTrue(element.waitForNonExistence(timeout: timeout), "\(what) が消えない", file: file, line: line)
     }
 
     static func label(
         _ element: XCUIElement, equals expected: String, _ what: String,
         file: StaticString = #filePath, line: UInt = #line
     ) {
-        if !until(NSPredicate(format: "label == %@", expected), element) {
-            XCTFail("\(what)：label が「\(expected)」にならない（今は「\(currentLabel(element))」）", file: file, line: line)
+        if !element.wait(for: \.label, toEqual: expected, timeout: timeout) {
+            // 待機後の追加の取得で一致しても、時間内に確かめられなかった失敗は維持する。
+            let afterWait = currentLabel(element)
+            XCTFail(
+                "\(what)：label が「\(expected)」にならない（待機後の取得は「\(afterWait)」、一致：\(afterWait == expected)）",
+                file: file, line: line)
         }
     }
 

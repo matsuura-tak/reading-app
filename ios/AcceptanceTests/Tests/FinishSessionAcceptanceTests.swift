@@ -20,7 +20,9 @@ final class FinishSessionAcceptanceTests: AcceptanceTestCase {
         s.expectState(.reading)
         s.finishAndSave(title: Fixture.botchan, page: "72")
 
-        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "記録は1件増えて2件")
+        Wait.label(
+            s.app.staticTexts.matching(identifier: "book.sessionCount").firstMatch,
+            equals: L10n.sessionCount(2), "記録は1件増えて2件")
         guard let row = s.singleNewSessionRow(excluding: seededSessions) else { return }
         Wait.label(row.descendants(matching: .any)["session.row.page"], equals: L10n.pagesRead(32), "その記録の行の読んだページ")
         Wait.value(s.el("book.lastPage"), equals: "72", "最後のページ")
@@ -29,7 +31,9 @@ final class FinishSessionAcceptanceTests: AcceptanceTestCase {
 
         s.relaunch(now: Fixture.now)
         s.openBook(id: Fixture.botchanId)
-        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "起動し直した後の記録の数")
+        Wait.label(
+            s.app.staticTexts.matching(identifier: "book.sessionCount").firstMatch,
+            equals: L10n.sessionCount(2), "起動し直した後の記録の数")
         Wait.value(s.el("book.lastPage"), equals: "72", "起動し直した後の最後のページ")
         Wait.value(s.el("book.progress"), equals: L10n.percent(24), "起動し直した後の進み具合")
     }

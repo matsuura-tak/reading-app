@@ -188,7 +188,12 @@ final class FinishInputAcceptanceTests: AcceptanceTestCase {
 
         let bar = s.app.navigationBars.containing(.any, identifier: "session.finish.cancel").firstMatch
         Wait.exists(bar, "S5 のナビゲーションバー（session.finish.cancel を含む）")
-        bar.swipeDown()
+        XCTAssertTrue(bar.wait(for: \.isHittable, toEqual: true, timeout: Wait.timeout), "スワイプの起点を操作できる")
+        // バー中央を起点、画面下部を終点として1回だけ下向きのジェスチャを送る。
+        // キャンセルを押す代替や、閉じるまで繰り返す操作は行わない（PRD AC-48、design 6(d)）。
+        let start = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let end = s.app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
+        start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0)
 
         Wait.gone(s.el("session.finish.save"), "終える入力")
         XCTAssertEqual(s.count("session.finish.save"), 0, "session.finish.save は0個")
