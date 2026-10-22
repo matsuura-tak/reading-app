@@ -25,8 +25,9 @@ struct YomutokiApp: App {
     private var root: some View {
         #if DEBUG
         if let hooks = appEnvironment.hooks {
-            // -UITest のときだけ、design 6 の (a) の代わりの案（session.state.* の 1pt の要素）も置く。
-            RootView(showsStateMarker: true).modifier(UITestOverlay(hooks: hooks))
+            // -UITest のときだけ、T16 の URL の受け口と uitest.clock.applied、uitest.telemetry.log を根に付ける。
+            // 状態（session.state.*）は RootView と FinishSessionView の根の識別子だけで出す（G2 の CI の裁定 1）。
+            RootView().modifier(UITestOverlay(hooks: hooks))
         } else {
             RootView()
         }

@@ -318,6 +318,128 @@ struct LibraryStoreTests {
         #expect(events.filter { $0.name == "Reading Session Finished" }.count == 1)
     }
 
+    @Test("記録の保存が1回だけ失敗 → もう一度保存で通る：記録はちょうど1件増え、active は nil、最後のページは入れたページ（AC-35）")
+    func finishFailureThenRetrySavesExactlyOne() async throws {
+        let h = try StoreHarness(fail: [.sessionFinish: .times(1)])
+        h.store.load()
+        let bookID = try h.store.addBook(title: "坊っちゃん", totalPages: 300)
+        try h.store.startReading(bookID: bookID, source: .home)
+        h.advance(600)
+        #expect(try h.store.finish() == .finishing)
+
+        // 1回目：失敗。finishing のまま、記録は増えず、保存先の ActiveReading も残る。
+        #expect(throws: StoreError.saveFailed(.sessionFinish)) { _ = try h.store.finishSession(endPage: 72, minutes: 10) }
+        #expect(h.store.active?.state == .finishing)
+        #expect(h.store.sessions(for: bookID).isEmpty)
+        #expect(try h.count(ReadingSession.self) == 0)
+        #expect(try h.count(ActiveReading.self) == 1)
+
+        // 2回目（error.retry と同じ呼び出し）：通る。rollback の後の2回目の save が失敗しないこと。
+        h.advance(30)
+        let sessionID = try h.store.finishSession(endPage: 72, minutes: 10)
+        #expect(h.store.active == nil)
+        #expect(h.store.sessions(for: bookID).map(\.id) == [sessionID])
+        #expect(h.store.sessions(for: bookID).first?.durationSeconds == 600)
+        #expect(h.store.book(id: bookID)?.lastPage == 72)
+        #expect(h.store.book(id: bookID)?.sessionCount == 1)
+        #expect(try h.count(ReadingSession.self) == 1)
+        #expect(try h.count(ActiveReading.self) == 0)
+        let row = try #require(try h.container.mainContext.fetch(FetchDescriptor<Book>()).first)
+        #expect(row.lastPage == 72)
+        #expect(row.sessions.count == 1)
+        let events = await h.events()
+        #expect(events.filter { $0 == .saveFailed(operation: .sessionFinish) }.count == 1)
+        #expect(events.filter { $0.name == "Reading Session Finished" }.count == 1)
+    }
+
+    @Test(
+        "AC-35 の形：ファイルの保存先（記録2件、最後のページ40、経過10:00 の finishing）を読み、記録の保存が1回失敗 → もう一度保存で3件。開き直しても3件",
+        arguments: [nil, 72] as [Int?])
+    func finishFailureThenRetryOnDiskSeed(endPage: Int?) async throws {
+        let fileManager = FileManager.default
+        let directory = fileManager.temporaryDirectory.appending(
+            path: "YomutokiTests-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try fileManager.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? fileManager.removeItem(at: directory) }
+        let storeURL = directory.appending(path: LibraryContainer.storeFileName, directoryHint: .notDirectory)
+        let schema = Schema(versionedSchema: SchemaV1.self)
+        func openStore() throws -> ModelContainer {
+            let configuration = ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)
+            return try ModelContainer(
+                for: schema, migrationPlan: LibraryMigrationPlan.self, configurations: configuration)
+        }
+
+        // seed と同じく、別の ModelContainer で書いてから閉じる（Debug/UITestHooks.swift の SeedWriter と同じ入れ方）。
+        let bookID = UUID()
+        do {
+            let writer = try openStore()
+            let context = writer.mainContext
+            context.autosaveEnabled = false
+            let book = Book(
+                id: bookID, title: "坊っちゃん", totalPages: 300, lastPage: 40,
+                addedAt: StoreHarness.base.addingTimeInterval(-7 * 86_400))
+            context.insert(book)
+            for (daysAgo, page) in [(2.0, 20), (1.0, 40)] {
+                let startedAt = StoreHarness.base.addingTimeInterval(-daysAgo * 86_400)
+                let session = ReadingSession(
+                    startedAt: startedAt, durationSeconds: 1_200, endPage: page, pagesRead: 20,
+                    savedAt: startedAt.addingTimeInterval(1_200))
+                context.insert(session)
+                session.book = book
+            }
+            let active = ActiveReading(
+                state: ReadingState.finishing.rawValue, startedAt: StoreHarness.base.addingTimeInterval(-600),
+                finishedAt: StoreHarness.base)
+            context.insert(active)
+            active.book = book
+            try context.save()
+        }
+
+        let h = try StoreHarness(fail: [.sessionFinish: .times(1)], container: openStore())
+        h.store.load()
+        #expect(h.store.loadState == .loaded)
+        #expect(h.store.active?.state == .finishing)
+        #expect(h.store.active?.initialMinutes == 10)
+
+        #expect(throws: StoreError.saveFailed(.sessionFinish)) {
+            _ = try h.store.finishSession(endPage: endPage, minutes: 10)
+        }
+        #expect(h.store.active?.state == .finishing)
+        #expect(h.store.sessions(for: bookID).count == 2)
+        #expect(h.store.book(id: bookID)?.lastPage == 40)
+        #expect(try h.count(ReadingSession.self) == 2)
+        #expect(try h.count(ActiveReading.self) == 1)
+
+        let sessionID = try h.store.finishSession(endPage: endPage, minutes: 10)
+        #expect(h.store.active == nil)
+        #expect(h.store.sessions(for: bookID).count == 3)
+        let saved = h.store.sessions(for: bookID).filter { $0.id == sessionID }
+        #expect(saved.count == 1)
+        #expect(saved.first?.durationSeconds == 600)
+        #expect(saved.first?.endPage == endPage)
+        #expect(saved.first?.pagesRead == endPage.map { $0 - 40 })
+        #expect(h.store.book(id: bookID)?.sessionCount == 3)
+        #expect(h.store.book(id: bookID)?.lastPage == (endPage ?? 40))
+        #expect(try h.count(ReadingSession.self) == 3)
+        #expect(try h.count(ActiveReading.self) == 0)
+        let events = await h.events()
+        #expect(events.filter { $0 == .saveFailed(operation: .sessionFinish) }.count == 1)
+        #expect(events.filter { $0.name == "Reading Session Finished" }.count == 1)
+
+        // 起動し直したときと同じく、別の ModelContainer で開き直しても3件、ActiveReading は0件。
+        let reader = try openStore()
+        #expect(try reader.mainContext.fetchCount(FetchDescriptor<ReadingSession>()) == 3)
+        #expect(try reader.mainContext.fetchCount(FetchDescriptor<ActiveReading>()) == 0)
+        let book = try #require(try reader.mainContext.fetch(FetchDescriptor<Book>()).first)
+        #expect(book.lastPage == (endPage ?? 40))
+        #expect(book.sessions.count == 3)
+        let relaunched = try StoreHarness(container: reader)
+        relaunched.store.load()
+        #expect(relaunched.store.loadState == .loaded)
+        #expect(relaunched.store.active == nil)
+        #expect(relaunched.store.sessions(for: bookID).count == 3)
+    }
+
     @Test("本の追加の保存に失敗：本は増えない（AC-42）。記録を消す保存に失敗：記録は残る（AC-43）")
     func addAndDeleteFailures() throws {
         let h = try StoreHarness(fail: [.bookAdd: .times(1), .sessionDelete: .times(1)])

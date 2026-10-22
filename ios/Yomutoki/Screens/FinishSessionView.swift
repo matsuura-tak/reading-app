@@ -4,7 +4,6 @@ import SwiftUI
 /// 下書きと Bool は S4 のモデル（ReadingModel）が持つ（D-60）。下へのスワイプは止めない（interactiveDismissDisabled なし。D-3）。
 struct FinishSessionView: View {
     @Bindable var model: ReadingModel
-    private let showsStateMarker: Bool
     @Environment(\.locale) private var locale
     @Environment(\.dynamicTypeSize) private var typeSize
     @FocusState private var focusedField: Field?
@@ -14,9 +13,8 @@ struct FinishSessionView: View {
         case minutes
     }
 
-    init(model: ReadingModel, showsStateMarker: Bool = false) {
+    init(model: ReadingModel) {
         _model = Bindable(model)
-        self.showsStateMarker = showsStateMarker
     }
 
     var body: some View {
@@ -97,7 +95,6 @@ struct FinishSessionView: View {
                 }
             }
         }
-        .overlay(alignment: .bottomLeading) { stateMarker }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("session.state.finishing")
         .onAppear { focusedField = .page }
@@ -187,16 +184,6 @@ struct FinishSessionView: View {
                 }
             }
         }
-    }
-
-    /// design 6 の (a) の代わりの案（-UITest のときだけ。S5 の根にも session.state.finishing）。
-    @ViewBuilder private var stateMarker: some View {
-        #if DEBUG
-        if showsStateMarker {
-            UITestMarker(identifier: "session.state.finishing", label: "", value: "")
-                .allowsHitTesting(false)
-        }
-        #endif
     }
 }
 

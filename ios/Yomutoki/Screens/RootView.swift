@@ -75,11 +75,8 @@ final class AppRouter {
 struct RootView: View {
     @Environment(LibraryStore.self) private var store
     @State private var router: AppRouter
-    /// -UITest のときだけ true（YomutokiApp の #if DEBUG の中で渡す）。design 6 の (a) の代わりの案の 1pt の要素を置く。
-    private let showsStateMarker: Bool
 
-    init(showsStateMarker: Bool = false, router: AppRouter = AppRouter()) {
-        self.showsStateMarker = showsStateMarker
+    init(router: AppRouter = AppRouter()) {
         _router = State(initialValue: router)
     }
 
@@ -98,7 +95,7 @@ struct RootView: View {
                     case .book(let bookID):
                         BookDetailView(bookID: bookID)
                     case .reading:
-                        ReadingView(store: store, router: router, showsStateMarker: showsStateMarker)
+                        ReadingView(store: store, router: router)
                     }
                 }
         }
@@ -112,20 +109,9 @@ struct RootView: View {
             case .failed: router.path = []
             }
         }
-        .overlay(alignment: .bottomLeading) { stateMarker }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("session.state.\(stateName)")
         .environment(router)
-    }
-
-    /// design 6 の (a) の代わりの案：-UITest のときだけ、画面の隅に 1pt の要素を置き、同じ session.state.* を付ける。
-    @ViewBuilder private var stateMarker: some View {
-        #if DEBUG
-        if showsStateMarker {
-            UITestMarker(identifier: "session.state.\(stateName)", label: "", value: "")
-                .allowsHitTesting(false)
-        }
-        #endif
     }
 }
 

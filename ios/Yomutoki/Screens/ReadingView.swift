@@ -192,11 +192,9 @@ struct ReadingView: View {
     @Environment(\.locale) private var locale
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var model: ReadingModel
-    private let showsStateMarker: Bool
 
-    init(store: LibraryStore, router: AppRouter, failure: ReadingFailure? = nil, showsStateMarker: Bool = false) {
+    init(store: LibraryStore, router: AppRouter, failure: ReadingFailure? = nil) {
         _model = State(initialValue: ReadingModel(store: store, router: router, failure: failure))
-        self.showsStateMarker = showsStateMarker
     }
 
     var body: some View {
@@ -213,7 +211,7 @@ struct ReadingView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { model.appeared() }
         .sheet(isPresented: $model.isFinishSheetPresented, onDismiss: { model.finishSheetDismissed() }) {
-            FinishSessionView(model: model, showsStateMarker: showsStateMarker)
+            FinishSessionView(model: model)
         }
     }
 
