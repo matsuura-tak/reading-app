@@ -319,6 +319,7 @@ final class LibraryStore {
         }
         let minutesEdited = minutes != initialMinutes
         let duration = minutesEdited ? minutes * 60 : elapsed
+        let previousLastPage = book.lastPage
         let pagesRead = ReadingMath.pagesRead(endPage: endPage, previousLastPage: book.lastPage)
         let savedAt = clock.now()
         let session = ReadingSession(
@@ -330,7 +331,13 @@ final class LibraryStore {
             book.lastPage = endPage
         }
         context.delete(model)
-        try commit(.sessionFinish, context: context)
+        try commit(.sessionFinish, context: context) {
+            // rollback が新規の記録を無効化する前に逆参照を外す。
+            // iOS 26 では book.sessions に無効な記録が残ると再試行の save が
+            // 必須属性の欠落（NSCocoaErrorDomain 1570）で失敗する（AC-35）。
+            session.book = nil
+            book.lastPage = previousLastPage
+        }
 
         sessionModels[session.id] = session
         activeModel = nil
@@ -380,11 +387,14 @@ final class LibraryStore {
     }
 
     /// 1回の save。失敗（つなぎ口の失敗を含む）は rollback して、計測の Save Failed を出し、StoreError.saveFailed を投げる。
-    private func commit(_ operation: StoreOperation, context: ModelContext) throws {
+    private func commit(
+        _ operation: StoreOperation, context: ModelContext, beforeRollback: () -> Void = {}
+    ) throws {
         do {
             try beforeSave(operation)
             try context.save()
         } catch {
+            beforeRollback()
             context.rollback()
             logger.error("save failed: \(operation.rawValue, privacy: .public)")
             if let saveOperation = operation.saveOperation {
