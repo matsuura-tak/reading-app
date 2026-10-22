@@ -248,7 +248,7 @@ final class FinishInputAcceptanceTests: AcceptanceTestCase {
     func test_AC64_cancelFinishFailureKeepsInput() throws {
         let s = failCancelFinish()
         s.expectSaveFailed("60秒後")
-        XCTAssertEqual(s.count("session.finish.save"), 1, "session.finish.save は1個")
+        XCTAssertEqual(s.buttonCount("session.finish.save"), 1, "session.finish.save のボタンは1個")
         s.expectState(.finishing)
         XCTAssertEqual(s.count("session.state.reading"), 0, "session.state.reading は0個")
         Wait.value(s.el("session.finish.page"), equals: "72", "今のページは72のまま")

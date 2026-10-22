@@ -78,6 +78,15 @@ extension AppSession {
         app.descendants(matching: .any).matching(identifier: id).count
     }
 
+    /// 操作の数を数える。iOS 26 のツールバーは同じ識別子を Other と中の Button に付けるため、
+    /// 全種類の要素数では1つのボタンが2個になる。実際の Button を数え、識別子が外側だけなら中の Button を数える。
+    /// AC-63・AC-64 は design 3・6 の「保存」ボタンが1つあることを確認する。2つのボタンは2個のまま数える。
+    func buttonCount(_ id: String) -> Int {
+        let direct = app.buttons.matching(identifier: id)
+        if direct.count > 0 { return direct.count }
+        return app.descendants(matching: .any).matching(identifier: id).descendants(matching: .button).count
+    }
+
     /// 識別子が prefix で始まる要素（library.book.、session.row.id.、error. など）。
     func elements(prefixed prefix: String) -> XCUIElementQuery {
         app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix))

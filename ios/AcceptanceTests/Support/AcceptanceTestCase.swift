@@ -14,7 +14,7 @@ class AcceptanceTestCase: XCTestCase {
     var shotCount = 0
 
     override func tearDownWithError() throws {
-        if testRun?.hasSucceeded == false {
+        if let testRun, testRun.totalFailureCount > 0 {
             let testName = name
             let shotNote = lastShotName.map { "あり（\(shotCount)枚。最後は \($0)）" } ?? "なし"
             let limit = Self.diagnosticLineLimit

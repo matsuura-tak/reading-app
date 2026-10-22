@@ -211,7 +211,7 @@ final class ReadingScreenAcceptanceTests: AcceptanceTestCase {
         Wait.exists(s.el("session.finish.save"), "\(name)：終える入力", file: file, line: line)
         s.advance(seconds: 60, file: file, line: line)
         s.expectState(.finishing, file: file, line: line)
-        XCTAssertEqual(s.count("session.finish.save"), 1, "\(name)：session.finish.save は1個", file: file, line: line)
+        XCTAssertEqual(s.buttonCount("session.finish.save"), 1, "\(name)：session.finish.save のボタンは1個", file: file, line: line)
         Wait.value(s.el("session.finish.minutes"), equals: paused ? "5" : "11", "\(name)：読んだ時間の欄", file: file, line: line)
         s.expectNoSaveFailed("\(name)：再試行の後", file: file, line: line)
         s.shot("AC63_\(name)_終えるの再試行の後", self)
