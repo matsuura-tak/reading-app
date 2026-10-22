@@ -29,6 +29,11 @@
   - 対象外：各 Screens の #Preview と ios/Yomutoki/Screens/PreviewSupport.swift の `#if DEBUG` は Xcode のプレビューのためで、テストのつなぎ口ではない（UITEST_ の名前、readingapp-uitest://、uitest. の要素を持たない）。この ADR の対象にしない。
   - 確かめ方は変えない（上の CI の3つ：UITEST_ を持つ Swift のファイルが2ファイルと ios/AcceptanceTests/ の外に0件、Release の strings に UITEST_、readingapp-uitest、-UITest、uitest. が0件、Release の Info.plist に CFBundleURLTypes がない）。
   - 下の「いちばん強い反論」の「#if DEBUG の中は2ファイルに限る」は、この例外の2か所と #Preview を加えて読む。G2 の reviewer は Debug/ の2ファイルの差分に加え、`grep -rnE 'UITestMarker|showsStateMarker' ios/Yomutoki --include='*.swift' | grep -v '/Debug/'` の行が、組み立ての場所 App/YomutokiApp.swift の `#if DEBUG` の中の1行（true を渡す所）と、RootView.swift、ReadingView.swift、FinishSessionView.swift の中だけで、UITestMarker の呼び出しが `#if DEBUG` の中の2件だけかを見る（2026-10-21 の HEAD で、この形の16行を確かめた）。
+- 追記（2026-10-22、CI 807f934 と指揮役の裁定 docs/reviews/001-reading-session-G2-ci-ruling.md の1。上の 2026-10-21 の追記の文は変えず、取り下げを足す）：
+  - CI 807f934 で根の accessibilityIdentifier が XCUITest に見えた（AC-56 の2本で session.state.idle が根と 1pt の要素で2個になった。docs/verification/001-reading-session/ci-runs/807f934-acceptance-en.md の3 の #15、#16。G1 の裁定 (a) の答えは「見える」）。そのため 1pt の要素（UITestMarker の状態の印）と引数 showsStateMarker を 8034689 で外した。
+  - 例外1と例外2は要らなくなったので取り下げる。決定の「つなぎ口のコードは Debug/ の2つのファイルだけ」は例外なしで成り立つ。対象外（#Preview と PreviewSupport.swift）の文はそのまま残す。「いちばん強い反論」の「#if DEBUG の中は2ファイルに限る」も #Preview を除いて例外なしの読みに戻る。
+  - G2 の reviewer の grep は「`grep -rnE 'UITestMarker|showsStateMarker' ios/Yomutoki --include='*.swift' | grep -v '/Debug/'` が0行」に戻す（2026-10-22 の HEAD ba8b82a で0行を確かめた。UITestMarker の定義と呼び出しは Debug/UITestHooks.swift の中だけ）。
+  - S4（積んだ画面）と S5（シート）の根が見えるかは次の CI（裁定1 の反論）。見えなければ S5 に限って戻し、そのときはこの追記に足す形で直す。
 
 ## 検討した案
 | 案 | 良い点 | 悪い点 | 選ばなかった理由 |
@@ -50,11 +55,11 @@
 
 ## 見直す条件
 - Release の実行ファイルの確かめで、つなぎ口の文字が1件でも出た（そのとき案 B を考える）。
-- XCUIApplication.open で確認のダイアログが出て、URL scheme が使えないと CI の出力で分かった（そのとき contracts/test-hooks.md の T16 の代わりの案に替える）。
+- XCUIApplication.open で確認のダイアログが出て、URL scheme が使えないと CI の出力で分かった（そのとき contracts/test-hooks.md の T16 の代わりの案に替える）。→ 2026-10-22：CI 807f934 では確認のダイアログでなく、XCUIApplication.open(_:) がアプリを起動し直した（docs/verification/001-reading-session/ci-runs/807f934-acceptance-en.md の原因A。A23 の本文「Launches the application by URL.」と合う）。送り方を XCUIDevice.shared.system.open(_:) に改訂した（contracts/test-hooks.md の T16）。それでも起動し直すかダイアログを押せなければ、この条件のとおり T16 の代わりの案に替える。
 - 環境変数の長さの上限で UITEST_SEED が渡せないと分かった（そのとき T2 の代わりの案に替える）。
 - localhost の受け口に届かない、または -AppleLocale が効かないと CI の出力で分かった（そのとき T22、UITEST_LOCALE に替える。上の決定）。
 - 受け入れテストを Release ビルドで走らせる必要が出た。
-- 追記（2026-10-21）：決定の例外の2か所（RootView.swift、FinishSessionView.swift）の `#if DEBUG` に、1pt の要素の外のもの（本番の答えを変える分岐、UITEST_ の名前）が入った（そのとき Debug/ に移すか、この ADR を開き直す）。
+- 追記（2026-10-21）：決定の例外の2か所（RootView.swift、FinishSessionView.swift）の `#if DEBUG` に、1pt の要素の外のもの（本番の答えを変える分岐、UITEST_ の名前）が入った（そのとき Debug/ に移すか、この ADR を開き直す）。→ 2026-10-22 取り下げ：例外の2か所は 8034689 でなくなった（決定の 2026-10-22 の追記）。今後は Debug/ の外に UITestMarker か showsStateMarker が戻ったときに、この ADR を開き直す。
 
 ## 確かめたこと
 - A22 XCUIApplication（launchArguments、launchEnvironment）https://developer.apple.com/documentation/xcuiautomation/xcuiapplication
