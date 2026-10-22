@@ -1,0 +1,16 @@
+Source: 3710550, iOS 26.0, ja_JP
+Excerpt from /private/tmp/reading-app-pr2-acceptance-r2.log
+The full run was interrupted for the correction; this is not a full-suite PASS.
+
+/tmp/reading-app-pr2-20261022/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:251: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput] : XCTAssertEqual failed: ("2") is not equal to ("1") - session.finish.save は1個
+[AT-DIAG]                         Other, 0x105b35d90, {{334.0, 82.0}, {48.0, 36.0}}, identifier: 'session.finish.save', label: '保存'
+[AT-DIAG]                             Button, 0x105b35fd0, {{334.0, 82.0}, {48.0, 36.0}}, identifier: 'session.finish.save', label: '保存'
+[AT-DIAG]                                         Other, 0x105b36e70, {{32.7, 182.0}, {246.3, 20.3}}, identifier: 'error.saveFailed', label: '変更を保存できませんでした'
+[AT-DIAG]                                         StaticText, 0x105b371d0, {{32.0, 210.3}, {329.3, 33.7}}, identifier: 'error.saveFailed.cancel', label: 'まだ読書に戻っていません。入れた値はそのままです。この画面にいる間の時間は数えません。'
+[AT-DIAG]                                         Button, 0x105b372f0, {{32.0, 252.0}, {167.3, 34.3}}, identifier: 'error.retry', label: 'もう一度読書に戻る'
+[AT-DIAG]                                         TextField, 0x105b385d0, {{127.7, 369.7}, {242.3, 22.0}}, identifier: 'session.finish.page', label: '今のページ', value: 72, Keyboard Focused
+[AT-DIAG]                                         StaticText, 0x105b38c90, {{16.0, 407.0}, {370.0, 29.7}}, identifier: 'session.finish.page.hint', label: '前回は40ページでした。入れずに保存もできます。'
+[AT-DIAG]                                         TextField, 0x105a454a0, {{163.3, 469.0}, {206.7, 22.0}}, identifier: 'session.finish.minutes', label: '読んだ時間（分）', value: 10
+[AT-DIAG]                                         StaticText, 0x105a45b60, {{16.0, 506.3}, {370.0, 47.7}}, identifier: 'session.finish.minutes.hint', label: '経過は10分です。読んでいない時間があれば、短く直せます。'
+[AT-DIAG]                                   Other, 0x105a48e10, {{343.0, 515.0}, {38.0, 34.0}}, identifier: 'session.finish.saveKeyboard', label: '保存'
+[AT-DIAG]                                       Button, 0x105a49050, {{343.0, 515.0}, {38.0, 34.0}}, identifier: 'session.finish.saveKeyboard', label: '保存'
