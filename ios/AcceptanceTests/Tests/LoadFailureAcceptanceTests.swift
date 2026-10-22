@@ -2,7 +2,7 @@ import XCTest
 
 /// S1 の読み込みの失敗と再試行（AC-54、AC-55）。データは contracts/seed.example.json と同じ5件（Seeds.libraryOfFive）。
 /// 読み込みの失敗は UITEST_FAIL の load（T5）。seed を入れる保存は UITEST_FAIL の数に入らない（test-hooks.md の起動の順番の4）。
-final class LoadFailureAcceptanceTests: XCTestCase {
+final class LoadFailureAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

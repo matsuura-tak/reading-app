@@ -110,6 +110,9 @@ enum L10n {
     static var backButtonLabels: [String] { [homeTitle, pick("戻る", "Back")] }
     /// 編集メニューの「ペースト」（システムの文字。AC-3 の改行とタブを入れるため）。
     static var systemPaste: String { pick("ペースト", "Paste") }
+    /// URL を開く前のシステムの確かめの「開く」（T16。AppSession.confirmOpenIfAsked）。ダイアログはシステムの言語で出て、
+    /// アプリの言語（test plan の構成）とは別なので、両方の文字で探す。
+    static var systemOpenLabels: [String] { ["開く", "Open"] }
 
     // MARK: 数の書式（7 の決まり：分、冊、件は地域の書式で桁区切りあり。ページの数は桁区切りなし）
 

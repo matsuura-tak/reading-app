@@ -1,7 +1,7 @@
 import XCTest
 
 /// S1 ホームと S2 本を追加（AC-1〜AC-4、AC-22）。期待する値は docs/verification/001-reading-session/test-plan.md の 2。
-final class LibraryAcceptanceTests: XCTestCase {
+final class LibraryAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
@@ -73,8 +73,8 @@ final class LibraryAcceptanceTests: XCTestCase {
                 field.typeText(text)
                 XCTAssertEqual(s.fieldText("book.add.title"), text, "前提：\(name) が欄に入った")
             }
-            let save = s.el("book.save")
-            Wait.exists(save, "book.save")
+            Wait.exists(s.el("book.save"), "book.save")
+            let save = s.control("book.save")  // iOS 26 のツールバーのボタンは Other に識別子が付く。押せるかは Button で見る（UIHelpers.swift の control）
             XCTAssertFalse(save.isEnabled, "\(name)：book.save は無効")
             save.tap()
             XCTAssertFalse(save.isEnabled, "\(name)：押しても book.save は無効のまま")

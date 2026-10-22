@@ -3,7 +3,7 @@ import XCTest
 /// AC-18：端末（シミュレーター）を再起動しても、本と記録が残る（T11）。
 /// この2つは Acceptance.xctestplan の skippedTests に入れ、ac18-reboot.sh が AC18Reboot.xctestplan で順に動かす：
 /// 1 を動かす → xcrun simctl shutdown と boot → 2 を動かす。1つだけで動かしても意味がないので、通常の実行には入れない。
-final class AC18RebootTests: XCTestCase {
+final class AC18RebootTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

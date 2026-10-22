@@ -98,16 +98,49 @@ extension AppSession {
         (el(id).value as? String) ?? ""
     }
 
-    /// 欄の文字を全部消してから入れる（欄の右端をタップして、カーソルを末尾に置く）。
+    /// 欄の文字を全部消してから入れる。
+    /// CI 807f934（iOS 26.5）で、右寄せの数字の欄（S5 の分）の右から5%の所をタップすると、文字が1〜2字のときカーソルが先頭に付き、
+    /// 消す文字が効かずに前へ足された（AC-47：「10」→「510」、AC-30：「1」→「1801」［推測：AC-30 は値の並びからの見立て］）。
+    /// そこで、右端（99%）をタップして消し、消えたかを確かめ、残ったら右端の語をダブルタップで選んで消す。
+    /// それでも消せない、または入れた後の値が違うときは「前提」で落とし、AC の Then の失敗と分ける。
     func replaceText(_ id: String, with text: String, file: StaticString = #filePath, line: UInt = #line) {
         let field = el(id)
         Wait.exists(field, id, file: file, line: line)
-        field.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
-        let current = fieldText(id)
+        let trailingEdge = field.coordinate(withNormalizedOffset: CGVector(dx: 0.99, dy: 0.5))
+        trailingEdge.tap()
+        var current = typedText(field)
         if !current.isEmpty {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
+            current = typedText(field)
         }
+        if !current.isEmpty {
+            trailingEdge.doubleTap()
+            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
+            current = typedText(field)
+        }
+        XCTAssertEqual(current, "", "前提：\(id) の欄を空にできた", file: file, line: line)
         if !text.isEmpty { field.typeText(text) }
+        XCTAssertEqual(typedText(field), text, "前提：\(id) の欄に「\(text)」が入った", file: file, line: line)
+    }
+
+    /// 欄に入っている文字。空の欄の value は placeholder になるので、placeholder と同じなら空とみなす。
+    private func typedText(_ field: XCUIElement) -> String {
+        let value = (field.value as? String) ?? ""
+        if let placeholder = field.placeholderValue, !placeholder.isEmpty, value == placeholder { return "" }
+        return value
+    }
+
+    /// 押せるか（isEnabled）を見るための要素。CI 807f934（iOS 26.5）では、ツールバーのボタン（book.save、session.finish.save、
+    /// session.finish.cancel、book.add.cancel）の識別子が種類 Other の要素に付いて見え（ログ：Check for interrupting elements
+    /// affecting "book.save" Other）、題名が空でも isEnabled が true だった（AC-3、AC-31）［推測：Other の isEnabled は
+    /// 中の Button の .disabled を映さない］。識別子の付いた Button があればそれ、なければ識別子の要素の中の最初の Button、
+    /// どちらもなければ識別子の要素を返す。押す操作は今までどおり el(id) で行う。
+    func control(_ id: String) -> XCUIElement {
+        let button = app.buttons.matching(identifier: id).firstMatch
+        if button.exists { return button }
+        let inner = el(id).descendants(matching: .button).firstMatch
+        if inner.exists { return inner }
+        return el(id)
     }
 
     /// 改行とタブを1行の欄に入れるため、貼り付けで入れる（G0 r2 の AC-3 の条件）。編集メニューの「ペースト」はシステムの文字で探す。

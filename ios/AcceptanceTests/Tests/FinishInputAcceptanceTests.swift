@@ -3,7 +3,7 @@ import XCTest
 /// S5 終える入力：ページの上限、強制終了からの戻り、再試行、入力中の時間、やめる、下へのスワイプ、保存の後の画面、
 /// やめる保存の失敗と再試行（AC-32、AC-34、AC-35、AC-45〜AC-48、AC-50、AC-64、AC-65）。
 /// 時計は UITEST_NOW と UITEST_CLOCK_FROZEN で止め、T16 で決まった秒だけ進める（実時間で待たない）。
-final class FinishInputAcceptanceTests: XCTestCase {
+final class FinishInputAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

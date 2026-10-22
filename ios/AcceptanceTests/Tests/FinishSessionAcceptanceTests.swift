@@ -1,7 +1,7 @@
 import XCTest
 
 /// S5 読書を終える：ページ、分、範囲の外、保存の失敗（AC-9〜AC-12、AC-19、AC-29、AC-30）。
-final class FinishSessionAcceptanceTests: XCTestCase {
+final class FinishSessionAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
@@ -72,7 +72,8 @@ final class FinishSessionAcceptanceTests: XCTestCase {
 
         s.replaceText("session.finish.page", with: "300")
         Wait.gone(s.el("session.finish.pageOutOfRange"), "300 では誤りの文")
-        XCTAssertTrue(s.el("session.finish.save").isEnabled, "300 なら保存できる")
+        // 押せるかはツールバーの Button で見る（iOS 26 では識別子が Other に付く。UIHelpers.swift の control。CI 807f934）
+        XCTAssertTrue(s.control("session.finish.save").isEnabled, "300 なら保存できる")
 
         s.goToBookDetail(id: Fixture.botchanId)
         Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "記録は増えていない")
@@ -169,7 +170,7 @@ final class FinishSessionAcceptanceTests: XCTestCase {
         for accepted in ["1", "180"] {
             s.replaceText("session.finish.minutes", with: accepted)
             Wait.gone(s.el("session.finish.minutesOutOfRange"), "\(accepted)分では誤りの文")
-            XCTAssertTrue(s.el("session.finish.save").isEnabled, "\(accepted)分なら保存できる")
+            XCTAssertTrue(s.control("session.finish.save").isEnabled, "\(accepted)分なら保存できる")
         }
 
         s.goToBookDetail(id: Fixture.botchanId)

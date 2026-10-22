@@ -2,7 +2,7 @@ import XCTest
 
 /// 読み始め、経過、一時停止、裏と強制終了、前の本、読書中は1件（AC-5〜AC-8、AC-13、AC-17、AC-25〜AC-27）。
 /// 時計は UITEST_NOW と UITEST_CLOCK_FROZEN で止め、T16 で決まった秒だけ進める（実時間で待たない）。
-final class ReadingSessionAcceptanceTests: XCTestCase {
+final class ReadingSessionAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

@@ -2,7 +2,7 @@ import XCTest
 
 /// S2 本を追加：総ページ数の範囲、保存の失敗、保存の後の画面、追加をやめる（AC-31、AC-42、AC-49、AC-53）。
 /// 期待する値は docs/verification/001-reading-session/test-plan.md の 2。文字は design/ の 7（Support/L10n.swift）。
-final class AddBookAcceptanceTests: XCTestCase {
+final class AddBookAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
@@ -25,7 +25,8 @@ final class AddBookAcceptanceTests: XCTestCase {
         Wait.exists(title, "book.add.title")
         title.tap()
         title.typeText(Fixture.botchan)
-        Wait.enabled(s.el("book.save"), true, "前提：題名だけなら book.save は有効")
+        // iOS 26 のツールバーのボタンは Other に識別子が付き、その isEnabled は .disabled を映さない［推測］。押せるかは Button で見る（UIHelpers.swift の control。CI 807f934）
+        Wait.enabled(s.control("book.save"), true, "前提：題名だけなら book.save は有効")
 
         let values: [(text: String, accepted: Bool)] = [("0", false), ("1", true), ("9999", true), ("10000", false)]
         for (text, accepted) in values {
@@ -33,12 +34,12 @@ final class AddBookAcceptanceTests: XCTestCase {
             XCTAssertEqual(s.fieldText("book.add.totalPages"), text, "前提：総ページ数の欄に \(text) が入った")
             if accepted {
                 Wait.gone(s.el("book.add.totalPagesOutOfRange"), "\(text)：book.add.totalPagesOutOfRange")
-                Wait.enabled(s.el("book.save"), true, "\(text)：book.save")
+                Wait.enabled(s.control("book.save"), true, "\(text)：book.save")
             } else {
                 Wait.label(
                     s.el("book.add.totalPagesOutOfRange"), equals: L10n.bookAddTotalPagesOutOfRange,
                     "\(text)：book.add.totalPagesOutOfRange")
-                Wait.enabled(s.el("book.save"), false, "\(text)：book.save")
+                Wait.enabled(s.control("book.save"), false, "\(text)：book.save")
                 s.el("book.save").tap()
                 XCTAssertTrue(s.el("book.add.title").exists, "\(text)：押しても保存されず、入力は開いたまま")
                 s.shot("AC31_総ページ数\(text)", self)

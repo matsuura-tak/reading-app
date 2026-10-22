@@ -3,7 +3,7 @@ import XCTest
 /// S4 読書中の画面：一時停止で強制終了、経過の読み上げ、時計の戻し、一時停止・再開・「終える」・60秒未満で終える保存の失敗と再試行
 /// （AC-33、AC-40、AC-41、AC-58〜AC-63、AC-66、AC-67）。
 /// 時計は UITEST_NOW と UITEST_CLOCK_FROZEN で止め、T16 で決まった秒だけ進める（実時間で待たない）。
-final class ReadingScreenAcceptanceTests: XCTestCase {
+final class ReadingScreenAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

@@ -2,7 +2,7 @@ import XCTest
 
 /// S1 の今週の合計（0件、週をまたぐ記録）と S3 本の詳細：記録0件、消す確認の取り消し、削除の失敗、60秒未満の知らせ、
 /// 読書中の主操作、読み始めの保存の失敗と再試行（AC-36〜AC-38、AC-43、AC-44、AC-51、AC-52、AC-56、AC-57）。
-final class BookDetailAcceptanceTests: XCTestCase {
+final class BookDetailAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

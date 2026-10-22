@@ -1,7 +1,7 @@
 import XCTest
 
 /// S3 本の詳細の合計と、S1 の今週の合計、記録を消す（AC-14〜AC-16、AC-28）。
-final class BookStatsAcceptanceTests: XCTestCase {
+final class BookStatsAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }

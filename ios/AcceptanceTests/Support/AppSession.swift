@@ -111,10 +111,29 @@ final class AppSession {
             XCTFail("時計の URL を作れない: \(query)", file: file, line: line)
             return
         }
-        app.open(url)
+        // CI 807f934（Xcode 26.6、iOS 26.5）で XCUIApplication.open(_:) はアプリを起動し直した（ログ：「Open … with URL」の下に
+        // 「Launch」「Setting up automation session」。2回目の操作で uitest.clock.applied が「1」に戻った）。起動し直すと
+        // UITEST_SEED と UITEST_RESET が入り直り、テストの中で作った状態（S5、保存の失敗の区画、読み始めた読書）が消える。
+        // そこで、システムから URL を開き、動いているアプリの onOpenURL に渡す（XCUIDevice.system.open、iOS 16.4 以上）。
+        XCUIDevice.shared.system.open(url)
         clockApplied += 1
         let marker = app.descendants(matching: .any)["uitest.clock.applied"]
+        if !Wait.until(NSPredicate(format: "label == %@", String(clockApplied)), marker, timeout: Wait.optional) {
+            confirmOpenIfAsked()
+        }
+        // 起動し直したら label は数え直しの値（1）になるので、2回目からの操作では起動し直しをここで見分けられる。
         Wait.label(marker, equals: String(clockApplied), "T16 の時計の操作（\(query)）が効いた", file: file, line: line)
+    }
+
+    /// システムが URL を開く前に確かめるダイアログ（「"Yomutoki"で開きますか？」）を出したときだけ「開く」を押す。
+    /// システムの部品なので文字で探す（design 6 の (b)）。出るかは CI で未確認（contracts/test-hooks.md の T16 の備考）。
+    private func confirmOpenIfAsked() {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let open = springboard.buttons.matching(NSPredicate(format: "label IN %@", L10n.systemOpenLabels)).firstMatch
+        if open.waitForExistence(timeout: Wait.optional) {
+            print("[AT-DIAG] T16：システムの確かめのダイアログが出たので「\(open.label)」を押した")
+            open.tap()
+        }
     }
 
     // MARK: 証拠
@@ -125,5 +144,10 @@ final class AppSession {
         attachment.name = name
         attachment.lifetime = .keepAlways
         test.add(attachment)
+        // 落ちたときに AcceptanceTestCase が「直前のスクリーンショット」として出す（ci-runs/807f934-acceptance-en.md の 5）。
+        if let base = test as? AcceptanceTestCase {
+            base.lastShotName = name
+            base.shotCount += 1
+        }
     }
 }

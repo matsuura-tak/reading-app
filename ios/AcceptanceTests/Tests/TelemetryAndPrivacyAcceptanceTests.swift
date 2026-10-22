@@ -2,7 +2,7 @@ import XCTest
 
 /// 計測の送り先の失敗、権限、計測の中身（AC-20、AC-21、AC-23、AC-24）。
 /// 受け口は TelemetryReceiver（localhost の HTTP。T6、T7、T13、T19）。届かないと CI で分かったら T22 に替える（TelemetryProbe）。
-final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
+final class TelemetryAndPrivacyAcceptanceTests: AcceptanceTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
