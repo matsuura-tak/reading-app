@@ -8,9 +8,9 @@
 - 何のアプリか：読む時間そのものを美しく残す iPhone の読書アプリ「よむとき（Yomutoki: Reading Time）」。本を題名だけで足し、読んだ時間とページを残して、次は1回の操作で続きから読む。
 - データは端末の中だけ（アカウントなし、サーバーなし、計測の SDK なし。ADR 0001、0003）。権限を1つも求めない。
 - 使う人：紙の本か電子書籍を読み、読んだ時間と進んだページを手間なく残して、次は前回のページから読みたい人。主に日本（ja）、次に米国（en）の iPhone の利用者（docs/prd/001-reading-session.md の 2、18 の P-2）。
-- いまの段階：001-reading-session の G2/G3 の確認中。9f32800 の全体 CI（39880490014）は2026-10-23 11:42 JSTに成功し、単体69件、受け入れテスト ja/en 各80件、AC-18 の再起動前後2段階が成功した。設定PR #3はマージ済みで、main を取り込んだ274adc0は9f32800と同じツリー（docs/reviews/001-reading-session-G2-ci-complete-r1.md）。
-- その後の S5 の表示修正4125f7cは、MacでDebug/Release、単体69件、受け入れテスト ja/en 各3件（計6件）が成功した（docs/reviews/001-reading-session-s5-implementation.md）。最新HEADの全体CIはまだ未実行で、以前の全体成功と区別する。
-- 正式なG2 r2・G3は未完了。既知の実行時レイアウト警告、残るレビュー・全画面確認・アクセシビリティ監査・探索・反復検証を確認する。001は内部のTestFlightまで（単独ではApp Storeに出さない）。
+- いまの段階：001-reading-session の G2 は、6442fe2 のコード・受け入れテストの独立レビューがPASS。指揮役裁定（docs/reviews/001-reading-session-G2-ruling.md）に従い、実装前UIテストの赤を実行していない履歴と当時の未完了を保持し、現在の実装とテストを評価した。6442fe2 の全体CIは成功（単体69件、受け入れテスト ja/en 各80件、AC-18 の再起動前後2段階）。
+- S2「追加」のラベルへ既存の AppColor.onAccent を指定する1行修正を加えた。修正後のDebug/Releaseビルド、単体69件、AC-2/42/49の ja/en 計6実行と、verifierの画面4条件（ライト・ダーク・AX5・英語）が成功した（docs/reviews/001-reading-session-s2-implementation.md、docs/verification/001-reading-session/evidence/g3-20261023/s2-after/final-integrity.json）。このS2修正後の全体CIは未実行。
+- G3はFAILのまま。アクセシビリティ監査の23件の指摘、反復検証・探索・全画面の全状態確認が未完了。S2の4条件成功をG3全体の合格とは扱わない。001は内部のTestFlightまで（単独ではApp Storeに出さない）。
 
 ## ビルド/テストのコマンド
 .claude/org/app.json の commands は `make ios-build` / `make ios-test`。CI は app.json から Makefile の各ターゲットを実行します。下にはその中身を示します。
