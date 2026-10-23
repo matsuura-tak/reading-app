@@ -1,0 +1,45 @@
+name: S3ABCControl
+options:
+  bundleIdPrefix: local.readingapp.control
+  deploymentTarget:
+    iOS: '26.0'
+settings:
+  base:
+    SWIFT_VERSION: '6.0'
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    TARGETED_DEVICE_FAMILY: '1'
+    CODE_SIGNING_ALLOWED: NO
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+    DEVELOPMENT_LANGUAGE: ja
+targets:
+  S3ABCControl:
+    type: application
+    platform: iOS
+    sources: [App]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: local.readingapp.control.S3ABCControl
+  S3ABCControlUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: S3ABCControl
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: local.readingapp.control.S3ABCControlUITests
+        TEST_TARGET_NAME: S3ABCControl
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+schemes:
+  S3ABCControl:
+    build:
+      targets:
+        S3ABCControl: all
+        S3ABCControlUITests: [test]
+    test:
+      targets:
+        - S3ABCControlUITests
+      gatherCoverageData: false
+      parallelizeBuild: false

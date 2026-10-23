@@ -1,0 +1,542 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild build-for-testing -project NativeAuditControl.xcodeproj -scheme NativeAuditControl -destination "platform=iOS Simulator,id=0DD0727D-F16F-4DD6-8759-549D6FAB596F" -derivedDataPath DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'NativeAuditControlUITests' in project 'NativeAuditControl'
+        ➜ Explicit dependency on target 'NativeAuditControl' in project 'NativeAuditControl'
+    Target 'NativeAuditControl' in project 'NativeAuditControl' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 21a64f1f92eddfbd4a66549a640126c3
+Build description path: /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/XCBuildData/21a64f1f92eddfbd4a66549a640126c3.xcbuilddata
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/CompilationCache.noindex
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/CompilationCache.noindex
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-e829b21a6f8c9b70876ba0858053c04435d3147121984ba087c28d913653d626.sdkstatcache
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -o /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-e829b21a6f8c9b70876ba0858053c04435d3147121984ba087c28d913653d626.sdkstatcache
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    builtin-create-build-directory /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl-081190b00e84cc37bddc03ffc41f2fa4-VFS-iphonesimulator/all-product-headers.yaml
+    cd /tmp/reading-app-native-audit-control-20261023/NativeAuditControl.xcodeproj
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl-081190b00e84cc37bddc03ffc41f2fa4-VFS-iphonesimulator/all-product-headers.yaml
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/ProductTypeInfoPlistAdditions.plist (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/ProductTypeInfoPlistAdditions.plist
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/empty-NativeAuditControlUITests.plist (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/empty-NativeAuditControlUITests.plist
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests_const_extract_protocols.json (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests_const_extract_protocols.json
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests.hmap (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-OutputFileMap.json (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-OutputFileMap.json
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-project-headers.hmap (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-project-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-own-target-headers.hmap (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-own-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.SwiftFileList (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.SwiftFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.SwiftConstValuesFileList (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.LinkFileList (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.LinkFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests.DependencyStaticMetadataFileList (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests.DependencyMetadataFileList (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-generated-files.hmap (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-generated-files.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-all-target-headers.hmap (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-all-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-all-non-framework-target-headers.hmap (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/empty-NativeAuditControl.plist (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/empty-NativeAuditControl.plist
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl_const_extract_protocols.json (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl_const_extract_protocols.json
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.SwiftFileList (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.SwiftFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.SwiftConstValuesFileList (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.LinkFileList (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.LinkFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-OutputFileMap.json (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-OutputFileMap.json
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl.hmap (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl.DependencyStaticMetadataFileList (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl.DependencyMetadataFileList (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl.DependencyMetadataFileList
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-project-headers.hmap (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-project-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-own-target-headers.hmap (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-own-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-generated-files.hmap (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-generated-files.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-all-target-headers.hmap (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-all-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-all-non-framework-target-headers.hmap (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-DebugDylibPath-normal-arm64.txt (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-DebugDylibInstallName-normal-arm64.txt (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    write-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-DebugDylibInstallName-normal-arm64.txt
+
+MkDir /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControlUITests-Runner.app/PlugIns/NativeAuditControlUITests.xctest (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    /bin/mkdir -p /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControlUITests-Runner.app/PlugIns/NativeAuditControlUITests.xctest
+
+MkDir /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    /bin/mkdir -p /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app
+
+Ld /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app/__preview.dylib normal (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios26.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -F/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -install_name @rpath/NativeAuditControl.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl_dependency_info.dat -o /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app/__preview.dylib
+
+ProcessInfoPlistFile /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app/Info.plist /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/empty-NativeAuditControl.plist (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-infoPlistUtility /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/empty-NativeAuditControl.plist -producttype com.apple.product-type.application -genpkginfo /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -o /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.app/Info.plist
+
+SwiftDriver NativeAuditControl normal arm64 com.apple.xcode.tools.swift.compiler (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name NativeAuditControl -Onone @/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -target arm64-apple-ios26.0-simulator -g -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -F /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-e829b21a6f8c9b70876ba0858053c04435d3147121984ba087c28d913653d626.sdkstatcache -output-file-map /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-generated-files.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-own-target-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-project-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources-normal/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-Swift.h -working-directory /tmp/reading-app-native-audit-control-20261023 -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-4Q16CGY08IOL10XEYJ4XDOZRD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/SwiftShims-D19ZSTKPDJCMPER8YVD3ZV8YG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-E9ER0NRMQOJXV4ANMTAP9QJC0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_float-3OQ2FE09AKOTQGO60IO182MP4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-5VCIDK7EBI8RUGI8OT4LYSPIE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-DGSUXTOFY2FRCBXI89ENLK227.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/ptrauth-P7W17M3C07DW5BO0AONX4TZF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/ptrcheck-N2BXG0QULVCUJ62WAFOECL9W.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-BQUVTOZ3UK92COFD2U1EV5Q25.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-DA0EVBCQ7RJDLGT09VZ2HTZO2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-9DHYFUX2JK4VUYSMI5PVNRNV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_limits-70R8FWSLRZB2YV7D8KYBGTXMM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-DB7KNVWAQSCGQXEDASR781ZRK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-8BACGHGUS9SQWRKL48XWRQ2CF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/string_h-6NXHZDIJCZZI9DM97UZ9C6MPB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/sys_types-K09CNDGEO11437ILOEQVJ5FY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-6LO9AHQZCH5JMV7N6NB6JJ520.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-UHW3G2CZBUBK0S8IY24VLUYD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-6CXH7T7GL6CKVFIHNXECBV9O0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-8C4426A342B0VB52WNHS7ZOYZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-9PMV7DMXSYUAF6F2KEOJS4JV4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Darwin-C0E4VEX9TBDUOY2OQ9FZBB7Z6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/simd-DXLNVSLHL7XNEIB9T5RH462I4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/MachO-8FI6AE5LJARQMIAK32LZQ3RW4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/ObjectiveC-CE7QN2SHX581493VNNBOIVLUN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/os_object-4WZEKGHD22IFH2MIY5E6QG1F0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Spatial-EET28RXDYLOMDUVYDYWPXIKOM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/os_workgroup-46B7LKKS0G0O6M780MYIGAKAF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Dispatch-3PX0V41GIBNOIPWFE4OEZG03R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreFoundation-87CSAXVBO7OBYCAMQWDA64PZO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/XPC-4IWILIKLV5IAF8D7ZT9J6IJGS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/os-AEFV0OXIHLFXV862Q1C9A27Q5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreGraphics-6BXD2X38AQKOI90ZUIBO8ZD6M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreAudioTypes-30RISRYPKIFKIZ7D076ZSJJ2U.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CFNetwork-E9W6LSFKJCIY6VI0C0BI2RRLS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Security-ESB737XIIZ4Y5G8K061BJF2OH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreAudio-1VSWB4FIO4GCK6VCQUQ9WF4UQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Foundation-6LWGMVH4Y5XS55MKQAODMDAK4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/ImageIO-6EPAJA1IRKPASVBA5LF2PSWR8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreText-3BORNIWWNHTRBQXCNNJZ0KW8O.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/DataDetection-8AIPSYXXPDHMMFFN7B3O65HSD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreData-BH52AM6KVLYRG4QJ2X0ECQI67.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/UserNotifications-ANWWEOQLYQCAG2B19N12LS0OS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/_LocationEssentials-7AXQK7RBIRMQTTR6WG35WF8UZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/IOSurface-C1IBAU98ZJMVAPX2UTW77C2KQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Symbols-CYYF8P71RUSFAD6USHJNQHB0Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-46TXIG9WV40O1GLLVNHJJ3NQI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/OSLog-4LDILCQOOFDT8FEVBBJB3ZGCM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Accessibility-9AEBIB2TO4P921ERMO0T2HXMV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/FileProvider-568ZLZJBIV9ZRVOT4AZBZK3EH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreTransferable-6ICD7LFC90D7JARFQI3TT6BF9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/UIUtilities-6A60FJCUD0YIQAVJMDBAZJH83.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreLocation-3Q4OGMZI9LKLF0XS330YTGYHZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/Metal-DJHW21BHMUXBN6WYPM3BT3B35.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/OpenGLES-CYRPP3AGUA7SK9RDJVS6WDQ2G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreMotion-5KVDLPOT945ND8HGX5ZIRHH3S.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreVideo-CQGBMHNV1D9XOE3S84PL46IXY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreImage-38C6G0P4EAL058FB8QUON8ZNI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/QuartzCore-8ZZRYQM06JPYUB393UKE7ZQOT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/CoreMedia-EJ4CHREHYQOTEQBJZJC99H95T.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/SwiftUICore-AOLZIHDSZWF1AV9CRFN5GWQ70.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/UIKit-DX0ZTN8VPZPGX6JZZ7C8HX4QL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules/SwiftUI-ALC7YCHR8XVEI17AXCD2ZR6WL.pcm
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ NativeAuditControl (in target 'NativeAuditControl' from project 'NativeAuditControl')
+
+SwiftCompile normal arm64 (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    
+
+SwiftCompile normal arm64 Compiling\ NativeAuditControlApp.swift /tmp/reading-app-native-audit-control-20261023/App/NativeAuditControlApp.swift (in target 'NativeAuditControl' from project 'NativeAuditControl')
+
+SwiftCompile normal arm64 /tmp/reading-app-native-audit-control-20261023/App/NativeAuditControlApp.swift (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-SwiftPerFileCompile NativeAuditControlApp.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for NativeAuditControl (in target 'NativeAuditControl' from project 'NativeAuditControl')
+
+SwiftDriver\ Compilation\ Requirements NativeAuditControl normal arm64 com.apple.xcode.tools.swift.compiler (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name NativeAuditControl -Onone @/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.SwiftFileList -DDEBUG -default-isolation\=MainActor -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -target arm64-apple-ios26.0-simulator -g -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -F /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-e829b21a6f8c9b70876ba0858053c04435d3147121984ba087c28d913653d626.sdkstatcache -output-file-map /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-generated-files.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-own-target-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/NativeAuditControl-project-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources-normal/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-Swift.h -working-directory /tmp/reading-app-native-audit-control-20261023 -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources/NativeAuditControl-Swift.h /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-Swift.h (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-swiftHeaderTool -arch arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl-Swift.h -o /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/DerivedSources/NativeAuditControl-Swift.h
+
+Copy /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/arm64-apple-ios-simulator.swiftmodule /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftmodule (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftmodule /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftsourceinfo (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftsourceinfo /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+Copy /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/arm64-apple-ios-simulator.swiftdoc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftdoc (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.swiftdoc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/arm64-apple-ios-simulator.abi.json /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.abi.json (in target 'NativeAuditControl' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControl.build/Objects-normal/arm64/NativeAuditControl.abi.json /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/NativeAuditControl.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+SwiftDriver NativeAuditControlUITests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name NativeAuditControlUITests -Onone @/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.SwiftFileList -DDEBUG -module-alias Testing\=_Testing_Unavailable -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -target arm64-apple-ios26.0-simulator -g -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk/Developer/Library/Frameworks -parse-as-library -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-e829b21a6f8c9b70876ba0858053c04435d3147121984ba087c28d913653d626.sdkstatcache -output-file-map /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-generated-files.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-own-target-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-project-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/DerivedSources/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-Swift.h -working-directory /tmp/reading-app-native-audit-control-20261023 -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-8SIB306HAEP9AFFI7WJ7C246F.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-3SXFR2YU9YZQO.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-2TQEGH1XB282Z4X3QSY63VIU6.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-3MU4C29HQRIFP.swiftmodule
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ NativeAuditControlUITests (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:5:19: error: main actor-isolated instance method 'setUpWithError()' has different actor isolation from nonisolated overridden declaration
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+ 5 |     override func setUpWithError() throws {
+   |                   `- error: main actor-isolated instance method 'setUpWithError()' has different actor isolation from nonisolated overridden declaration
+ 6 |         continueAfterFailure = true
+ 7 |         XCUIDevice.shared.appearance = .light
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCAbstractTest.h:103:1: note: overridden declaration is here
+101 |  * This method is called before invoking `setUp` and the test method.
+102 |  */
+103 | - (BOOL)setUpWithError:(NSError **)error;
+    | `- note: overridden declaration is here
+104 | 
+105 | /*!
+
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:4:51: error: main actor-isolated initializer 'init(invocation:)' has different actor isolation from nonisolated overridden declaration
+ 2 | 
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+   |                                                   `- error: main actor-isolated initializer 'init(invocation:)' has different actor isolation from nonisolated overridden declaration
+ 5 |     override func setUpWithError() throws {
+ 6 |         continueAfterFailure = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestCase.h:111:1: note: overridden declaration is here
+109 |  * @method -initWithInvocation:
+110 |  */
+111 | - (instancetype)initWithInvocation:(nullable NSInvocation *)invocation;
+    | `- note: overridden declaration is here
+112 | 
+113 | /*!
+
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:4:51: error: main actor-isolated initializer 'init(selector:)' has different actor isolation from nonisolated overridden declaration
+ 2 | 
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+   |                                                   `- error: main actor-isolated initializer 'init(selector:)' has different actor isolation from nonisolated overridden declaration
+ 5 |     override func setUpWithError() throws {
+ 6 |         continueAfterFailure = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestCase.h:121:1: note: overridden declaration is here
+119 |  * @method -initWithSelector:
+120 |  */
+121 | - (instancetype)initWithSelector:(SEL)selector;
+    | `- note: overridden declaration is here
+122 | 
+123 | /*!
+
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:4:51: error: main actor-isolated initializer 'init()' has different actor isolation from nonisolated overridden declaration
+ 2 | 
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+   |                                                   `- error: main actor-isolated initializer 'init()' has different actor isolation from nonisolated overridden declaration
+ 5 |     override func setUpWithError() throws {
+ 6 |         continueAfterFailure = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/usr/include/objc/NSObject.h:66:1: note: overridden declaration is here
+ 64 | 
+ 65 | + (void)initialize;
+ 66 | - (instancetype)init
+    | `- note: overridden declaration is here
+ 67 | #if NS_ENFORCE_NSOBJECT_DESIGNATED_INITIALIZER
+ 68 |     NS_DESIGNATED_INITIALIZER
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -emit-module -experimental-skip-non-inlinable-function-bodies-without-types /tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift -target arm64-apple-ios26.0-simulator -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -I /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk/Developer/Library/Frameworks -module-cache-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=5 -swift-version 6 -Onone -D DEBUG -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -module-alias Testing\=_Testing_Unavailable -default-isolation\=MainActor -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /tmp/reading-app-native-audit-control-20261023/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /tmp/reading-app-native-audit-control-20261023 -enable-anonymous-context-mangled-names -file-compilation-dir /tmp/reading-app-native-audit-control-20261023 -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-e829b21a6f8c9b70876ba0858053c04435d3147121984ba087c28d913653d626.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-generated-files.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-own-target-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-all-target-headers.hmap -Xcc -iquote -Xcc /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/NativeAuditControlUITests-project-headers.hmap -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/DerivedSources/arm64 -Xcc -I/tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name NativeAuditControlUITests -const-gather-protocols-file /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-ios27.1-simulator -target-sdk-version 27.1 -target-sdk-name iphonesimulator27.1 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -emit-module-doc-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.swiftdoc -emit-module-source-info-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.swiftsourceinfo -emit-objc-header-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-Swift.h -serialize-diagnostics-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-primary-emit-module.dia -emit-dependencies-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests-primary-emit-module.d -parse-as-library -o /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.swiftmodule -emit-abi-descriptor-path /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/NativeAuditControl.build/Debug-iphonesimulator/NativeAuditControlUITests.build/Objects-normal/arm64/NativeAuditControlUITests.abi.json
+
+SwiftCompile normal arm64 (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    
+
+SwiftCompile normal arm64 Compiling\ NativeAuditControlUITests.swift /tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:5:19: error: main actor-isolated instance method 'setUpWithError()' has different actor isolation from nonisolated overridden declaration
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+ 5 |     override func setUpWithError() throws {
+   |                   `- error: main actor-isolated instance method 'setUpWithError()' has different actor isolation from nonisolated overridden declaration
+ 6 |         continueAfterFailure = true
+ 7 |         XCUIDevice.shared.appearance = .light
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCAbstractTest.h:103:1: note: overridden declaration is here
+101 |  * This method is called before invoking `setUp` and the test method.
+102 |  */
+103 | - (BOOL)setUpWithError:(NSError **)error;
+    | `- note: overridden declaration is here
+104 | 
+105 | /*!
+
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:4:51: error: main actor-isolated initializer 'init(invocation:)' has different actor isolation from nonisolated overridden declaration
+ 2 | 
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+   |                                                   `- error: main actor-isolated initializer 'init(invocation:)' has different actor isolation from nonisolated overridden declaration
+ 5 |     override func setUpWithError() throws {
+ 6 |         continueAfterFailure = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestCase.h:111:1: note: overridden declaration is here
+109 |  * @method -initWithInvocation:
+110 |  */
+111 | - (instancetype)initWithInvocation:(nullable NSInvocation *)invocation;
+    | `- note: overridden declaration is here
+112 | 
+113 | /*!
+
+/tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift:4:51: error: main actor-isolated initializer 'init(selector:)' has different actor isolation from nonisolated overridden declaration
+ 2 | 
+ 3 | @MainActor
+ 4 | final class NativeAuditControlUITests: XCTestCase {
+   |                                                   `- error: main actor-isolated initializer 'init(selector:)' has different actor isolation from nonisolated overridden declaration
+ 5 |     override func setUpWithError() throws {
+ 6 |         continueAfterFailure = true
+
+/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework/Headers/XCTestCase.h:121:1: note: overridden declaration is here
+119 |  * @method -initWithSelector:
+120 |  */
+121 | - (instancetype)initWithSelector:(SEL)selector;
+    | `- note: overridden declaration is here
+122 | 
+123 | /*!
+
+
+SwiftCompile normal arm64 /tmp/reading-app-native-audit-control-20261023/UITests/NativeAuditControlUITests.swift (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+    cd /tmp/reading-app-native-audit-control-20261023
+    builtin-SwiftPerFileCompile NativeAuditControlUITests.swift
+
+PruneExplicitPrecompiledModules /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/reading-app-native-audit-control-20261023/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/reading-app-native-audit-control-20261023/DerivedData/SDKExplicitPrecompiledModules
+
+** TEST BUILD FAILED **
+
+
+The following build commands failed:
+	SwiftEmitModule normal arm64 Emitting\ module\ for\ NativeAuditControlUITests (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+	SwiftCompile normal arm64 (in target 'NativeAuditControlUITests' from project 'NativeAuditControl')
+	Building project NativeAuditControl for testing with scheme NativeAuditControl
+(3 failures)

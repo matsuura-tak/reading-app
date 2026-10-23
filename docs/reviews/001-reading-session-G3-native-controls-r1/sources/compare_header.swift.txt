@@ -1,0 +1,23 @@
+import AppKit
+import Foundation
+let productPath="/private/tmp/reading-app-pr2-20261023-resume/docs/verification/001-reading-session/evidence/g3-20261023/screens/S5_normal_light.png"
+let controlPath="/private/tmp/reading-app-native-audit-control-20261023/evidence/screens/form_normal.png"
+let product=NSBitmapImageRep(data:try Data(contentsOf:URL(fileURLWithPath:productPath)))!
+let control=NSBitmapImageRep(data:try Data(contentsOf:URL(fileURLWithPath:controlPath)))!
+var different=0
+var maxDelta=0
+func rgb(_ color:NSColor)->[Int] {
+    let c=color.usingColorSpace(.sRGB)!
+    return [c.redComponent,c.greenComponent,c.blueComponent].map { Int(($0*255).rounded()) }
+}
+for y in 0..<108 {
+    for x in 0..<1110 {
+        let a=rgb(product.colorAt(x:x+48,y:y+396)!)
+        let b=rgb(control.colorAt(x:x+48,y:y+348)!)
+        if a != b { different += 1 }
+        for i in 0..<3 { maxDelta=max(maxDelta,abs(a[i]-b[i])) }
+    }
+}
+let result:[String:Any] = ["product":productPath,"control":controlPath,"productCropPixels":[48,396,1110,108],"controlCropPixels":[48,348,1110,108],"comparedPixels":1110*108,"differentPixels":different,"maximumRGBChannelDifference":maxDelta]
+let output=try JSONSerialization.data(withJSONObject:result,options:[.prettyPrinted,.sortedKeys])
+print(String(data:output,encoding:.utf8)!)

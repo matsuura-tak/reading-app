@@ -1,0 +1,164 @@
+{
+  "normal": {
+    "exit": 65,
+    "issues": [
+      {
+        "state": "form",
+        "type": 1,
+        "detail": "Contrast failed | Contrast failed for SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x103b3c1e0, {{16.0, 116.0}, {370.0, 35.7}}, identifier: 'control.header', label: '坊っちゃん'"
+      },
+      {
+        "state": "form",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x104252ef0, {{334.0, 66.0}, {48.0, 36.0}}, identifier: 'control.save', label: '保存'"
+      },
+      {
+        "state": "form",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x103b52100, {{20.0, 66.0}, {95.7, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x1039bbf30, {{71.0, 404.7}, {260.0, 58.0}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10a804840, {{71.0, 377.0}, {260.0, 20.3}}, label: 'この記録を消しますか？'"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+      },
+      {
+        "state": "errorAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x103cb4950, {{71.0, 414.7}, {260.0, 38.0}}, label: '記録は消えていません。もう一度消してください。'"
+      },
+      {
+        "state": "errorAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10aa04bc0, {{71.0, 387.0}, {260.0, 20.3}}, label: '変更を保存できませんでした'"
+      },
+      {
+        "state": "errorAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+      }
+    ],
+    "counts": {
+      "form": {
+        "1": 1,
+        "4": 0,
+        "65536": 2
+      },
+      "deleteAlert": {
+        "1": 0,
+        "4": 0,
+        "65536": 4
+      },
+      "errorAlert": {
+        "1": 0,
+        "4": 0,
+        "65536": 3
+      },
+      "list": {
+        "1": 0,
+        "4": 0,
+        "65536": 0
+      }
+    },
+    "issueCount": 10,
+    "auditBegins": 4,
+    "auditEnds": 4,
+    "testCaseStarts": 1
+  },
+  "AX5": {
+    "exit": 65,
+    "issues": [
+      {
+        "state": "form",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x103cc7760, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'"
+      },
+      {
+        "state": "form",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x103cdf0d0, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'"
+      },
+      {
+        "state": "form",
+        "type": 1,
+        "detail": "Contrast failed | Contrast failed for SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x103cee2a0, {{16.0, 116.0}, {370.0, 72.7}}, identifier: 'control.header', label: '坊っちゃん'"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x103b93df0, {{48.0, 222.0}, {306.0, 406.7}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+      },
+      {
+        "state": "deleteAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10b317e00, {{48.0, 99.7}, {306.0, 125.3}}, label: 'この記録を消しますか？'"
+      },
+      {
+        "state": "errorAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+      },
+      {
+        "state": "errorAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10463f280, {{48.0, 227.3}, {306.0, 187.3}}, label: '変更を保存できませんでした'"
+      },
+      {
+        "state": "errorAlert",
+        "type": 65536,
+        "detail": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x103a51100, {{48.0, 411.7}, {306.0, 232.7}}, label: '記録は消えていません。もう一度消してください。'"
+      }
+    ],
+    "counts": {
+      "form": {
+        "1": 1,
+        "4": 0,
+        "65536": 2
+      },
+      "deleteAlert": {
+        "1": 0,
+        "4": 0,
+        "65536": 4
+      },
+      "errorAlert": {
+        "1": 0,
+        "4": 0,
+        "65536": 3
+      },
+      "list": {
+        "1": 0,
+        "4": 0,
+        "65536": 0
+      }
+    },
+    "issueCount": 10,
+    "auditBegins": 4,
+    "auditEnds": 4,
+    "testCaseStarts": 1
+  }
+}

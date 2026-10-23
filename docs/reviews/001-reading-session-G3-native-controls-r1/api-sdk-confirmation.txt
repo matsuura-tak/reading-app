@@ -1,0 +1,68 @@
+ */
+- (void)resetAuthorizationStatusForResource:(XCUIProtectedResource)resource XCUI_PROTECTED_RESOURCES_RESET_API_AVAILABLE;
+
+/*!
+ * @method -performAccessibilityAuditWithAuditTypes:issueHandler:error:
+ * Runs an accessibility audit on the current view. Generates XCTIssue objects for each issue returned by the audit, and fails the test case by recording each of these issues. Returns an error if the audit failed to run.
+ *
+ * @param auditTypes Set of audit types which which configure what the audit will test for.
+ * @param block An optional filter can be used to determine whether or not an issue should be recorded. To prevent an issue from recorded, return YES to handle it yourself.
+ */
+- (BOOL)performAccessibilityAuditWithAuditTypes:(XCUIAccessibilityAuditType)auditTypes issueHandler:(nullable XCUI_NOESCAPE BOOL (^)(XCUIAccessibilityAuditIssue *issue))block error:(NSError **)outError API_AVAILABLE(macos(14.0), ios(17.0), tvos(17.0), watchos(10.0)) NS_REFINED_FOR_SWIFT;
+
+
+ */
+- (void)performHandGesture:(XCUIDeviceHandGesture)gesture NS_SWIFT_NAME(perform(handGesture:)) API_AVAILABLE(watchos(10.0));
+#endif // TARGET_OS_WATCH
+
+/*!
+ * Get or set the UI style of the device. Uses the `XCUIDeviceAppearance` enum to describe the UI style.
+ */
+@property (nonatomic) XCUIDeviceAppearance appearance API_AVAILABLE(macos(12.0), ios(15.0), tvos(15.0)) API_UNAVAILABLE(watchos);
+
+/*!
+//
+//  Copyright © 2022 Apple Inc. All rights reserved.
+//
+
+#import <XCUIAutomation/XCUIAutomationDefines.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+/*!
+    Bitmasks for use with [XCUIApplication performAccessibilityAuditWithAuditTypes:issueHandler:error:].
+    These represent the types of audits that can be run, and they can be combined using bitwise OR.
+*/
+
+API_AVAILABLE(macos(14.0), ios(17.0), tvos(17.0), watchos(10.0))
+typedef NS_OPTIONS(uint64_t, XCUIAccessibilityAuditType) {
+    // Types of audits supported on all platforms
+    XCUIAccessibilityAuditTypeContrast                     = (1UL << 0),
+    XCUIAccessibilityAuditTypeElementDetection             = (1UL << 1),
+    XCUIAccessibilityAuditTypeHitRegion                    = (1UL << 2),
+    XCUIAccessibilityAuditTypeSufficientElementDescription = (1UL << 3),
+    
+#if TARGET_OS_IOS || TARGET_OS_TV || TARGET_OS_WATCH || TARGET_OS_SIMULATOR
+    // Types of audits supported on iOS, watchOS, and tvOS
+    XCUIAccessibilityAuditTypeDynamicType                  = (1UL << 16),
+    XCUIAccessibilityAuditTypeTextClipped                  = (1UL << 17),
+    XCUIAccessibilityAuditTypeTrait                        = (1UL << 18),
+    
+#elif TARGET_OS_OSX || TARGET_OS_MACCATALYST
+    // Types of audits supported on macOS
+    XCUIAccessibilityAuditTypeAction                       = (1UL << 32),
+    XCUIAccessibilityAuditTypeParentChild                  = (1UL << 33),
+#endif
+    XCUIAccessibilityAuditTypeAll                          = ~0UL,
+};
+
+NS_ASSUME_NONNULL_END
+import _StringProcessing
+import _SwiftConcurrencyShims
+import os
+extension XCUIAutomation::XCUIApplication {
+  @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+  @nonobjc @_Concurrency::MainActor @preconcurrency public func performAccessibilityAudit(for auditTypes: XCUIAutomation::XCUIAccessibilityAuditType = .all, _ issueHandler: ((XCUIAutomation::XCUIAccessibilityAuditIssue) throws -> Swift::Bool)? = nil) throws
+}
+@available(swift 4.0)
+extension XCUIAutomation::XCUIElement {

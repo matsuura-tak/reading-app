@@ -1,0 +1,36 @@
+import XCTest
+
+final class S3ABCControlUITests: XCTestCase {
+    @MainActor
+    func testABCOnce() throws {
+        continueAfterFailure = true
+        XCUIDevice.shared.appearance = .light
+        for variant in ["A", "B", "C"] {
+            let app = XCUIApplication()
+            app.launchArguments = ["--variant=\(variant)", "-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP"]
+            app.launch()
+            XCTAssertTrue(app.staticTexts["2026年10月23日"].waitForExistence(timeout: 10))
+            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            screenshot.name = "\(variant)_before_audit"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+            let tree = app.debugDescription
+            let treeAttachment = XCTAttachment(string: tree)
+            treeAttachment.name = "\(variant)_AXtree"
+            treeAttachment.lifetime = .keepAlways
+            add(treeAttachment)
+            print("[S3-AXTREE-BEGIN] \(variant)\n\(tree)\n[S3-AXTREE-END] \(variant)")
+            print("[S3-AUDIT-BEGIN] \(variant)")
+            do {
+                try app.performAccessibilityAudit(for: .all) { issue in
+                    print("[S3-AUDIT-ISSUE] \(variant) type=\(issue.auditType.rawValue) \(issue.compactDescription) | \(issue.detailedDescription) | element=\(issue.element?.debugDescription ?? "nil")")
+                    return false
+                }
+            } catch {
+                XCTFail("Audit API error for \(variant): \(error)")
+            }
+            print("[S3-AUDIT-END] \(variant)")
+            app.terminate()
+        }
+    }
+}

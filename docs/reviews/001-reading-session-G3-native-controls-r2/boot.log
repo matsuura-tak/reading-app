@@ -1,0 +1,30 @@
+Monitoring boot status for ReadingApp-Native-Audit-Control-20261023 (0DD0727D-F16F-4DD6-8759-549D6FAB596F).
+[2026-10-23 14:00:52 +0000] Status=2, isTerminal=NO, Elapsed=00:01.
+	Waiting on Data Migration
+		Reason:(null)
+		Migration Elapsed:00:00 seconds
+
+[2026-10-23 14:00:53 +0000] Status=4, isTerminal=NO, Elapsed=00:02.
+	Waiting on System App
+
+[2026-10-23 14:00:54 +0000] Status=4, isTerminal=NO, Elapsed=00:03.
+	Waiting on System App
+
+[2026-10-23 14:00:55 +0000] Status=4, isTerminal=NO, Elapsed=00:04.
+	Waiting on System App
+
+[2026-10-23 14:00:56 +0000] Status=4, isTerminal=NO, Elapsed=00:05.
+	Waiting on System App
+
+[2026-10-23 14:00:58 +0000] Status=4, isTerminal=NO, Elapsed=00:08.
+	Waiting on System App
+
+[2026-10-23 14:00:59 +0000] Status=4, isTerminal=NO, Elapsed=00:08.
+	Waiting on System App
+
+[2026-10-23 14:01:00 +0000] Status=4, isTerminal=NO, Elapsed=00:09.
+	Waiting on System App
+
+[2026-10-23 14:01:00 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:10.
+	Finished
+
