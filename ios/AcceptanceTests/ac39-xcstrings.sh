@@ -31,10 +31,10 @@ test_AC39_stringCatalogFullyTranslated() {
   local last
   last="$(printf '%s\n' "$out" | tail -n 1)"
   if [ "$code" -ne 0 ] || [ "$last" != "untranslated_keys=0" ]; then
-    echo "$name: FAIL（exit=$code、最後の行=$last）"
+    echo "$name: FAIL（exit=${code}、最後の行=${last}）"
     return 1
   fi
-  echo "$name: PASS（exit=0、最後の行=$last）"
+  echo "$name: PASS（exit=0、最後の行=${last}）"
 }
 
 test_AC39_stringCatalogFullyTranslated
