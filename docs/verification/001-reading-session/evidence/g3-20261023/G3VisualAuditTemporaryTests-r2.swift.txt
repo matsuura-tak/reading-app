@@ -1,0 +1,143 @@
+import XCTest
+
+// Temporary G3 harness. PRD/design/contracts only; removed after evidence export.
+final class G3VisualAuditTemporaryTests: AcceptanceTestCase {
+    override func setUpWithError() throws { continueAfterFailure = true }
+
+    @MainActor func test_G3_light() { runVariant("light") }
+    @MainActor func test_G3_dark() { runVariant("dark") }
+    @MainActor func test_G3_ax5() { runVariant("ax5") }
+    @MainActor func test_G3_en() { runVariant("en") }
+
+    @MainActor private func launch(_ variant: String, seed: Seed, fail: String? = nil) -> XCUIApplication {
+        XCUIDevice.shared.appearance = variant == "dark" ? .dark : .light
+        let app = XCUIApplication(bundleIdentifier: "com.example.yomutoki")
+        let en = variant == "en"
+        app.launchArguments = ["-UITest", "-AppleLanguages", en ? "(en)" : "(ja)", "-AppleLocale", en ? "en_US" : "ja_JP",
+            "-UIPreferredContentSizeCategoryName", variant == "ax5" ? "UICTContentSizeCategoryAccessibilityXXXL" : "UICTContentSizeCategoryL"]
+        app.launchEnvironment = ["UITEST_SEED": seed.jsonString(), "UITEST_NOW": Fixture.now.text,
+            "UITEST_CLOCK_FROZEN": "1", "UITEST_TIME_ZONE": WallClock.timeZoneID, "UITEST_LOCALE": en ? "en_US" : "ja_JP"]
+        if let fail { app.launchEnvironment["UITEST_FAIL"] = fail }
+        app.launch()
+        return app
+    }
+
+    @MainActor private func el(_ app: XCUIApplication, _ id: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(identifier: id).firstMatch
+    }
+
+    @MainActor private func tap(_ app: XCUIApplication, _ id: String) {
+        let target = el(app, id)
+        guard target.waitForExistence(timeout: Wait.timeout) else { XCTFail("G3 missing \(id)"); return }
+        target.tap()
+    }
+
+    @MainActor private func capture(_ app: XCUIApplication, _ name: String, audit: Bool = false) {
+        let shot = XCTAttachment(screenshot: app.screenshot())
+        shot.name = "G3_\(name)"
+        shot.lifetime = .keepAlways
+        add(shot)
+        let tree = XCTAttachment(string: app.debugDescription)
+        tree.name = "G3_\(name)_tree"
+        tree.lifetime = .keepAlways
+        add(tree)
+        print("[G3-CAPTURE] \(name)")
+        if audit {
+            print("[G3-AUDIT-START] \(name)")
+            do {
+                try app.performAccessibilityAudit(for: .all) { issue in
+                    print("[G3-AUDIT-ISSUE] \(name) type=\(issue.auditType.rawValue) \(issue.compactDescription) | \(issue.detailedDescription) | element=\(issue.element?.debugDescription ?? "nil")")
+                    return false // Every finding remains an XCTest failure; none are suppressed.
+                }
+                print("[G3-AUDIT-COMPLETE] \(name)")
+            } catch {
+                print("[G3-AUDIT-ERROR] \(name) \(error)")
+                XCTFail("G3 audit could not run: \(name): \(error)")
+            }
+        }
+    }
+
+    @MainActor private func openDetail(_ app: XCUIApplication) {
+        tap(app, "library.book.\(Fixture.botchanId)")
+        Wait.exists(el(app, "book.title"), "G3 S3")
+    }
+
+    @MainActor private func deletePrompt(_ app: XCUIApplication, variant: String) {
+        let row = el(app, "session.row.id.\(Fixture.id(103))")
+        Wait.exists(row, "G3 latest session")
+        row.swipeLeft()
+        let delete = app.buttons.matching(NSPredicate(format: "identifier == %@ OR label == %@", "session.row.delete", variant == "en" ? "Delete" : "削除")).firstMatch
+        Wait.exists(delete, "G3 row delete")
+        delete.tap()
+        Wait.exists(app.alerts.firstMatch, "G3 S6")
+    }
+
+    @MainActor private func runVariant(_ variant: String) {
+        let audit = variant == "light"
+        var app = launch(variant, seed: Seeds.libraryOfFive())
+        Wait.exists(el(app, "home.bookCount"), "G3 S1")
+        capture(app, "S1_normal_\(variant)", audit: audit)
+        app.terminate()
+
+        app = launch(variant, seed: Seed(books: []))
+        tap(app, "library.addBook")
+        let title = el(app, "book.add.title")
+        Wait.exists(title, "G3 S2")
+        title.tap()
+        title.typeText("Reading notes")
+        capture(app, "S2_normal_\(variant)", audit: audit)
+        app.terminate()
+
+        app = launch(variant, seed: Seeds.libraryOfFive())
+        openDetail(app)
+        capture(app, "S3_normal_\(variant)", audit: audit)
+        app.terminate()
+
+        app = launch(variant, seed: Seeds.botchanOneSession(active: Fixture.reading(Fixture.botchanId, elapsed: 750)))
+        Wait.exists(el(app, "reading.elapsed"), "G3 S4")
+        capture(app, "S4_reading_\(variant)", audit: audit)
+        app.terminate()
+
+        app = launch(variant, seed: Seeds.botchanOneSession(active: Fixture.paused(Fixture.botchanId, elapsedAtPause: 750, pausedFor: 60)))
+        Wait.exists(el(app, "reading.resume"), "G3 S4 paused")
+        capture(app, "S4_paused_\(variant)")
+        app.terminate()
+
+        app = launch(variant, seed: Seeds.botchanOneSession(active: Fixture.finishing(Fixture.botchanId, elapsed: 600)))
+        Wait.exists(el(app, "session.finish.save"), "G3 S5")
+        capture(app, "S5_normal_\(variant)", audit: audit)
+        if variant == "ax5" {
+            let minutes = el(app, "session.finish.minutes")
+            for _ in 0..<3 where !minutes.isHittable { app.swipeUp() }
+            XCTAssertTrue(minutes.isHittable, "AX5 minutes can be reached by scrolling")
+            minutes.tap()
+            capture(app, "S5_minutes_scrolled_ax5")
+            tap(app, "session.finish.saveKeyboard")
+            Wait.gone(el(app, "session.finish.save"), "AX5 finish input saved")
+            Wait.exists(el(app, "book.title"), "AX5 returns to detail")
+            Wait.label(app.staticTexts.matching(identifier: "book.sessionCount").firstMatch, equals: L10n.sessionCount(2), "AX5 one record saved")
+            capture(app, "S3_after_keyboard_save_ax5")
+        }
+        app.terminate()
+
+        app = launch(variant, seed: Seeds.libraryOfFive())
+        openDetail(app)
+        deletePrompt(app, variant: variant)
+        capture(app, "S6_normal_\(variant)", audit: audit)
+        app.terminate()
+
+        app = launch(variant, seed: Seeds.libraryOfFive(), fail: "session_delete:*")
+        openDetail(app)
+        deletePrompt(app, variant: variant)
+        let confirm = app.buttons.matching(NSPredicate(format: "identifier == %@ OR label == %@", "session.delete.confirm", variant == "en" ? "Delete Session" : "記録を消す")).firstMatch
+        Wait.exists(confirm, "G3 S6 confirm")
+        confirm.tap()
+        let alert = app.alerts.firstMatch
+        Wait.exists(alert, "G3 S7")
+        let alertTitle = alert.staticTexts.matching(NSPredicate(format: "identifier == %@ OR label == %@", "error.saveFailed", variant == "en" ? "Couldn't Save Changes" : "変更を保存できませんでした")).firstMatch
+        Wait.exists(alertTitle, "G3 S7 title")
+        capture(app, "S7_normal_\(variant)", audit: audit)
+        app.terminate()
+        XCUIDevice.shared.appearance = .light
+    }
+}

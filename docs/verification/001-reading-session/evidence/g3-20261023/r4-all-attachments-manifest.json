@@ -1,0 +1,770 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "1B044DCA-3EDB-4741-B4DB-771A0F65DA64.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.10 午後.jpeg",
+        "timestamp" : 1792742830.935
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "DC01294B-0EB9-4D0C-8E62-F03D340E0FF6.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S3_after_relaunch_ax5_tree_0_87E7484E-58D7-48BA-956C-5A3EB1EFDF73.txt",
+        "timestamp" : 1792742830.926
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "1DE66AF2-3545-4230-92C5-1AAB9E629B66.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S3_after_relaunch_ax5_0_01A2FC29-AE6D-4E85-98C5-CDA852C94E6D.png",
+        "timestamp" : 1792742830.726
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "BD9D7741-6FF5-43CD-B20C-CCD1A24394BF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.07.10 午後",
+        "timestamp" : 1792742830.586
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "F44DCE68-217D-49E8-8CA1-0E68133E7D41.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.10 午後.jpeg",
+        "timestamp" : 1792742830.604
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "A8C92C49-3684-4939-BB19-B84F746C77FE.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.06 午後.jpeg",
+        "timestamp" : 1792742826.289
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "BE7AE96F-F0F6-461B-8C87-930839179284",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.07.05 午後",
+        "timestamp" : 1792742825.812
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "1A371BAB-39F3-4BE5-AF8F-A30DF80C286E.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.05 午後.jpeg",
+        "timestamp" : 1792742825.825
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "843DC56C-1030-40E6-B68D-1902BE23AD32",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.07.06 午後",
+        "timestamp" : 1792742826.27
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "9D26751A-3DBA-4A72-AFC8-BB5E461D0A6A.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.05 午後.jpeg",
+        "timestamp" : 1792742825.719
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "43340EC5-9424-4F5A-A5D6-7928E087E449.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.03 午後.jpeg",
+        "timestamp" : 1792742823.564
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "7BA1D9E6-FF8B-4E11-9F71-1617D2C1E497",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.07.03 午後",
+        "timestamp" : 1792742823.23
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "5882B4D6-54C5-4673-8BA8-014194AA2EF5.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.03 午後.jpeg",
+        "timestamp" : 1792742823.241
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "B0BFAD9F-6FB6-44EC-AB8C-7D25F917FEB0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.07.03 午後",
+        "timestamp" : 1792742823.553
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "3A18D71A-23E5-43BC-B5DC-5F157B7A93D3.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.02 午後.jpeg",
+        "timestamp" : 1792742822.985
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "83908F7A-1FCC-41DC-9EEE-83C6633ACE3A.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.59 午後.jpeg",
+        "timestamp" : 1792742819.404
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "0FF75FC6-D8DA-437C-970A-4689F34AA7A8.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.00 午後.jpeg",
+        "timestamp" : 1792742820.338
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "4FE38CF8-B3B6-4661-9260-6127AC9D7B47.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.58 午後.jpeg",
+        "timestamp" : 1792742818.327
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "082BC23E-03C0-4A53-B565-4D9D36E5DD66.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S3_after_keyboard_save_ax5_tree_0_87A0402D-50A1-4005-A107-16C3B22368BC.txt",
+        "timestamp" : 1792742818.318
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "EFCEC89E-870E-4716-89C0-615ADE3EC619.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S3_after_keyboard_save_ax5_0_6225551F-9D84-46FC-940E-F4A8CDBF594D.png",
+        "timestamp" : 1792742818.116
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "8F3136BB-BE84-4D56-8B25-85A9E109C0B9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.57 午後",
+        "timestamp" : 1792742817.97
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "6F54DFBC-FC16-483F-8E23-DE7D6F5DB48F.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.57 午後.jpeg",
+        "timestamp" : 1792742817.991
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "F999290B-B5DD-4E70-8911-73EE0C7384C8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.55 午後",
+        "timestamp" : 1792742815.571
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "C0E32F51-3FE3-4475-B083-7DA749BC6EE5.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.55 午後.jpeg",
+        "timestamp" : 1792742815.586
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "FDF95430-7F36-4E84-8AFB-712A0389CA79.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S3_after_save_scroll_1_ax5_tree_0_D687A11A-6E01-4A93-AB3B-E638056B0CD5.txt",
+        "timestamp" : 1792742814.067
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "96C914CA-EE2F-4BD2-9134-0FBC06F90746.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S3_after_save_scroll_1_ax5_0_852BDCF1-5236-46AE-A413-CA075EFF8919.png",
+        "timestamp" : 1792742813.854
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "EDC96E0C-C66D-45DB-818F-6F86B7D7CBFB.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.51 午後.jpeg",
+        "timestamp" : 1792742811.643
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "D06CEDA7-2497-4B6F-8069-3B36F32761E2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.51 午後",
+        "timestamp" : 1792742811.174
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "70288F23-8450-4A79-9A9B-B842ECCD3D3C.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.51 午後.jpeg",
+        "timestamp" : 1792742811.189
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "8CB69AB7-4783-4547-8143-9CC026F7A3F6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.06.51 午後",
+        "timestamp" : 1792742811.629
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "F6960356-717A-4AA5-8D7D-04C45A8791C4.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.51 午後.jpeg",
+        "timestamp" : 1792742811.096
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "CEFD6B8E-BCFE-4912-A133-4D49702BB051.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.46 午後.jpeg",
+        "timestamp" : 1792742806.611
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "3954D6BF-8CD1-40B5-AC9B-F5DA81C9320E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.46 午後",
+        "timestamp" : 1792742806.286
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "6EDCB766-841A-4D55-9E3A-437E91B18D43.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.46 午後.jpeg",
+        "timestamp" : 1792742806.306
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "46844B56-6235-4C32-B776-89F1DA344A05",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.06.46 午後",
+        "timestamp" : 1792742806.594
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "98564135-5552-492A-9291-28978038F466.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.46 午後.jpeg",
+        "timestamp" : 1792742806.147
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "2A6456BA-8FF4-4E60-AE83-DD90D3E3B02F.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S5_minutes_edited_5_ax5_tree_0_087C1CEE-CB0D-43EE-958A-847284A99854.txt",
+        "timestamp" : 1792742804.86
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "6187AD78-27BA-4B62-AB8C-2A26076CB34D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S5_minutes_edited_5_ax5_0_64B7BD6B-8A4C-407F-B97B-4FE62DB010CB.png",
+        "timestamp" : 1792742804.565
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "6EED3ED4-9C5B-45AB-AA72-7C14C700D403.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.44 午後.jpeg",
+        "timestamp" : 1792742804.213
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "7935EAA3-EF38-469B-95C2-02C5E41AF1EF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.43 午後",
+        "timestamp" : 1792742803.928
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "3829F884-CA8B-4FAA-BED2-4A6957DE0FD1.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.43 午後.jpeg",
+        "timestamp" : 1792742803.947
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "4A39BA0E-7860-4BF3-BF2D-B6C5A9B34875",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.06.44 午後",
+        "timestamp" : 1792742804.196
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "67465557-7AA8-4528-A391-E4B9C23BC070.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.43 午後.jpeg",
+        "timestamp" : 1792742803.692
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "D666FED2-A9ED-438E-8D1F-A81844FDB317.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.43 午後.jpeg",
+        "timestamp" : 1792742803.681
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "45C29879-73A4-4E5C-85DF-540A6D015AD3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.43 午後",
+        "timestamp" : 1792742803.347
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "A5D302D4-E44A-4845-8E95-3BCF9D64DE84.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.43 午後.jpeg",
+        "timestamp" : 1792742803.371
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "329B59E1-A4A4-4E65-B9EC-F6D5AFB477FE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.06.43 午後",
+        "timestamp" : 1792742803.663
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "7EB72753-427F-4803-AB71-41BF0528DE41.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.42 午後.jpeg",
+        "timestamp" : 1792742802.857
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "7705CF0B-0C34-422A-9D5B-C5063968177B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S5_form_scroll_1_ax5_tree_0_FBE274DF-8846-4DBC-8ECA-3EF90B852DA8.txt",
+        "timestamp" : 1792742802.31
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "63093383-425C-410E-9A8E-8F2F03C21837.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S5_form_scroll_1_ax5_0_553BCE6D-29C1-4D0A-B6D8-BF36A9360D1A.png",
+        "timestamp" : 1792742802.005
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "16D2F6F2-67BC-4A96-AA70-E7EFAD0D0C4E.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.40 午後.jpeg",
+        "timestamp" : 1792742800.294
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "55344E83-3ED5-4DA3-BED3-E8CB0B527DCA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.06.39 午後",
+        "timestamp" : 1792742799.179
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "A0CE06AE-50A9-4CEF-AEA9-F65C9E253042.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.39 午後.jpeg",
+        "timestamp" : 1792742799.191
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "0ABACF32-AD4E-41B8-95FB-96E8C1F3EFC9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.06.40 午後",
+        "timestamp" : 1792742800.279
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "31E0C69C-FAB3-4864-BA4C-6354E3281F82.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.39 午後.jpeg",
+        "timestamp" : 1792742799.088
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "2D5E59C4-720C-4C60-A1B3-67CE1DEDC0B9.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S5_before_form_scroll_ax5_tree_0_9127FD90-EEE5-46BC-8A2F-13B4FC938DCA.txt",
+        "timestamp" : 1792742797.402
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "FC845656-753C-4037-A1AC-8751DAC8CD97.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S5_before_form_scroll_ax5_0_35D9EDE2-3886-43C7-9A4B-0758FAAA5D1B.png",
+        "timestamp" : 1792742797.098
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "01A72104-2C75-4A54-A10C-B44E4EE8BED5.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.32 午後.jpeg",
+        "timestamp" : 1792742792.074
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "BF478F13-045D-45F5-BEFE-5A2A8AA4199E.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.33 午後.jpeg",
+        "timestamp" : 1792742793.811
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "DCAE3163-2B00-4B67-BDF7-B2626D2EE7FE.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.32 午後.jpeg",
+        "timestamp" : 1792742792.027
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "6028B6DC-DD74-4BE5-B4A3-8BD0175C4C48.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.32 午後.jpeg",
+        "timestamp" : 1792742792.042
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "1595A961-CDFB-4ADE-95EF-1FBF61158B34.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.06.32 午後.jpeg",
+        "timestamp" : 1792742792.014
+      }
+    ],
+    "testIdentifier" : "G3VisualAuditTemporaryTests/test_G3_ax5_formInteraction()",
+    "testIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_ax5_formInteraction"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "8674B5DB-C5ED-47D2-876C-08893A29C3A7.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.22 午後.jpeg",
+        "timestamp" : 1792742842.49
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "5A4B3719-D0DB-4F74-B539-2C3D29B4BE23.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S2_normal_clean_en_tree_0_BA0602A0-2E9F-48E7-80CA-FCC988C149E1.txt",
+        "timestamp" : 1792742842.474
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "32EBA1C0-9842-4D2E-96A1-44C562274CAD.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "G3_S2_normal_clean_en_0_125F37BA-6322-4190-AE6B-CF0840A9542F.png",
+        "timestamp" : 1792742842.173
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "2735ACF5-75DD-4CE5-B82F-0BC9132A9967",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-23 at 05.07.22 午後",
+        "timestamp" : 1792742842.018
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "9D35C43D-B080-4AD5-8631-9EA1F34CD30F.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.22 午後.jpeg",
+        "timestamp" : 1792742842.043
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "897309B7-4F40-4B39-B5C9-7B2A9965451B.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.19 午後.jpeg",
+        "timestamp" : 1792742839.714
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "89621261-3BE1-48B8-8CA6-9C5DE12567EF.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.19 午後.jpeg",
+        "timestamp" : 1792742839.265
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "73DA6A77-7BA7-4B0A-9624-6BE4044B7908",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.07.19 午後",
+        "timestamp" : 1792742839.686
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "5AD1947F-091C-4A38-BC60-BE2E11F6D201.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.18 午後.jpeg",
+        "timestamp" : 1792742838.618
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "101F076D-1189-4D36-AB8C-AC4EA86F2EA3.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.18 午後.jpeg",
+        "timestamp" : 1792742838.499
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "81ED7F62-C5AB-4A5F-9E29-AA54FBFFB4C6.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.18 午後.jpeg",
+        "timestamp" : 1792742838.188
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "21E0C4A7-3EF3-494C-9EFF-AD5AAB1A8B11",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.07.18 午後",
+        "timestamp" : 1792742838.48
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "330E3A50-BA1C-44E2-873F-FEF759AB3E8A.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.17 午後.jpeg",
+        "timestamp" : 1792742837.945
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "161485F0-13EE-401F-BA79-67D0BB5459E3.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.15 午後.jpeg",
+        "timestamp" : 1792742835.985
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "E06D0130-878E-4B03-9F71-98DD5A26C48C.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.15 午後.jpeg",
+        "timestamp" : 1792742835.68
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "AC2FA3FC-4DBF-4851-BBE0-3E46F70486A8",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-23 at 05.07.15 午後",
+        "timestamp" : 1792742835.978
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "F2A748D9-F02A-4F5B-919F-24619986B4B4.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.15 午後.jpeg",
+        "timestamp" : 1792742835.613
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "BAC055C0-ECAC-44FF-B83C-D71D7D529103.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.12 午後.jpeg",
+        "timestamp" : 1792742832.159
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "1D9C5AEA-06A1-42C0-A3E9-3905131DE12A.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.13 午後.jpeg",
+        "timestamp" : 1792742833.333
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "9E339C65-D7F9-456D-BE41-F8C4F72B8A69.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.12 午後.jpeg",
+        "timestamp" : 1792742832.126
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "362376A8-2021-496F-84A8-5C858C7BE025.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.12 午後.jpeg",
+        "timestamp" : 1792742832.142
+      },
+      {
+        "configurationName" : "ja_JP",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "exportedFileName" : "D22DA6C2-A6D3-48EE-A082-09A67426FCB2.jpeg",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screenshot 2026-10-23 at 05.07.12 午後.jpeg",
+        "timestamp" : 1792742832.113
+      }
+    ],
+    "testIdentifier" : "G3VisualAuditTemporaryTests/test_G3_en_cleanS2()",
+    "testIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_en_cleanS2"
+  }
+]

@@ -134,7 +134,7 @@
 | つなぎ口を働かせる | 起動の引数 `-UITest`（AppSession.launch が必ず付ける。Acceptance.xctestplan の commandLineArgumentEntries はランナーに渡るだけ） | test-hooks.md の共通の決まり |
 | 初期化 | UITEST_RESET=1 | T1 |
 | データの投入 | UITEST_SEED（seed.schema.json。時刻は壁時計） | T2、T17、seed.schema.json |
-| 時刻の固定と進め方 | UITEST_NOW、UITEST_CLOCK_FROZEN=1、URL `readingapp-uitest://clock?advance=<秒>` / `set=<壁時計>` / `freeze=<0か1>` を XCUIApplication.open で送り、`uitest.clock.applied` の label が送った数になるのを待つ | T3、T16 |
+| 時刻の固定と進め方 | UITEST_NOW、UITEST_CLOCK_FROZEN=1、URL `readingapp-uitest://clock?advance=<秒>` / `set=<壁時計>` / `freeze=<0か1>` を XCUIDevice.shared.system.open で送り、`uitest.clock.applied` の label が送った数になるのを待つ | T3、T16 |
 | 時間帯 | UITEST_TIME_ZONE=Asia/Tokyo | T15 |
 | 言語と暦 | `-AppleLanguages (ja)`/`(en)`、`-AppleLocale ja_JP`/`en_US`、UITEST_LOCALE、UITEST_FIRST_WEEKDAY | T4 |
 | 保存の失敗 | UITEST_FAIL（例 session_finish:*、book_add:*、load:1） | T5 |
@@ -212,5 +212,5 @@
 - [x] 影響「大」のリスクのすべてに、自動テスト、3章の行、6章のチャーターがある。（R1〜R7。R6 は前半の AC-23、R7 は前半の AC-8 と後半の AC-54、AC-55）
 - [x] 3章の9行すべてに選んだものがあり、範囲外には理由がある。
 - [x] 4章のつなぎ口がすべて contracts/ にあるか、「未解決」に依頼として書いた。（すべて contracts/ にある）
-- [x] 受け入れテストのフォルダで、sleep、skip、xfail、XCTExpectFailure、retry、@testable import が0件（grep のコマンドと件数を報告に書いた）。（xctestplan の skippedTests の2行を除く。retry に当たるのは、アプリの再試行の識別子 error.retry と error.loadFailed.retry、その文字の L10n.errorRetry*、errorLoadFailedRetry、design 6 の再試行のボタンの文を見る noteRetryLabel とその添付の名前 DESIGN_retryLabel_（G2 r1 の提案5。AC の判定に数えない）、2章で決めたテストの名前（AC-35、AC-57、AC-59、AC-61、AC-63、AC-65、AC-67 の「Retry」。AC の中身がアプリの再試行）と、target.yml の「再試行しない」の注記1行だけ。テストを動かす側の再試行（-retry-tests-on-failure、testRepetitionMode）は0件）
+- [x] SwiftUI の画面テストの固定時間 sleep、skip、xfail、XCTExpectFailure、テスト実行側の再試行、@testable import は0件。受け入れテストフォルダ全体の sleep は0件ではなく、ac18-reboot.sh の wait_settled_state に1件（最大60秒、2秒刻みで simctl の端末状態を再確認）。UI の固定待機や失敗テストの再試行ではない。verification.md 6章に 0 UI / 1 CLI と理由を記録する。（xctestplan の skippedTests の2行を除く。retry に当たるのは、アプリの再試行の識別子 error.retry と error.loadFailed.retry、その文字の L10n.errorRetry*、errorLoadFailedRetry、design 6 の再試行のボタンの文を見る noteRetryLabel とその添付の名前 DESIGN_retryLabel_（G2 r1 の提案5。AC の判定に数えない）、2章で決めたテストの名前（AC-35、AC-57、AC-59、AC-61、AC-63、AC-65、AC-67 の「Retry」。AC の中身がアプリの再試行）と、target.yml の「再試行しない」の注記1行だけ。テストを動かす側の再試行（-retry-tests-on-failure、testRepetitionMode）は0件）
 - [ ] 8章の赤の証拠があり、落ちた理由が書き間違いではなく「機能がまだない」こと。（AC-39 は実装前に String Catalog がないことで終了1。XCUITest の82本は実装前に実行できず、その赤実行は未確認。red.log の6と history-807f934.log に補記した初回 macOS CI は実装後なので、この項目は完了にしない）

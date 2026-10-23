@@ -1,0 +1,22 @@
+{
+  "baseHead": "6442fe2e5b1ad1f4956123c938076c6da462b874",
+  "testedWorkingTreeProductSHA256": "604d14eacb971af2f55143319b2435f179f0b692d023f16e36f5bb732b531a4d",
+  "makerProductDelta": "+1/-0 AddBookView.swift",
+  "verifierProductEdits": 0,
+  "permanentAcceptanceDiff": 0,
+  "temporarySwiftExists": false,
+  "newPermanentTests": 0,
+  "screenshotVariants": [
+    "light",
+    "dark",
+    "ax5",
+    "en"
+  ],
+  "testResults": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "exit": 0
+  },
+  "overallG3": "FAIL"
+}

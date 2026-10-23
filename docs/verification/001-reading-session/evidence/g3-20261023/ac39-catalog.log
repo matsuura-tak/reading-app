@@ -1,0 +1,4 @@
+test_AC39_stringCatalogFullyTranslated: files=ios/Yomutoki/Resources/InfoPlist.xcstrings ios/Yomutoki/Resources/Localizable.xcstrings
+untranslated_keys=0
+test_AC39_stringCatalogFullyTranslated: PASS（exit=0、最後の行=untranslated_keys=0）
+exit=0

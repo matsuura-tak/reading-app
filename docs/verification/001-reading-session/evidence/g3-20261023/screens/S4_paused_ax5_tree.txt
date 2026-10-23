@@ -1,0 +1,39 @@
+Attributes: Application, 0x105836880, pid: 9867, label: 'よむとき'
+Element subtree:
+ →Application, 0x105836880, pid: 9867, label: 'よむとき'
+    Window (Main), 0x105827510, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1058316f0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x105830870, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x105830c90, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x10582fb90, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1058336b0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'session.state.paused'
+                Other, 0x1058337d0, {{0.0, 0.0}, {402.0, 874.0}}
+                  NavigationBar, 0x1058338f0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '_TtGC7SwiftUI32NavigationStackHosting'
+                    Button, 0x105833a10, {{16.0, 62.0}, {49.0, 44.0}}, identifier: 'BackButton', label: '読書'
+                  Other, 0x105833b30, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x105833c50, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x105833d70, {{0.0, 0.0}, {402.0, 874.0}}
+                        Other, 0x105833e90, {{0.0, 0.0}, {402.0, 874.0}}
+                          ScrollView, 0x105833fb0, {{0.0, 0.0}, {402.0, 874.0}}
+                            Other, 0x1058340d0, {{0.0, 0.0}, {402.0, 170.8}}
+                            Other, 0x1058341f0, {{0.0, 116.0}, {402.0, 569.3}}
+                              StaticText, 0x105834310, {{72.3, 132.0}, {257.3, 65.7}}, identifier: 'reading.title', label: '坊っちゃん'
+                              StaticText, 0x105834430, {{53.3, 209.7}, {295.3, 58.7}}, identifier: 'reading.fromPage', label: '40ページから'
+                              StaticText, 0x105834550, {{121.3, 292.3}, {159.3, 71.7}}, identifier: 'reading.elapsed', label: '12分30秒'
+                              StaticText, 0x105834670, {{86.3, 376.0}, {229.3, 58.7}}, identifier: 'reading.state', label: '一時停止中'
+                              Button, 0x105834790, {{16.0, 466.7}, {370.0, 93.3}}, identifier: 'reading.finish', label: '終える'
+                              Button, 0x1058348b0, {{16.0, 576.0}, {370.0, 93.3}}, identifier: 'reading.resume', label: '再開'
+                            Other, 0x1058349d0, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                              Other, 0x105834af0, {{396.0, 273.7}, {3.0, 535.3}}
+                            Other, 0x105834c10, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                              Other, 0x105834d30, {{396.0, 273.7}, {3.0, 535.3}}
+                  Other, 0x105834e50, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x105834f70, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x105835090, {{0.0, 62.0}, {1.0, 1.0}}, identifier: 'uitest.clock.applied', label: '0'
+Path to element:
+ →Application, 0x105836880, pid: 9867, label: 'よむとき'
+Query chain:
+ →Find: Target Application 'com.example.yomutoki'
+  Output: {
+    Application, 0x105835810, pid: 9867, label: 'よむとき'
+  }
