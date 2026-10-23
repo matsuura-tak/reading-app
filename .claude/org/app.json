@@ -17,8 +17,8 @@
     ]
   },
   "commands": {
-    "ios_build": "",
-    "ios_test": "",
+    "ios_build": "make ios-build",
+    "ios_test": "make ios-test",
     "backend_test": ""
   }
 }
