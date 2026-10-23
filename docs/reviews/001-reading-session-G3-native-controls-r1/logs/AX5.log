@@ -1,0 +1,937 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test-without-building -project NativeAuditControl.xcodeproj -scheme NativeAuditControl -destination "platform=iOS Simulator,id=0DD0727D-F16F-4DD6-8759-549D6FAB596F" -derivedDataPath DerivedData -parallel-testing-enabled NO -resultBundlePath evidence/AX5-final.xcresult CODE_SIGNING_ALLOWED=NO
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+
+Writing result bundle at path:
+	/private/tmp/reading-app-native-audit-control-20261023/evidence/AX5-final.xcresult
+
+2026-10-23 22:50:26.356 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:50:27.617493+0900 NativeAuditControlUITests-Runner[18341:444534] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'All tests' started at 2026-10-23 22:50:28.617.
+Test Suite 'NativeAuditControlUITests.xctest' started at 2026-10-23 22:50:28.617.
+Test Suite 'NativeAuditControlUITests' started at 2026-10-23 22:50:28.617.
+Test Case '-[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates]' started.
+    t =     0.00s Start Test at 2026-10-23 22:50:28.619
+    t =     0.04s Set Up
+    t =     0.04s Setting appearance mode to Light
+    t =     0.05s     Wait for com.apple.springboard to idle
+    t =     0.05s Open local.readingapp.control.NativeAuditControl
+    t =     0.06s     Launch local.readingapp.control.NativeAuditControl
+2026-10-23 22:50:28.902 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-23 22:50:28.902 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: no debugger version
+2026-10-23 22:50:28.933 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =     0.69s         Setting up automation session
+    t =     1.40s         Wait for local.readingapp.control.NativeAuditControl to idle
+    t =     2.81s Waiting 10.0s for "control.header" StaticText to exist
+    t =     3.84s     Checking `Expect predicate `existsNoRetry == 1` for object "control.header" StaticText`
+    t =     3.85s         Checking existence of `"control.header" StaticText`
+    t =     3.97s Find the Target Application 'local.readingapp.control.NativeAuditControl'
+    t =     4.08s Added attachment named 'form_before_audit'
+    t =     4.08s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     4.17s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     4.20s Added attachment named 'form_AXtree'
+[CONTROL-AXTREE-BEGIN] form
+Attributes: Application, 0x1045158e0, pid: 18356, label: 'NativeAuditControl'
+Element subtree:
+ →Application, 0x1045158e0, pid: 18356, label: 'NativeAuditControl'
+    Window (Main), 0x104514420, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x104514840, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x104514000, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x104514c60, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x104515c30, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x104513830, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x104516950, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '読書を終える'
+                  Other, 0x104516a70, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+                    Other, 0x104516b90, {{20.0, 66.0}, {114.3, 36.0}}
+                      Button, 0x104516cb0, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+                  StaticText, 0x104516e10, {{150.3, 71.3}, {118.0, 25.3}}, label: '読書を終える'
+                  Other, 0x104516f30, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+                    Other, 0x104517050, {{326.7, 66.0}, {55.3, 36.0}}
+                      Button, 0x104517170, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+                Other, 0x104517290, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1045173b0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1045174d0, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x1045175f0, {{0.0, 0.0}, {402.0, 874.0}}
+                        CollectionView, 0x104517710, {{0.0, 0.0}, {402.0, 874.0}}
+                          Other, 0x104517830, {{-16.0, -1632.0}, {434.0, 3778.7}}
+                          Cell, 0x104517950, {{16.0, 116.0}, {370.0, 72.7}}
+                            Other, 0x104517a70, {{16.0, 116.0}, {370.0, 72.7}}
+                            Other, 0x104517b90, {{16.0, 116.0}, {370.0, 72.7}}
+                              Other, 0x104517cb0, {{16.0, 116.0}, {370.0, 72.7}}
+                                Other, 0x104517dd0, {{16.0, 116.0}, {370.0, 72.7}}
+                                  StaticText, 0x104517ef0, {{16.0, 116.0}, {370.0, 72.7}}, identifier: 'control.header', label: '坊っちゃん'
+                          Cell, 0x104518010, {{16.0, 188.7}, {370.0, 95.0}}
+                            Other, 0x104518130, {{16.0, 188.7}, {370.0, 95.0}}
+                              Other, 0x104518250, {{16.0, 188.7}, {370.0, 95.0}}
+                            Other, 0x104518370, {{16.0, 188.7}, {370.0, 95.0}}
+                              Other, 0x104518490, {{16.0, 188.7}, {370.0, 95.0}}
+                                Other, 0x1045185b0, {{16.0, 188.7}, {370.0, 95.0}}
+                                  TextField, 0x1045186d0, {{32.0, 203.7}, {338.0, 65.0}}, placeholderValue: '今のページ', value: 40
+                          Cell, 0x1045187f0, {{16.0, 283.7}, {370.0, 95.0}}
+                            Other, 0x104518910, {{16.0, 283.7}, {370.0, 95.0}}
+                              Other, 0x104518a30, {{16.0, 283.7}, {370.0, 95.0}}
+                            Other, 0x104518b50, {{16.0, 283.7}, {370.0, 95.0}}
+                              Other, 0x104518c70, {{16.0, 283.7}, {370.0, 95.0}}
+                                Other, 0x104518d90, {{16.0, 283.7}, {370.0, 95.0}}
+                                  TextField, 0x104518eb0, {{32.0, 298.7}, {338.0, 65.0}}, placeholderValue: '読んだ時間', value: 30
+                          Other, 0x104518fd0, {{32.0, 282.7}, {338.0, 1.0}}
+                          Other, 0x1045190f0, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                            Other, 0x104519210, {{396.0, 802.0}, {3.0, 7.0}}
+                          Other, 0x104519330, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                            Other, 0x104519450, {{396.0, 802.0}, {3.0, 7.0}}
+                Other, 0x104519570, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x104519690, {{0.0, 0.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x1045158e0, pid: 18356, label: 'NativeAuditControl'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x104519f90, pid: 18356, label: 'NativeAuditControl'
+  }
+
+[CONTROL-AXTREE-END] form
+    t =     4.20s Get all elements bound by index for: Descendants matching type Any
+    t =     4.23s Find the Any (Element at index 0)
+    t =     4.24s Find the Any (Element at index 1)
+    t =     4.26s Find the Any (Element at index 2)
+    t =     4.28s Find the Any (Element at index 3)
+    t =     4.30s Find the Any (Element at index 4)
+    t =     4.32s Find the Any (Element at index 5)
+    t =     4.33s Find the Any (Element at index 6)
+    t =     4.35s Find the Any (Element at index 7)
+    t =     4.37s Find the Any (Element at index 8)
+    t =     4.39s Find the Any (Element at index 9)
+    t =     4.41s Find the Any (Element at index 10)
+    t =     4.43s Find the "読書を終える" StaticText
+    t =     4.46s Find the "読書を終える" StaticText
+    t =     4.48s Find the "読書を終える" StaticText
+[CONTROL-GEOMETRY] form type=48 label=読書を終える frame=(150.33333333333331, 71.33333333333333, 118.0, 25.333333333333343)
+    t =     4.50s Find the Any (Element at index 11)
+    t =     4.53s Find the Any (Element at index 12)
+    t =     4.55s Find the Any (Element at index 13)
+    t =     4.56s Find the Any (Element at index 14)
+    t =     4.58s Find the Any (Element at index 15)
+    t =     4.60s Find the Any (Element at index 16)
+    t =     4.62s Find the Any (Element at index 17)
+    t =     4.65s Find the "control.cancel" Button
+    t =     4.67s Find the "control.cancel" Button
+    t =     4.69s Find the "control.cancel" Button
+[CONTROL-GEOMETRY] form type=9 label=キャンセル frame=(19.99999999999999, 66.0, 114.33333333333333, 36.0)
+    t =     4.71s Find the Any (Element at index 18)
+    t =     4.74s Find the "control.save" Button
+    t =     4.76s Find the "control.save" Button
+    t =     4.79s Find the "control.save" Button
+[CONTROL-GEOMETRY] form type=9 label=保存 frame=(326.6666666666667, 66.0, 55.333333333333314, 36.0)
+    t =     4.81s Find the Any (Element at index 19)
+    t =     4.83s Find the Any (Element at index 20)
+    t =     4.85s Find the Any (Element at index 21)
+    t =     4.87s Find the Any (Element at index 22)
+    t =     4.89s Find the Any (Element at index 23)
+    t =     4.91s Find the Any (Element at index 24)
+    t =     4.93s Find the Any (Element at index 25)
+    t =     4.95s Find the Any (Element at index 26)
+    t =     4.97s Find the Any (Element at index 27)
+    t =     5.00s Find the Any (Element at index 28)
+    t =     5.02s Find the Any (Element at index 29)
+    t =     5.04s Find the Any (Element at index 30)
+    t =     5.06s Find the Any (Element at index 31)
+    t =     5.08s Find the Any (Element at index 32)
+    t =     5.11s Find the Any (Element at index 33)
+    t =     5.13s Find the Any (Element at index 34)
+    t =     5.15s Find the Any (Element at index 35)
+    t =     5.17s Find the Any (Element at index 36)
+    t =     5.19s Find the Any (Element at index 37)
+    t =     5.22s Find the Any (Element at index 38)
+    t =     5.24s Find the Any (Element at index 39)
+    t =     5.26s Find the Any (Element at index 40)
+    t =     5.28s Find the Any (Element at index 41)
+    t =     5.31s Find the Any (Element at index 42)
+    t =     5.33s Find the "control.header" StaticText
+    t =     5.36s Find the "control.header" StaticText
+    t =     5.38s Find the "control.header" StaticText
+[CONTROL-GEOMETRY] form type=48 label=坊っちゃん frame=(16.0, 116.0, 370.0, 72.66666666666666)
+    t =     5.40s Find the Any (Element at index 43)
+    t =     5.43s Find the "今のページ" TextField
+    t =     5.46s Find the "今のページ" TextField
+    t =     5.48s Find the "今のページ" TextField
+[CONTROL-GEOMETRY] form type=49 label= frame=(32.0, 203.66666666666666, 338.0, 65.00000000000003)
+    t =     5.51s Find the Any (Element at index 44)
+    t =     5.53s Find the "読んだ時間" TextField
+    t =     5.56s Find the "読んだ時間" TextField
+    t =     5.58s Find the "読んだ時間" TextField
+[CONTROL-GEOMETRY] form type=49 label= frame=(32.0, 298.66666666666663, 338.0, 65.00000000000006)
+[CONTROL-AUDIT-BEGIN] form
+    t =     7.59s Find the Any (Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4364397424.22)
+    t =     7.61s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     7.64s Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4364397424.22
+    t =     7.68s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     7.71s Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4364397424.22
+    t =     7.71s Requesting snapshot of accessibility hierarchy for app with pid 18356
+[CONTROL-AUDIT-ISSUE] form type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x103cc7760, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+Element subtree:
+ →Button, 0x103cc7760, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+Path to element:
+ →Application, 0x103cc6110, pid: 18356, label: 'NativeAuditControl'
+  ↳Window (Main), 0x103cc2f70, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x103cc6c10, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x103cc6d30, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x103cc6970, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x103cc6a90, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x103cc6e50, {{0.0, 0.0}, {402.0, 874.0}}
+        ↳NavigationBar, 0x103cc6f70, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '読書を終える'
+         ↳Other, 0x103cc7520, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+          ↳Other, 0x103cc7640, {{326.7, 66.0}, {55.3, 36.0}}
+           ↳Button, 0x103cc7760, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x104566e90, pid: 18356, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4364397424.22
+    Output: {
+      Button, 0x104568c80, {{326.7, 66.0}, {55.3, 36.0}}, identifier: 'control.save', label: '保存'
+    }
+
+    t =     7.74s Find the Any (Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4364397424.22)
+    t =     7.76s Checking existence of `"control.save" Button`
+    t =     7.78s Find the "control.save" Button
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =     7.82s Find the Any (Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4351659968.21)
+    t =     7.85s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     7.87s Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4351659968.21
+    t =     7.91s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     7.94s Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4351659968.21
+    t =     7.94s Requesting snapshot of accessibility hierarchy for app with pid 18356
+[CONTROL-AUDIT-ISSUE] form type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x103cdf0d0, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+Element subtree:
+ →Button, 0x103cdf0d0, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+Path to element:
+ →Application, 0x103cde6a0, pid: 18356, label: 'NativeAuditControl'
+  ↳Window (Main), 0x103cda7e0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x103cdeb30, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x103cdec50, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x103cde7c0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x103cde8e0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x103cdea00, {{0.0, 0.0}, {402.0, 874.0}}
+        ↳NavigationBar, 0x103cded70, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '読書を終える'
+         ↳Other, 0x103cdee90, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+          ↳Other, 0x103cdefb0, {{20.0, 66.0}, {114.3, 36.0}}
+           ↳Button, 0x103cdf0d0, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x103ceddf0, pid: 18356, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4351659968.21
+    Output: {
+      Button, 0x103ce8ea0, {{20.0, 66.0}, {114.3, 36.0}}, identifier: 'control.cancel', label: 'キャンセル'
+    }
+
+    t =     7.97s Find the Any (Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4351659968.21)
+    t =     7.99s Checking existence of `"control.cancel" Button`
+    t =     8.01s Find the "control.cancel" Button
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =     8.04s Find the Any (Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4362276176.46)
+    t =     8.06s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     8.09s Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4362276176.46
+    t =     8.14s Requesting snapshot of accessibility hierarchy for app with pid 18356
+    t =     8.17s Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4362276176.46
+    t =     8.17s Requesting snapshot of accessibility hierarchy for app with pid 18356
+[CONTROL-AUDIT-ISSUE] form type=1 Contrast failed | Contrast failed for SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x103cee2a0, {{16.0, 116.0}, {370.0, 72.7}}, identifier: 'control.header', label: '坊っちゃん'
+Element subtree:
+ →StaticText, 0x103cee2a0, {{16.0, 116.0}, {370.0, 72.7}}, identifier: 'control.header', label: '坊っちゃん'
+Path to element:
+ →Application, 0x103cdfda0, pid: 18356, label: 'NativeAuditControl'
+  ↳Window (Main), 0x103cdfec0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x103ce0280, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x103ce03a0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x103cdffe0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x103ce0100, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x103ce04c0, {{0.0, 0.0}, {402.0, 874.0}}
+        ↳Other, 0x103ce0ee0, {{0.0, 0.0}, {402.0, 874.0}}
+         ↳Other, 0x103ce1000, {{0.0, 0.0}, {402.0, 874.0}}
+          ↳Other, 0x103ce1120, {{0.0, 0.0}, {402.0, 874.0}}
+           ↳Other, 0x103ce1240, {{0.0, 0.0}, {402.0, 874.0}}
+            ↳CollectionView, 0x103ce1360, {{0.0, 0.0}, {402.0, 874.0}}
+             ↳Cell, 0x103ce15a0, {{16.0, 116.0}, {370.0, 72.7}}
+              ↳Other, 0x103ce17e0, {{16.0, 116.0}, {370.0, 72.7}}
+               ↳Other, 0x103ce1900, {{16.0, 116.0}, {370.0, 72.7}}
+                ↳Other, 0x103ce1a20, {{16.0, 116.0}, {370.0, 72.7}}
+                 ↳StaticText, 0x103cee2a0, {{16.0, 116.0}, {370.0, 72.7}}, identifier: 'control.header', label: '坊っちゃん'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x10b30fa10, pid: 18356, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4362276176.46
+    Output: {
+      StaticText, 0x10b30e150, {{16.0, 116.0}, {370.0, 72.7}}, identifier: 'control.header', label: '坊っちゃん'
+    }
+
+    t =     8.21s Find the Any (Descendant with identity binding to AX element pid: 18356, elementOrHash.elementID: 4362276176.46)
+    t =     8.23s Checking existence of `"control.header" StaticText`
+    t =     8.25s Find the "control.header" StaticText
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Contrast failed
+[CONTROL-AUDIT-END] form
+    t =     8.29s Terminate local.readingapp.control.NativeAuditControl:18356
+2026-10-23 22:50:36.912 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:50:36.912 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =     9.38s Open local.readingapp.control.NativeAuditControl
+    t =     9.39s     Launch local.readingapp.control.NativeAuditControl
+2026-10-23 22:50:38.006 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-23 22:50:38.006 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: no debugger version
+2026-10-23 22:50:38.011 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =     9.60s         Setting up automation session
+    t =    10.37s         Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    11.61s Waiting 10.0s for "control.showAlert" Button to exist
+    t =    12.64s     Checking `Expect predicate `existsNoRetry == 1` for object "control.showAlert" Button`
+    t =    12.64s         Checking existence of `"control.showAlert" Button`
+    t =    12.68s Tap "control.showAlert" Button
+    t =    12.68s     Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    12.69s     Find the "control.showAlert" Button
+    t =    12.70s     Check for interrupting elements affecting "control.showAlert" Button
+    t =    12.71s     Synthesize event
+    t =    13.01s     Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    13.40s Waiting 10.0s for Alert (First Match) to exist
+    t =    14.44s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =    14.44s         Checking existence of `Alert (First Match)`
+    t =    14.45s Find the Target Application 'local.readingapp.control.NativeAuditControl'
+    t =    14.56s Added attachment named 'deleteAlert_before_audit'
+    t =    14.56s Requesting snapshot of accessibility hierarchy for app with pid 18359
+    t =    14.65s Requesting snapshot of accessibility hierarchy for app with pid 18359
+    t =    14.67s Added attachment named 'deleteAlert_AXtree'
+[CONTROL-AXTREE-BEGIN] deleteAlert
+Attributes: Application, 0x1045a4070, pid: 18359, label: 'NativeAuditControl'
+Element subtree:
+ →Application, 0x1045a4070, pid: 18359, label: 'NativeAuditControl'
+    Window (Main), 0x1045a52b0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1045a5db0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1045a5ed0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1045a5b10, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1045a5c30, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1045a5ff0, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x1045a6110, {{0.0, 62.0}, {402.0, 127.0}}, identifier: '記録'
+                  StaticText, 0x1045a6230, {{16.0, 116.0}, {112.3, 71.7}}, label: '記録'
+                Other, 0x1045a6350, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1045a6470, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1045a6590, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x1045a66b0, {{0.0, 0.0}, {402.0, 874.0}}
+                        Button, 0x1045a67d0, {{2.7, 483.0}, {396.7, 63.0}}, identifier: 'control.showAlert', label: '削除の確認を表示'
+                Other, 0x1045a68f0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1045a6a10, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1045a6b30, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1045a6c50, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1045a6d70, {{0.0, 0.0}, {402.0, 874.0}}
+        Alert, 0x1045a6e90, {{18.0, 89.0}, {366.0, 724.0}}, label: 'この記録を消しますか？'
+          Other, 0x1045a6fb0, {{18.0, 89.0}, {366.0, 724.0}}
+            Other, 0x1045a70d0, {{18.0, 89.0}, {366.0, 724.0}}
+              Other, 0x1045a71f0, {{18.0, 89.0}, {366.0, 724.0}}
+              Other, 0x1045a7310, {{18.0, 89.0}, {366.0, 724.0}}
+                ScrollView, 0x1045a7430, {{18.0, 89.0}, {366.0, 433.3}}
+                  Other, 0x1045a7550, {{18.0, 89.0}, {366.0, 551.0}}
+                    StaticText, 0x1045a7670, {{48.0, 99.7}, {306.0, 125.3}}, label: 'この記録を消しますか？'
+                    StaticText, 0x1045a7790, {{48.0, 222.0}, {306.0, 406.7}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'
+                  Other, 0x1045a78b0, {{18.0, 520.3}, {366.0, 2.0}}
+                  Other, 0x1045a79d0, {{351.0, 89.0}, {30.0, 433.3}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                    Other, 0x1045a7af0, {{378.0, 50.0}, {3.0, 36.0}}
+                  Other, 0x1045a7c10, {{18.0, 489.3}, {366.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x1045a7d30, {{-21.0, 516.3}, {36.0, 3.0}}
+                  Other, 0x1045a7e50, {{351.0, 89.0}, {30.0, 433.3}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                    Other, 0x1045a7f70, {{378.0, 50.0}, {3.0, 36.0}}
+                  Other, 0x1045a8140, {{18.0, 489.3}, {366.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x1045a8260, {{-21.0, 516.3}, {36.0, 3.0}}
+                ScrollView, 0x1045a8380, {{18.0, 522.3}, {366.0, 290.7}}
+                  Other, 0x1045a84a0, {{18.0, 522.3}, {366.0, 290.7}}
+                    Other, 0x1045a85c0, {{34.0, 538.3}, {334.0, 258.7}}
+                      Button, 0x1045a86e0, {{34.0, 538.3}, {334.0, 125.3}}, label: '削除'
+                      Button, 0x1045a8800, {{34.0, 671.7}, {334.0, 125.3}}, label: 'キャンセル'
+                  Other, 0x1045a8920, {{351.0, 522.3}, {30.0, 246.7}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                    Other, 0x1045a8a40, {{378.0, 612.3}, {3.0, 7.0}}
+                  Other, 0x1045a8b60, {{62.0, 780.0}, {278.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x1045a8c80, {{108.0, 807.0}, {7.0, 3.0}}
+                  Other, 0x1045a8da0, {{351.0, 522.3}, {30.0, 246.7}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                    Other, 0x1045a8ec0, {{378.0, 612.3}, {3.0, 7.0}}
+                  Other, 0x1045a8fe0, {{62.0, 780.0}, {278.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x1045a9100, {{108.0, 807.0}, {7.0, 3.0}}
+          Other, 0x1045a9220, {{18.0, 89.0}, {366.0, 724.0}}
+            Other, 0x1045a9340, {{18.0, 89.0}, {366.0, 724.0}}
+              Other, 0x1045a9460, {{18.0, 89.0}, {366.0, 724.0}}
+                Other, 0x1045a9580, {{18.0, 89.0}, {366.0, 724.0}}
+                  Other, 0x1045a96a0, {{18.0, 89.0}, {366.0, 724.0}}
+                    Other, 0x1045a97c0, {{18.0, 89.0}, {402.0, 874.0}}
+                Other, 0x1045a98e0, {{18.0, 89.0}, {366.0, 724.0}}
+                  Other, 0x1045a9a00, {{18.0, 89.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x1045a4070, pid: 18359, label: 'NativeAuditControl'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x103b87200, pid: 18359, label: 'NativeAuditControl'
+  }
+
+[CONTROL-AXTREE-END] deleteAlert
+    t =    14.67s Get all elements bound by index for: Descendants matching type Any
+    t =    14.69s Find the Any (Element at index 0)
+    t =    14.72s Find the Any (Element at index 1)
+    t =    14.74s Find the Any (Element at index 2)
+    t =    14.76s Find the Any (Element at index 3)
+    t =    14.80s Find the Any (Element at index 4)
+    t =    14.83s Find the Any (Element at index 5)
+    t =    14.84s Find the Any (Element at index 6)
+    t =    14.86s Find the Any (Element at index 7)
+    t =    14.87s Find the Any (Element at index 8)
+    t =    14.89s Find the Any (Element at index 9)
+    t =    14.91s Find the Any (Element at index 10)
+    t =    14.93s Find the Any (Element at index 11)
+    t =    14.96s Find the Any (Element at index 12)
+    t =    14.98s Find the Any (Element at index 13)
+    t =    15.01s Find the Any (Element at index 14)
+    t =    15.02s Find the Any (Element at index 15)
+    t =    15.04s Find the Any (Element at index 16)
+    t =    15.06s Find the Any (Element at index 17)
+    t =    15.08s Find the Any (Element at index 18)
+    t =    15.11s Find the Any (Element at index 19)
+    t =    15.13s Find the Any (Element at index 20)
+    t =    15.15s Find the Any (Element at index 21)
+    t =    15.17s Find the Any (Element at index 22)
+    t =    15.19s Find the Any (Element at index 23)
+    t =    15.21s Find the Any (Element at index 24)
+    t =    15.23s Find the "記録" StaticText
+    t =    15.25s Find the "記録" StaticText
+    t =    15.27s Find the "記録" StaticText
+[CONTROL-GEOMETRY] deleteAlert type=48 label=記録 frame=(15.999999999999993, 116.0, 112.33333333333331, 71.66666666666666)
+    t =    15.30s Find the Any (Element at index 25)
+    t =    15.32s Find the Any (Element at index 26)
+    t =    15.33s Find the Any (Element at index 27)
+    t =    15.35s Find the Any (Element at index 28)
+    t =    15.37s Find the Any (Element at index 29)
+    t =    15.39s Find the Any (Element at index 30)
+    t =    15.40s Find the Any (Element at index 31)
+    t =    15.42s Find the Any (Element at index 32)
+    t =    15.44s Find the Any (Element at index 33)
+    t =    15.46s Find the Any (Element at index 34)
+    t =    15.48s Find the Any (Element at index 35)
+    t =    15.50s Find the Any (Element at index 36)
+    t =    15.52s Find the Any (Element at index 37)
+    t =    15.54s Find the "この記録を消しますか？" StaticText
+    t =    15.56s Find the "この記録を消しますか？" StaticText
+    t =    15.59s Find the "この記録を消しますか？" StaticText
+[CONTROL-GEOMETRY] deleteAlert type=48 label=この記録を消しますか？ frame=(48.0, 99.66666666666669, 306.0, 125.33333333333331)
+    t =    15.62s Find the Any (Element at index 38)
+    t =    15.65s Find the "合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。" StaticText
+    t =    15.68s Find the "合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。" StaticText
+    t =    15.70s Find the "合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。" StaticText
+[CONTROL-GEOMETRY] deleteAlert type=48 label=合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。 frame=(48.0, 222.00000000000003, 306.0, 406.66666666666674)
+    t =    15.73s Find the Any (Element at index 39)
+    t =    15.75s Find the Any (Element at index 40)
+    t =    15.79s Find the Any (Element at index 41)
+    t =    15.83s Find the Any (Element at index 42)
+    t =    15.87s Find the Any (Element at index 43)
+    t =    15.89s Find the Any (Element at index 44)
+    t =    15.91s Find the Any (Element at index 45)
+    t =    15.93s Find the Any (Element at index 46)
+    t =    15.95s Find the "削除" Button
+    t =    15.99s Find the "削除" Button
+    t =    16.04s Find the "削除" Button
+[CONTROL-GEOMETRY] deleteAlert type=9 label=削除 frame=(34.0, 538.3333333333334, 334.0, 125.33333333333337)
+    t =    16.10s Find the Any (Element at index 47)
+    t =    16.15s Find the "キャンセル" Button
+    t =    16.18s Find the "キャンセル" Button
+    t =    16.21s Find the "キャンセル" Button
+[CONTROL-GEOMETRY] deleteAlert type=9 label=キャンセル frame=(34.0, 671.6666666666667, 334.0, 125.33333333333337)
+    t =    16.24s Find the Any (Element at index 48)
+    t =    16.30s Find the "control.showAlert" Button
+    t =    16.35s Find the "control.showAlert" Button
+    t =    16.39s Find the "control.showAlert" Button
+[CONTROL-GEOMETRY] deleteAlert type=9 label=削除の確認を表示 frame=(2.6666666666666665, 483.0, 396.66666666666663, 63.0)
+[CONTROL-AUDIT-BEGIN] deleteAlert
+    t =    18.53s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320632064.53)
+    t =    19.55s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320632064.53) (retry 1)
+    t =    20.59s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320632064.53) (retry 2)
+[CONTROL-AUDIT-ISSUE] deleteAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil
+    t =    20.61s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320632064.53)
+    t =    21.63s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320632064.53) (retry 1)
+    t =    22.65s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320632064.53) (retry 2)
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =    22.67s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320623296.44)
+    t =    22.72s Requesting snapshot of accessibility hierarchy for app with pid 18359
+    t =    22.74s Find: Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320623296.44
+    t =    22.77s Requesting snapshot of accessibility hierarchy for app with pid 18359
+    t =    22.79s Find: Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320623296.44
+    t =    22.79s Requesting snapshot of accessibility hierarchy for app with pid 18359
+[CONTROL-AUDIT-ISSUE] deleteAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x103b93df0, {{48.0, 222.0}, {306.0, 406.7}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'
+Element subtree:
+ →StaticText, 0x103b93df0, {{48.0, 222.0}, {306.0, 406.7}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'
+Path to element:
+ →Application, 0x103b91350, pid: 18359, label: 'NativeAuditControl'
+  ↳Window (Main), 0x103b92050, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x103b93190, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Alert, 0x103b934f0, {{18.0, 89.0}, {366.0, 724.0}}, label: 'この記録を消しますか？'
+     ↳Other, 0x103b93610, {{18.0, 89.0}, {366.0, 724.0}}
+      ↳Other, 0x103b93730, {{18.0, 89.0}, {366.0, 724.0}}
+       ↳Other, 0x103b93970, {{18.0, 89.0}, {366.0, 724.0}}
+        ↳ScrollView, 0x103b93a90, {{18.0, 89.0}, {366.0, 433.3}}
+         ↳Other, 0x103b93bb0, {{18.0, 89.0}, {366.0, 551.0}}
+          ↳StaticText, 0x103b93df0, {{48.0, 222.0}, {306.0, 406.7}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x10b324300, pid: 18359, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320623296.44
+    Output: {
+      StaticText, 0x10b326ed0, {{48.0, 222.0}, {306.0, 406.7}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'
+    }
+
+    t =    22.83s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320623296.44)
+    t =    22.84s Checking existence of `"合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。" StaticText`
+    t =    22.85s Find the "合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。" StaticText
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =    22.94s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320636592.54)
+    t =    23.96s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320636592.54) (retry 1)
+    t =    25.00s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320636592.54) (retry 2)
+[CONTROL-AUDIT-ISSUE] deleteAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil
+    t =    25.03s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320636592.54)
+    t =    26.05s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320636592.54) (retry 1)
+    t =    27.16s     Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320636592.54) (retry 2)
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =    27.31s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320618576.43)
+    t =    27.35s Requesting snapshot of accessibility hierarchy for app with pid 18359
+    t =    27.39s Find: Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320618576.43
+    t =    27.50s Requesting snapshot of accessibility hierarchy for app with pid 18359
+    t =    27.52s Find: Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320618576.43
+    t =    27.52s Requesting snapshot of accessibility hierarchy for app with pid 18359
+[CONTROL-AUDIT-ISSUE] deleteAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10b317e00, {{48.0, 99.7}, {306.0, 125.3}}, label: 'この記録を消しますか？'
+Element subtree:
+ →StaticText, 0x10b317e00, {{48.0, 99.7}, {306.0, 125.3}}, label: 'この記録を消しますか？'
+Path to element:
+ →Application, 0x10b12a260, pid: 18359, label: 'NativeAuditControl'
+  ↳Window (Main), 0x1045aeec0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x10b3172c0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Alert, 0x10b317620, {{18.0, 89.0}, {366.0, 724.0}}, label: 'この記録を消しますか？'
+     ↳Other, 0x10b317740, {{18.0, 89.0}, {366.0, 724.0}}
+      ↳Other, 0x10b317860, {{18.0, 89.0}, {366.0, 724.0}}
+       ↳Other, 0x10b317aa0, {{18.0, 89.0}, {366.0, 724.0}}
+        ↳ScrollView, 0x10b317bc0, {{18.0, 89.0}, {366.0, 433.3}}
+         ↳Other, 0x10b317ce0, {{18.0, 89.0}, {366.0, 551.0}}
+          ↳StaticText, 0x10b317e00, {{48.0, 99.7}, {306.0, 125.3}}, label: 'この記録を消しますか？'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x1038aeab0, pid: 18359, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320618576.43
+    Output: {
+      StaticText, 0x10397c990, {{48.0, 99.7}, {306.0, 125.3}}, label: 'この記録を消しますか？'
+    }
+
+    t =    27.59s Find the Any (Descendant with identity binding to AX element pid: 18359, elementOrHash.elementID: 4320618576.43)
+    t =    27.65s Checking existence of `"この記録を消しますか？" StaticText`
+    t =    27.68s Find the "この記録を消しますか？" StaticText
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+[CONTROL-AUDIT-END] deleteAlert
+    t =    27.97s Terminate local.readingapp.control.NativeAuditControl:18359
+2026-10-23 22:50:56.667 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:50:56.668 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =    29.06s Open local.readingapp.control.NativeAuditControl
+    t =    29.06s     Launch local.readingapp.control.NativeAuditControl
+2026-10-23 22:50:57.703 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-23 22:50:57.703 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: no debugger version
+2026-10-23 22:50:57.734 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =    29.52s         Setting up automation session
+    t =    30.70s         Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    32.12s Waiting 10.0s for "control.showAlert" Button to exist
+    t =    33.17s     Checking `Expect predicate `existsNoRetry == 1` for object "control.showAlert" Button`
+    t =    33.17s         Checking existence of `"control.showAlert" Button`
+    t =    33.24s Tap "control.showAlert" Button
+    t =    33.24s     Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    33.25s     Find the "control.showAlert" Button
+    t =    33.27s     Check for interrupting elements affecting "control.showAlert" Button
+    t =    33.30s     Synthesize event
+    t =    33.65s     Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    34.05s Waiting 10.0s for Alert (First Match) to exist
+    t =    35.06s     Checking `Expect predicate `existsNoRetry == 1` for object Alert (First Match)`
+    t =    35.06s         Checking existence of `Alert (First Match)`
+    t =    35.19s Find the Target Application 'local.readingapp.control.NativeAuditControl'
+    t =    35.50s Added attachment named 'errorAlert_before_audit'
+    t =    35.50s Requesting snapshot of accessibility hierarchy for app with pid 18666
+    t =    35.66s Requesting snapshot of accessibility hierarchy for app with pid 18666
+    t =    35.69s Added attachment named 'errorAlert_AXtree'
+[CONTROL-AXTREE-BEGIN] errorAlert
+Attributes: Application, 0x1045c4700, pid: 18666, label: 'NativeAuditControl'
+Element subtree:
+ →Application, 0x1045c4700, pid: 18666, label: 'NativeAuditControl'
+    Window (Main), 0x104724e40, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x10462a540, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x103233390, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x10462e770, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x103a3c970, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x103a3b0c0, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x10b30f2c0, {{0.0, 62.0}, {402.0, 127.0}}, identifier: '記録'
+                  StaticText, 0x103a35230, {{16.0, 116.0}, {112.3, 71.7}}, label: '記録'
+                Other, 0x103a3c550, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x103a383f0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x10b32e870, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x10462e350, {{0.0, 0.0}, {402.0, 874.0}}
+                        Button, 0x10462bb30, {{2.7, 483.0}, {396.7, 63.0}}, identifier: 'control.showAlert', label: '保存エラーを表示'
+                Other, 0x104631a60, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x104631b80, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x104631ca0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x104631dc0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x103a3c130, {{0.0, 0.0}, {402.0, 874.0}}
+        Alert, 0x103a37fd0, {{18.0, 89.0}, {366.0, 724.0}}, label: '変更を保存できませんでした'
+          Other, 0x103a35e70, {{18.0, 89.0}, {366.0, 724.0}}
+            Other, 0x103a3bd10, {{18.0, 89.0}, {366.0, 724.0}}
+              Other, 0x103a3b8f0, {{18.0, 89.0}, {366.0, 724.0}}
+              Other, 0x1038b2c10, {{18.0, 89.0}, {366.0, 724.0}}
+                ScrollView, 0x1045c4b20, {{18.0, 89.0}, {366.0, 566.7}}
+                  Other, 0x104631ee0, {{18.0, 89.0}, {366.0, 566.7}}
+                    StaticText, 0x103a37bb0, {{48.0, 227.3}, {306.0, 187.3}}, label: '変更を保存できませんでした'
+                    StaticText, 0x104632000, {{48.0, 411.7}, {306.0, 232.7}}, label: '記録は消えていません。もう一度消してください。'
+                  Other, 0x104632120, {{351.0, 89.0}, {30.0, 566.7}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                    Other, 0x104632240, {{378.0, 50.0}, {3.0, 36.0}}
+                  Other, 0x104632360, {{18.0, 622.7}, {366.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x10399d300, {{-21.0, 649.7}, {36.0, 3.0}}
+                  Other, 0x1032845d0, {{351.0, 89.0}, {30.0, 566.7}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                    Other, 0x10472bff0, {{378.0, 50.0}, {3.0, 36.0}}
+                  Other, 0x104727190, {{18.0, 622.7}, {366.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x104632480, {{-21.0, 649.7}, {36.0, 3.0}}
+                ScrollView, 0x1046325a0, {{18.0, 655.7}, {366.0, 157.3}}
+                  Other, 0x1046326c0, {{18.0, 655.7}, {366.0, 157.3}}
+                    Other, 0x1046327e0, {{34.0, 671.7}, {334.0, 125.3}}
+                      Button, 0x104632900, {{34.0, 671.7}, {334.0, 125.3}}, label: '閉じる'
+                  Other, 0x104632a20, {{351.0, 655.7}, {30.0, 113.3}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                    Other, 0x103270560, {{378.0, 745.7}, {3.0, 7.0}}
+                  Other, 0x104632b40, {{62.0, 780.0}, {278.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x103274f30, {{108.0, 807.0}, {7.0, 3.0}}
+                  Other, 0x10471dd90, {{351.0, 655.7}, {30.0, 113.3}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                    Other, 0x10472d710, {{378.0, 745.7}, {3.0, 7.0}}
+                  Other, 0x104632c60, {{62.0, 780.0}, {278.0, 30.0}}, label: '水平スクロールバー, 1ページ', value: 0%
+                    Other, 0x104632d80, {{108.0, 807.0}, {7.0, 3.0}}
+          Other, 0x1039a3da0, {{18.0, 89.0}, {366.0, 724.0}}
+            Other, 0x1038b2240, {{18.0, 89.0}, {366.0, 724.0}}
+              Other, 0x10328fc80, {{18.0, 89.0}, {366.0, 724.0}}
+                Other, 0x103284130, {{18.0, 89.0}, {366.0, 724.0}}
+                  Other, 0x10327fc20, {{18.0, 89.0}, {366.0, 724.0}}
+                    Other, 0x1038b3ec0, {{18.0, 89.0}, {402.0, 874.0}}
+                Other, 0x103a38a30, {{18.0, 89.0}, {366.0, 724.0}}
+                  Other, 0x103a36e70, {{18.0, 89.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x1045c4700, pid: 18666, label: 'NativeAuditControl'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x10b12a260, pid: 18666, label: 'NativeAuditControl'
+  }
+
+[CONTROL-AXTREE-END] errorAlert
+    t =    35.69s Get all elements bound by index for: Descendants matching type Any
+    t =    35.72s Find the Any (Element at index 0)
+    t =    35.73s Find the Any (Element at index 1)
+    t =    35.75s Find the Any (Element at index 2)
+    t =    35.76s Find the Any (Element at index 3)
+    t =    35.78s Find the Any (Element at index 4)
+    t =    35.79s Find the Any (Element at index 5)
+    t =    35.81s Find the Any (Element at index 6)
+    t =    35.83s Find the Any (Element at index 7)
+    t =    35.85s Find the Any (Element at index 8)
+    t =    35.87s Find the Any (Element at index 9)
+    t =    35.88s Find the Any (Element at index 10)
+    t =    35.90s Find the Any (Element at index 11)
+    t =    35.92s Find the Any (Element at index 12)
+    t =    35.94s Find the Any (Element at index 13)
+    t =    35.95s Find the Any (Element at index 14)
+    t =    35.97s Find the Any (Element at index 15)
+    t =    35.99s Find the Any (Element at index 16)
+    t =    36.05s Find the Any (Element at index 17)
+    t =    36.08s Find the Any (Element at index 18)
+    t =    36.09s Find the Any (Element at index 19)
+    t =    36.11s Find the Any (Element at index 20)
+    t =    36.13s Find the Any (Element at index 21)
+    t =    36.15s Find the Any (Element at index 22)
+    t =    36.17s Find the Any (Element at index 23)
+    t =    36.18s Find the Any (Element at index 24)
+    t =    36.21s Find the "記録" StaticText
+    t =    36.23s Find the "記録" StaticText
+    t =    36.25s Find the "記録" StaticText
+[CONTROL-GEOMETRY] errorAlert type=48 label=記録 frame=(15.999999999999993, 116.0, 112.33333333333331, 71.66666666666666)
+    t =    36.27s Find the Any (Element at index 25)
+    t =    36.29s Find the Any (Element at index 26)
+    t =    36.31s Find the Any (Element at index 27)
+    t =    36.32s Find the Any (Element at index 28)
+    t =    36.34s Find the Any (Element at index 29)
+    t =    36.35s Find the Any (Element at index 30)
+    t =    36.37s Find the Any (Element at index 31)
+    t =    36.39s Find the Any (Element at index 32)
+    t =    36.40s Find the Any (Element at index 33)
+    t =    36.42s Find the Any (Element at index 34)
+    t =    36.44s Find the Any (Element at index 35)
+    t =    36.46s Find the Any (Element at index 36)
+    t =    36.48s Find the "変更を保存できませんでした" StaticText
+    t =    36.51s Find the "変更を保存できませんでした" StaticText
+    t =    36.53s Find the "変更を保存できませんでした" StaticText
+[CONTROL-GEOMETRY] errorAlert type=48 label=変更を保存できませんでした frame=(48.0, 227.33333333333334, 306.0, 187.33333333333334)
+    t =    36.55s Find the Any (Element at index 37)
+    t =    36.58s Find the "記録は消えていません。もう一度消してください。" StaticText
+    t =    36.60s Find the "記録は消えていません。もう一度消してください。" StaticText
+    t =    36.63s Find the "記録は消えていません。もう一度消してください。" StaticText
+[CONTROL-GEOMETRY] errorAlert type=48 label=記録は消えていません。もう一度消してください。 frame=(48.0, 411.6666666666667, 306.0, 232.66666666666669)
+    t =    36.66s Find the Any (Element at index 38)
+    t =    36.68s Find the Any (Element at index 39)
+    t =    36.70s Find the Any (Element at index 40)
+    t =    36.73s Find the Any (Element at index 41)
+    t =    36.75s Find the Any (Element at index 42)
+    t =    36.77s Find the Any (Element at index 43)
+    t =    36.79s Find the Any (Element at index 44)
+    t =    36.81s Find the Any (Element at index 45)
+    t =    36.84s Find the "閉じる" Button
+    t =    36.87s Find the "閉じる" Button
+    t =    36.90s Find the "閉じる" Button
+[CONTROL-GEOMETRY] errorAlert type=9 label=閉じる frame=(34.0, 671.6666666666666, 334.0, 125.33333333333337)
+    t =    36.93s Find the Any (Element at index 46)
+    t =    36.96s Find the "control.showAlert" Button
+    t =    36.99s Find the "control.showAlert" Button
+    t =    37.02s Find the "control.showAlert" Button
+[CONTROL-GEOMETRY] errorAlert type=9 label=保存エラーを表示 frame=(2.6666666666666665, 483.0, 396.66666666666663, 63.0)
+[CONTROL-AUDIT-BEGIN] errorAlert
+    t =    39.48s Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358102656.51)
+    t =    40.51s     Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358102656.51) (retry 1)
+    t =    41.53s     Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358102656.51) (retry 2)
+[CONTROL-AUDIT-ISSUE] errorAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil
+    t =    41.59s Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358102656.51)
+    t =    42.60s     Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358102656.51) (retry 1)
+    t =    43.63s     Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358102656.51) (retry 2)
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =    43.66s Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358090192.42)
+    t =    43.68s Requesting snapshot of accessibility hierarchy for app with pid 18666
+    t =    43.72s Find: Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358090192.42
+    t =    43.77s Requesting snapshot of accessibility hierarchy for app with pid 18666
+    t =    43.79s Find: Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358090192.42
+    t =    43.80s Requesting snapshot of accessibility hierarchy for app with pid 18666
+[CONTROL-AUDIT-ISSUE] errorAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10463f280, {{48.0, 227.3}, {306.0, 187.3}}, label: '変更を保存できませんでした'
+Element subtree:
+ →StaticText, 0x10463f280, {{48.0, 227.3}, {306.0, 187.3}}, label: '変更を保存できませんでした'
+Path to element:
+ →Application, 0x10b351b30, pid: 18666, label: 'NativeAuditControl'
+  ↳Window (Main), 0x103bc7f60, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x10463e860, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Alert, 0x10463ebc0, {{18.0, 89.0}, {366.0, 724.0}}, label: '変更を保存できませんでした'
+     ↳Other, 0x10463ece0, {{18.0, 89.0}, {366.0, 724.0}}
+      ↳Other, 0x10463ee00, {{18.0, 89.0}, {366.0, 724.0}}
+       ↳Other, 0x10463ef20, {{18.0, 89.0}, {366.0, 724.0}}
+        ↳ScrollView, 0x10463f040, {{18.0, 89.0}, {366.0, 566.7}}
+         ↳Other, 0x10463f160, {{18.0, 89.0}, {366.0, 566.7}}
+          ↳StaticText, 0x10463f280, {{48.0, 227.3}, {306.0, 187.3}}, label: '変更を保存できませんでした'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x1045f47c0, pid: 18666, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358090192.42
+    Output: {
+      StaticText, 0x1032a4930, {{48.0, 227.3}, {306.0, 187.3}}, label: '変更を保存できませんでした'
+    }
+
+    t =    43.83s Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358090192.42)
+    t =    43.85s Checking existence of `"変更を保存できませんでした" StaticText`
+    t =    43.86s Find the "変更を保存できませんでした" StaticText
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+    t =    43.94s Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358094400.43)
+    t =    43.96s Requesting snapshot of accessibility hierarchy for app with pid 18666
+    t =    44.00s Find: Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358094400.43
+    t =    44.05s Requesting snapshot of accessibility hierarchy for app with pid 18666
+    t =    44.07s Find: Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358094400.43
+    t =    44.07s Requesting snapshot of accessibility hierarchy for app with pid 18666
+[CONTROL-AUDIT-ISSUE] errorAlert type=65536 Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x103a51100, {{48.0, 411.7}, {306.0, 232.7}}, label: '記録は消えていません。もう一度消してください。'
+Element subtree:
+ →StaticText, 0x103a51100, {{48.0, 411.7}, {306.0, 232.7}}, label: '記録は消えていません。もう一度消してください。'
+Path to element:
+ →Application, 0x103bdc0a0, pid: 18666, label: 'NativeAuditControl'
+  ↳Window (Main), 0x103bd7a30, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1045efa30, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Alert, 0x1045f9e90, {{18.0, 89.0}, {366.0, 724.0}}, label: '変更を保存できませんでした'
+     ↳Other, 0x103bdcbc0, {{18.0, 89.0}, {366.0, 724.0}}
+      ↳Other, 0x103bdcce0, {{18.0, 89.0}, {366.0, 724.0}}
+       ↳Other, 0x10b14a8c0, {{18.0, 89.0}, {366.0, 724.0}}
+        ↳ScrollView, 0x10b14b950, {{18.0, 89.0}, {366.0, 566.7}}
+         ↳Other, 0x10b14aef0, {{18.0, 89.0}, {366.0, 566.7}}
+          ↳StaticText, 0x103a51100, {{48.0, 411.7}, {306.0, 232.7}}, label: '記録は消えていません。もう一度消してください。'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x10b1514e0, pid: 18666, label: 'NativeAuditControl'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358094400.43
+    Output: {
+      StaticText, 0x103bcfa00, {{48.0, 411.7}, {306.0, 232.7}}, label: '記録は消えていません。もう一度消してください。'
+    }
+
+    t =    44.10s Find the Any (Descendant with identity binding to AX element pid: 18666, elementOrHash.elementID: 4358094400.43)
+    t =    44.13s Checking existence of `"記録は消えていません。もう一度消してください。" StaticText`
+    t =    44.14s Find the "記録は消えていません。もう一度消してください。" StaticText
+<unknown>:0: error: -[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates] : Dynamic Type font sizes are partially unsupported
+[CONTROL-AUDIT-END] errorAlert
+    t =    44.20s Terminate local.readingapp.control.NativeAuditControl:18666
+2026-10-23 22:51:12.868 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:51:12.871 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =    45.26s Open local.readingapp.control.NativeAuditControl
+    t =    45.26s     Launch local.readingapp.control.NativeAuditControl
+2026-10-23 22:51:13.907 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: debugger version lookup failed for path '<nil>': noURL
+2026-10-23 22:51:13.907 xcodebuild[18340:444297] [MT] IDELaunchParametersSnapshot: no debugger version
+2026-10-23 22:51:13.939 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =    45.71s         Setting up automation session
+    t =    47.48s         Wait for local.readingapp.control.NativeAuditControl to idle
+    t =    48.90s Waiting 10.0s for "読書の記録 1" StaticText to exist
+    t =    49.93s     Checking `Expect predicate `existsNoRetry == 1` for object "読書の記録 1" StaticText`
+    t =    49.93s         Checking existence of `"読書の記録 1" StaticText`
+    t =    50.00s Find the Target Application 'local.readingapp.control.NativeAuditControl'
+    t =    50.15s Added attachment named 'list_before_audit'
+    t =    50.16s Requesting snapshot of accessibility hierarchy for app with pid 18765
+    t =    50.36s Requesting snapshot of accessibility hierarchy for app with pid 18765
+    t =    50.40s Added attachment named 'list_AXtree'
+[CONTROL-AXTREE-BEGIN] list
+Attributes: Application, 0x10b36a760, pid: 18765, label: 'NativeAuditControl'
+Element subtree:
+ →Application, 0x10b36a760, pid: 18765, label: 'NativeAuditControl'
+    Window (Main), 0x10b1511a0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1038da420, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1038d8de0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1038dee20, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1038e06b0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1038d83b0, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x1038e4b70, {{0.0, 62.0}, {402.0, 127.0}}, identifier: '読書の記録'
+                  StaticText, 0x1038df5e0, {{16.0, 116.0}, {280.7, 71.7}}, label: '読書の記録'
+                Other, 0x1038c5860, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1038c3f40, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1038c5440, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x1038c5c80, {{0.0, 0.0}, {402.0, 874.0}}
+                        CollectionView, 0x1038dabe0, {{0.0, 0.0}, {402.0, 874.0}}
+                          Other, 0x1038df1c0, {{-16.0, -1559.0}, {434.0, 3796.0}}
+                          Cell, 0x1038d16d0, {{16.0, 189.0}, {370.0, 93.3}}
+                            Other, 0x1038db660, {{16.0, 189.0}, {370.0, 93.3}}
+                              Other, 0x1038e5180, {{16.0, 189.0}, {370.0, 93.3}}
+                            Other, 0x1038e52a0, {{16.0, 189.0}, {370.0, 93.3}}
+                              Other, 0x1038e53c0, {{16.0, 189.0}, {370.0, 93.3}}
+                                Other, 0x1038e54e0, {{16.0, 189.0}, {370.0, 93.3}}
+                                  StaticText, 0x1038e5620, {{16.0, 189.0}, {370.0, 93.3}}, label: '読書の記録 1'
+                          Cell, 0x1038e5740, {{16.0, 282.3}, {370.0, 93.3}}
+                            Other, 0x1038e5860, {{16.0, 282.3}, {370.0, 93.3}}
+                              Other, 0x1038e5980, {{16.0, 282.3}, {370.0, 93.3}}
+                            Other, 0x1038e5aa0, {{16.0, 282.3}, {370.0, 93.3}}
+                              Other, 0x1038e5bc0, {{16.0, 282.3}, {370.0, 93.3}}
+                                Other, 0x1038e5ce0, {{16.0, 282.3}, {370.0, 93.3}}
+                                  StaticText, 0x1038e5e00, {{16.0, 282.3}, {370.0, 93.3}}, label: '読書の記録 2'
+                          Other, 0x1038e5f20, {{32.0, 281.3}, {338.0, 1.0}}
+                          Cell, 0x1038e6040, {{16.0, 375.7}, {370.0, 93.3}}
+                            Other, 0x1038e6160, {{16.0, 375.7}, {370.0, 93.3}}
+                              Other, 0x1038e6280, {{16.0, 375.7}, {370.0, 93.3}}
+                            Other, 0x1038e63a0, {{16.0, 375.7}, {370.0, 93.3}}
+                              Other, 0x1038e64c0, {{16.0, 375.7}, {370.0, 93.3}}
+                                Other, 0x1038e65e0, {{16.0, 375.7}, {370.0, 93.3}}
+                                  StaticText, 0x1038e6700, {{16.0, 375.7}, {370.0, 93.3}}, label: '読書の記録 3'
+                          Other, 0x1038e6820, {{32.0, 374.7}, {338.0, 1.0}}
+                          Other, 0x1038e6940, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                            Other, 0x1038e6a60, {{396.0, 802.0}, {3.0, 7.0}}
+                          Other, 0x1038e6b80, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                            Other, 0x1038e6ca0, {{396.0, 802.0}, {3.0, 7.0}}
+                Other, 0x1038e6dc0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1038e6ee0, {{0.0, 0.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x10b36a760, pid: 18765, label: 'NativeAuditControl'
+Query chain:
+ →Find: Target Application 'local.readingapp.control.NativeAuditControl'
+  Output: {
+    Application, 0x1032c25a0, pid: 18765, label: 'NativeAuditControl'
+  }
+
+[CONTROL-AXTREE-END] list
+    t =    50.40s Get all elements bound by index for: Descendants matching type Any
+    t =    50.42s Find the Any (Element at index 0)
+    t =    50.43s Find the Any (Element at index 1)
+    t =    50.45s Find the Any (Element at index 2)
+    t =    50.46s Find the Any (Element at index 3)
+    t =    50.48s Find the Any (Element at index 4)
+    t =    50.49s Find the Any (Element at index 5)
+    t =    50.51s Find the Any (Element at index 6)
+    t =    50.52s Find the Any (Element at index 7)
+    t =    50.54s Find the Any (Element at index 8)
+    t =    50.55s Find the Any (Element at index 9)
+    t =    50.57s Find the "読書の記録" StaticText
+    t =    50.59s Find the "読書の記録" StaticText
+    t =    50.61s Find the "読書の記録" StaticText
+[CONTROL-GEOMETRY] list type=48 label=読書の記録 frame=(15.999999999999972, 116.0, 280.66666666666663, 71.66666666666666)
+    t =    50.62s Find the Any (Element at index 10)
+    t =    50.64s Find the Any (Element at index 11)
+    t =    50.65s Find the Any (Element at index 12)
+    t =    50.66s Find the Any (Element at index 13)
+    t =    50.68s Find the Any (Element at index 14)
+    t =    50.70s Find the Any (Element at index 15)
+    t =    50.71s Find the Any (Element at index 16)
+    t =    50.72s Find the Any (Element at index 17)
+    t =    50.74s Find the Any (Element at index 18)
+    t =    50.75s Find the Any (Element at index 19)
+    t =    50.76s Find the Any (Element at index 20)
+    t =    50.78s Find the Any (Element at index 21)
+    t =    50.79s Find the Any (Element at index 22)
+    t =    50.81s Find the Any (Element at index 23)
+    t =    50.83s Find the Any (Element at index 24)
+    t =    50.84s Find the Any (Element at index 25)
+    t =    50.85s Find the Any (Element at index 26)
+    t =    50.87s Find the Any (Element at index 27)
+    t =    50.88s Find the Any (Element at index 28)
+    t =    50.90s Find the Any (Element at index 29)
+    t =    50.91s Find the Any (Element at index 30)
+    t =    50.93s Find the Any (Element at index 31)
+    t =    50.94s Find the Any (Element at index 32)
+    t =    50.96s Find the Any (Element at index 33)
+    t =    50.97s Find the Any (Element at index 34)
+    t =    50.99s Find the Any (Element at index 35)
+    t =    51.01s Find the Any (Element at index 36)
+    t =    51.02s Find the Any (Element at index 37)
+    t =    51.04s Find the Any (Element at index 38)
+    t =    51.06s Find the "読書の記録 1" StaticText
+    t =    51.08s Find the "読書の記録 1" StaticText
+    t =    51.10s Find the "読書の記録 1" StaticText
+[CONTROL-GEOMETRY] list type=48 label=読書の記録 1 frame=(16.0, 189.0, 370.0, 93.33333333333331)
+    t =    51.12s Find the Any (Element at index 39)
+    t =    51.17s Find the "読書の記録 2" StaticText
+    t =    51.28s Find the "読書の記録 2" StaticText
+    t =    51.31s Find the "読書の記録 2" StaticText
+[CONTROL-GEOMETRY] list type=48 label=読書の記録 2 frame=(16.0, 282.33333333333337, 370.0, 93.33333333333331)
+    t =    51.33s Find the Any (Element at index 40)
+    t =    51.35s Find the "読書の記録 3" StaticText
+    t =    51.37s Find the "読書の記録 3" StaticText
+    t =    51.40s Find the "読書の記録 3" StaticText
+[CONTROL-GEOMETRY] list type=48 label=読書の記録 3 frame=(16.0, 375.6666666666667, 370.0, 93.33333333333326)
+[CONTROL-AUDIT-BEGIN] list
+[CONTROL-AUDIT-END] list
+    t =    53.57s Terminate local.readingapp.control.NativeAuditControl:18765
+2026-10-23 22:51:22.209 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:51:22.209 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+    t =    54.65s Tear Down
+Test Case '-[NativeAuditControlUITests.NativeAuditControlUITests testAllNativeStates]' failed (54.805 seconds).
+Test Suite 'NativeAuditControlUITests' failed at 2026-10-23 22:51:23.424.
+	 Executed 1 test, with 10 failures (0 unexpected) in 54.805 (54.806) seconds
+Test Suite 'NativeAuditControlUITests.xctest' failed at 2026-10-23 22:51:23.424.
+	 Executed 1 test, with 10 failures (0 unexpected) in 54.805 (54.807) seconds
+Test Suite 'All tests' failed at 2026-10-23 22:51:23.424.
+	 Executed 1 test, with 10 failures (0 unexpected) in 54.805 (54.808) seconds
+2026-10-23 22:51:23.457 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:51:23.457 xcodebuild[18340:444297] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-23 22:51:38.981 xcodebuild[18340:444297] [MT] IDETestOperationsObserverDebug: 72.690 elapsed -- Testing started completed.
+2026-10-23 22:51:38.981 xcodebuild[18340:444297] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-23 22:51:38.981 xcodebuild[18340:444297] [MT] IDETestOperationsObserverDebug: 72.690 sec, +72.690 sec -- end
+
+Test session results, code coverage, and logs:
+	/tmp/reading-app-native-audit-control-20261023/evidence/AX5-final.xcresult
+
+Failing tests:
+	NativeAuditControlUITests.testAllNativeStates()
+	NativeAuditControlUITests.testAllNativeStates()
+
+** TEST EXECUTE FAILED **
+
+Testing started

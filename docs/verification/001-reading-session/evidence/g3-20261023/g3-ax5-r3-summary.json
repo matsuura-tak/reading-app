@@ -1,0 +1,55 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "modelName" : "iPhone 17",
+        "osBuildNumber" : "23A343",
+        "osVersion" : "26.0",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 1,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "ja_JP"
+      }
+    }
+  ],
+  "environmentDescription" : "Acceptance · Built with macOS 27.0.1",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1792742764.516,
+  "passedTests" : 1,
+  "result" : "Failed",
+  "runtimeWarnings" : [
+    {
+      "issueType" : "Runtime Warning",
+      "message" : "Invalid frame dimension (negative or non-finite)."
+    }
+  ],
+  "skippedTests" : 0,
+  "startTime" : 1792742646.473,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertTrue failed - AX5 minutes reachable by a swipe within form content",
+      "targetName" : "YomutokiAcceptanceTests",
+      "testIdentifier" : 1,
+      "testIdentifierString" : "G3VisualAuditTemporaryTests/test_G3_ax5_formInteraction()",
+      "testIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_ax5_formInteraction",
+      "testName" : "test_G3_ax5_formInteraction()"
+    }
+  ],
+  "title" : "Test - Yomutoki",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 2
+}

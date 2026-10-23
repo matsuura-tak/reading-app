@@ -1,0 +1,13 @@
+[原本 L1148] ios	ビルドとテスト	2026-10-23T03:36:50.9359330Z ** BUILD SUCCEEDED **
+[原本 L1715] ios	ビルドとテスト	2026-10-23T03:37:01.3307450Z ** BUILD SUCCEEDED **
+[原本 L2759] ios	ビルドとテスト	2026-10-23T03:38:19.7483840Z ✔ Test run with 69 tests in 12 suites passed after 1.297 seconds.
+[原本 L2767] ios	ビルドとテスト	2026-10-23T03:38:24.6796360Z ** TEST SUCCEEDED **
+[原本 L8536] ios	ビルドとテスト	2026-10-23T04:09:37.3359960Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift:38: Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_startToFirstElapsedMeasuredBySignpost]' measured [Duration (FirstElapsedShown), s] average: 0.087, relative standard deviation: 13.742%, values: [0.091929, 0.106902, 0.080491, 0.082020, 0.072084], performanceMetricID:com.apple.dt.XCTMetric_OSSignpost-FirstElapsedShown.duration, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.000, maxStandardDeviation: 0.000
+[原本 L12638] ios	ビルドとテスト	2026-10-23T04:30:28.3313390Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift:38: Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_startToFirstElapsedMeasuredBySignpost]' measured [Duration (FirstElapsedShown), s] average: 0.076, relative standard deviation: 10.267%, values: [0.087190, 0.083408, 0.067250, 0.070336, 0.072002], performanceMetricID:com.apple.dt.XCTMetric_OSSignpost-FirstElapsedShown.duration, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.000, maxStandardDeviation: 0.000
+[原本 L17986] ios	ビルドとテスト	2026-10-23T04:59:08.9571080Z ** TEST SUCCEEDED **
+[原本 L18238] ios	ビルドとテスト	2026-10-23T04:59:21.8087510Z [回2] ** TEST SUCCEEDED **
+[原本 L18244] ios	ビルドとテスト	2026-10-23T04:59:21.8091080Z 構成 en_US（iPhone 17 26.5）：通過 80、失敗 0、飛ばした 0
+[原本 L18245] ios	ビルドとテスト	2026-10-23T04:59:21.8091310Z 構成 ja_JP（iPhone 17 26.5）：通過 80、失敗 0、飛ばした 0
+[原本 L18337] ios	ビルドとテスト	2026-10-23T05:00:14.2259580Z ** TEST SUCCEEDED **
+[原本 L18467] ios	ビルドとテスト	2026-10-23T05:01:22.3597850Z ** TEST SUCCEEDED **
+[原本 L18471] ios	ビルドとテスト	2026-10-23T05:01:22.4231940Z ac18-reboot: passed 2 of 2 (seed, verify after reboot)

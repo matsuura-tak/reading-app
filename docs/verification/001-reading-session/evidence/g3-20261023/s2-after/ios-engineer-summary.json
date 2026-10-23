@@ -1,0 +1,54 @@
+{
+  "head": "6442fe2e5b1ad1f4956123c938076c6da462b874",
+  "product_change": "AddBookView.swift +1/-0 only",
+  "results": {
+    "ios-build": {
+      "exit": 0,
+      "warning_lines": 2,
+      "app_intents_warnings": 2,
+      "compiler_warnings": 0,
+      "tool_os_build_diagnostics": 0,
+      "invalid_frame_dimension": 0,
+      "unsatisfiable_constraints": 0
+    },
+    "Unit": {
+      "exit": 0,
+      "warning_lines": 3,
+      "app_intents_warnings": 3,
+      "compiler_warnings": 0,
+      "tool_os_build_diagnostics": 3,
+      "invalid_frame_dimension": 0,
+      "unsatisfiable_constraints": 0
+    },
+    "Acceptance-S2": {
+      "exit": 0,
+      "warning_lines": 0,
+      "app_intents_warnings": 0,
+      "compiler_warnings": 0,
+      "tool_os_build_diagnostics": 30,
+      "invalid_frame_dimension": 0,
+      "unsatisfiable_constraints": 0
+    }
+  },
+  "unit": {
+    "passed": 69,
+    "failed": 0,
+    "skipped": 0,
+    "suites": 12
+  },
+  "acceptance": {
+    "en_US": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ja_JP": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "acceptance_total_runs": 6,
+  "post_fix_dark_image_reviewed": false,
+  "g2_g3_overall_pass_claimed": false
+}

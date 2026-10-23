@@ -1,0 +1,71 @@
+Focused evidence only; this is not the full Acceptance plan or G3 completion.
+
+Baseline: 1ad1744; ja_JP; stopped at first failure
+Source: /private/tmp/reading-app-pr2-flaky-baseline-20261023.log
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (37.482 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (35.247 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.378 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (35.939 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.756 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 181.802 (181.811) seconds
+/tmp/reading-app-pr2-20261022/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:193: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel] : XCTAssertTrue failed - 終える入力 が消えない
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' failed (34.434 seconds).
+	 Executed 1 test, with 1 failure (0 unexpected) in 34.434 (34.435) seconds
+	 Executed 6 tests, with 1 failure (0 unexpected) in 216.237 (216.250) seconds
+	 Executed 6 tests, with 1 failure (0 unexpected) in 216.237 (216.252) seconds
+** TEST FAILED **
+
+Candidate: native waits and explicit downward gesture; ja_JP and en_US
+Source: /private/tmp/reading-app-pr2-flaky-candidate-20261023.log
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (41.530 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (41.158 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (41.428 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (41.200 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (40.989 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 206.305 (206.312) seconds
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.691 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (35.854 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.502 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (35.213 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (35.545 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 179.804 (179.808) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 386.109 (386.121) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 386.109 (386.123) seconds
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.132 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.502 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (36.325 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (35.982 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC9_enteringPageRecordsProgress]' passed (34.335 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 179.275 (179.282) seconds
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (40.793 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (39.993 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (40.152 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (41.185 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' passed (40.820 seconds).
+	 Executed 5 tests, with 0 failures (0 unexpected) in 202.943 (202.948) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 382.218 (382.236) seconds
+	 Executed 10 tests, with 0 failures (0 unexpected) in 382.218 (382.238) seconds
+** TEST SUCCEEDED **
+
+AC18: seed, power cycle of dedicated simulator, verify
+Source: /private/tmp/reading-app-pr2-ac18-20261023.log
+ac18-reboot: simulator=iPhone 17 26.0 udid=B18DB71A-DB50-4F84-9DDD-7D63541CF3BB results=/private/tmp/reading-app-pr2-ac18-20261023
+ac18-reboot: run YomutokiAcceptanceTests/AC18RebootTests/test_AC18_1_seedLibraryBeforeReboot (log=/private/tmp/reading-app-pr2-ac18-20261023/test_AC18_1_seedLibraryBeforeReboot.log)
+Test Case '-[YomutokiAcceptanceTests.AC18RebootTests test_AC18_1_seedLibraryBeforeReboot]' passed (12.133 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 12.133 (12.134) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 12.133 (12.135) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 12.133 (12.136) seconds
+** TEST SUCCEEDED **
+ac18-reboot: test_AC18_1_seedLibraryBeforeReboot exit=0
+ac18-reboot: reboot B18DB71A-DB50-4F84-9DDD-7D63541CF3BB
+ac18-reboot: state=Shutdown → shutdown を飛ばす（もう止まっている）
+ac18-reboot: state=Shutdown → boot する
+ac18-reboot: state=Booted（bootstatus の後）
+ac18-reboot: run YomutokiAcceptanceTests/AC18RebootTests/test_AC18_2_libraryRemainsAfterReboot (log=/private/tmp/reading-app-pr2-ac18-20261023/test_AC18_2_libraryRemainsAfterReboot.log)
+Test Case '-[YomutokiAcceptanceTests.AC18RebootTests test_AC18_2_libraryRemainsAfterReboot]' passed (19.529 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 19.529 (19.530) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 19.529 (19.531) seconds
+	 Executed 1 test, with 0 failures (0 unexpected) in 19.529 (19.532) seconds
+** TEST SUCCEEDED **
+ac18-reboot: test_AC18_2_libraryRemainsAfterReboot exit=0
+ac18-reboot: passed 2 of 2 (seed, verify after reboot)

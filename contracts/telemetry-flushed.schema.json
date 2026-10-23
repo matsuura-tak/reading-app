@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.invalid/yomutoki/contracts/telemetry-flushed.schema.json",
+  "title": "送り終わりの知らせ（Debug の受け口への POST /flushed の本文。test-hooks.md の T13）",
+  "description": "起動してからの累計。sent は 2xx が返ったイベントの数、failed は失敗して捨てたイベントの数。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sent", "failed"],
+  "properties": {
+    "sent": { "type": "integer", "minimum": 0 },
+    "failed": { "type": "integer", "minimum": 0 }
+  }
+}

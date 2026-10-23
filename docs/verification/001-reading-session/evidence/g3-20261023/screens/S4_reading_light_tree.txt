@@ -1,0 +1,32 @@
+Attributes: Application, 0x105093150, pid: 10396, label: 'よむとき'
+Element subtree:
+ →Application, 0x105093150, pid: 10396, label: 'よむとき'
+    Window (Main), 0x10508ead0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1050945c0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x105097580, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x105096940, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x105096d40, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x105097160, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'session.state.reading'
+                Other, 0x105096300, {{0.0, 0.0}, {402.0, 874.0}}
+                  NavigationBar, 0x105095ee0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '_TtGC7SwiftUI32NavigationStackHosting'
+                    Button, 0x105095ac0, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: '読書'
+                  Other, 0x1050956a0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x10ec14c00, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x105098000, {{0.0, 0.0}, {402.0, 874.0}}
+                        Other, 0x105098120, {{0.0, 0.0}, {402.0, 874.0}}
+                          StaticText, 0x105098240, {{154.2, 378.5}, {93.7, 24.0}}, identifier: 'reading.title', label: '坊っちゃん'
+                          StaticText, 0x105098360, {{155.5, 414.5}, {91.0, 18.0}}, identifier: 'reading.fromPage', label: '40ページから'
+                          StaticText, 0x105098480, {{155.2, 456.5}, {91.7, 40.7}}, identifier: 'reading.elapsed', label: '12分30秒'
+                          StaticText, 0x1050985a0, {{179.8, 509.2}, {42.3, 18.0}}, identifier: 'reading.state', label: '読書中'
+                          Button, 0x1050986c0, {{16.0, 773.7}, {177.0, 50.3}}, identifier: 'reading.pause', label: '一時停止'
+                          Button, 0x1050987e0, {{209.0, 773.7}, {177.0, 50.3}}, identifier: 'reading.finish', label: '終える'
+                  Other, 0x105098900, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x105098a20, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x105098b40, {{0.0, 62.0}, {1.0, 1.0}}, identifier: 'uitest.clock.applied', label: '0'
+Path to element:
+ →Application, 0x105093150, pid: 10396, label: 'よむとき'
+Query chain:
+ →Find: Target Application 'com.example.yomutoki'
+  Output: {
+    Application, 0x1058b3750, pid: 10396, label: 'よむとき'
+  }

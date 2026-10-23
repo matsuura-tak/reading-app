@@ -1,0 +1,80 @@
+{
+  "adjacentBackgroundSamples" : [
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1021,
+        252
+      ],
+      "rgb" : "252,252,255"
+    },
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1124,
+        252
+      ],
+      "rgb" : "252,252,255"
+    },
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1072,
+        225
+      ],
+      "rgb" : "252,252,255"
+    },
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1072,
+        280
+      ],
+      "rgb" : "252,252,255"
+    }
+  ],
+  "backgroundModeRGB" : "252,252,255",
+  "cropPixels" : [
+    1002,
+    198,
+    144,
+    108
+  ],
+  "darkCoreModeCount" : 1457,
+  "darkCoreModeRGB" : "0,0,0",
+  "darkPixelBounds" : [
+    1027,
+    231,
+    1118,
+    274
+  ],
+  "image" : "\/private\/tmp\/reading-app-native-audit-control-20261023\/evidence\/screens\/form_normal.png",
+  "imageSizePixels" : [
+    1206,
+    2622
+  ],
+  "name" : "control_save_normal",
+  "sampledContrastRatio" : 20.507250808632939,
+  "topColors" : [
+    {
+      "count" : "12561",
+      "rgb" : "252,252,255"
+    },
+    {
+      "count" : "1457",
+      "rgb" : "0,0,0"
+    },
+    {
+      "count" : "175",
+      "rgb" : "237,238,241"
+    },
+    {
+      "count" : "155",
+      "rgb" : "241,241,245"
+    },
+    {
+      "count" : "116",
+      "rgb" : "255,255,255"
+    }
+  ]
+}

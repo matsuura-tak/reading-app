@@ -1,0 +1,49 @@
+import XCTest
+
+final class NativeAuditControlUITests: XCTestCase {
+    @MainActor
+    func testAllNativeStates() throws {
+        continueAfterFailure = true
+        XCUIDevice.shared.appearance = .light
+        for state in ["form", "deleteAlert", "errorAlert", "list"] {
+            let app = XCUIApplication()
+            app.launchArguments = ["--control-state=\(state)", "-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP"]
+            app.launch()
+            if state.hasSuffix("Alert") {
+                XCTAssertTrue(app.buttons["control.showAlert"].waitForExistence(timeout: 10))
+                app.buttons["control.showAlert"].tap()
+                XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 10))
+            } else if state == "form" {
+                XCTAssertTrue(app.staticTexts["control.header"].waitForExistence(timeout: 10))
+            } else {
+                XCTAssertTrue(app.staticTexts["読書の記録 1"].waitForExistence(timeout: 10))
+            }
+            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            screenshot.name = "\(state)_before_audit"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+            let tree = app.debugDescription
+            let attachment = XCTAttachment(string: tree)
+            attachment.name = "\(state)_AXtree"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            print("[CONTROL-AXTREE-BEGIN] \(state)\n\(tree)\n[CONTROL-AXTREE-END] \(state)")
+            for element in app.descendants(matching: .any).allElementsBoundByIndex {
+                if [.staticText, .button, .textField].contains(element.elementType) {
+                    print("[CONTROL-GEOMETRY] \(state) type=\(element.elementType.rawValue) label=\(element.label) frame=\(element.frame)")
+                }
+            }
+            print("[CONTROL-AUDIT-BEGIN] \(state)")
+            do {
+                try app.performAccessibilityAudit(for: .all) { issue in
+                    print("[CONTROL-AUDIT-ISSUE] \(state) type=\(issue.auditType.rawValue) \(issue.compactDescription) | \(issue.detailedDescription) | element=\(issue.element?.debugDescription ?? "nil")")
+                    return false
+                }
+            } catch {
+                XCTFail("Audit API error for \(state): \(error)")
+            }
+            print("[CONTROL-AUDIT-END] \(state)")
+            app.terminate()
+        }
+    }
+}

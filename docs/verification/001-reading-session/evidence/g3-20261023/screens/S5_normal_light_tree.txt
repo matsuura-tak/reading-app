@@ -1,0 +1,148 @@
+Attributes: Application, 0x10ea3b3e0, pid: 10429, label: 'よむとき'
+Element subtree:
+ →Application, 0x10ea3b3e0, pid: 10429, label: 'よむとき'
+    Window (Main), 0x10ea245d0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1057d2de0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x10ea2f2a0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1057d29c0, {{-402.0, -874.0}, {1206.0, 2622.0}}
+          Other, 0x1057d3620, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x10ea3de60, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x10ea3b7c0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'session.state.finishing'
+                Other, 0x10ea26780, {{0.0, 0.0}, {402.0, 874.0}}
+                  NavigationBar, 0x10ea34f40, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '_TtGC7SwiftUI29PresentationHosting'
+                    Button, 0x10ea17c30, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: '読書'
+                  Other, 0x10ea0d1f0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x10ea438a0, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x10ea439c0, {{0.0, 0.0}, {402.0, 874.0}}
+                        Other, 0x10ea43ae0, {{0.0, 0.0}, {402.0, 874.0}}
+                          StaticText, 0x10ea43c00, {{154.2, 195.5}, {93.7, 24.0}}, identifier: 'reading.title', label: '坊っちゃん'
+                          StaticText, 0x10ea43d20, {{155.5, 231.5}, {91.0, 18.0}}, identifier: 'reading.fromPage', label: '40ページから'
+                          StaticText, 0x10ea43e40, {{155.2, 273.5}, {91.7, 40.7}}, identifier: 'reading.elapsed', label: '10分0秒'
+                          StaticText, 0x10ea43f60, {{179.8, 326.2}, {42.3, 18.0}}, identifier: 'reading.state', label: '読書中'
+                          Button, 0x10ea44080, {{16.0, 407.7}, {177.0, 50.3}}, identifier: 'reading.pause', label: '一時停止', Disabled
+                          Button, 0x10ea441a0, {{209.0, 407.7}, {177.0, 50.3}}, identifier: 'reading.finish', label: '終える', Disabled
+                  Other, 0x10ea442c0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x10ea443e0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x10ea44500, {{0.0, 62.0}, {1.0, 1.0}}, identifier: 'uitest.clock.applied', label: '0'
+      Other, 0x10ea44620, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x10ea44740, {{-402.0, -874.0}, {1206.0, 2622.0}}
+        Other, 0x10ea44860, {{0.0, 62.0}, {402.0, 812.0}}
+          Other, 0x10ea44980, {{0.0, 62.0}, {402.0, 812.0}}
+            Other, 0x10ea44aa0, {{0.0, 62.0}, {402.0, 812.0}}
+              Other, 0x10ea44bc0, {{0.0, 62.0}, {402.0, 812.0}}
+                Other, 0x10ea44ce0, {{0.0, 62.0}, {402.0, 812.0}}
+                  Other, 0x10ea44e00, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'session.state.finishing'
+                    Other, 0x10ea44f20, {{0.0, 62.0}, {402.0, 812.0}}
+                      NavigationBar, 0x10ea45040, {{0.0, 78.0}, {402.0, 54.0}}, identifier: '読書を終える'
+                        Other, 0x10ea45160, {{20.0, 82.0}, {95.7, 36.0}}, identifier: 'session.finish.cancel', label: 'キャンセル'
+                          Other, 0x10ea45280, {{20.0, 82.0}, {95.7, 36.0}}
+                            Button, 0x10ea453a0, {{20.0, 82.0}, {95.7, 36.0}}, identifier: 'session.finish.cancel', label: 'キャンセル'
+                        StaticText, 0x10ea454c0, {{153.2, 89.8}, {95.7, 20.3}}, label: '読書を終える'
+                        Other, 0x10ea455e0, {{334.0, 82.0}, {48.0, 36.0}}, identifier: 'session.finish.save', label: '保存'
+                          Other, 0x10ea45700, {{334.0, 82.0}, {48.0, 36.0}}
+                            Button, 0x10ea45820, {{334.0, 82.0}, {48.0, 36.0}}, identifier: 'session.finish.save', label: '保存'
+                      Other, 0x10ea45940, {{0.0, 62.0}, {402.0, 812.0}}
+                        Other, 0x10ea45a60, {{0.0, 62.0}, {402.0, 812.0}}
+                          Other, 0x10ea45b80, {{0.0, 62.0}, {402.0, 812.0}}
+                            Other, 0x10ea45ca0, {{0.0, 62.0}, {402.0, 812.0}}
+                              CollectionView, 0x10ea45dc0, {{0.0, 62.0}, {402.0, 812.0}}
+                                Other, 0x10ea45ee0, {{-16.0, -1492.0}, {434.0, 1741.7}}
+                                Cell, 0x10ea46000, {{16.0, 132.0}, {370.0, 35.7}}
+                                  Other, 0x10ea46120, {{16.0, 132.0}, {370.0, 35.7}}
+                                  Other, 0x10ea46240, {{16.0, 132.0}, {370.0, 35.7}}
+                                    Other, 0x10ea46360, {{16.0, 132.0}, {370.0, 35.7}}
+                                      Other, 0x10ea46480, {{16.0, 132.0}, {370.0, 35.7}}
+                                        StaticText, 0x10ea465a0, {{16.0, 132.0}, {370.0, 35.7}}, identifier: 'session.finish.book', label: '坊っちゃん'
+                                Cell, 0x10ea466c0, {{16.0, 167.7}, {370.0, 52.3}}
+                                  Other, 0x10ea467e0, {{16.0, 167.7}, {370.0, 52.3}}
+                                    Other, 0x10ea46900, {{16.0, 167.7}, {370.0, 52.3}}
+                                  Other, 0x10ea46a20, {{16.0, 167.7}, {370.0, 52.3}}
+                                    Other, 0x10ea46b40, {{16.0, 167.7}, {370.0, 52.3}}
+                                      Other, 0x10ea46c60, {{16.0, 167.7}, {370.0, 52.3}}
+                                        StaticText, 0x10ea46d80, {{32.0, 183.7}, {79.7, 20.3}}, label: '今のページ'
+                                        TextField, 0x10ea46ea0, {{127.7, 182.7}, {242.3, 22.0}}, identifier: 'session.finish.page', label: '今のページ', Keyboard Focused
+                                Cell, 0x10ea46fc0, {{16.0, 220.0}, {370.0, 29.7}}
+                                  Other, 0x10ea470e0, {{16.0, 220.0}, {370.0, 29.7}}
+                                  Other, 0x10ea47200, {{16.0, 220.0}, {370.0, 29.7}}
+                                    Other, 0x10ea47320, {{16.0, 220.0}, {370.0, 29.7}}
+                                      Other, 0x10ea47440, {{16.0, 220.0}, {370.0, 29.7}}
+                                        StaticText, 0x10ea47560, {{16.0, 220.0}, {370.0, 29.7}}, identifier: 'session.finish.page.hint', label: '前回は40ページでした。入れずに保存もできます。'
+                                Other, 0x10ea47680, {{-16.0, 249.7}, {434.0, 1741.7}}
+                                Cell, 0x10ea477a0, {{16.0, 267.3}, {370.0, 52.3}}
+                                  Other, 0x10ea478c0, {{16.0, 267.3}, {370.0, 52.3}}
+                                    Other, 0x10ea479e0, {{16.0, 267.3}, {370.0, 52.3}}
+                                  Other, 0x10ea47b00, {{16.0, 267.3}, {370.0, 52.3}}
+                                    Other, 0x10ea47c20, {{16.0, 267.3}, {370.0, 52.3}}
+                                      Other, 0x10ea47d40, {{16.0, 267.3}, {370.0, 52.3}}
+                                        StaticText, 0x10ea47e60, {{32.0, 283.3}, {115.3, 20.3}}, label: '読んだ時間（分）'
+                                        TextField, 0x10ea47f80, {{163.3, 282.3}, {206.7, 22.0}}, identifier: 'session.finish.minutes', label: '読んだ時間（分）', value: 10
+                                Cell, 0x10ea480a0, {{16.0, 319.7}, {370.0, 47.7}}
+                                  Other, 0x10ea481c0, {{16.0, 319.7}, {370.0, 47.7}}
+                                  Other, 0x10ea482e0, {{16.0, 319.7}, {370.0, 47.7}}
+                                    Other, 0x10ea48400, {{16.0, 319.7}, {370.0, 47.7}}
+                                      Other, 0x10ea48520, {{16.0, 319.7}, {370.0, 47.7}}
+                                        StaticText, 0x10ea48640, {{16.0, 319.7}, {370.0, 47.7}}, identifier: 'session.finish.minutes.hint', label: '経過は10分です。読んでいない時間があれば、短く直せます。'
+                                Other, 0x10ea48760, {{369.0, 132.0}, {30.0, 342.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                                  Other, 0x10ea48880, {{396.0, 242.0}, {3.0, 229.0}}
+                                Other, 0x10ea489a0, {{369.0, 132.0}, {30.0, 342.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                                  Other, 0x10ea48ac0, {{396.0, 242.0}, {3.0, 229.0}}
+                      Other, 0x10ea48be0, {{0.0, 62.0}, {402.0, 812.0}}
+                        Other, 0x10ea48d00, {{0.0, 62.0}, {402.0, 812.0}}
+    Window, 0x10ea48e20, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x10ea48f40, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x10ea49060, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x10ea49180, {{0.0, 508.0}, {402.0, 366.0}}
+          Other, 0x10ea492a0, {{0.0, 508.0}, {402.0, 48.0}}
+            Other, 0x10ea493c0, {{0.0, 508.0}, {402.0, 48.0}}
+              Other, 0x10ea494e0, {{0.0, 508.0}, {402.0, 48.0}}
+                Toolbar, 0x10ea49600, {{0.0, 508.0}, {402.0, 48.0}}, identifier: 'Toolbar', label: 'ツールバー'
+                  Other, 0x10ea49720, {{0.0, 508.0}, {402.0, 48.0}}
+                    Other, 0x10ea49840, {{16.0, 508.0}, {370.0, 48.0}}
+                      Other, 0x10ea49960, {{16.0, 508.0}, {370.0, 48.0}}
+                        Other, 0x10ea49a80, {{16.0, 508.0}, {0.0, 0.0}}
+                          Other, 0x10ea49ba0, {{320.0, 508.0}, {66.0, 48.0}}
+                            Other, 0x10ea49cc0, {{320.0, 508.0}, {66.0, 48.0}}
+                              Other, 0x10ea49de0, {{325.0, 515.0}, {56.0, 34.0}}
+                                Other, 0x10ea49f00, {{325.0, 515.0}, {56.0, 34.0}}
+                                  Other, 0x10ea4a020, {{325.0, 515.0}, {56.0, 34.0}}, identifier: 'session.finish.saveKeyboard', label: '保存'
+                                    Other, 0x10ea4a140, {{325.0, 515.0}, {56.0, 34.0}}
+                                      Button, 0x10ea4a260, {{325.0, 515.0}, {56.0, 34.0}}, identifier: 'session.finish.saveKeyboard', label: '保存'
+          Other, 0x10ea4a380, {{4.7, 556.0}, {393.0, 318.0}}, identifier: 'inputView'
+    Window, 0x10ea4a4a0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x10ea4a5c0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x10ea4a6e0, {{0.0, 556.0}, {402.0, 318.0}}
+          Other, 0x10ea4a800, {{0.0, 556.0}, {402.0, 318.0}}
+            Other, 0x10ea4a920, {{0.0, 556.0}, {402.0, 318.0}}
+              Other, 0x10ea4aa40, {{0.0, 556.0}, {402.0, 318.0}}
+                Other, 0x10ea4ab60, {{0.0, 556.0}, {402.0, 318.0}}
+                  Other, 0x10ea4ac80, {{0.0, 556.0}, {402.0, 318.0}}
+                    Other, 0x10ea4ada0, {{0.0, 556.0}, {402.0, 318.0}}
+                      Other, 0x10ea1b640, {{0.0, 556.0}, {402.0, 318.0}}
+                        Other, 0x10ea1b760, {{0.0, 556.0}, {402.0, 318.0}}
+                      Other, 0x10ea1b880, {{0.0, 556.0}, {402.0, 318.0}}
+          Other, 0x10ea1b9a0, {{0.0, 573.0}, {402.0, 301.0}}
+            Button, 0x10ea1bac0, {{325.4, 805.4}, {68.1, 68.7}}, identifier: 'dictation', label: '音声入力', Disabled
+              StaticText, 0x10ea1bbe0, {{325.4, 805.4}, {0.0, 0.0}}
+          Other, 0x10ea1bd00, {{4.7, 573.0}, {393.0, 243.0}}
+            Keyboard, 0x10ea1be20, {{4.7, 573.0}, {393.0, 243.0}}
+              Other, 0x10ea1bf40, {{4.7, 573.0}, {393.0, 243.0}}
+                Other, 0x10ea1c060, {{4.7, 573.0}, {393.0, 243.0}}, identifier: 'UIKeyboardLayoutStar Preview'
+                  Key, 0x10ea1c180, {{7.7, 580.0}, {130.0, 56.0}}, label: '1'
+                  Key, 0x10ea27fd0, {{137.7, 580.0}, {130.0, 56.0}}, label: '2'
+                  Key, 0x10ea280f0, {{267.7, 580.0}, {130.0, 56.0}}, label: '3'
+                  Key, 0x10ea28210, {{7.7, 636.0}, {130.0, 56.0}}, label: '4'
+                  Key, 0x10ea28330, {{137.7, 636.0}, {130.0, 56.0}}, label: '5'
+                  Key, 0x10ea28450, {{267.7, 636.0}, {130.0, 56.0}}, label: '6'
+                  Key, 0x10ea28570, {{7.7, 692.0}, {130.0, 56.0}}, label: '7'
+                  Key, 0x10ea28690, {{137.7, 692.0}, {130.0, 56.0}}, label: '8'
+                  Key, 0x10ea287b0, {{267.7, 692.0}, {130.0, 56.0}}, label: '9'
+                  Key, 0x10ea288d0, {{7.7, 748.0}, {130.0, 56.0}}
+                  Key, 0x10ea289f0, {{137.7, 748.0}, {130.0, 56.0}}, label: '0'
+                  Key, 0x10ea28b10, {{267.7, 748.0}, {130.0, 56.0}}, label: '削除'
+Path to element:
+ →Application, 0x10ea3b3e0, pid: 10429, label: 'よむとき'
+Query chain:
+ →Find: Target Application 'com.example.yomutoki'
+  Output: {
+    Application, 0x10ea28c30, pid: 10429, label: 'よむとき'
+  }

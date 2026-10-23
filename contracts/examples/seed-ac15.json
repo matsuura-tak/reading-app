@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "books": [
+    { "id": "00000000-0000-4000-8000-000000000001", "title": "坊っちゃん", "totalPages": 300, "lastPage": 72, "addedAt": "2026-10-01T20:00:00" }
+  ],
+  "sessions": [
+    { "id": "00000000-0000-4000-8000-000000000111", "bookId": "00000000-0000-4000-8000-000000000001", "startedAt": "2026-10-18T22:00:00", "durationSeconds": 2400, "endPage": null, "pagesRead": null, "savedAt": "2026-10-18T22:40:30" },
+    { "id": "00000000-0000-4000-8000-000000000112", "bookId": "00000000-0000-4000-8000-000000000001", "startedAt": "2026-10-19T21:00:00", "durationSeconds": 1500, "endPage": null, "pagesRead": null, "savedAt": "2026-10-19T21:25:30" },
+    { "id": "00000000-0000-4000-8000-000000000113", "bookId": "00000000-0000-4000-8000-000000000001", "startedAt": "2026-10-20T21:00:00", "durationSeconds": 2100, "endPage": 72, "pagesRead": 72, "savedAt": "2026-10-20T21:35:30" }
+  ],
+  "active": null,
+  "flags": { "firstOpenedAt": "2026-10-01T19:55:00", "firstSessionStarted": true, "first5minDone": true, "weekReachedWeekStart": null }
+}

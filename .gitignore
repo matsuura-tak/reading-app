@@ -30,3 +30,10 @@ __pycache__/
 *.pyc
 .venv/
 .DS_Store
+
+# iOS（XcodeGen で CI が作るもの。ADR 0004。作ったプロジェクトはコミットしない）
+ios/Yomutoki.xcodeproj/
+ios/build/
+/build/
+*.xcresult
+# 注：Swift パッケージを足したら、Package.resolved は ios/Yomutoki.xcodeproj/ の中にできて無視されるので、置き場所を決め直す（設計メモの 9）

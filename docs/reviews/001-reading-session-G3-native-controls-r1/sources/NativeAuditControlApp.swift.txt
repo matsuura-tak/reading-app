@@ -1,0 +1,90 @@
+import SwiftUI
+
+enum ControlState: String {
+    case form, deleteAlert, errorAlert, list
+
+    static var requested: Self {
+        let value = ProcessInfo.processInfo.arguments.first { $0.hasPrefix("--control-state=") }
+        return value.flatMap { Self(rawValue: String($0.dropFirst("--control-state=".count))) } ?? .form
+    }
+}
+
+@main
+struct NativeAuditControlApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ControlView(state: .requested)
+        }
+    }
+}
+
+struct ControlView: View {
+    let state: ControlState
+    @State private var page = "40"
+    @State private var minutes = "30"
+    @State private var showingAlert = false
+
+    var body: some View {
+        NavigationStack {
+            switch state {
+            case .form:
+                Form {
+                    Section {
+                        TextField("今のページ", text: $page)
+                        TextField("読んだ時間", text: $minutes)
+                    } header: {
+                        Text("坊っちゃん")
+                            .font(.footnote)
+                            .foregroundStyle(Color.primary)
+                            .textCase(nil)
+                            .accessibilityIdentifier("control.header")
+                    }
+                }
+                .navigationTitle("読書を終える")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(role: .cancel) {} label: { Text("キャンセル") }
+                            .accessibilityIdentifier("control.cancel")
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {} label: { Text("保存") }
+                            .accessibilityIdentifier("control.save")
+                    }
+                }
+            case .deleteAlert:
+                Button("削除の確認を表示") { showingAlert = true }
+                    .accessibilityIdentifier("control.showAlert")
+                    .navigationTitle("記録")
+                    .alert("この記録を消しますか？", isPresented: $showingAlert) {
+                        Button("キャンセル", role: .cancel) {}
+                        Button("削除", role: .destructive) {}
+                    } message: {
+                        Text("合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。")
+                    }
+            case .errorAlert:
+                Button("保存エラーを表示") { showingAlert = true }
+                    .accessibilityIdentifier("control.showAlert")
+                    .navigationTitle("記録")
+                    .alert("変更を保存できませんでした", isPresented: $showingAlert) {
+                        Button("閉じる", role: .cancel) {}
+                    } message: {
+                        Text("記録は消えていません。もう一度消してください。")
+                    }
+            case .list:
+                List(1...3, id: \.self) { index in
+                    Text("読書の記録 \(index)")
+                        .swipeActions {
+                            Button("削除", role: .destructive) {}
+                        }
+                }
+                .navigationTitle("読書の記録")
+            }
+        }
+    }
+}
+
+#Preview("Form") { ControlView(state: .form) }
+#Preview("Delete alert trigger") { ControlView(state: .deleteAlert) }
+#Preview("Error alert trigger") { ControlView(state: .errorAlert) }
+#Preview("List") { ControlView(state: .list) }

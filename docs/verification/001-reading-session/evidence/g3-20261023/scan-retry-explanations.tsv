@@ -1,0 +1,67 @@
+location	reason	source
+ios/AcceptanceTests/Support/UIHelpers.swift:301	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// 保存の失敗の区画（design 6：題 error.saveFailed と、再試行 error.retry）が1個ずつ出ていること（AC-42、AC-56〜AC-66 の Then）。
+ios/AcceptanceTests/Support/UIHelpers.swift:304	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	Wait.exists(el("error.retry"), "\(step)：error.retry", file: file, line: line)
+ios/AcceptanceTests/Support/UIHelpers.swift:306	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	XCTAssertEqual(count("error.retry"), 1, "\(step)：error.retry は1個", file: file, line: line)
+ios/AcceptanceTests/Support/L10n.swift:76	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorRetry: String { pick("もう一度保存", "Save Again") }
+ios/AcceptanceTests/Support/L10n.swift:77	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorRetryStart: String { pick("もう一度読み始める", "Try Starting Again") }
+ios/AcceptanceTests/Support/L10n.swift:78	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorRetryPause: String { pick("もう一度一時停止", "Try Pausing Again") }
+ios/AcceptanceTests/Support/L10n.swift:79	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorRetryResume: String { pick("もう一度再開", "Try Resuming Again") }
+ios/AcceptanceTests/Support/L10n.swift:80	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorRetryFinish: String { pick("もう一度終える", "Try Finishing Again") }
+ios/AcceptanceTests/Support/L10n.swift:81	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorRetryCancel: String { pick("もう一度読書に戻る", "Try Returning to Reading Again") }
+ios/AcceptanceTests/Support/L10n.swift:86	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	static var errorLoadFailedRetry: String { pick("もう一度読み込む", "Load Again") }
+ios/AcceptanceTests/Support/L10n.swift:162	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	// MARK: 再試行のボタンの文（design 6 の error.retry の行と、7 の error.retry.start などのキー。AC の Then の外）
+ios/AcceptanceTests/Support/L10n.swift:166	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	/// error.retry の label が、design 6 の文（どの操作の再試行か：error.retry.start、.pause、.resume、.finish、.cancel）と同じかを見る。
+ios/AcceptanceTests/Support/L10n.swift:167	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	/// AC-56〜AC-66 の Then が求めるのは「error.retry が1個」まで。ボタンの文は design の決まりで、PRD の AC の Then の外にある。
+ios/AcceptanceTests/Support/L10n.swift:169	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	/// 見る前にテストが止まるのを避けるため。違ったときは「DESIGN_retryLabel_<場面>」の添付（.keepAlways）を残す。
+ios/AcceptanceTests/Support/L10n.swift:171	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	func noteRetryLabel(_ expected: String, _ scene: String) {
+ios/AcceptanceTests/Support/L10n.swift:172	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	let retry = el("error.retry")
+ios/AcceptanceTests/Support/L10n.swift:173	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	if Wait.until(NSPredicate(format: "label == %@", expected), retry, timeout: Wait.optional) { return }
+ios/AcceptanceTests/Support/L10n.swift:174	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	let now = retry.exists ? retry.label : "要素なし"
+ios/AcceptanceTests/Support/L10n.swift:175	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	XCTContext.runActivity(named: "DESIGN_retryLabel_\(scene)：「\(expected)」ではなく「\(now)」") { activity in
+ios/AcceptanceTests/Support/L10n.swift:177	製品の再試行文言・識別子・そのdesign照合。テスト実行を再試行しない。	attachment.name = "DESIGN_retryLabel_\(scene)"
+ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift:57	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// error.saveFailed（「変更を保存できませんでした」）と error.retry（「もう一度保存」）が出て、題名の欄は「こころ」のまま。
+ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift:74	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	Wait.label(s.el("error.retry"), equals: L10n.errorRetry, "error.retry の文（もう一度保存）")
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:86	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.noteRetryLabel(L10n.errorRetryPause, "AC58_一時停止")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:91	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-58：一時停止の保存の失敗の60秒後、error.saveFailed と error.retry が1個ずつ、reading のまま、
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:103	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-59：AC-58 の後に error.retry を押し、さらに60秒たつと、paused、経過は「11分0秒」か「11分1秒」のまま、
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:106	ACが要求するアプリの再試行を試すメソッド名。	func test_AC59_pauseRetryStopsAtRetryTime() throws {
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:108	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry")
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:127	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.noteRetryLabel(L10n.errorRetryResume, "AC60_再開")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:132	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-60：再開の保存の失敗の60秒後、error.saveFailed と error.retry が1個ずつ、paused のまま、経過は「5分0秒」のまま、記録は1件のまま。
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:143	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-61：AC-60 の後に error.retry を押し、さらに60秒たつと、reading、経過は「6分0秒」か「6分1秒」
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:146	ACが要求するアプリの再試行を試すメソッド名。	func test_AC61_resumeRetryStartsAtRetryTime() throws {
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:148	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry")
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:168	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.noteRetryLabel(L10n.errorRetryFinish, paused ? "AC62_終える_一時停止中" : "AC62_終える_読書中")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:204	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-63 の Then：error.retry を押し、さらに60秒たつと、finishing、session.finish.save が1個、
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:210	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry", file: file, line: line)
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:223	ACが要求するアプリの再試行を試すメソッド名。	func test_AC63_beginFinishRetryWhileReading() throws {
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:229	ACが要求するアプリの再試行を試すメソッド名。	func test_AC63_beginFinishRetryWhilePaused() throws {
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:243	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.noteRetryLabel(L10n.errorRetryFinish, "AC66_60秒未満で終える")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:248	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-66：60秒未満で終える保存の失敗の10秒後、error.saveFailed と error.retry が1個ずつ、reading のまま、
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:262	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-67：AC-66 の後（経過0:40）に error.retry を押すと、idle、book.title が「坊っちゃん」の詳細、session.finish.tooShort が1個、
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:266	ACが要求するアプリの再試行を試すメソッド名。	func test_AC67_discardRetryShowsNoticeWithoutRecord() throws {
+ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:268	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry")
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:20	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// error.loadFailed.title（「本と記録を読み込めませんでした」）、error.loadFailed.message、error.loadFailed.retry（「もう一度読み込む」）が
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:23	ACが要求するアプリの再試行を試すメソッド名。	func test_AC54_loadFailureShowsRetryInsteadOfEmpty() throws {
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:27	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	Wait.label(s.el("error.loadFailed.retry"), equals: L10n.errorLoadFailedRetry, "error.loadFailed.retry")
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:28	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	for id in ["error.loadFailed.title", "error.loadFailed.message", "error.loadFailed.retry"] {
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:39	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-55：同じ端末で、読み込みが1回だけ失敗する（UITEST_FAIL=load:1）。error.loadFailed.retry を1回押すと、
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:42	ACが要求するアプリの再試行を試すメソッド名。	func test_AC55_loadRetryRestoresLibrary() throws {
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:44	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	Wait.exists(s.el("error.loadFailed.retry"), "前提：error.loadFailed.retry")
+ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift:45	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.loadFailed.retry")
+ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:220	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.noteRetryLabel(fromHome ? L10n.homePrimary(Fixture.botchan, L10n.errorRetryStart) : L10n.errorRetryStart, fromHome ? "AC56_ホーム" : "AC56_本の詳細")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
+ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:224	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-56 の Then：操作した画面に error.saveFailed と error.retry が1個ずつ、session.state.idle が1個、reading.elapsed は0個、
+ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:255	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-57 の Then：失敗の60秒後に error.retry を押すと、reading、reading.title「坊っちゃん」、経過は「0分0秒」か「0分1秒」
+ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:262	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry", file: file, line: line)
+ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:281	ACが要求するアプリの再試行を試すメソッド名。	func test_AC57_startRetryFromHomeStartsAtRetryTime() throws {
+ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:286	ACが要求するアプリの再試行を試すメソッド名。	func test_AC57_startRetryFromBookDetailStartsAtRetryTime() throws {
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:88	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// error.retry を1回押すと、記録は「3件」、状態は idle、error.saveFailed は0個。起動し直しても「3件」（ちょうど1件増えた）。
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:90	ACが要求するアプリの再試行を試すメソッド名。	func test_AC35_retryAfterOneFailureAddsExactlyOne() throws {
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:98	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry")
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:245	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.noteRetryLabel(L10n.errorRetryCancel, "AC64_やめる")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:250	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-64：やめる保存の失敗の後、error.saveFailed と error.retry が1個ずつ、終える入力は閉じず（session.finish.save が1個）、
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:266	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// AC-65：AC-64 の後に error.retry を1回押すと、終える入力は閉じ（session.finish.save は0個）、reading、
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:269	ACが要求するアプリの再試行を試すメソッド名。	func test_AC65_cancelFinishRetryReturnsToReading() throws {
+ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:271	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	s.tap("error.retry")
+ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift:111	アプリの再試行動作の説明・注記。実行するテスト再試行の設定ではない。	/// error.saveFailed と error.retry が出て、finishing のまま、読んだ時間は「10分」のまま、記録の数は変わらない。
+ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift:122	error.retry / error.loadFailed.retry の操作・値・個数、またはdesign文言の照合。テスト再試行ではない。	Wait.exists(s.el("error.retry"), "error.retry")

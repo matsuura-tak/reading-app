@@ -1,0 +1,1298 @@
+[
+  {
+    "line": 3003,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC58_pauseFailureKeepsReading",
+    "ac": 58,
+    "result": "passed",
+    "seconds": 47.344
+  },
+  {
+    "line": 3111,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC61_resumeRetryStartsAtRetryTime",
+    "ac": 61,
+    "result": "passed",
+    "seconds": 43.646
+  },
+  {
+    "line": 3236,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC63_beginFinishRetryWhilePaused",
+    "ac": 63,
+    "result": "passed",
+    "seconds": 50.081
+  },
+  {
+    "line": 3362,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC63_beginFinishRetryWhileReading",
+    "ac": 63,
+    "result": "passed",
+    "seconds": 40.764
+  },
+  {
+    "line": 3460,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC62_beginFinishFailureWhileReading",
+    "ac": 62,
+    "result": "passed",
+    "seconds": 30.561
+  },
+  {
+    "line": 3488,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC40_elapsedLabelReadsMinutesAndSeconds",
+    "ac": 40,
+    "result": "passed",
+    "seconds": 9.628
+  },
+  {
+    "line": 3537,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC41_clockSetBackShowsZeroNotNegative",
+    "ac": 41,
+    "result": "passed",
+    "seconds": 17.171
+  },
+  {
+    "line": 3637,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC66_discardFailureKeepsReading",
+    "ac": 66,
+    "result": "passed",
+    "seconds": 31.99
+  },
+  {
+    "line": 3688,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC33_pausedIsRestoredAfterForceQuit",
+    "ac": 33,
+    "result": "passed",
+    "seconds": 20.383
+  },
+  {
+    "line": 3777,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC67_discardRetryShowsNoticeWithoutRecord",
+    "ac": 67,
+    "result": "passed",
+    "seconds": 30.191
+  },
+  {
+    "line": 3897,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC59_pauseRetryStopsAtRetryTime",
+    "ac": 59,
+    "result": "passed",
+    "seconds": 37.386
+  },
+  {
+    "line": 3993,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC60_resumeFailureKeepsPaused",
+    "ac": 60,
+    "result": "passed",
+    "seconds": 30.873
+  },
+  {
+    "line": 4091,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC62_beginFinishFailureWhilePaused",
+    "ac": 62,
+    "result": "passed",
+    "seconds": 31.289
+  },
+  {
+    "line": 4122,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC14_totalAddsSecondsBeforeFlooring",
+    "ac": 14,
+    "result": "passed",
+    "seconds": 10.422
+  },
+  {
+    "line": 4212,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC16_deleteSessionKeepsLastPage",
+    "ac": 16,
+    "result": "passed",
+    "seconds": 31.673
+  },
+  {
+    "line": 4228,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC15_weekTotalExcludesLastWeek",
+    "ac": 15,
+    "result": "passed",
+    "seconds": 5.144
+  },
+  {
+    "line": 4262,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC14_bookTotalsAreShown",
+    "ac": 14,
+    "result": "passed",
+    "seconds": 13.254
+  },
+  {
+    "line": 4291,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC28_noProgressWithoutTotalPages",
+    "ac": 28,
+    "result": "passed",
+    "seconds": 9.473
+  },
+  {
+    "line": 4398,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC57_startRetryFromBookDetailStartsAtRetryTime",
+    "ac": 57,
+    "result": "passed",
+    "seconds": 33.98
+  },
+  {
+    "line": 4456,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC52_bookDetailOffersResumeWhilePaused",
+    "ac": 52,
+    "result": "passed",
+    "seconds": 17.998
+  },
+  {
+    "line": 4494,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC37_bookWithoutSessionsShowsEmptyState",
+    "ac": 37,
+    "result": "passed",
+    "seconds": 14.113
+  },
+  {
+    "line": 4557,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC38_cancelDeleteKeepsSession",
+    "ac": 38,
+    "result": "passed",
+    "seconds": 19.01
+  },
+  {
+    "line": 4630,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC51_tooShortShowsNoticeOnBookDetail",
+    "ac": 51,
+    "result": "passed",
+    "seconds": 24.065
+  },
+  {
+    "line": 4688,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC52_bookDetailOffersResumeWhileReading",
+    "ac": 52,
+    "result": "passed",
+    "seconds": 17.724
+  },
+  {
+    "line": 4762,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC56_startFailureFromBookDetailKeepsIdle",
+    "ac": 56,
+    "result": "passed",
+    "seconds": 24.344
+  },
+  {
+    "line": 4837,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC56_startFailureFromHomeKeepsIdle",
+    "ac": 56,
+    "result": "passed",
+    "seconds": 24.059
+  },
+  {
+    "line": 4919,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC52_bookDetailOffersResumeAfterCancellingFinish",
+    "ac": 52,
+    "result": "passed",
+    "seconds": 26.599
+  },
+  {
+    "line": 4935,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC44_sessionAcrossWeekBoundaryCountsInStartWeek",
+    "ac": 44,
+    "result": "passed",
+    "seconds": 5.272
+  },
+  {
+    "line": 5037,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC57_startRetryFromHomeStartsAtRetryTime",
+    "ac": 57,
+    "result": "passed",
+    "seconds": 32.754
+  },
+  {
+    "line": 5138,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC43_deleteFailureKeepsSession",
+    "ac": 43,
+    "result": "passed",
+    "seconds": 32.596
+  },
+  {
+    "line": 5154,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC36_weekTotalIsZeroWithoutSessionsThisWeek",
+    "ac": 36,
+    "result": "passed",
+    "seconds": 5.068
+  },
+  {
+    "line": 5283,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC23_telemetryHasNoTitleOrPageValues",
+    "ac": 23,
+    "result": "passed",
+    "seconds": 36.128
+  },
+  {
+    "line": 5393,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC21_noPermissionPromptsDuringFirstSession",
+    "ac": 21,
+    "result": "passed",
+    "seconds": 32.649
+  },
+  {
+    "line": 5520,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC24_weekReachedIsSentOncePerWeek",
+    "ac": 24,
+    "result": "passed",
+    "seconds": 39.262
+  },
+  {
+    "line": 5676,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC20_allOperationsWorkWhenTelemetryIsUnreachable",
+    "ac": 20,
+    "result": "passed",
+    "seconds": 44.649
+  },
+  {
+    "line": 5835,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC20_allOperationsWorkWhenTelemetryHangs",
+    "ac": 20,
+    "result": "passed",
+    "seconds": 45.77
+  },
+  {
+    "line": 5998,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC20_allOperationsWorkWhenTelemetryReturns500",
+    "ac": 20,
+    "result": "passed",
+    "seconds": 45.019
+  },
+  {
+    "line": 6511,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC3_blankTitleCannotBeSaved",
+    "ac": 3,
+    "result": "passed",
+    "seconds": 145.544
+  },
+  {
+    "line": 6533,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC1_emptyLibraryShowsEmptyStateAndOnlyAddBook",
+    "ac": 1,
+    "result": "passed",
+    "seconds": 9.249
+  },
+  {
+    "line": 6603,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC4_zeroBooksToReadingInThreeTapsOrFewer",
+    "ac": 4,
+    "result": "passed",
+    "seconds": 20.809
+  },
+  {
+    "line": 6667,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC2_addBookWithTitleOnly",
+    "ac": 2,
+    "result": "passed",
+    "seconds": 21.544
+  },
+  {
+    "line": 6736,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC22_twentyFirstBookHasNoLimitOrPaywall",
+    "ac": 22,
+    "result": "passed",
+    "seconds": 22.095
+  },
+  {
+    "line": 6831,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC35_retryAfterOneFailureAddsExactlyOne",
+    "ac": 35,
+    "result": "passed",
+    "seconds": 35.505
+  },
+  {
+    "line": 6908,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC45_timeInFinishInputIsNotCounted",
+    "ac": 45,
+    "result": "passed",
+    "seconds": 26.618
+  },
+  {
+    "line": 7060,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC65_cancelFinishRetryReturnsToReading",
+    "ac": 65,
+    "result": "passed",
+    "seconds": 49.545
+  },
+  {
+    "line": 7219,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC64_cancelFinishFailureKeepsInput",
+    "ac": 64,
+    "result": "passed",
+    "seconds": 53.756
+  },
+  {
+    "line": 7349,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC32_pageAbove9999IsRejectedWithoutTotalPages",
+    "ac": 32,
+    "result": "passed",
+    "seconds": 41.21
+  },
+  {
+    "line": 7488,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC47_cancelFinishResetsMinutesDraft",
+    "ac": 47,
+    "result": "passed",
+    "seconds": 44.759
+  },
+  {
+    "line": 7600,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC34_finishingIsRestoredAfterForceQuit",
+    "ac": 34,
+    "result": "passed",
+    "seconds": 37.906
+  },
+  {
+    "line": 7766,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC46_cancelFinishReturnsToReading",
+    "ac": 46,
+    "result": "passed",
+    "seconds": 52.869
+  },
+  {
+    "line": 7903,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC48_swipeDownDismissEqualsCancel",
+    "ac": 48,
+    "result": "passed",
+    "seconds": 42.707
+  },
+  {
+    "line": 8003,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC50_afterSaveShowsBookDetail",
+    "ac": 50,
+    "result": "passed",
+    "seconds": 35.144
+  },
+  {
+    "line": 8060,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC13_boundarySixtySecondsOpensFinishInput",
+    "ac": 13,
+    "result": "passed",
+    "seconds": 17.703
+  },
+  {
+    "line": 8119,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC5_previousBookStartsFromHomeInOneTap",
+    "ac": 5,
+    "result": "passed",
+    "seconds": 20.804
+  },
+  {
+    "line": 8206,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC17_cannotStartAnotherBookWhilePaused",
+    "ac": 17,
+    "result": "passed",
+    "seconds": 25.13
+  },
+  {
+    "line": 8259,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC7_elapsedKeepsRunningInBackground",
+    "ac": 7,
+    "result": "passed",
+    "seconds": 18.771
+  },
+  {
+    "line": 8382,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC6_pausedTimeIsNotCounted",
+    "ac": 6,
+    "result": "passed",
+    "seconds": 40.16
+  },
+  {
+    "line": 8417,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC25_previousBookIsTheLastSavedOne",
+    "ac": 25,
+    "result": "passed",
+    "seconds": 11.885
+  },
+  {
+    "line": 8538,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC5_startToFirstElapsedMeasuredBySignpost",
+    "ac": 5,
+    "result": "passed",
+    "seconds": 49.595
+  },
+  {
+    "line": 8589,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC8_forceQuitRestoresReadingAndElapsed",
+    "ac": 8,
+    "result": "passed",
+    "seconds": 19.14
+  },
+  {
+    "line": 8630,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC27_homeShowsOnlyResumeWhileReading",
+    "ac": 27,
+    "result": "passed",
+    "seconds": 12.359
+  },
+  {
+    "line": 8741,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC17_cannotStartAnotherBookWhileFinishing",
+    "ac": 17,
+    "result": "passed",
+    "seconds": 34.061
+  },
+  {
+    "line": 8806,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC27_homeShowsOnlyResumeWhileFinishing",
+    "ac": 27,
+    "result": "passed",
+    "seconds": 21.033
+  },
+  {
+    "line": 8860,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC13_underOneMinuteIsNotRecorded",
+    "ac": 13,
+    "result": "passed",
+    "seconds": 18.944
+  },
+  {
+    "line": 8901,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC27_homeShowsOnlyResumeWhilePaused",
+    "ac": 27,
+    "result": "passed",
+    "seconds": 12.142
+  },
+  {
+    "line": 8936,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC26_withoutSessionsPreviousBookIsTheLastAdded",
+    "ac": 26,
+    "result": "passed",
+    "seconds": 11.971
+  },
+  {
+    "line": 9023,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC17_cannotStartAnotherBookWhileReading",
+    "ac": 17,
+    "result": "passed",
+    "seconds": 25.068
+  },
+  {
+    "line": 9053,
+    "class": "LoadFailureAcceptanceTests",
+    "method": "test_AC54_loadFailureShowsRetryInsteadOfEmpty",
+    "ac": 54,
+    "result": "passed",
+    "seconds": 7.427
+  },
+  {
+    "line": 9126,
+    "class": "LoadFailureAcceptanceTests",
+    "method": "test_AC55_loadRetryRestoresLibrary",
+    "ac": 55,
+    "result": "passed",
+    "seconds": 24.155
+  },
+  {
+    "line": 9204,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC49_afterAddShowsNewBookDetail",
+    "ac": 49,
+    "result": "passed",
+    "seconds": 24.383
+  },
+  {
+    "line": 9279,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC53_discardingAddKeepsBookCount",
+    "ac": 53,
+    "result": "passed",
+    "seconds": 23.774
+  },
+  {
+    "line": 9504,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC31_totalPagesOutsideOneTo9999AreRejected",
+    "ac": 31,
+    "result": "passed",
+    "seconds": 53.748
+  },
+  {
+    "line": 9589,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC42_bookAddFailureKeepsTitle",
+    "ac": 42,
+    "result": "passed",
+    "seconds": 26.735
+  },
+  {
+    "line": 9831,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC30_minutesOutsideOneToElapsedAreRejected",
+    "ac": 30,
+    "result": "passed",
+    "seconds": 64.602
+  },
+  {
+    "line": 9911,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC12_editMinutesWhenFinishing",
+    "ac": 12,
+    "result": "passed",
+    "seconds": 24.9
+  },
+  {
+    "line": 10021,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC9_enteringPageRecordsProgress",
+    "ac": 9,
+    "result": "passed",
+    "seconds": 38.004
+  },
+  {
+    "line": 10134,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC19_saveFailureKeepsFinishingSession",
+    "ac": 19,
+    "result": "passed",
+    "seconds": 42.565
+  },
+  {
+    "line": 10204,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC10_finishWithoutPage",
+    "ac": 10,
+    "result": "passed",
+    "seconds": 24.03
+  },
+  {
+    "line": 10345,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC11_pageAboveTotalPagesIsRejected",
+    "ac": 11,
+    "result": "passed",
+    "seconds": 42.226
+  },
+  {
+    "line": 10431,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC29_lowerPageMeansRereading",
+    "ac": 29,
+    "result": "passed",
+    "seconds": 27.369
+  },
+  {
+    "line": 10511,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC22_twentyFirstBookHasNoLimitOrPaywall",
+    "ac": 22,
+    "result": "passed",
+    "seconds": 20.492
+  },
+  {
+    "line": 10581,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC4_zeroBooksToReadingInThreeTapsOrFewer",
+    "ac": 4,
+    "result": "passed",
+    "seconds": 20.356
+  },
+  {
+    "line": 10645,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC2_addBookWithTitleOnly",
+    "ac": 2,
+    "result": "passed",
+    "seconds": 20.374
+  },
+  {
+    "line": 10666,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC1_emptyLibraryShowsEmptyStateAndOnlyAddBook",
+    "ac": 1,
+    "result": "passed",
+    "seconds": 5.978
+  },
+  {
+    "line": 11175,
+    "class": "LibraryAcceptanceTests",
+    "method": "test_AC3_blankTitleCannotBeSaved",
+    "ac": 3,
+    "result": "passed",
+    "seconds": 147.396
+  },
+  {
+    "line": 11305,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC23_telemetryHasNoTitleOrPageValues",
+    "ac": 23,
+    "result": "passed",
+    "seconds": 38.494
+  },
+  {
+    "line": 11463,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC20_allOperationsWorkWhenTelemetryHangs",
+    "ac": 20,
+    "result": "passed",
+    "seconds": 44.39
+  },
+  {
+    "line": 11626,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC20_allOperationsWorkWhenTelemetryReturns500",
+    "ac": 20,
+    "result": "passed",
+    "seconds": 44.789
+  },
+  {
+    "line": 11745,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC21_noPermissionPromptsDuringFirstSession",
+    "ac": 21,
+    "result": "passed",
+    "seconds": 32.924
+  },
+  {
+    "line": 11901,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC20_allOperationsWorkWhenTelemetryIsUnreachable",
+    "ac": 20,
+    "result": "passed",
+    "seconds": 44.269
+  },
+  {
+    "line": 12029,
+    "class": "TelemetryAndPrivacyAcceptanceTests",
+    "method": "test_AC24_weekReachedIsSentOncePerWeek",
+    "ac": 24,
+    "result": "passed",
+    "seconds": 40.39
+  },
+  {
+    "line": 12061,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC28_noProgressWithoutTotalPages",
+    "ac": 28,
+    "result": "passed",
+    "seconds": 9.291
+  },
+  {
+    "line": 12151,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC16_deleteSessionKeepsLastPage",
+    "ac": 16,
+    "result": "passed",
+    "seconds": 31.562
+  },
+  {
+    "line": 12179,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC14_totalAddsSecondsBeforeFlooring",
+    "ac": 14,
+    "result": "passed",
+    "seconds": 9.769
+  },
+  {
+    "line": 12195,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC15_weekTotalExcludesLastWeek",
+    "ac": 15,
+    "result": "passed",
+    "seconds": 5.196
+  },
+  {
+    "line": 12229,
+    "class": "BookStatsAcceptanceTests",
+    "method": "test_AC14_bookTotalsAreShown",
+    "ac": 14,
+    "result": "passed",
+    "seconds": 13.055
+  },
+  {
+    "line": 12322,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC17_cannotStartAnotherBookWhileReading",
+    "ac": 17,
+    "result": "passed",
+    "seconds": 25.422
+  },
+  {
+    "line": 12409,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC17_cannotStartAnotherBookWhilePaused",
+    "ac": 17,
+    "result": "passed",
+    "seconds": 25.818
+  },
+  {
+    "line": 12468,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC5_previousBookStartsFromHomeInOneTap",
+    "ac": 5,
+    "result": "passed",
+    "seconds": 21.339
+  },
+  {
+    "line": 12519,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC8_forceQuitRestoresReadingAndElapsed",
+    "ac": 8,
+    "result": "passed",
+    "seconds": 19.378
+  },
+  {
+    "line": 12640,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC5_startToFirstElapsedMeasuredBySignpost",
+    "ac": 5,
+    "result": "passed",
+    "seconds": 48.472
+  },
+  {
+    "line": 12675,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC25_previousBookIsTheLastSavedOne",
+    "ac": 25,
+    "result": "passed",
+    "seconds": 10.62
+  },
+  {
+    "line": 12716,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC27_homeShowsOnlyResumeWhileReading",
+    "ac": 27,
+    "result": "passed",
+    "seconds": 11.904
+  },
+  {
+    "line": 12827,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC17_cannotStartAnotherBookWhileFinishing",
+    "ac": 17,
+    "result": "passed",
+    "seconds": 34.644
+  },
+  {
+    "line": 12868,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC27_homeShowsOnlyResumeWhilePaused",
+    "ac": 27,
+    "result": "passed",
+    "seconds": 12.464
+  },
+  {
+    "line": 12991,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC6_pausedTimeIsNotCounted",
+    "ac": 6,
+    "result": "passed",
+    "seconds": 39.557
+  },
+  {
+    "line": 13042,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC13_boundarySixtySecondsOpensFinishInput",
+    "ac": 13,
+    "result": "passed",
+    "seconds": 18.321
+  },
+  {
+    "line": 13096,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC13_underOneMinuteIsNotRecorded",
+    "ac": 13,
+    "result": "passed",
+    "seconds": 19.06
+  },
+  {
+    "line": 13149,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC7_elapsedKeepsRunningInBackground",
+    "ac": 7,
+    "result": "passed",
+    "seconds": 19.128
+  },
+  {
+    "line": 13184,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC26_withoutSessionsPreviousBookIsTheLastAdded",
+    "ac": 26,
+    "result": "passed",
+    "seconds": 11.693
+  },
+  {
+    "line": 13249,
+    "class": "ReadingSessionAcceptanceTests",
+    "method": "test_AC27_homeShowsOnlyResumeWhileFinishing",
+    "ac": 27,
+    "result": "passed",
+    "seconds": 21.298
+  },
+  {
+    "line": 13325,
+    "class": "LoadFailureAcceptanceTests",
+    "method": "test_AC55_loadRetryRestoresLibrary",
+    "ac": 55,
+    "result": "passed",
+    "seconds": 23.919
+  },
+  {
+    "line": 13352,
+    "class": "LoadFailureAcceptanceTests",
+    "method": "test_AC54_loadFailureShowsRetryInsteadOfEmpty",
+    "ac": 54,
+    "result": "passed",
+    "seconds": 7.613
+  },
+  {
+    "line": 13413,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC52_bookDetailOffersResumeWhilePaused",
+    "ac": 52,
+    "result": "passed",
+    "seconds": 18.319
+  },
+  {
+    "line": 13429,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC44_sessionAcrossWeekBoundaryCountsInStartWeek",
+    "ac": 44,
+    "result": "passed",
+    "seconds": 5.549
+  },
+  {
+    "line": 13502,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC51_tooShortShowsNoticeOnBookDetail",
+    "ac": 51,
+    "result": "passed",
+    "seconds": 25.067
+  },
+  {
+    "line": 13518,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC36_weekTotalIsZeroWithoutSessionsThisWeek",
+    "ac": 36,
+    "result": "passed",
+    "seconds": 5.273
+  },
+  {
+    "line": 13576,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC52_bookDetailOffersResumeWhileReading",
+    "ac": 52,
+    "result": "passed",
+    "seconds": 18.17
+  },
+  {
+    "line": 13658,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC52_bookDetailOffersResumeAfterCancellingFinish",
+    "ac": 52,
+    "result": "passed",
+    "seconds": 27.223
+  },
+  {
+    "line": 13760,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC57_startRetryFromHomeStartsAtRetryTime",
+    "ac": 57,
+    "result": "passed",
+    "seconds": 32.877
+  },
+  {
+    "line": 13823,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC38_cancelDeleteKeepsSession",
+    "ac": 38,
+    "result": "passed",
+    "seconds": 18.737
+  },
+  {
+    "line": 13924,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC43_deleteFailureKeepsSession",
+    "ac": 43,
+    "result": "passed",
+    "seconds": 32.547
+  },
+  {
+    "line": 13998,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC56_startFailureFromBookDetailKeepsIdle",
+    "ac": 56,
+    "result": "passed",
+    "seconds": 24.429
+  },
+  {
+    "line": 14102,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC57_startRetryFromBookDetailStartsAtRetryTime",
+    "ac": 57,
+    "result": "passed",
+    "seconds": 33.61
+  },
+  {
+    "line": 14140,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC37_bookWithoutSessionsShowsEmptyState",
+    "ac": 37,
+    "result": "passed",
+    "seconds": 13.783
+  },
+  {
+    "line": 14215,
+    "class": "BookDetailAcceptanceTests",
+    "method": "test_AC56_startFailureFromHomeKeepsIdle",
+    "ac": 56,
+    "result": "passed",
+    "seconds": 24.206
+  },
+  {
+    "line": 14359,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC11_pageAboveTotalPagesIsRejected",
+    "ac": 11,
+    "result": "passed",
+    "seconds": 40.931
+  },
+  {
+    "line": 14444,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC29_lowerPageMeansRereading",
+    "ac": 29,
+    "result": "passed",
+    "seconds": 27.03
+  },
+  {
+    "line": 14557,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC19_saveFailureKeepsFinishingSession",
+    "ac": 19,
+    "result": "passed",
+    "seconds": 41.797
+  },
+  {
+    "line": 14667,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC9_enteringPageRecordsProgress",
+    "ac": 9,
+    "result": "passed",
+    "seconds": 38.46
+  },
+  {
+    "line": 14746,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC12_editMinutesWhenFinishing",
+    "ac": 12,
+    "result": "passed",
+    "seconds": 23.728
+  },
+  {
+    "line": 14985,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC30_minutesOutsideOneToElapsedAreRejected",
+    "ac": 30,
+    "result": "passed",
+    "seconds": 64.253
+  },
+  {
+    "line": 15056,
+    "class": "FinishSessionAcceptanceTests",
+    "method": "test_AC10_finishWithoutPage",
+    "ac": 10,
+    "result": "passed",
+    "seconds": 24.5
+  },
+  {
+    "line": 15134,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC53_discardingAddKeepsBookCount",
+    "ac": 53,
+    "result": "passed",
+    "seconds": 23.25
+  },
+  {
+    "line": 15209,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC49_afterAddShowsNewBookDetail",
+    "ac": 49,
+    "result": "passed",
+    "seconds": 23.811
+  },
+  {
+    "line": 15434,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC31_totalPagesOutsideOneTo9999AreRejected",
+    "ac": 31,
+    "result": "passed",
+    "seconds": 52.476
+  },
+  {
+    "line": 15519,
+    "class": "AddBookAcceptanceTests",
+    "method": "test_AC42_bookAddFailureKeepsTitle",
+    "ac": 42,
+    "result": "passed",
+    "seconds": 27.011
+  },
+  {
+    "line": 15620,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC62_beginFinishFailureWhileReading",
+    "ac": 62,
+    "result": "passed",
+    "seconds": 30.435
+  },
+  {
+    "line": 15716,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC58_pauseFailureKeepsReading",
+    "ac": 58,
+    "result": "passed",
+    "seconds": 30.526
+  },
+  {
+    "line": 15824,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC61_resumeRetryStartsAtRetryTime",
+    "ac": 61,
+    "result": "passed",
+    "seconds": 32.926
+  },
+  {
+    "line": 15852,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC40_elapsedLabelReadsMinutesAndSeconds",
+    "ac": 40,
+    "result": "passed",
+    "seconds": 9.516
+  },
+  {
+    "line": 15948,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC60_resumeFailureKeepsPaused",
+    "ac": 60,
+    "result": "passed",
+    "seconds": 30.791
+  },
+  {
+    "line": 16037,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC67_discardRetryShowsNoticeWithoutRecord",
+    "ac": 67,
+    "result": "passed",
+    "seconds": 30.32
+  },
+  {
+    "line": 16162,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC63_beginFinishRetryWhileReading",
+    "ac": 63,
+    "result": "passed",
+    "seconds": 40.831
+  },
+  {
+    "line": 16262,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC66_discardFailureKeepsReading",
+    "ac": 66,
+    "result": "passed",
+    "seconds": 31.899
+  },
+  {
+    "line": 16387,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC63_beginFinishRetryWhilePaused",
+    "ac": 63,
+    "result": "passed",
+    "seconds": 40.13
+  },
+  {
+    "line": 16507,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC59_pauseRetryStopsAtRetryTime",
+    "ac": 59,
+    "result": "passed",
+    "seconds": 37.136
+  },
+  {
+    "line": 16605,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC62_beginFinishFailureWhilePaused",
+    "ac": 62,
+    "result": "passed",
+    "seconds": 30.309
+  },
+  {
+    "line": 16656,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC33_pausedIsRestoredAfterForceQuit",
+    "ac": 33,
+    "result": "passed",
+    "seconds": 19.555
+  },
+  {
+    "line": 16705,
+    "class": "ReadingScreenAcceptanceTests",
+    "method": "test_AC41_clockSetBackShowsZeroNotNegative",
+    "ac": 41,
+    "result": "passed",
+    "seconds": 17.216
+  },
+  {
+    "line": 16860,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC65_cancelFinishRetryReturnsToReading",
+    "ac": 65,
+    "result": "passed",
+    "seconds": 48.549
+  },
+  {
+    "line": 16999,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC47_cancelFinishResetsMinutesDraft",
+    "ac": 47,
+    "result": "passed",
+    "seconds": 44.399
+  },
+  {
+    "line": 17099,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC50_afterSaveShowsBookDetail",
+    "ac": 50,
+    "result": "passed",
+    "seconds": 35.378
+  },
+  {
+    "line": 17258,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC64_cancelFinishFailureKeepsInput",
+    "ac": 64,
+    "result": "passed",
+    "seconds": 53.091
+  },
+  {
+    "line": 17396,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC48_swipeDownDismissEqualsCancel",
+    "ac": 48,
+    "result": "passed",
+    "seconds": 42.165
+  },
+  {
+    "line": 17473,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC45_timeInFinishInputIsNotCounted",
+    "ac": 45,
+    "result": "passed",
+    "seconds": 29.626
+  },
+  {
+    "line": 17602,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC32_pageAbove9999IsRejectedWithoutTotalPages",
+    "ac": 32,
+    "result": "passed",
+    "seconds": 41.492
+  },
+  {
+    "line": 17694,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC35_retryAfterOneFailureAddsExactlyOne",
+    "ac": 35,
+    "result": "passed",
+    "seconds": 35.101
+  },
+  {
+    "line": 17806,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC34_finishingIsRestoredAfterForceQuit",
+    "ac": 34,
+    "result": "passed",
+    "seconds": 39.868
+  },
+  {
+    "line": 17972,
+    "class": "FinishInputAcceptanceTests",
+    "method": "test_AC46_cancelFinishReturnsToReading",
+    "ac": 46,
+    "result": "passed",
+    "seconds": 54.481
+  },
+  {
+    "line": 18323,
+    "class": "AC18RebootTests",
+    "method": "test_AC18_1_seedLibraryBeforeReboot",
+    "ac": 18,
+    "result": "passed",
+    "seconds": 13.866
+  },
+  {
+    "line": 18453,
+    "class": "AC18RebootTests",
+    "method": "test_AC18_2_libraryRemainsAfterReboot",
+    "ac": 18,
+    "result": "passed",
+    "seconds": 24.007
+  }
+]

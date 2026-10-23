@@ -1,0 +1,80 @@
+{
+  "adjacentBackgroundSamples" : [
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        999,
+        251
+      ],
+      "rgb" : "252,252,255"
+    },
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1124,
+        251
+      ],
+      "rgb" : "252,252,255"
+    },
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1061,
+        218
+      ],
+      "rgb" : "252,252,255"
+    },
+    {
+      "contrastToBlackCore" : 20.507250808632939,
+      "pointPixels" : [
+        1061,
+        284
+      ],
+      "rgb" : "252,252,255"
+    }
+  ],
+  "backgroundModeRGB" : "252,252,255",
+  "cropPixels" : [
+    980,
+    198,
+    166,
+    108
+  ],
+  "darkCoreModeCount" : 2288,
+  "darkCoreModeRGB" : "0,0,0",
+  "darkPixelBounds" : [
+    1005,
+    224,
+    1118,
+    278
+  ],
+  "image" : "\/private\/tmp\/reading-app-native-audit-control-20261023\/evidence\/screens\/form_AX5.png",
+  "imageSizePixels" : [
+    1206,
+    2622
+  ],
+  "name" : "control_save_AX5",
+  "sampledContrastRatio" : 20.507250808632939,
+  "topColors" : [
+    {
+      "count" : "13909",
+      "rgb" : "252,252,255"
+    },
+    {
+      "count" : "2288",
+      "rgb" : "0,0,0"
+    },
+    {
+      "count" : "172",
+      "rgb" : "237,238,241"
+    },
+    {
+      "count" : "158",
+      "rgb" : "241,241,245"
+    },
+    {
+      "count" : "116",
+      "rgb" : "255,255,255"
+    }
+  ]
+}
