@@ -76,6 +76,7 @@ struct FinishSessionView: View {
                         model.saveSession(locale: locale)
                     } label: {
                         Text("session.finish.save")
+                            .foregroundStyle(AppColor.onAccent)
                     }
                     .accentProminentButton()
                     .disabled(!model.canSave)
@@ -90,6 +91,7 @@ struct FinishSessionView: View {
                         Text("session.finish.save")
                     }
                     .secondaryBorderedButton()
+                    .fixedSize(horizontal: true, vertical: false)
                     .disabled(!model.canSave)
                     .accessibilityIdentifier("session.finish.saveKeyboard")
                 }
