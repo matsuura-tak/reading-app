@@ -126,6 +126,7 @@ struct AddBookView: View {
                         save()
                     } label: {
                         Text("book.save")
+                            .foregroundStyle(AppColor.onAccent)
                     }
                     .accentProminentButton()
                     .disabled(!canSave || didSave)
