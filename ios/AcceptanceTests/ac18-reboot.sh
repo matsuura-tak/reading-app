@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # AC-18：端末（シミュレーター）を再起動しても、本と記録が残る（contracts/test-hooks.md の T11、A53）。
-# 使い方（CLAUDE.md の ios_test の最後。ios/ の中で動かす）：bash AcceptanceTests/ac18-reboot.sh 'iPhone 16'
+# 使い方（CLAUDE.md の ios_test の最後。ios/ の中で動かす）：bash AcceptanceTests/ac18-reboot.sh 'iPhone 17'
 #   1. データを作る実行（AC18RebootTests/test_AC18_1_seedLibraryBeforeReboot だけ）
 #   2. 再起動：simctl list devices -j で state を読み、Booted なら shutdown、Shutdown なら飛ばす（xcodebuild test の後に止まっていることがある。
 #      CI run 22 で shutdown が code=405「Unable to shutdown device in current state: Shutdown」で落ちた）。続けて boot（Booted なら飛ばす）と bootstatus

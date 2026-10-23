@@ -1,7 +1,8 @@
 # テスト計画 001-reading-session：読んだ時間とページを残して、続きから読む
 
 - 書いた役：verifier　日付：2026-10-21
-- 実装のコードを見ずに書いた：はい（ios/ の実装はまだない。ios/AcceptanceTests/ の外は開いていない）
+- 実装のコードを見ずに書いた：はい（2026-10-21 の初版作成時は ios/ の実装がまだなく、ios/AcceptanceTests/ の外は開いていない）
+- 2026-10-23 の補記：5章の実行手順を現行 Makefile とスクリプトにそろえ、8章に実装後の初回 macOS CI の実ログと、実装前の UI 赤実行が未確認である履歴上の不足を記録した。受け入れ条件と期待値は変えていない。製品実装は読んでいない。
 - この版の範囲：前半と後半（2026-10-21）。前半は計画の全章（2 は AC-1〜AC-67 の全行）、ios/AcceptanceTests/ の設定、共通の部品、AC-1〜AC-30 のテスト。後半は AC-31〜AC-67 のテスト（AC-39 は ac39-xcstrings.sh）、Support/UIHelpers.swift の末尾に足した小さな部品（Wait.enabled、expectSaveFailed、expectNoSaveFailed、expectSessionCount、beginDeleteSession、goBack(toBookTitled:)。前半の部品は変えていない）、8 の赤の証拠、2 の「…」で略した名前を全部の名前に書き直したこと（値は変えていない）。
 - 後半で読み足したファイル：contracts/tools/xcstrings_untranslated.py（AC-39）、contracts/data-model.md の「保存の操作」と「計算する値」、design/001-reading-session.md の 1（S1 > S3 > S4 の積み方）と 5 の長い題名の行（S3 のナビゲーションバーの題名は本の題名）。
 - 読んだファイル（PRD、design/、contracts/ と、指示書が挙げた ADR と判定の記録だけ）：
@@ -149,14 +150,15 @@
 
 ## 5. 動かすコマンドと設定
 受け入れテストは、受け入れテストのフォルダの中の設定だけで動かす。
-- 設定のファイル（すべて ios/AcceptanceTests/ の中）：target.yml（ターゲット YomutokiAcceptanceTests と、スキーム Yomutoki の testPlans。ios/project.yml が include で読む。testPlans は Acceptance と AC18Reboot の2つだけで、Unit.xctestplan は project.yml の側に defaultPlan 付きで書かれる）、Acceptance.xctestplan（実行順はランダム、Automatic Screen Capture はオンで全部残す、再試行なし、構成 ja_JP と en_US、AC-18 の2本は skippedTests）、AC18Reboot.xctestplan（AC-18 の2本だけ。ac18-reboot.sh が使う）、ac18-reboot.sh。
-- iOS（CLAUDE.md の ios_test。ios/ の中で）：`xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Acceptance -destination 'platform=iOS Simulator,name=iPhone 16' CODE_SIGNING_ALLOWED=NO` の後に `bash AcceptanceTests/ac18-reboot.sh 'iPhone 16'`。G3 では結果を `-resultBundlePath /tmp/001-acceptance.xcresult` に置く（リポジトリの外）。
+- 設定のファイル（すべて ios/AcceptanceTests/ の中）：target.yml（ターゲット YomutokiAcceptanceTests と、スキーム Yomutoki の testPlans。ios/project.yml が include で読む。testPlans は Acceptance と AC18Reboot の2つだけで、Unit.xctestplan は project.yml の側に defaultPlan 付きで書かれる）、Acceptance.xctestplan（実行順はランダム、Automatic Screen Capture はオンで全部残す、再試行なし、構成 ja_JP と en_US、AC-18 の2本は skippedTests）、AC18Reboot.xctestplan（AC-18 の2本だけ。ac18-reboot.sh が使う）、run-acceptance.sh、ac18-reboot.sh。
+- iOS（正本は Makefile の ios-test。macOS と Xcode 26 以降、リポジトリの根で）：`make ios-test`。XcodeGen の取得・検査・生成の後、iPhone 17 で Unit → `bash AcceptanceTests/run-acceptance.sh 'iPhone 17'` → `bash AcceptanceTests/ac18-reboot.sh 'iPhone 17'` の順に動く（最後の2つは ios/ の中から呼ばれる）。前段が失敗した場合は後段に進まない。
+- G3 の保存先の例（リポジトリの根で）：`AC_RESULTS_DIR=/tmp/001-acceptance AC18_RESULTS_DIR=/tmp/001-ac18-reboot make ios-test`。run-acceptance.sh は `AC_RESULTS_DIR` に Acceptance.log、Acceptance.xcresult、読めた場合は Acceptance-xcresult.json を残し、末尾に両構成の要約を出す。ac18-reboot.sh は `AC18_RESULTS_DIR` に再起動前後の各ログと .xcresult を残す。いずれもリポジトリの外。スクリプトは同名の前回結果を消すので、実行ごとに未使用の保存先へ変え、以下の参照先もそろえる。
 - AC-39（後半）：`bash ios/AcceptanceTests/ac39-xcstrings.sh`（リポジトリの根で。T14 のコマンドを包むだけ。ios_test に入らないので、app.json に足すかは Takuma。P-12）。
 - バックエンド：なし（001 は app.json の stacks が ios だけ。backend/tests/acceptance/ は使わない）。
 - 判定の実行では再試行を付けない（-retry-tests-on-failure を付けない。xctestplan に testRepetitionMode を書かない）。
-- G3 の実行数の確かめ（0本や片方の構成だけで緑になるのを見つける）：`xcrun xcresulttool get test-results summary --path /tmp/001-acceptance.xcresult --compact` で、Acceptance の実行は160本（80本 × 構成 ja_JP と en_US の2つ）、通った160、落ちた0、飛ばした0。AC18Reboot は ac18-reboot.sh の2回の実行がそれぞれ1本（スクリプトが出力の「Executed 1 test, with 0 failures」を grep し、なければ 65 で落ちる。最後の行は「passed 2 of 2」）。数が違えば、その計画の AC は FAIL。
-- AC-5 の0.5秒の取り出し（案。動かなければ `xcrun xcresulttool get test-results --help` で確かめる）：`xcrun xcresulttool get test-results metrics --path /tmp/001-acceptance.xcresult --test-id 'YomutokiAcceptanceTests/ReadingSessionAcceptanceTests/test_AC5_startToFirstElapsedMeasuredBySignpost()'` で、XCTOSSignpostMetric（FirstElapsedShown）の5回の値を構成ごとに読む。verification.md に5回の値と平均を貼り、平均が 0.5秒以下なら AC-5 の0.5秒は合格。
-- 再試行のボタンの文（design 6 の error.retry.start などの文。AC-56〜AC-66 の Then の外）：`xcrun xcresulttool export attachments --path /tmp/001-acceptance.xcresult --output-path <evidence/>` の後、名前が DESIGN_retryLabel_ で始まる添付を数える。0件でなければ、1件ずつ verification.md に「提案」（design 6 との食い違い）として書く。AC の判定には数えない（L10n.swift の noteRetryLabel）。
+- G3 の実行数の確かめ（0本や片方の構成だけで緑になるのを見つける）：`xcrun xcresulttool get test-results summary --path /tmp/001-acceptance/Acceptance.xcresult` で、Acceptance の実行は160本（80本 × 構成 ja_JP と en_US の2つ）、通った160、落ちた0、飛ばした0。AC18Reboot は ac18-reboot.sh の2回の実行がそれぞれ1本（スクリプトが出力の「Executed 1 test, with 0 failures」を grep し、なければ 65 で落ちる。最後の行は「passed 2 of 2」）。数が違えば、その計画の AC は FAIL。
+- AC-5 の0.5秒の取り出し（案。動かなければ `xcrun xcresulttool get test-results --help` で確かめる）：`xcrun xcresulttool get test-results metrics --path /tmp/001-acceptance/Acceptance.xcresult --test-id 'YomutokiAcceptanceTests/ReadingSessionAcceptanceTests/test_AC5_startToFirstElapsedMeasuredBySignpost()'` で、XCTOSSignpostMetric（FirstElapsedShown）の5回の値を構成ごとに読む。verification.md に5回の値と平均を貼り、平均が 0.5秒以下なら AC-5 の0.5秒は合格。
+- 再試行のボタンの文（design 6 の error.retry.start などの文。AC-56〜AC-66 の Then の外）：`xcrun xcresulttool export attachments --path /tmp/001-acceptance/Acceptance.xcresult --output-path <evidence/>` の後、名前が DESIGN_retryLabel_ で始まる添付を数える。0件でなければ、1件ずつ verification.md に「提案」（design 6 との食い違い）として書く。AC の判定には数えない（L10n.swift の noteRetryLabel）。
 - 揺れの確認：影響「大」の AC のテスト（R1〜R7 の AC）と、一度でも落ちたテストを `xcodebuild test … -testPlan Acceptance -only-testing:YomutokiAcceptanceTests/<クラス>/<テスト> -test-iterations 5 -run-tests-until-failure` で5回。AC-18 は ac18-reboot.sh を5回。
 - 計測の確かめ方の切り替え：localhost に届かないと G2 の CI で分かったら、Acceptance.xctestplan の両方の構成の ACCEPTANCE_TELEMETRY_PATH を log にする（T22。PRD の根拠：AC-23 の「確かめ方」と test-hooks.md の T6 の備考）。-AppleLocale が効かなくても UITEST_LOCALE を同時に渡しているので、替える所はない。
 
@@ -187,11 +189,12 @@
 | AC-31〜AC-67（後半） | 範囲の外、読み込みの失敗、各保存の失敗の区画と再試行の後、強制終了から戻った画面 | AC31_総ページ数0.png、AC31_総ページ数10000.png、AC32_ページ10000.png、AC33_起動し直した後.png、AC34_起動し直した後.png、AC35_再試行の後.png、AC36_今週0分.png、AC37_記録0件の詳細.png、AC38_消す確認.png、AC40_経過12分30秒.png、AC41_時計を戻した後.png、AC42_本の追加の失敗.png、AC43_削除の失敗.png、AC44_週をまたぐ記録.png、AC45_記録の行.png、AC46_やめた後.png、AC47_次の終える入力.png、AC48_スワイプで閉じた後.png、AC49_追加した本の詳細.png、AC50_保存の後.png、AC51_1分未満の知らせ.png、AC52_<reading|paused|finishing>_本の詳細.png、AC53_追加をやめる確認.png、AC54_読み込みの失敗.png、AC55_再試行の後.png、AC56_<ホーム|本の詳細>_読み始めの失敗.png、AC57_<ホーム|本の詳細>_読み始めの再試行の後.png、AC58_一時停止の失敗.png、AC59_一時停止の再試行の後.png、AC60_再開の失敗.png、AC61_再開の再試行の後.png、AC62_<reading|paused>_終えるの失敗.png、AC63_<reading|paused>_終えるの再試行の後.png、AC64_やめる保存の失敗.png、AC65_やめる再試行の後.png、AC66_60秒未満で終える失敗.png、AC67_60秒未満の再試行の後.png（テストの XCTAttachment の名前） |
 | 全画面 | design/ の S1〜S7 の全状態を、通常はライト、ダーク、AX5、英語の4通り | <画面>_<状態>_<light|dark|ax5|en>.png（G3） |
 
-## 8. 赤の証拠（実装の前に落ちたこと）
-- XCUITest の82本（AC-1〜AC-38、AC-40〜AC-67）：**この環境では実行できない**。環境は Linux 6.18 x86_64 で、xcodebuild、xcrun、swift、swiftc がない（red.log の 1）。ios/ には ios/AcceptanceTests/ しかなく、ios/Yomutoki/ と ios/project.yml もまだない。赤の実行は G2 の CI（macOS）で、CLAUDE.md の commands.ios_test（Acceptance.xctestplan と ac18-reboot.sh）で行う。PASS にも FAIL にもしていない。
-- 落ちるべき理由（見込み）：実装がまだないので、(1) ビルドの段階（xcodegen generate でターゲット Yomutoki がない）か、(2) 雛形だけの段階で design 6 の識別子が見つからない（Wait.exists「が出ない」、Wait.label「label が … にならない」）で落ちる。CI の出力（終了コード、Executed N tests, with M failures、落ちたテストの最初のメッセージ）を red.log の 6 に足し、コンパイルの誤りで落ちていたら受け入れテストを直してから貼り直す。
+## 8. 赤の証拠と履歴上の不足
+- 2026-10-21 の実装前：XCUITest の82本（AC-1〜AC-38、AC-40〜AC-67）は**その環境では実行できなかった**。Linux 6.18 x86_64 で xcodebuild、xcrun、swift、swiftc がなく、ios/Yomutoki/ と ios/project.yml もなかった（red.log の1〜2）。実装前にビルドや識別子の不足で落ちるという記述は見込みであり、実行結果ではない。実装前の UI 赤実行は未確認のまま残る。
+- 2026-10-23 に実ログを補記：[初回 macOS CI run 39775008108](https://github.com/matsuura-tak/reading-app/actions/runs/39775008108)（PR HEAD 807f9341f234bf3018e33ca3b5507af9d731f55b）は**実装後**の実行。Unit 67件成功、Acceptance の回1は80件中34件失敗、回2は80件中35件失敗、`TEST FAILED`、xcodebuild の終了65（make と CI ステップは終了2）。AC-18 の再起動には進んでいない。全失敗69回分の最初のエラー・開始・終了を回番号と原本行番号付きで evidence/history-807f934.log に保存した。これは実装前に機能不足で落ちた証拠ではなく、現在の緑でもその不足を埋めない。
+- 初回 CI の失敗には、状態の印が2個、時計 URL で起動し直して seed/reset が再投入されるテスト側の問題、AC-35 の再試行後に詳細に戻れない製品側の問題などが混在する（G2-ci-ruling、G2-mac-r1）。69回の失敗すべてを機能未実装とは扱わない。原因の裁定と、生ログの最初のメッセージを区別する。
 - AC-39（Linux で動く。この環境で実行した）：`bash ios/AcceptanceTests/ac39-xcstrings.sh` → 終了コード1、`test_AC39_stringCatalogFullyTranslated: FAIL（ios/Yomutoki/Resources/*.xcstrings が1つもない）`。落ちた理由：String Catalog がまだない＝機能がまだない。書き間違いでないことは、リポジトリの外の写しに1キーの .xcstrings を置き、translated なら exit=0（untranslated_keys=0）、en が needs_review なら exit=1（untranslated_keys=1）になることで確かめた。
-- 書き間違いで落ちないための、この環境での確かめ（red.log の 4、5）：つなぎ口の UITEST_ の名前12個がすべて contracts/test-hooks.md にある（comm の差0行）。後半のテストが使う seed 23個を Fixture.swift どおりに python で写し、`npx -y ajv-cli@5.0.0 validate -s contracts/seed.schema.json` で23個とも valid（終了コード0）、data-model.md の最後の節の制約（lastPage と endPage が totalPages 以下、bookId、state と pausedAt と finishedAt の組、題名100字）も0件。Seeds.libraryOfFive は contracts/seed.example.json と books、sessions が一致。Swift のコンパイルは CI の最初の実行で確かめる（括弧の対応だけはこの環境で全16ファイル確かめた）。
+- 書き間違いで落ちないための、2026-10-21 の環境での確かめ（red.log の 4、5）：つなぎ口の UITEST_ の名前12個がすべて contracts/test-hooks.md にある（comm の差0行）。後半のテストが使う seed 23個を Fixture.swift どおりに python で写し、`npx -y ajv-cli@5.0.0 validate -s contracts/seed.schema.json` で23個とも valid（終了コード0）、data-model.md の最後の節の制約（lastPage と endPage が totalPages 以下、bookId、state と pausedAt と finishedAt の組、題名100字）も0件。Seeds.libraryOfFive は contracts/seed.example.json と books、sessions が一致。当時は Swift のコンパイル未確認だったが、上記の実装後 CI ではコンパイル後に160回の Acceptance 実行へ進んでいる。
 - ログ：docs/verification/001-reading-session/evidence/red.log
 
 ## 9. 範囲の外
@@ -210,4 +213,4 @@
 - [x] 3章の9行すべてに選んだものがあり、範囲外には理由がある。
 - [x] 4章のつなぎ口がすべて contracts/ にあるか、「未解決」に依頼として書いた。（すべて contracts/ にある）
 - [x] 受け入れテストのフォルダで、sleep、skip、xfail、XCTExpectFailure、retry、@testable import が0件（grep のコマンドと件数を報告に書いた）。（xctestplan の skippedTests の2行を除く。retry に当たるのは、アプリの再試行の識別子 error.retry と error.loadFailed.retry、その文字の L10n.errorRetry*、errorLoadFailedRetry、design 6 の再試行のボタンの文を見る noteRetryLabel とその添付の名前 DESIGN_retryLabel_（G2 r1 の提案5。AC の判定に数えない）、2章で決めたテストの名前（AC-35、AC-57、AC-59、AC-61、AC-63、AC-65、AC-67 の「Retry」。AC の中身がアプリの再試行）と、target.yml の「再試行しない」の注記1行だけ。テストを動かす側の再試行（-retry-tests-on-failure、testRepetitionMode）は0件）
-- [x] 8章の赤の証拠があり、落ちた理由が書き間違いではなく「機能がまだない」こと。（XCUITest の82本は「この環境では実行できない。CI（macOS）で動かす」と red.log に書いた。G2 の CI の出力を red.log の 6 に足すまで、赤の実行は済んでいない。AC-39 はこの環境で実行し、String Catalog がないことで終了コード1）
+- [ ] 8章の赤の証拠があり、落ちた理由が書き間違いではなく「機能がまだない」こと。（AC-39 は実装前に String Catalog がないことで終了1。XCUITest の82本は実装前に実行できず、その赤実行は未確認。red.log の6と history-807f934.log に補記した初回 macOS CI は実装後なので、この項目は完了にしない）

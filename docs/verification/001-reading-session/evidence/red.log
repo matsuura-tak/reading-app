@@ -82,5 +82,25 @@ $ npx -y ajv-cli@5.0.0 validate -s contracts/seed.schema.json -d "<scratchpad>/s
 <scratchpad>/seeds2/ReadingScreen-AC66-AC67.json valid
 exit=0
 
-## 6. CI（macOS）でこのファイルに足すこと
-G2 の最初の CI の ios_test の出力（xcodebuild の終了コード、Executed N tests, with M failures、落ちたテストごとの1行目のメッセージ）をここに貼り、落ちた理由が「機能がまだない」（ビルドの段階か、識別子が見つからない段階）であることを1行で書く。コンパイルの誤りで落ちていたら受け入れテストを直してから貼り直す。
+## 6. 初回 macOS CI の実ログの補記（2026-10-23。実装後の実行）
+1〜5 は 2026-10-21 の実装前の記録を維持した。2 の iPhone 16 は当時の未実行コマンドであり、現在の手順ではない。現行のコマンドと保存先は test-plan.md の5章にある。
+
+参照した実行： https://github.com/matsuura-tak/reading-app/actions/runs/39775008108
+PR HEAD：807f9341f234bf3018e33ca3b5507af9d731f55b
+CI の checkout：0569e3d（上記 PR HEAD を d8e1f0516b40877624cb83c903e215ee59e4ed68 に取り込む merge commit。原本295行）
+run createdAt：2026-10-22T12:01:19Z、終了：2026-10-22T13:19:06Z
+原本：/private/tmp/reading-app-pr2-ci-807f934-full-20261023.log（gh run view 39775008108 --repo matsuura-tak/reading-app --log の完全出力）
+原本：14,861行（LF区切り）、SHA-256 4c46303acd9d5f8c435abbf8bc7ad199b3d41166a452a4a6401256b02566fcd6
+保存した抜粋：docs/verification/001-reading-session/evidence/history-807f934.log
+
+当時の実コマンド：make ios-test（原本1711〜1712行）。iPhone 17 で Unit → xcodebuild -testPlan Acceptance の直接実行 → ac18-reboot.sh の順（&&）だった。現在の run-acceptance.sh はこの初回ログでは使っていない。
+Unit：67件成功、12スイート（原本2722行）。
+Acceptance 回1：原本2778行開始。80件、成功46・失敗34（Test Case の行を集計）。Executed 80 tests, with 34 failures（8792、8794行）。
+Acceptance 回2：原本8798行開始。80件、成功45・失敗35。Executed 80 tests, with 35 failures（14765、14767行）。
+合計：160回、成功91・失敗69（失敗した固有メソッド35本）。Test Case の skipped 行は0件。回番号は Selected tests の開始順で付け、言語はこの抜粋で断定しない。
+終了：TEST FAILED（14821行）、make: *** [ios-test] Error 65（14824行。xcodebuild の終了65）、commands.ios_test / CI ステップは終了2（14826〜14827行）。Acceptance が失敗したため AC-18 の再起動には進まなかった。
+失敗した69回すべてについて、開始、最初のエラー、failed の行を、回番号と原本行番号付きで history-807f934.log に保存した。再試行して緑になった結果への置換はしていない。
+
+実際の失敗例：AC-35 は両回とも「再試行の後の本の詳細：label が『坊っちゃん』にならない（今は『要素なし』）」で失敗（原本7280、10222行。正確な原文は抜粋）。AC-56 の session.state.idle が2個という失敗、時計 URL の後に画面が戻る問題も混在した。G2-ci-ruling の1・2・4と G2-mac-r1 の既存記録は、製品側の重複した状態の印や保存再試行の問題と、テスト側の時計 URL に伴う再起動・seed/reset の再投入を区別している。69回すべてを「機能がまだない」ことによる失敗とは認定しない。
+
+履歴上の未解決：この CI は実装が入った後の実行であり、「実装前に UI テストを実行し、機能不足で落ちた」という証拠ではない。1〜2にある実装前の UI 82本は未実行のままで、その原時点の赤実行は確認できない。現在の緑や、今回読み取った実装後の失敗で過去の赤を代用せず、G2 の履歴証拠の不足として残す。3の実装前 AC-39 の赤（終了1）は維持する。本補記は G2/G3 全体の PASS 判定ではない。

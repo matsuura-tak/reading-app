@@ -1,0 +1,387 @@
+# 初回 macOS CI 807f934 の履歴抜粋（2026-10-23 に既存の完全ログから作成）
+# 実装後の失敗の記録。実装前に UI テストが機能不足で落ちた証拠ではない。G2/G3 全体の PASS を示さない。
+# run: https://github.com/matsuura-tak/reading-app/actions/runs/39775008108
+# PR HEAD: 807f9341f234bf3018e33ca3b5507af9d731f55b
+# CI checkout: 0569e3d（PR HEAD の merge commit。下の原本295行）
+# run createdAt: 2026-10-22T12:01:19Z; ended: 2026-10-22T13:19:06Z
+# 取得元: gh run view 39775008108 --repo matsuura-tak/reading-app --log
+# 原本: /private/tmp/reading-app-pr2-ci-807f934-full-20261023.log
+# 原本の LF 区切り行数: 14861
+# 原本 SHA-256: 4c46303acd9d5f8c435abbf8bc7ad199b3d41166a452a4a6401256b02566fcd6
+# [原本 L<number>] の後は、原本のその行を省略・改変せずに引用した。行番号は LF のみで数える。
+# 回1/回2は Selected tests の started 順。言語はここでは断定しない。
+# Test Case の開始→終了を対応させ、failed となった69回の最初の「: error: 」を各1行保存。
+# 開始と failed 行も保存し、同じメソッドの別回の失敗を区別する。
+# 集計: 回1 実行80/成功46/失敗34、回2 実行80/成功45/失敗35。失敗は固有35メソッド、合計69回。
+# Test Case の skipped 行は0件。AC18Reboot は Acceptance が失敗したので未到達。
+# xcodebuild終了65と、make/CIステップ終了2を区別する。
+# この初回は Acceptance を直接 xcodebuild で呼び、現行の run-acceptance.sh は使っていない。
+# 失敗の原因は一律に機能未実装としない。裁定: docs/reviews/001-reading-session-G2-ci-ruling.md と G2-mac-r1.md。
+
+## 実行環境・コマンド・集計・終了（原本から）
+[原本 L295] ios	Run actions/checkout@v6	2026-10-22T12:01:32.3557570Z HEAD is now at 0569e3d Merge 807f9341f234bf3018e33ca3b5507af9d731f55b into d8e1f0516b40877624cb83c903e215ee59e4ed68
+[原本 L322] ios	ビルドとテスト	2026-10-22T12:01:33.5086770Z Xcode 26.6
+[原本 L1711] ios	ビルドとテスト	2026-10-22T12:02:35.6343180Z ##[group]ios_test: make ios-test
+[原本 L1712] ios	ビルドとテスト	2026-10-22T12:02:36.1886680Z mkdir -p build/tools && curl -fsSL -o build/tools/xcodegen-2.46.0.zip https://github.com/yonaskolb/XcodeGen/releases/download/2.46.0/xcodegen.zip && echo '4d9e34b62172d645eed6457cac13fc222569974098ef4ee9c3368bedf0196806  build/tools/xcodegen-2.46.0.zip' | shasum -a 256 -c - && rm -rf build/tools/xcodegen && unzip -q build/tools/xcodegen-2.46.0.zip -d build/tools && cd ios && ../build/tools/xcodegen/bin/xcodegen generate && xcrun simctl list devices available && xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Unit -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO && xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Acceptance -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO && bash AcceptanceTests/ac18-reboot.sh 'iPhone 17'
+[原本 L1792] ios	ビルドとテスト	2026-10-22T12:02:38.1013150Z     /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Unit -destination "platform=iOS Simulator,name=iPhone 17" CODE_SIGNING_ALLOWED=NO
+[原本 L2722] ios	ビルドとテスト	2026-10-22T12:05:03.3526590Z ✔ Test run with 67 tests in 12 suites passed after 7.498 seconds.
+[原本 L2734] ios	ビルドとテスト	2026-10-22T12:05:11.6953020Z     /Applications/Xcode_26.6.app/Contents/Developer/usr/bin/xcodebuild test -project Yomutoki.xcodeproj -scheme Yomutoki -testPlan Acceptance -destination "platform=iOS Simulator,name=iPhone 17" CODE_SIGNING_ALLOWED=NO
+[原本 L2778] ios	ビルドとテスト	2026-10-22T12:06:50.1305610Z Test Suite 'Selected tests' started at 2026-10-22 12:06:50.011.
+[原本 L8792] ios	ビルドとテスト	2026-10-22T12:43:05.3060240Z 	 Executed 80 tests, with 34 failures (0 unexpected) in 2175.191 (2175.238) seconds
+[原本 L8794] ios	ビルドとテスト	2026-10-22T12:43:05.3120350Z 	 Executed 80 tests, with 34 failures (0 unexpected) in 2175.191 (2175.240) seconds
+[原本 L8798] ios	ビルドとテスト	2026-10-22T12:43:09.7574650Z Test Suite 'Selected tests' started at 2026-10-22 12:43:09.434.
+[原本 L14765] ios	ビルドとテスト	2026-10-22T13:18:29.9057430Z 	 Executed 80 tests, with 35 failures (0 unexpected) in 2120.410 (2120.463) seconds
+[原本 L14767] ios	ビルドとテスト	2026-10-22T13:18:29.9067860Z 	 Executed 80 tests, with 35 failures (0 unexpected) in 2120.410 (2120.468) seconds
+[原本 L14821] ios	ビルドとテスト	2026-10-22T13:19:00.4673440Z ** TEST FAILED **
+[原本 L14824] ios	ビルドとテスト	2026-10-22T13:19:00.7395800Z make: *** [ios-test] Error 65
+[原本 L14826] ios	ビルドとテスト	2026-10-22T13:19:00.8497070Z ##[error]commands.ios_test が失敗しました（終了コード 2）
+[原本 L14827] ios	ビルドとテスト	2026-10-22T13:19:00.8715300Z ##[error]Process completed with exit code 2.
+
+## 回1: 失敗した34回の最初のエラー
+
+[回1 失敗1/34] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC56_startFailureFromBookDetailKeepsIdle
+[原本 L2796] ios	ビルドとテスト	2026-10-22T12:06:59.1459400Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle]' started.
+[原本 L2857] ios	ビルドとテスト	2026-10-22T12:07:44.6719540Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:252: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle] : XCTAssertEqual failed: ("2") is not equal to ("1") - 本の詳細：session.state.idle は1個
+[原本 L2859] ios	ビルドとテスト	2026-10-22T12:07:44.7494270Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle]' failed (45.575 seconds).
+
+[回1 失敗2/34] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC57_startRetryFromHomeStartsAtRetryTime
+[原本 L2860] ios	ビルドとテスト	2026-10-22T12:07:44.8327380Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime]' started.
+[原本 L2939] ios	ビルドとテスト	2026-10-22T12:08:19.0177430Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:282: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L2941] ios	ビルドとテスト	2026-10-22T12:08:19.3271460Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime]' failed (34.473 seconds).
+
+[回1 失敗3/34] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC56_startFailureFromHomeKeepsIdle
+[原本 L3250] ios	ビルドとテスト	2026-10-22T12:10:30.0071260Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle]' started.
+[原本 L3300] ios	ビルドとテスト	2026-10-22T12:11:10.9185100Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:247: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle] : XCTAssertEqual failed: ("2") is not equal to ("1") - ホーム：session.state.idle は1個
+[原本 L3302] ios	ビルドとテスト	2026-10-22T12:11:11.1230970Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle]' failed (41.304 seconds).
+
+[回1 失敗4/34] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC57_startRetryFromBookDetailStartsAtRetryTime
+[原本 L3396] ios	ビルドとテスト	2026-10-22T12:11:44.9638540Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime]' started.
+[原本 L3487] ios	ビルドとテスト	2026-10-22T12:12:19.9695450Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:287: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L3489] ios	ビルドとテスト	2026-10-22T12:12:20.1061920Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime]' failed (35.251 seconds).
+
+[回1 失敗5/34] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC51_tooShortShowsNoticeOnBookDetail
+[原本 L3490] ios	ビルドとテスト	2026-10-22T12:12:20.1081010Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC51_tooShortShowsNoticeOnBookDetail]' started.
+[原本 L3557] ios	ビルドとテスト	2026-10-22T12:12:47.0621710Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:147: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC51_tooShortShowsNoticeOnBookDetail] : failed - 前提：経過 0:59：label が「0分59秒」にならない（今は「要素なし」）
+[原本 L3559] ios	ビルドとテスト	2026-10-22T12:12:47.2826740Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC51_tooShortShowsNoticeOnBookDetail]' failed (27.148 seconds).
+
+[回1 失敗6/34] YomutokiAcceptanceTests.ReadingSessionAcceptanceTests.test_AC5_previousBookStartsFromHomeInOneTap
+[原本 L4166] ios	ビルドとテスト	2026-10-22T12:16:31.1176490Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_previousBookStartsFromHomeInOneTap]' started.
+[原本 L4248] ios	ビルドとテスト	2026-10-22T12:17:04.5602140Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift:27: error: -[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_previousBookStartsFromHomeInOneTap] : failed - 3秒後の経過（0:02〜0:04）：label が ["0分2秒", "0分3秒", "0分4秒"] のどれにもならない（今は「要素なし」）
+[原本 L4250] ios	ビルドとテスト	2026-10-22T12:17:04.7403040Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_previousBookStartsFromHomeInOneTap]' failed (33.744 seconds).
+
+[回1 失敗7/34] YomutokiAcceptanceTests.ReadingSessionAcceptanceTests.test_AC6_pausedTimeIsNotCounted
+[原本 L4251] ios	ビルドとテスト	2026-10-22T12:17:04.7515570Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC6_pausedTimeIsNotCounted]' started.
+[原本 L4396] ios	ビルドとテスト	2026-10-22T12:17:39.5562750Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift:63: error: -[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC6_pausedTimeIsNotCounted] : failed - T16 の時計の操作（advance=60）が効いた：label が「2」にならない（今は「1」）
+[原本 L4398] ios	ビルドとテスト	2026-10-22T12:17:39.7385370Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC6_pausedTimeIsNotCounted]' failed (34.998 seconds).
+
+[回1 失敗8/34] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC20_allOperationsWorkWhenTelemetryHangs
+[原本 L4568] ios	ビルドとテスト	2026-10-22T12:19:01.7882110Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryHangs]' started.
+[原本 L4681] ios	ビルドとテスト	2026-10-22T12:19:39.4445150Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:50: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryHangs] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L4688] ios	ビルドとテスト	2026-10-22T12:19:39.6172420Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryHangs]' failed (38.260 seconds).
+
+[回1 失敗9/34] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC24_weekReachedIsSentOncePerWeek
+[原本 L4689] ios	ビルドとテスト	2026-10-22T12:19:39.6589040Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC24_weekReachedIsSentOncePerWeek]' started.
+[原本 L4762] ios	ビルドとテスト	2026-10-22T12:20:07.2783270Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:205: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC24_weekReachedIsSentOncePerWeek] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L4766] ios	ビルドとテスト	2026-10-22T12:20:07.4749900Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC24_weekReachedIsSentOncePerWeek]' failed (27.859 seconds).
+
+[回1 失敗10/34] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC20_allOperationsWorkWhenTelemetryReturns500
+[原本 L4767] ios	ビルドとテスト	2026-10-22T12:20:07.4770140Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryReturns500]' started.
+[原本 L4877] ios	ビルドとテスト	2026-10-22T12:20:43.4630840Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:50: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryReturns500] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L4887] ios	ビルドとテスト	2026-10-22T12:20:43.7545040Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryReturns500]' failed (36.157 seconds).
+
+[回1 失敗11/34] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC21_noPermissionPromptsDuringFirstSession
+[原本 L4888] ios	ビルドとテスト	2026-10-22T12:20:43.8675400Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC21_noPermissionPromptsDuringFirstSession]' started.
+[原本 L4999] ios	ビルドとテスト	2026-10-22T12:21:21.1536080Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:105: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC21_noPermissionPromptsDuringFirstSession] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L5001] ios	ビルドとテスト	2026-10-22T12:21:21.3541230Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC21_noPermissionPromptsDuringFirstSession]' failed (37.724 seconds).
+
+[回1 失敗12/34] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC23_telemetryHasNoTitleOrPageValues
+[原本 L5002] ios	ビルドとテスト	2026-10-22T12:21:21.3560420Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC23_telemetryHasNoTitleOrPageValues]' started.
+[原本 L5108] ios	ビルドとテスト	2026-10-22T12:21:56.2626080Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:128: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC23_telemetryHasNoTitleOrPageValues] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L5114] ios	ビルドとテスト	2026-10-22T12:21:56.4027490Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC23_telemetryHasNoTitleOrPageValues]' failed (35.024 seconds).
+
+[回1 失敗13/34] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC20_allOperationsWorkWhenTelemetryIsUnreachable
+[原本 L5115] ios	ビルドとテスト	2026-10-22T12:21:56.4854610Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryIsUnreachable]' started.
+[原本 L5228] ios	ビルドとテスト	2026-10-22T12:22:30.8969670Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:50: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryIsUnreachable] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L5234] ios	ビルドとテスト	2026-10-22T12:22:31.0939050Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryIsUnreachable]' failed (34.714 seconds).
+
+[回1 失敗14/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC62_beginFinishFailureWhileReading
+[原本 L5238] ios	ビルドとテスト	2026-10-22T12:22:31.1011760Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhileReading]' started.
+[原本 L5314] ios	ビルドとテスト	2026-10-22T12:22:59.8765640Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:195: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhileReading] : failed - reading：60秒後：error.saveFailed：label が「変更を保存できませんでした」にならない（今は「要素なし」）
+[原本 L5316] ios	ビルドとテスト	2026-10-22T12:23:00.0697850Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhileReading]' failed (28.975 seconds).
+
+[回1 失敗15/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC60_resumeFailureKeepsPaused
+[原本 L5387] ios	ビルドとテスト	2026-10-22T12:23:31.3020030Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC60_resumeFailureKeepsPaused]' started.
+[原本 L5463] ios	ビルドとテスト	2026-10-22T12:23:59.4955200Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:136: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC60_resumeFailureKeepsPaused] : failed - 60秒後：error.saveFailed：label が「変更を保存できませんでした」にならない（今は「要素なし」）
+[原本 L5465] ios	ビルドとテスト	2026-10-22T12:23:59.6989270Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC60_resumeFailureKeepsPaused]' failed (28.402 seconds).
+
+[回1 失敗16/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC61_resumeRetryStartsAtRetryTime
+[原本 L5466] ios	ビルドとテスト	2026-10-22T12:23:59.7013760Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC61_resumeRetryStartsAtRetryTime]' started.
+[原本 L5545] ios	ビルドとテスト	2026-10-22T12:24:27.4789090Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:148: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC61_resumeRetryStartsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L5547] ios	ビルドとテスト	2026-10-22T12:24:27.6812180Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC61_resumeRetryStartsAtRetryTime]' failed (27.982 seconds).
+
+[回1 失敗17/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC63_beginFinishRetryWhileReading
+[原本 L5548] ios	ビルドとテスト	2026-10-22T12:24:27.6839780Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading]' started.
+[原本 L5627] ios	ビルドとテスト	2026-10-22T12:24:55.8120750Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:224: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading] : XCTAssertTrue failed - error.retry が出ない
+[原本 L5629] ios	ビルドとテスト	2026-10-22T12:24:56.0246990Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading]' failed (28.336 seconds).
+
+[回1 失敗18/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC67_discardRetryShowsNoticeWithoutRecord
+[原本 L5630] ios	ビルドとテスト	2026-10-22T12:24:56.1054650Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC67_discardRetryShowsNoticeWithoutRecord]' started.
+[原本 L5711] ios	ビルドとテスト	2026-10-22T12:25:25.4994730Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:268: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC67_discardRetryShowsNoticeWithoutRecord] : XCTAssertTrue failed - error.retry が出ない
+[原本 L5713] ios	ビルドとテスト	2026-10-22T12:25:25.6997030Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC67_discardRetryShowsNoticeWithoutRecord]' failed (29.683 seconds).
+
+[回1 失敗19/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC58_pauseFailureKeepsReading
+[原本 L5714] ios	ビルドとテスト	2026-10-22T12:25:25.7038730Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC58_pauseFailureKeepsReading]' started.
+[原本 L5790] ios	ビルドとテスト	2026-10-22T12:25:53.8786630Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:96: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC58_pauseFailureKeepsReading] : failed - 60秒後：error.saveFailed：label が「変更を保存できませんでした」にならない（今は「要素なし」）
+[原本 L5792] ios	ビルドとテスト	2026-10-22T12:25:54.0797560Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC58_pauseFailureKeepsReading]' failed (28.378 seconds).
+
+[回1 失敗20/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC63_beginFinishRetryWhilePaused
+[原本 L5793] ios	ビルドとテスト	2026-10-22T12:25:54.0823630Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused]' started.
+[原本 L5872] ios	ビルドとテスト	2026-10-22T12:26:22.1484210Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:230: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused] : XCTAssertTrue failed - error.retry が出ない
+[原本 L5874] ios	ビルドとテスト	2026-10-22T12:26:22.3506600Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused]' failed (28.267 seconds).
+
+[回1 失敗21/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC62_beginFinishFailureWhilePaused
+[原本 L5920] ios	ビルドとテスト	2026-10-22T12:26:41.8731730Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhilePaused]' started.
+[原本 L5996] ios	ビルドとテスト	2026-10-22T12:27:09.6367210Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:201: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhilePaused] : failed - paused：60秒後：error.saveFailed：label が「変更を保存できませんでした」にならない（今は「要素なし」）
+[原本 L5998] ios	ビルドとテスト	2026-10-22T12:27:09.8410150Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhilePaused]' failed (27.973 seconds).
+
+[回1 失敗22/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC66_discardFailureKeepsReading
+[原本 L5999] ios	ビルドとテスト	2026-10-22T12:27:09.8456810Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC66_discardFailureKeepsReading]' started.
+[原本 L6077] ios	ビルドとテスト	2026-10-22T12:27:38.8180990Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:253: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC66_discardFailureKeepsReading] : failed - 10秒後：error.saveFailed：label が「変更を保存できませんでした」にならない（今は「要素なし」）
+[原本 L6079] ios	ビルドとテスト	2026-10-22T12:27:39.0168160Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC66_discardFailureKeepsReading]' failed (29.172 seconds).
+
+[回1 失敗23/34] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC59_pauseRetryStopsAtRetryTime
+[原本 L6080] ios	ビルドとテスト	2026-10-22T12:27:39.0175210Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC59_pauseRetryStopsAtRetryTime]' started.
+[原本 L6159] ios	ビルドとテスト	2026-10-22T12:28:07.3221970Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:108: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC59_pauseRetryStopsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L6161] ios	ビルドとテスト	2026-10-22T12:28:07.5046290Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC59_pauseRetryStopsAtRetryTime]' failed (28.485 seconds).
+
+[回1 失敗24/34] YomutokiAcceptanceTests.AddBookAcceptanceTests.test_AC31_totalPagesOutsideOneTo9999AreRejected
+[原本 L6319] ios	ビルドとテスト	2026-10-22T12:28:59.9525730Z Test Case '-[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected]' started.
+[原本 L6435] ios	ビルドとテスト	2026-10-22T12:29:26.8313980Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift:41: error: -[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected] : failed - 0：book.save：isEnabled が false にならない（今は true）
+[原本 L6437] ios	ビルドとテスト	2026-10-22T12:29:27.0449940Z Test Case '-[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected]' failed (27.081 seconds).
+
+[回1 失敗25/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC65_cancelFinishRetryReturnsToReading
+[原本 L6617] ios	ビルドとテスト	2026-10-22T12:30:24.5612550Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC65_cancelFinishRetryReturnsToReading]' started.
+[原本 L6736] ios	ビルドとテスト	2026-10-22T12:31:07.9253090Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:266: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC65_cancelFinishRetryReturnsToReading] : XCTAssertTrue failed - error.retry が出ない
+[原本 L6738] ios	ビルドとテスト	2026-10-22T12:31:08.1322620Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC65_cancelFinishRetryReturnsToReading]' failed (43.630 seconds).
+
+[回1 失敗26/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC47_cancelFinishResetsMinutesDraft
+[原本 L6739] ios	ビルドとテスト	2026-10-22T12:31:08.1426470Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft]' started.
+[原本 L6807] ios	ビルドとテスト	2026-10-22T12:31:31.1742160Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:164: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft] : XCTAssertEqual failed: ("510") is not equal to ("5") - 前提：分の欄を5に直した
+[原本 L6809] ios	ビルドとテスト	2026-10-22T12:31:31.3878840Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft]' failed (23.256 seconds).
+
+[回1 失敗27/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC46_cancelFinishReturnsToReading
+[原本 L6810] ios	ビルドとテスト	2026-10-22T12:31:31.3914190Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC46_cancelFinishReturnsToReading]' started.
+[原本 L6911] ios	ビルドとテスト	2026-10-22T12:32:07.9994770Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:141: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC46_cancelFinishReturnsToReading] : XCTAssertTrue failed - session.finish.cancel が出ない
+[原本 L6913] ios	ビルドとテスト	2026-10-22T12:32:08.2278470Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC46_cancelFinishReturnsToReading]' failed (36.822 seconds).
+
+[回1 失敗28/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC50_afterSaveShowsBookDetail
+[原本 L7016] ios	ビルドとテスト	2026-10-22T12:32:48.0235040Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC50_afterSaveShowsBookDetail]' started.
+[原本 L7083] ios	ビルドとテスト	2026-10-22T12:33:13.8516090Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:212: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC50_afterSaveShowsBookDetail] : failed - 前提：経過 10:00：label が「10分0秒」にならない（今は「要素なし」）
+[原本 L7085] ios	ビルドとテスト	2026-10-22T12:33:14.2057680Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC50_afterSaveShowsBookDetail]' failed (26.064 seconds).
+
+[回1 失敗29/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC64_cancelFinishFailureKeepsInput
+[原本 L7086] ios	ビルドとテスト	2026-10-22T12:33:14.2869050Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput]' started.
+[原本 L7202] ios	ビルドとテスト	2026-10-22T12:33:56.7391310Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:250: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput] : failed - 60秒後：error.saveFailed：label が「変更を保存できませんでした」にならない（今は「要素なし」）
+[原本 L7204] ios	ビルドとテスト	2026-10-22T12:33:56.9471510Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput]' failed (42.884 seconds).
+
+[回1 失敗30/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC35_retryAfterOneFailureAddsExactlyOne
+[原本 L7205] ios	ビルドとテスト	2026-10-22T12:33:56.9528660Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne]' started.
+[原本 L7280] ios	ビルドとテスト	2026-10-22T12:34:24.7343820Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:100: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne] : failed - 再試行の後の本の詳細：label が「坊っちゃん」にならない（今は「要素なし」）
+[原本 L7282] ios	ビルドとテスト	2026-10-22T12:34:24.9637590Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne]' failed (27.991 seconds).
+
+[回1 失敗31/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC48_swipeDownDismissEqualsCancel
+[原本 L7394] ios	ビルドとテスト	2026-10-22T12:35:04.6938650Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' started.
+[原本 L7496] ios	ビルドとテスト	2026-10-22T12:35:40.5604920Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:190: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel] : XCTAssertTrue failed - S5 のナビゲーションバー（session.finish.cancel を含む） が出ない
+[原本 L7498] ios	ビルドとテスト	2026-10-22T12:35:40.7630820Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' failed (36.154 seconds).
+
+[回1 失敗32/34] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC45_timeInFinishInputIsNotCounted
+[原本 L7499] ios	ビルドとテスト	2026-10-22T12:35:40.7673370Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC45_timeInFinishInputIsNotCounted]' started.
+[原本 L7583] ios	ビルドとテスト	2026-10-22T12:36:12.5169540Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:122: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC45_timeInFinishInputIsNotCounted] : XCTAssertTrue failed - session.finish.save が出ない
+[原本 L7585] ios	ビルドとテスト	2026-10-22T12:36:12.7209980Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC45_timeInFinishInputIsNotCounted]' failed (31.957 seconds).
+
+[回1 失敗33/34] YomutokiAcceptanceTests.FinishSessionAcceptanceTests.test_AC30_minutesOutsideOneToElapsedAreRejected
+[原本 L7768] ios	ビルドとテスト	2026-10-22T12:37:22.1702790Z Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC30_minutesOutsideOneToElapsedAreRejected]' started.
+[原本 L7962] ios	ビルドとテスト	2026-10-22T12:38:22.7047840Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift:171: error: -[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC30_minutesOutsideOneToElapsedAreRejected] : XCTAssertTrue failed - 180分では誤りの文 が消えない
+[原本 L7964] ios	ビルドとテスト	2026-10-22T12:38:22.9257030Z Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC30_minutesOutsideOneToElapsedAreRejected]' failed (60.757 seconds).
+
+[回1 失敗34/34] YomutokiAcceptanceTests.LibraryAcceptanceTests.test_AC3_blankTitleCannotBeSaved
+[原本 L8492] ios	ビルドとテスト	2026-10-22T12:41:23.5655450Z Test Case '-[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved]' started.
+[原本 L8518] ios	ビルドとテスト	2026-10-22T12:41:31.6812620Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift:78: error: -[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved] : XCTAssertFalse failed - 空白の例 0（）：book.save は無効
+[原本 L8520] ios	ビルドとテスト	2026-10-22T12:41:31.9041350Z Test Case '-[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved]' failed (8.334 seconds).
+
+## 回2: 失敗した35回の最初のエラー
+
+[回2 失敗1/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC60_resumeFailureKeepsPaused
+[原本 L8802] ios	ビルドとテスト	2026-10-22T12:43:09.7686950Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC60_resumeFailureKeepsPaused]' started.
+[原本 L8876] ios	ビルドとテスト	2026-10-22T12:43:37.2670100Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:136: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC60_resumeFailureKeepsPaused] : failed - 60秒後：error.saveFailed：label が「Couldn't Save Changes」にならない（今は「要素なし」）
+[原本 L8878] ios	ビルドとテスト	2026-10-22T12:43:37.4754840Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC60_resumeFailureKeepsPaused]' failed (28.032 seconds).
+
+[回2 失敗2/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC63_beginFinishRetryWhileReading
+[原本 L8879] ios	ビルドとテスト	2026-10-22T12:43:37.4824870Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading]' started.
+[原本 L8958] ios	ビルドとテスト	2026-10-22T12:44:05.9848780Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:224: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading] : XCTAssertTrue failed - error.retry が出ない
+[原本 L8960] ios	ビルドとテスト	2026-10-22T12:44:06.1846660Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading]' failed (28.704 seconds).
+
+[回2 失敗3/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC63_beginFinishRetryWhilePaused
+[原本 L8961] ios	ビルドとテスト	2026-10-22T12:44:06.1852270Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused]' started.
+[原本 L9040] ios	ビルドとテスト	2026-10-22T12:44:34.6288610Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:230: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused] : XCTAssertTrue failed - error.retry が出ない
+[原本 L9042] ios	ビルドとテスト	2026-10-22T12:44:34.8312460Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused]' failed (28.647 seconds).
+
+[回2 失敗4/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC67_discardRetryShowsNoticeWithoutRecord
+[原本 L9043] ios	ビルドとテスト	2026-10-22T12:44:34.8333120Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC67_discardRetryShowsNoticeWithoutRecord]' started.
+[原本 L9124] ios	ビルドとテスト	2026-10-22T12:45:03.7216230Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:268: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC67_discardRetryShowsNoticeWithoutRecord] : XCTAssertTrue failed - error.retry が出ない
+[原本 L9126] ios	ビルドとテスト	2026-10-22T12:45:03.9264490Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC67_discardRetryShowsNoticeWithoutRecord]' failed (29.099 seconds).
+
+[回2 失敗5/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC59_pauseRetryStopsAtRetryTime
+[原本 L9127] ios	ビルドとテスト	2026-10-22T12:45:03.9309300Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC59_pauseRetryStopsAtRetryTime]' started.
+[原本 L9206] ios	ビルドとテスト	2026-10-22T12:45:31.7051800Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:108: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC59_pauseRetryStopsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L9208] ios	ビルドとテスト	2026-10-22T12:45:31.9073810Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC59_pauseRetryStopsAtRetryTime]' failed (27.980 seconds).
+
+[回2 失敗6/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC62_beginFinishFailureWhileReading
+[原本 L9254] ios	ビルドとテスト	2026-10-22T12:45:52.3776310Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhileReading]' started.
+[原本 L9330] ios	ビルドとテスト	2026-10-22T12:46:20.2375760Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:195: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhileReading] : failed - reading：60秒後：error.saveFailed：label が「Couldn't Save Changes」にならない（今は「要素なし」）
+[原本 L9332] ios	ビルドとテスト	2026-10-22T12:46:20.4499090Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhileReading]' failed (28.090 seconds).
+
+[回2 失敗7/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC61_resumeRetryStartsAtRetryTime
+[原本 L9358] ios	ビルドとテスト	2026-10-22T12:46:30.4419950Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC61_resumeRetryStartsAtRetryTime]' started.
+[原本 L9437] ios	ビルドとテスト	2026-10-22T12:46:58.1967660Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:148: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC61_resumeRetryStartsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L9439] ios	ビルドとテスト	2026-10-22T12:46:58.3977310Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC61_resumeRetryStartsAtRetryTime]' failed (27.958 seconds).
+
+[回2 失敗8/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC62_beginFinishFailureWhilePaused
+[原本 L9440] ios	ビルドとテスト	2026-10-22T12:46:58.3988140Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhilePaused]' started.
+[原本 L9516] ios	ビルドとテスト	2026-10-22T12:47:26.3121830Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:201: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhilePaused] : failed - paused：60秒後：error.saveFailed：label が「Couldn't Save Changes」にならない（今は「要素なし」）
+[原本 L9518] ios	ビルドとテスト	2026-10-22T12:47:26.4920500Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC62_beginFinishFailureWhilePaused]' failed (28.097 seconds).
+
+[回2 失敗9/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC66_discardFailureKeepsReading
+[原本 L9564] ios	ビルドとテスト	2026-10-22T12:47:48.6530250Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC66_discardFailureKeepsReading]' started.
+[原本 L9639] ios	ビルドとテスト	2026-10-22T12:48:22.7871180Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:253: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC66_discardFailureKeepsReading] : failed - 10秒後：error.saveFailed：label が「Couldn't Save Changes」にならない（今は「要素なし」）
+[原本 L9641] ios	ビルドとテスト	2026-10-22T12:48:23.0517210Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC66_discardFailureKeepsReading]' failed (34.487 seconds).
+
+[回2 失敗10/35] YomutokiAcceptanceTests.ReadingScreenAcceptanceTests.test_AC58_pauseFailureKeepsReading
+[原本 L9642] ios	ビルドとテスト	2026-10-22T12:48:23.0743100Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC58_pauseFailureKeepsReading]' started.
+[原本 L9718] ios	ビルドとテスト	2026-10-22T12:49:00.8155590Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift:96: error: -[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC58_pauseFailureKeepsReading] : failed - 60秒後：error.saveFailed：label が「Couldn't Save Changes」にならない（今は「要素なし」）
+[原本 L9720] ios	ビルドとテスト	2026-10-22T12:49:01.0367840Z Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC58_pauseFailureKeepsReading]' failed (37.977 seconds).
+
+[回2 失敗11/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC32_pageAbove9999IsRejectedWithoutTotalPages
+[原本 L9724] ios	ビルドとテスト	2026-10-22T12:49:01.6961640Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC32_pageAbove9999IsRejectedWithoutTotalPages]' started.
+[原本 L9777] ios	ビルドとテスト	2026-10-22T12:49:51.1846970Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:49: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC32_pageAbove9999IsRejectedWithoutTotalPages] : XCTAssertTrue failed - session.state.idle が消えない
+[原本 L9779] ios	ビルドとテスト	2026-10-22T12:49:51.2990370Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC32_pageAbove9999IsRejectedWithoutTotalPages]' failed (50.085 seconds).
+
+[回2 失敗12/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC64_cancelFinishFailureKeepsInput
+[原本 L9780] ios	ビルドとテスト	2026-10-22T12:49:51.4339910Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput]' started.
+[原本 L9899] ios	ビルドとテスト	2026-10-22T12:51:01.0258280Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:250: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput] : failed - 60秒後：error.saveFailed：label が「Couldn't Save Changes」にならない（今は「要素なし」）
+[原本 L9901] ios	ビルドとテスト	2026-10-22T12:51:01.2536560Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput]' failed (70.197 seconds).
+
+[回2 失敗13/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC48_swipeDownDismissEqualsCancel
+[原本 L9902] ios	ビルドとテスト	2026-10-22T12:51:01.3408510Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' started.
+[原本 L10003] ios	ビルドとテスト	2026-10-22T12:51:36.7652190Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:190: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel] : XCTAssertTrue failed - S5 のナビゲーションバー（session.finish.cancel を含む） が出ない
+[原本 L10005] ios	ビルドとテスト	2026-10-22T12:51:36.9479080Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC48_swipeDownDismissEqualsCancel]' failed (35.722 seconds).
+
+[回2 失敗14/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC47_cancelFinishResetsMinutesDraft
+[原本 L10006] ios	ビルドとテスト	2026-10-22T12:51:36.9587200Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft]' started.
+[原本 L10074] ios	ビルドとテスト	2026-10-22T12:51:59.3007690Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:164: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft] : XCTAssertEqual failed: ("510") is not equal to ("5") - 前提：分の欄を5に直した
+[原本 L10076] ios	ビルドとテスト	2026-10-22T12:51:59.5324680Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft]' failed (22.562 seconds).
+
+[回2 失敗15/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC50_afterSaveShowsBookDetail
+[原本 L10077] ios	ビルドとテスト	2026-10-22T12:51:59.5427760Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC50_afterSaveShowsBookDetail]' started.
+[原本 L10144] ios	ビルドとテスト	2026-10-22T12:52:25.0030760Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:212: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC50_afterSaveShowsBookDetail] : failed - 前提：経過 10:00：label が「10 minutes, 0 seconds」にならない（今は「要素なし」）
+[原本 L10146] ios	ビルドとテスト	2026-10-22T12:52:25.2429100Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC50_afterSaveShowsBookDetail]' failed (25.702 seconds).
+
+[回2 失敗16/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC35_retryAfterOneFailureAddsExactlyOne
+[原本 L10147] ios	ビルドとテスト	2026-10-22T12:52:25.3306270Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne]' started.
+[原本 L10222] ios	ビルドとテスト	2026-10-22T12:52:52.7390890Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:100: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne] : failed - 再試行の後の本の詳細：label が「坊っちゃん」にならない（今は「要素なし」）
+[原本 L10224] ios	ビルドとテスト	2026-10-22T12:52:52.9730310Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne]' failed (27.730 seconds).
+
+[回2 失敗17/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC45_timeInFinishInputIsNotCounted
+[原本 L10225] ios	ビルドとテスト	2026-10-22T12:52:52.9982630Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC45_timeInFinishInputIsNotCounted]' started.
+[原本 L10309] ios	ビルドとテスト	2026-10-22T12:53:25.2671430Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:122: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC45_timeInFinishInputIsNotCounted] : XCTAssertTrue failed - session.finish.save が出ない
+[原本 L10311] ios	ビルドとテスト	2026-10-22T12:53:25.4851090Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC45_timeInFinishInputIsNotCounted]' failed (32.532 seconds).
+
+[回2 失敗18/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC46_cancelFinishReturnsToReading
+[原本 L10312] ios	ビルドとテスト	2026-10-22T12:53:25.4965050Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC46_cancelFinishReturnsToReading]' started.
+[原本 L10413] ios	ビルドとテスト	2026-10-22T12:54:01.1624670Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:141: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC46_cancelFinishReturnsToReading] : XCTAssertTrue failed - session.finish.cancel が出ない
+[原本 L10415] ios	ビルドとテスト	2026-10-22T12:54:01.3687190Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC46_cancelFinishReturnsToReading]' failed (35.888 seconds).
+
+[回2 失敗19/35] YomutokiAcceptanceTests.FinishInputAcceptanceTests.test_AC65_cancelFinishRetryReturnsToReading
+[原本 L10518] ios	ビルドとテスト	2026-10-22T12:54:41.3191650Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC65_cancelFinishRetryReturnsToReading]' started.
+[原本 L10637] ios	ビルドとテスト	2026-10-22T12:55:23.9497320Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift:266: error: -[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC65_cancelFinishRetryReturnsToReading] : XCTAssertTrue failed - error.retry が出ない
+[原本 L10639] ios	ビルドとテスト	2026-10-22T12:55:24.1622780Z Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC65_cancelFinishRetryReturnsToReading]' failed (42.843 seconds).
+
+[回2 失敗20/35] YomutokiAcceptanceTests.AddBookAcceptanceTests.test_AC31_totalPagesOutsideOneTo9999AreRejected
+[原本 L10899] ios	ビルドとテスト	2026-10-22T12:56:49.0539010Z Test Case '-[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected]' started.
+[原本 L11015] ios	ビルドとテスト	2026-10-22T12:57:16.1504010Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift:41: error: -[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected] : failed - 0：book.save：isEnabled が false にならない（今は true）
+[原本 L11017] ios	ビルドとテスト	2026-10-22T12:57:16.3595620Z Test Case '-[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected]' failed (27.311 seconds).
+
+[回2 失敗21/35] YomutokiAcceptanceTests.LibraryAcceptanceTests.test_AC3_blankTitleCannotBeSaved
+[原本 L11231] ios	ビルドとテスト	2026-10-22T12:58:24.1096010Z Test Case '-[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved]' started.
+[原本 L11257] ios	ビルドとテスト	2026-10-22T12:58:32.4151960Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift:78: error: -[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved] : XCTAssertFalse failed - 空白の例 0（）：book.save は無効
+[原本 L11259] ios	ビルドとテスト	2026-10-22T12:58:32.6135120Z Test Case '-[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved]' failed (8.668 seconds).
+
+[回2 失敗22/35] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC24_weekReachedIsSentOncePerWeek
+[原本 L11348] ios	ビルドとテスト	2026-10-22T12:59:00.6224810Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC24_weekReachedIsSentOncePerWeek]' started.
+[原本 L11421] ios	ビルドとテスト	2026-10-22T12:59:27.4242400Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:205: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC24_weekReachedIsSentOncePerWeek] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L11425] ios	ビルドとテスト	2026-10-22T12:59:27.5767770Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC24_weekReachedIsSentOncePerWeek]' failed (26.966 seconds).
+
+[回2 失敗23/35] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC20_allOperationsWorkWhenTelemetryIsUnreachable
+[原本 L11426] ios	ビルドとテスト	2026-10-22T12:59:27.5808410Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryIsUnreachable]' started.
+[原本 L11539] ios	ビルドとテスト	2026-10-22T13:00:02.8722950Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:50: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryIsUnreachable] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L11545] ios	ビルドとテスト	2026-10-22T13:00:03.0514020Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryIsUnreachable]' failed (35.469 seconds).
+
+[回2 失敗24/35] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC20_allOperationsWorkWhenTelemetryHangs
+[原本 L11546] ios	ビルドとテスト	2026-10-22T13:00:03.0663080Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryHangs]' started.
+[原本 L11659] ios	ビルドとテスト	2026-10-22T13:00:38.3579680Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:50: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryHangs] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L11666] ios	ビルドとテスト	2026-10-22T13:00:38.5615640Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryHangs]' failed (35.513 seconds).
+
+[回2 失敗25/35] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC21_noPermissionPromptsDuringFirstSession
+[原本 L11667] ios	ビルドとテスト	2026-10-22T13:00:38.5661330Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC21_noPermissionPromptsDuringFirstSession]' started.
+[原本 L11784] ios	ビルドとテスト	2026-10-22T13:01:17.1371450Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:105: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC21_noPermissionPromptsDuringFirstSession] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L11786] ios	ビルドとテスト	2026-10-22T13:01:17.3376950Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC21_noPermissionPromptsDuringFirstSession]' failed (38.776 seconds).
+
+[回2 失敗26/35] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC20_allOperationsWorkWhenTelemetryReturns500
+[原本 L11787] ios	ビルドとテスト	2026-10-22T13:01:17.3418640Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryReturns500]' started.
+[原本 L11900] ios	ビルドとテスト	2026-10-22T13:01:52.3972260Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:50: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryReturns500] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L11910] ios	ビルドとテスト	2026-10-22T13:01:52.6105860Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC20_allOperationsWorkWhenTelemetryReturns500]' failed (35.249 seconds).
+
+[回2 失敗27/35] YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests.test_AC23_telemetryHasNoTitleOrPageValues
+[原本 L11911] ios	ビルドとテスト	2026-10-22T13:01:52.7029500Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC23_telemetryHasNoTitleOrPageValues]' started.
+[原本 L12017] ios	ビルドとテスト	2026-10-22T13:02:27.1897600Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift:128: error: -[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC23_telemetryHasNoTitleOrPageValues] : XCTAssertTrue failed - reading.finish が出ない
+[原本 L12023] ios	ビルドとテスト	2026-10-22T13:02:27.3767160Z Test Case '-[YomutokiAcceptanceTests.TelemetryAndPrivacyAcceptanceTests test_AC23_telemetryHasNoTitleOrPageValues]' failed (34.783 seconds).
+
+[回2 失敗28/35] YomutokiAcceptanceTests.ReadingSessionAcceptanceTests.test_AC6_pausedTimeIsNotCounted
+[原本 L12148] ios	ビルドとテスト	2026-10-22T13:03:19.4268060Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC6_pausedTimeIsNotCounted]' started.
+[原本 L12293] ios	ビルドとテスト	2026-10-22T13:03:52.0751400Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift:63: error: -[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC6_pausedTimeIsNotCounted] : failed - T16 の時計の操作（advance=60）が効いた：label が「2」にならない（今は「1」）
+[原本 L12295] ios	ビルドとテスト	2026-10-22T13:03:52.2782110Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC6_pausedTimeIsNotCounted]' failed (32.872 seconds).
+
+[回2 失敗29/35] YomutokiAcceptanceTests.ReadingSessionAcceptanceTests.test_AC5_previousBookStartsFromHomeInOneTap
+[原本 L12469] ios	ビルドとテスト	2026-10-22T13:04:56.8780490Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_previousBookStartsFromHomeInOneTap]' started.
+[原本 L12551] ios	ビルドとテスト	2026-10-22T13:05:29.2820080Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift:27: error: -[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_previousBookStartsFromHomeInOneTap] : failed - 3秒後の経過（0:02〜0:04）：label が ["0 minutes, 2 seconds", "0 minutes, 3 seconds", "0 minutes, 4 seconds"] のどれにもならない（今は「要素なし」）
+[原本 L12553] ios	ビルドとテスト	2026-10-22T13:05:29.4679640Z Test Case '-[YomutokiAcceptanceTests.ReadingSessionAcceptanceTests test_AC5_previousBookStartsFromHomeInOneTap]' failed (32.593 seconds).
+
+[回2 失敗30/35] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC56_startFailureFromHomeKeepsIdle
+[原本 L13247] ios	ビルドとテスト	2026-10-22T13:09:41.3556830Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle]' started.
+[原本 L13297] ios	ビルドとテスト	2026-10-22T13:10:00.7409750Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:247: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle] : XCTAssertEqual failed: ("2") is not equal to ("1") - ホーム：session.state.idle は1個
+[原本 L13299] ios	ビルドとテスト	2026-10-22T13:10:00.9432680Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle]' failed (19.692 seconds).
+
+[回2 失敗31/35] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC57_startRetryFromBookDetailStartsAtRetryTime
+[原本 L13300] ios	ビルドとテスト	2026-10-22T13:10:00.9475010Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime]' started.
+[原本 L13391] ios	ビルドとテスト	2026-10-22T13:10:33.2044940Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:287: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L13393] ios	ビルドとテスト	2026-10-22T13:10:33.4962270Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime]' failed (32.465 seconds).
+
+[回2 失敗32/35] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC57_startRetryFromHomeStartsAtRetryTime
+[原本 L13531] ios	ビルドとテスト	2026-10-22T13:11:20.6855540Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime]' started.
+[原本 L13610] ios	ビルドとテスト	2026-10-22T13:11:49.6802530Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:282: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime] : XCTAssertTrue failed - error.retry が出ない
+[原本 L13612] ios	ビルドとテスト	2026-10-22T13:11:49.8535740Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime]' failed (29.176 seconds).
+
+[回2 失敗33/35] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC56_startFailureFromBookDetailKeepsIdle
+[原本 L13877] ios	ビルドとテスト	2026-10-22T13:13:21.5398480Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle]' started.
+[原本 L13938] ios	ビルドとテスト	2026-10-22T13:13:44.9489500Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:252: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle] : XCTAssertEqual failed: ("2") is not equal to ("1") - 本の詳細：session.state.idle は1個
+[原本 L13940] ios	ビルドとテスト	2026-10-22T13:13:45.1630580Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle]' failed (23.719 seconds).
+
+[回2 失敗34/35] YomutokiAcceptanceTests.BookDetailAcceptanceTests.test_AC51_tooShortShowsNoticeOnBookDetail
+[原本 L13941] ios	ビルドとテスト	2026-10-22T13:13:45.1680820Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC51_tooShortShowsNoticeOnBookDetail]' started.
+[原本 L14008] ios	ビルドとテスト	2026-10-22T13:14:10.5818320Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift:147: error: -[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC51_tooShortShowsNoticeOnBookDetail] : failed - 前提：経過 0:59：label が「0 minutes, 59 seconds」にならない（今は「要素なし」）
+[原本 L14010] ios	ビルドとテスト	2026-10-22T13:14:10.7897110Z Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC51_tooShortShowsNoticeOnBookDetail]' failed (25.626 seconds).
+
+[回2 失敗35/35] YomutokiAcceptanceTests.FinishSessionAcceptanceTests.test_AC30_minutesOutsideOneToElapsedAreRejected
+[原本 L14017] ios	ビルドとテスト	2026-10-22T13:14:10.8031110Z Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC30_minutesOutsideOneToElapsedAreRejected]' started.
+[原本 L14211] ios	ビルドとテスト	2026-10-22T13:15:10.2931320Z /Users/runner/work/reading-app/reading-app/ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift:171: error: -[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC30_minutesOutsideOneToElapsedAreRejected] : XCTAssertTrue failed - 180分では誤りの文 が消えない
+[原本 L14213] ios	ビルドとテスト	2026-10-22T13:15:10.4976290Z Test Case '-[YomutokiAcceptanceTests.FinishSessionAcceptanceTests test_AC30_minutesOutsideOneToElapsedAreRejected]' failed (59.707 seconds).
