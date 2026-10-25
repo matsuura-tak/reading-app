@@ -110,6 +110,8 @@
 | AC-63 | R2 | 状態遷移（失敗→再試行→60秒） | AC-62 の2通り、error.retry、60秒 | 画面 | ReadingScreen::test_AC63_beginFinishRetryWhileReading、ReadingScreen::test_AC63_beginFinishRetryWhilePaused | finishing、session.finish.save が1個、session.finish.minutes の value (a)「11」(b)「5」、error.saveFailed が0個、「記録 1件」 |
 | AC-64 | R1、R2 | 状態（やめるの失敗） | UITEST_FAIL=session_cancel_finish:1、10:00 で終えてページ72、session.finish.cancel、60秒 | 画面 | FinishInput::test_AC64_cancelFinishFailureKeepsInput | error.saveFailed と error.retry が1個ずつ、session.finish.save が1個、finishing（reading は0個）、page の value「72」、minutes の value「10」、「記録 1件」 |
 | AC-65 | R2 | 状態遷移（失敗→再試行） | AC-64 の後に error.retry | 画面 | FinishInput::test_AC65_cancelFinishRetryReturnsToReading | session.finish.save が0個、reading、label「10分0秒」か「10分1秒」、error.saveFailed が0個、「記録 1件」 |
+| AC-64（下スワイプの回帰、2026-10-25追加） | R1、R2 | 状態（やめる保存の失敗）×出口（下スワイプ） | 既存ボタン取消と同じ記録1件・reading600秒から終えてfinishing。UITEST_FAIL=session_cancel_finish:1。ページ72を入力直後にvalue72、分value10、finishing/reading0をassert。S5のcancelを含むバーの中央→画面高さ85%へ既存AC48と同じ1回の下向きドラッグ、その後T16で60秒 | 画面 | FinishInput::test_AC64_swipeCancelFailureKeepsInput | error.saveFailed/error.retry各1個、cancel失敗説明とcancel再試行ラベル（design D-60）、保存1個、finishing/reading0、ページ72/分10、記録1件 |
+| AC-65（下スワイプの回帰、2026-10-25追加） | R2 | 状態遷移（下スワイプ失敗→アプリの再試行1回） | 上のAC-64下スワイプの前提/結果を確認後にerror.retryを1回押す | 画面 | FinishInput::test_AC65_swipeCancelRetryReturnsToReading | 保存0個、reading、経過10分0秒か10分1秒、error.saveFailed0個、記録1件。アプリの再試行であり、テスト実行の再試行は0回 |
 | AC-66 | R2、R1 | 境界（60秒未満の失敗） | UITEST_FAIL=session_discard:1、reading 0:30、終えて10秒 | 画面 | ReadingScreen::test_AC66_discardFailureKeepsReading | error.saveFailed と error.retry が1個ずつ、reading、label「0分40秒」か「0分41秒」、session.finish.tooShort と session.finish.save が0個、「記録 1件」 |
 | AC-67 | R2 | 状態遷移（失敗→再試行。40秒で押す） | AC-66 の後に error.retry | 画面 | ReadingScreen::test_AC67_discardRetryShowsNoticeWithoutRecord | idle、book.title「坊っちゃん」、session.finish.tooShort が1個、「記録 1件」、reading.elapsed と error.saveFailed が0個、alerts が0個 |
 
@@ -156,7 +158,7 @@
 - AC-39（後半）：`bash ios/AcceptanceTests/ac39-xcstrings.sh`（リポジトリの根で。T14 のコマンドを包むだけ。ios_test に入らないので、app.json に足すかは Takuma。P-12）。
 - バックエンド：なし（001 は app.json の stacks が ios だけ。backend/tests/acceptance/ は使わない）。
 - 判定の実行では再試行を付けない（-retry-tests-on-failure を付けない。xctestplan に testRepetitionMode を書かない）。
-- G3 の実行数の確かめ（0本や片方の構成だけで緑になるのを見つける）：`xcrun xcresulttool get test-results summary --path /tmp/001-acceptance/Acceptance.xcresult` で、Acceptance の実行は160本（80本 × 構成 ja_JP と en_US の2つ）、通った160、落ちた0、飛ばした0。AC18Reboot は ac18-reboot.sh の2回の実行がそれぞれ1本（スクリプトが出力の「Executed 1 test, with 0 failures」を grep し、なければ 65 で落ちる。最後の行は「passed 2 of 2」）。数が違えば、その計画の AC は FAIL。
+- G3 の実行数の確かめ（0本や片方の構成だけで緑になるのを見つける）：`xcrun xcresulttool get test-results summary --path /tmp/001-acceptance/Acceptance.xcresult` で、2026-10-25の下スワイプ2本追加後はAcceptanceの実行164本（82本 × 構成 ja_JP と en_US の2つ）、通った164、落ちた0、飛ばした0。追加前の80本/160実行の結果は履歴であり、追加後全件の結果へ読み替えない。AC18Reboot は ac18-reboot.sh の2回の実行がそれぞれ1本（スクリプトが出力の「Executed 1 test, with 0 failures」を grep し、なければ 65 で落ちる。最後の行は「passed 2 of 2」）。数が違えば、その計画の AC は FAIL。
 - AC-5 の0.5秒の取り出し（案。動かなければ `xcrun xcresulttool get test-results --help` で確かめる）：`xcrun xcresulttool get test-results metrics --path /tmp/001-acceptance/Acceptance.xcresult --test-id 'YomutokiAcceptanceTests/ReadingSessionAcceptanceTests/test_AC5_startToFirstElapsedMeasuredBySignpost()'` で、XCTOSSignpostMetric（FirstElapsedShown）の5回の値を構成ごとに読む。verification.md に5回の値と平均を貼り、平均が 0.5秒以下なら AC-5 の0.5秒は合格。
 - 再試行のボタンの文（design 6 の error.retry.start などの文。AC-56〜AC-66 の Then の外）：`xcrun xcresulttool export attachments --path /tmp/001-acceptance/Acceptance.xcresult --output-path <evidence/>` の後、名前が DESIGN_retryLabel_ で始まる添付を数える。0件でなければ、1件ずつ verification.md に「提案」（design 6 との食い違い）として書く。AC の判定には数えない（L10n.swift の noteRetryLabel）。
 - 揺れの確認：影響「大」の AC のテスト（R1〜R7 の AC）と、一度でも落ちたテストを `xcodebuild test … -testPlan Acceptance -only-testing:YomutokiAcceptanceTests/<クラス>/<テスト> -test-iterations 5 -run-tests-until-failure` で5回。AC-18 は ac18-reboot.sh を5回。
@@ -190,6 +192,8 @@
 | 全画面 | design/ の S1〜S7 の全状態を、通常はライト、ダーク、AX5、英語の4通り | <画面>_<状態>_<light|dark|ax5|en>.png（G3） |
 
 ## 8. 赤の証拠と履歴上の不足
+- 2026-10-25の実行結果：[下スワイプ回帰の赤レポート](swipe-cancel-20261025.md)。新2本を各1回、入力直後72/10/finishingのassert通過後に `error.saveFailed` 不在で2失敗、skip0。AC65のアプリ再試行は未到達。本体後の診断収集待ちを中断しCLI75となったため、本体の赤と後処理中断を分けて記録した。
+- 2026-10-25の下スワイプ回帰（実行前の固定）：PRD AC-64/65（PRD:551-562）、design D-60/6(d)/10の8、test-hooks T5/T16を根拠に上の2行を追加。やめる保存には下スワイプも含むが、恒久テストはボタン経路だけだった。2026-10-24の臨時撮影ではスワイプ前の72入力assertがなく、値消失の断定を保留した（states-20261024.md）。今回は入力直後72/10の値・状態と画像/treeを先に確かめ、同じ1ジェスチャの後の画像/treeを保存し、前提失敗と製品期待値の不一致を分ける。製品コードは読まず、既存ボタンAC64/65と設定は変えない。新2メソッドを未修正製品で各1回だけ実行して赤を記録する。修正前の5反復/緑までの再実行はしない。全件計画の期待件数は、この追加後は通常Acceptance82本×ja/en=164、別実行AC18の2本（XCUITest計84本）になる。過去の80本/160実行の証拠は履歴として残す。今回の結果は専用の`swipe-cancel-20261025.md`へ記録する。
 - 2026-10-21 の実装前：XCUITest の82本（AC-1〜AC-38、AC-40〜AC-67）は**その環境では実行できなかった**。Linux 6.18 x86_64 で xcodebuild、xcrun、swift、swiftc がなく、ios/Yomutoki/ と ios/project.yml もなかった（red.log の1〜2）。実装前にビルドや識別子の不足で落ちるという記述は見込みであり、実行結果ではない。実装前の UI 赤実行は未確認のまま残る。
 - 2026-10-23 に実ログを補記：[初回 macOS CI run 39775008108](https://github.com/matsuura-tak/reading-app/actions/runs/39775008108)（PR HEAD 807f9341f234bf3018e33ca3b5507af9d731f55b）は**実装後**の実行。Unit 67件成功、Acceptance の回1は80件中34件失敗、回2は80件中35件失敗、`TEST FAILED`、xcodebuild の終了65（make と CI ステップは終了2）。AC-18 の再起動には進んでいない。全失敗69回分の最初のエラー・開始・終了を回番号と原本行番号付きで evidence/history-807f934.log に保存した。これは実装前に機能不足で落ちた証拠ではなく、現在の緑でもその不足を埋めない。
 - 初回 CI の失敗には、状態の印が2個、時計 URL で起動し直して seed/reset が再投入されるテスト側の問題、AC-35 の再試行後に詳細に戻れない製品側の問題などが混在する（G2-ci-ruling、G2-mac-r1）。69回の失敗すべてを機能未実装とは扱わない。原因の裁定と、生ログの最初のメッセージを区別する。
@@ -207,7 +211,7 @@
 
 ## 確かめ（提出前に verifier が印を付ける。reviewer はこれを信じずに確かめる）
 - [x] 読んだファイルが PRD、design/、contracts/ だけで、冒頭に全部並んでいる。（ほかに指示書が挙げた ADR、判定の記録、テンプレート、XcodeGen と XcodeProj の公開のソースを読んだ。冒頭に並べた）
-- [x] PRD のすべての AC 番号が、2章とテストの名前にある。AC のないテストがない。（PRD の AC 67個とテストの名前の AC 67個が comm で差0。2章のテストの名前83個とコードの名前83個（XCUITest 82本と ac39-xcstrings.sh の関数1つ）が comm で差0）
+- [x] PRD のすべての AC 番号が、2章とテストの名前にある。AC のないテストがない。（当初PRDのAC67個とテストのAC67個が差0、計画とコード各83名＝XCUITest82本とAC39の1関数。2026-10-25にAC64/65の下スワイプ2名を計画/コードの両方へ追加し各85名、ACの集合は67個のまま）
 - [x] 2章の全行に、技法、試す値、具体的な値の結果がある。「正しく」「適切に」だけの結果がない。
 - [x] 影響「大」のリスクのすべてに、自動テスト、3章の行、6章のチャーターがある。（R1〜R7。R6 は前半の AC-23、R7 は前半の AC-8 と後半の AC-54、AC-55）
 - [x] 3章の9行すべてに選んだものがあり、範囲外には理由がある。

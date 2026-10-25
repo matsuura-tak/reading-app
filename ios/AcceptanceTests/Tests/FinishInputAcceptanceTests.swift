@@ -279,4 +279,70 @@ final class FinishInputAcceptanceTests: AcceptanceTestCase {
 
         s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
     }
+
+    /// AC-64/65、design D-60：下スワイプも同じ「終える入力をやめる保存」。
+    /// 入力直後の72/10とfinishingを先に確かめ、1回のスワイプ後の値消失と入力失敗を区別する。
+    @MainActor
+    private func failCancelFinishBySwiping(file: StaticString = #filePath, line: UInt = #line) -> AppSession {
+        var config = LaunchConfig.seeded(Seeds.botchanOneSession(active: Fixture.reading(Fixture.botchanId, elapsed: 600)))
+        config.fail = "session_cancel_finish:1"
+        let s = AppSession.launch(config)
+        s.expectState(.reading, file: file, line: line)
+        openFinish(s, file: file, line: line)
+        s.replaceText("session.finish.page", with: "72", file: file, line: line)
+        Wait.value(s.el("session.finish.page"), equals: "72", "前提：スワイプ直前のページは72", file: file, line: line)
+        Wait.value(s.el("session.finish.minutes"), equals: "10", "前提：スワイプ直前の分は10", file: file, line: line)
+        s.expectState(.finishing, file: file, line: line)
+        captureSwipeCancelEvidence(s, "AC64_swipe_before_72_10")
+
+        // 既存AC48と同じS5バー/起点/終点/速度の1ジェスチャ。閉じるまで繰り返さない。
+        let bar = s.app.navigationBars.containing(.any, identifier: "session.finish.cancel").firstMatch
+        Wait.exists(bar, "S5のナビゲーションバー", file: file, line: line)
+        XCTAssertTrue(bar.wait(for: \.isHittable, toEqual: true, timeout: Wait.timeout), "前提：スワイプの起点を操作できる", file: file, line: line)
+        let start = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let end = s.app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
+        start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0)
+        captureSwipeCancelEvidence(s, "AC64_swipe_after_gesture")
+        s.advance(seconds: 60, file: file, line: line)
+        captureSwipeCancelEvidence(s, "AC64_swipe_after_60_seconds")
+
+        s.expectSaveFailed("下スワイプでやめる保存の失敗から60秒後", file: file, line: line)
+        Wait.label(s.el("error.saveFailed.cancel"), equals: L10n.errorSaveFailedCancel, "下スワイプのcancel失敗説明", file: file, line: line)
+        Wait.label(s.el("error.retry"), equals: L10n.errorRetryCancel, "下スワイプのcancel再試行", file: file, line: line)
+        XCTAssertEqual(s.buttonCount("session.finish.save"), 1, "終える入力の保存は1個", file: file, line: line)
+        s.expectState(.finishing, file: file, line: line)
+        Wait.value(s.el("session.finish.page"), equals: "72", "失敗後もページ72を保持", file: file, line: line)
+        Wait.value(s.el("session.finish.minutes"), equals: "10", "失敗後も分10を保持", file: file, line: line)
+        return s
+    }
+
+    @MainActor
+    private func captureSwipeCancelEvidence(_ s: AppSession, _ name: String) {
+        s.shot(name, self)
+        let tree = XCTAttachment(string: s.app.debugDescription)
+        tree.name = "\(name)_tree"
+        tree.lifetime = .keepAlways
+        add(tree)
+    }
+
+    /// AC-64：下スワイプの保存失敗でもfinishing・入力・復旧操作が残り、記録は増えない。
+    @MainActor
+    func test_AC64_swipeCancelFailureKeepsInput() throws {
+        let s = failCancelFinishBySwiping()
+        s.expectSessionCount(1, bookId: Fixture.botchanId, "下スワイプ失敗後も記録は1件")
+    }
+
+    /// AC-65：下スワイプ失敗の復旧操作を1回押す。テスト実行を再試行するものではない。
+    @MainActor
+    func test_AC65_swipeCancelRetryReturnsToReading() throws {
+        let s = failCancelFinishBySwiping()
+        s.tap("error.retry")
+        Wait.gone(s.el("session.finish.save"), "再試行後の終える入力")
+        XCTAssertEqual(s.count("session.finish.save"), 0, "終える入力の保存は0個")
+        s.expectState(.reading)
+        Wait.label(s.el("reading.elapsed"), in: L10n.elapsedLabels(600...601), "S5の60秒を数えず10:00か10:01")
+        s.expectNoSaveFailed("下スワイプ失敗の再試行後")
+        captureSwipeCancelEvidence(s, "AC65_swipe_after_retry")
+        s.expectSessionCount(1, bookId: Fixture.botchanId, "下スワイプ失敗の再試行後も記録は1件")
+    }
 }
