@@ -17,7 +17,7 @@
 [W-3 夜の入口の予約 Live Activity（waiting：書名・一行・ページ）]
    │ 押す（yomuma://open?entry=lock_widget | small_widget | live_activity）
    ▼
-[S-1 しおりの画面（idle）]  ◄── [W-5 Siri「続きから読む」]（entry=intent_open）
+[S-1 しおりの画面（idle）]  ◄── [W-5 Siri「続きを読む」]（entry=intent_open）
    ├─ 本0冊：空の状態 ──「本を加える」(bookmark.addBook)──► [S-8 本を加える（シート）]
    ├─ 今の本なし・積読あり：積読から最大3冊 (bookmark.noCurrent.next.<id>)
    │     ├─「この本を読む」(bookmark.noCurrent.choose) ──► その場で今の本になり通常表示へ
@@ -148,7 +148,7 @@
    ├─ ロック画面：一行と書名を隠す (settings.hideOnWidgets)
    ├─ 見た目と購入：「見た目」(settings.appearance) ──► [S-10a 見た目と「よむま＋」]
    │                「購入を復元する」(settings.restorePurchases)
-   ├─ 書誌データ：端末内書誌 DB の状態と再試行 (catalog.retry)
+   ├─ 書誌データ：端末内書誌 DB の状態 (catalog.status / settings.h20Status) と再試行 (catalog.retry / settings.h20Retry)
    └─ 情報：プライバシーポリシー (settings.privacyPolicy)、書誌の出どころ (settings.dataSources)、
             ライセンス (settings.dataSources.license)
 ```
@@ -284,9 +284,9 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | AC-121 | W-5 | Siri「どこまで読んだ？」を動かすと、アプリを開かず認証も求めず（`alwaysAllowed`）、声と小窓で `intent.whereStopped.page`（「61ページからです。」）だけを返し、一行の文字列と書名は含めない |
 | AC-122 | W-5 | 「どこまで読んだ？」で今の本に進み具合の値がないときは `intent.whereStopped.noPage`、今の本がないときは `intent.whereStopped.noCurrent` を返す |
 | AC-123 | W-5 | `settings.hideOnWidgets` がオンのときも、「どこまで読んだ？」はページ（または位置・％）だけを答え、一行と書名は出さない |
-| AC-124 | W-5、S-1 | Siri「続きから読む」を動かすと、アプリを前に出して S-1 を開き、そのあと始まった読書の入口の印は `intent_open` になる |
+| AC-124 | W-5、S-1 | Siri「続きを読む」を動かすと、アプリを前に出して S-1 を開き、そのあと始まった読書の入口の印は `intent_open` になる |
 | AC-125 | W-3、W-4、W-5 | 機内モード（H8 通信なし）でも、「どこまで読んだ？」「読み始める」、Live Activity の「終える」がすべてエラーなしで動く |
-| AC-126 | W-4、W-5 | App Shortcuts は「読み始める」「どこまで読んだ？」「続きから読む」の3つ（日本語の言い方に「で」が直後に続く「よむまで〜」は0件）、Control はボタン1つ（ラベル `control.startReading`） |
+| AC-126 | W-4、W-5 | App Shortcuts は「読み始める」「どこまで読んだ？」「続きを読む」の3つ（日本語の言い方に「で」が直後に続く「よむまで〜」は0件）、Control はボタン1つ（ラベル `control.startReading`） |
 | AC-127 | S-9 | 2晩以上の記録がある本を読み終えると、S-9 に `finish.reflection`（文言キー `finish.reflection.multi`：「6晩、合計142分（2時間22分）。いちばん長かったのは10月15日の晩の38分でした。」）が1つ出る。共有するカード画像にはこの文を描かない |
 | AC-128 | S-9 | 記録が1晩だけのときは `finish.reflection.single`（「1晩、30分で読み終えました。」）を出し、同じ最長分数の晩が複数あるときは新しい方の日付を `finish.reflection.multi` に出す |
 | AC-129 | S-9 | 記録が0件の本を読み終えたときは、`finish.reflection` を出さず（0個）、`finish.colophon` と次の1冊を出す |
@@ -294,8 +294,8 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | AC-131 | W-4、W-5、S-2 | 「読み始める」のインテントで Live Activity の開始要求だけが失敗したときは、エラーを返さずアプリを前に出して S-2 で読書を続ける |
 | AC-132 | W-3、S-2 | Live Activity の `liveActivity.end` で終わりの保存が失敗したとき（H7 `session.end`）は、Live Activity を消さずアプリを前に出して S-2 に `session.save.error` を出し、`reading.end` でやり直せる |
 | AC-133 | W-5 | 「どこまで読んだ？」で保存先の読み込みに失敗したとき（H7 `store.load`）は、声と小窓で `intent.whereStopped.error` を返し、ページや書名は出さない |
-| AC-134 | W-5、S-2 | すでに `reading` のときに「続きから読む」を動かすと、アプリを前に出して S-2 をそのまま見せる |
-| AC-135 | W-5、S-1 | 今の本がないときに「続きから読む」を動かすと、アプリを前に出して S-1 の空状態（`bookmark.noCurrent.message` または `bookmark.empty.message`）を見せる |
+| AC-134 | W-5、S-2 | すでに `reading` のときに「続きを読む」を動かすと、アプリを前に出して S-2 をそのまま見せる |
+| AC-135 | W-5、S-1 | 今の本がないときに「続きを読む」を動かすと、アプリを前に出して S-1 の空状態（`bookmark.noCurrent.message` または `bookmark.empty.message`）を見せる |
 | AC-136 | S-2、W-3 | 4:00 をまたいでも、Live Activity が OS の8時間上限で先に消えても、アプリ内の `reading` は勝手に終わらず、終えたときに開始時刻からの全分数が1件の記録になる |
 | AC-137 | S-8、S-8b | S-8 の `register.cover`（カメラ）または `register.screenshot`（`PhotosPicker`）で画像を読み取ると、S-8b に `cover.ocr.line.1`〜`<n>` が出る。1タップ目で書名（`cover.selectTitle` → `manual.title`）、2タップ目で著者（`cover.selectAuthor` → `manual.author`）が入り、`cover.save` で保存され、画像は残らない（H27） |
 | AC-138 | S-8、S-8d | S-8 の `register.bookshelf` で本棚や積読を1枚写すと、S-8d に背表紙の行が出る。押した行ごとに `bookshelf.row.<n>` ができ、端末内書誌 DB（H20）で完全一致1件の本は著者・出版社・ISBN が自動で入り、複数件または0件の本は書名だけで入り、`bookshelf.addSelected` でまとめて `tsundoku` に加わる |
@@ -322,7 +322,7 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 |---|---|---|---|---|
 | W-1 ロック画面のウィジェット | 電話を手に取った瞬間に、昨夜止めた一行と場所を見せて続きへ戻す | ウィジェット全体を押して S-1 を開く（`widgetURL`） | WidgetKit `StaticConfiguration`（`.accessoryRectangular`） | 縦書きの文字列の描画（標準の `Text` は縦書きを組めないため、1字ずつ位置を計算して並べる。VoiceOver は全体を `.accessibilityElement(children: .ignore)` で1つにまとめ、元の文字列でラベルを付ける。AC-28、AC-99） |
 | W-2 小のウィジェット | ホーム画面と充電中の StandBy で、昨夜止めた一行と場所を大きく見せる | ウィジェット全体を押して S-1 を開く（`widgetURL`） | WidgetKit `StaticConfiguration`（`.systemSmall`） | W-1 と同じ縦書きの描画 |
-| W-3 夜の入口と読書中の Live Activity | 予定の時刻にロック画面に続きの一行を出し、読書中は経過時間と1タップで終える操作を出す | 待つ状態：全体を押して S-1 を開く／読書中：「終える」ボタン（`liveActivity.end`） | ActivityKit `ActivityConfiguration`、ロック画面バナー、Dynamic Island（Compact / Minimal / Expanded）、`Button(intent: EndReadingIntent())` | 標準から外れない（Live Activity の高さに収めるため、待つ状態の一行も横書きの `Text` を使う） |
+| W-3 夜の入口と読書中の Live Activity | 予定の時刻にロック画面に続きの一行を出し、読書中は経過時間と1タップで終える操作を出す | 待つ状態：全体を押して S-1 を開く／読書中：「終える」ボタン（`liveActivity.end`） | ActivityKit `ActivityConfiguration`、ロック画面バナー、Dynamic Island（Compact / Minimal / Expanded）、`Button(intent: EndReadingFromActivityIntent())`（`EndReadingIntent`） | 標準から外れない（Live Activity の高さに収めるため、待つ状態の一行も横書きの `Text` を使う） |
 | W-4 コントロール | ロック画面・コントロールセンター・アクションボタンから、アプリを開かずに1タップで読書を始める | 「読み始める」（`control.startReading`） | WidgetKit `ControlWidget`、`ControlWidgetButton(action: StartReadingIntent())` | 標準から外れない |
 | W-5 Siri とショートカットの応答 | 声やショートカットから、読書を始める・どこまで読んだかを聞く・しおりの画面を開く | 呼び出したインテントの実行 | AppIntents `AppShortcutsProvider`、`AppIntent`、`ShowsSnippetView`（小窓は1行の `Text` のみ） | 標準から外れない |
 | S-1 しおりの画面 | いま読んでいる1冊の続きの一行を見せ、1タップか伏せる動作で今夜の読書を始める | 「読み始める」（`bookmark.start`、または端末を伏せて置く。今の本が0冊のときは「本を加える」`bookmark.addBook` または候補の「この本を読む」`bookmark.noCurrent.choose`） | `NavigationStack`、`ToolbarItem`、`Button`（`.borderedProminent` / `.bordered`）、`ContentUnavailableView`、`ScrollView`、`safeAreaInset(edge: .bottom)` | 縦書きの一行（S-1 の中央。標準の `Text` は縦書きを組めないため。accessibility1 以上の文字サイズと、60字が幅に入らないときは標準の横書き `Text` に切り替える。VoiceOver は保存した一行そのものを1つの要素 `bookmark.line` として読む） |
@@ -433,7 +433,7 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | 75 | 共起の推薦行（`rec.reason.readers`「この本を読み終えた人が、次に読んだ本」、`AC-148`）は、端末内書誌 DB（H20）の共起テーブルで `count >= 10` かつ `toISBN` の NDC が `9`（文学）で始まる未所有の本だけを出す。少人数の推測やビジネス書・実用書からの内面の推測を防ぎ、画面には人数の数字（「12人」など）を一切出さない | R-71、R-85、R-86 | B-5、https://developer.apple.com/design/human-interface-guidelines/privacy |
 | 76 | 読み終えた画面（S-9）のふりかえりの1行（`finish.reflection`、`AC-127`〜`AC-129`）は、生成 AI を使わず記録の晩の数と分数から定型文（2晩以上は `finish.reflection.multi`、1晩は `finish.reflection.single`、0件なら非表示）で組む。共有するカード画像（`finish.card.share`、`AC-84`、`AC-85`）には書名・著者・何晩・合計時間だけを描き、ふりかえりの1行も本の一行も写真も載せない | R-4、R-31、R-68 | B-2、https://developer.apple.com/design/human-interface-guidelines/privacy |
 | 77 | 夜の入口の予約 Live Activity（W-3、`AC-36`〜`AC-38`、`AC-41`、`AC-97`、`AC-98`、`AC-130`、`AC-136`）は、設定した時刻（`settings.entryTime`、既定 21:00、15分刻み）に `Activity.request(...start:)` でロック画面に出し、`staleDate` を翌朝 4:00 にする。読書が始まったら経過時間と「終える」（`liveActivity.end`）1ボタンだけの表示に切り替え、終えたらその晩の分数とページを出して終える | R-17、R-61、R-87 | B-1、B-2、https://developer.apple.com/design/human-interface-guidelines/live-activities |
-| 78 | ロック画面・コントロールセンター・アクションボタンの Control（W-4、`AC-114`、`AC-126`）は、トグルではなく単発の `ControlWidgetButton`（「読み始める」`control.startReading`）1つだけにする。Siri・ショートカット（W-5、`AC-114`〜`AC-126`、`AC-131`〜`AC-135`、`AC-143`）は「読み始める」「どこまで読んだ？」「続きから読む」の3つにし、日本語フレーズでアプリ名の直後に「で」を続けない（「よむまで」が「読むまで」と誤認されるのを防ぐため） | R-20、R-62〜R-67、R-73〜R-75 | B-1、https://developer.apple.com/design/human-interface-guidelines/controls 、https://developer.apple.com/design/human-interface-guidelines/siri |
+| 78 | ロック画面・コントロールセンター・アクションボタンの Control（W-4、`AC-114`、`AC-126`）は、トグルではなく単発の `ControlWidgetButton`（「読み始める」`control.startReading`）1つだけにする。Siri・ショートカット（W-5、`AC-114`〜`AC-126`、`AC-131`〜`AC-135`、`AC-143`）は「読み始める」「どこまで読んだ？」「続きを読む」の3つにし、日本語フレーズでアプリ名の直後に「で」を続けない（「よむまで」が「読むまで」と誤認されるのを防ぐため） | R-20、R-62〜R-67、R-73〜R-75 | B-1、https://developer.apple.com/design/human-interface-guidelines/controls 、https://developer.apple.com/design/human-interface-guidelines/siri |
 | 79 | 「どこまで読んだ？」のインテント（`AC-121`〜`AC-123`、`AC-133`、`AC-143`）は `authenticationPolicy = .alwaysAllowed` にし、ロック中でも声と1行の小窓でページ・位置番号・％だけ（「61ページからです。」「位置1450からです。」「52パーセントからです。」）を答え、一行の文字列と書名は声にも小窓にも出さない | R-63、R-67、R-81 | https://developer.apple.com/design/human-interface-guidelines/siri 、https://developer.apple.com/design/human-interface-guidelines/privacy |
 | 80 | 有料の見た目「よむま＋」（買い切り、商品 ID `jp.yomuma.plus`、`AC-104`〜`AC-111`）は、設定（S-10）の「見た目」（`settings.appearance`）の中だけに置き、毎晩の道や読み終えた画面には一切購入の案内を出さない。未購入で鍵つきの見た目（生成り `kinari`・墨 `sumi`・朱 `shu`）を押したときだけ、その見た目を当てた見本（`store.preview`）と買い切りの購入シート（`store.buy`、`store.restore`、`store.close`）を出す。S-10 にも「購入を復元する」（`settings.restorePurchases`）を置く | R-5、R-9、R-16、R-68、R-87 | B-2、https://developer.apple.com/design/human-interface-guidelines/in-app-purchase |
 | 81 | 写真やスクリーンショットの上に描く読み取り枠（S-3c の `mark.ocr.column.<n>`、S-8b の `cover.ocr.line.<n>`、S-8d の背表紙枠）は、白い紙の上でも暗い表紙の上でも 3:1 以上のコントラストを保つため、外側黒（`#000000` 2pt）・内側白（`#FFFFFF` 2pt、選択時は 3pt）の2重線にし、番号と役割札（「1」「書名」「著者」）を付けて色だけで区別しない | R-24、R-36、R-37 | B-5、https://developer.apple.com/design/human-interface-guidelines/accessibility |
@@ -450,7 +450,7 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | W-2 | 縦書きの一行と「p.61」（または「位置1450」「52%」。列は上にそろえ、ページは列の下の左端。選んだ見た目 `appearanceID` の色トークンを適用） | W-1 と同じ（一行あり・ページなしは一行だけ） | W-1 と同じ | W-1 と同じ | なし（通信を使わない） | なし（許可を使わない。隠す設定は W-1 と同じ） | W-1 と同じ。暗い所の StandBy はシステムが赤の単色で描く（AC-35） |
 | W-3 | 予定の時刻の待つ状態（`waiting`）：書名、一行（横書き）、ページ（押すと S-1）。読書中（`reading`）：書名、開始時刻からの経過時間、`liveActivity.end`「終える」ボタン1つ（AC-41、AC-114）。終えた直後（`ended`）：「10分」「p.61」 | 一行がない今の本の待つ状態：書名とページ（ページもなければ書名だけ）。今の本がないときは予約を作らない | なし（予約または開始の時点で値が確定している） | 予約や開始の要求が失敗したときは Live Activity を出さず、アプリ側の画面（S-2 または S-4）でそのまま進める（AC-97、AC-131）。「終える」で保存に失敗したときは Live Activity を消さず S-2 に `session.save.error` を出す（AC-132） | なし（端末内の時計と ActivityKit だけで動き、通信を使わない。AC-125） | Live Activity がオフ（`areActivitiesEnabled == false`）：Live Activity は出ず、アラートも出さない（S-10 に `settings.liveActivity.off` を出す。AC-37、AC-118） | `settings.hideOnWidgets` がオン：書名と一行を出さず `widget.hidden`「しおり」とページ（読書中は「しおり」と経過時間と「終える」）だけを出す（AC-34、AC-120）。名無しの今の本：書名の所に `widget.currentBookAsTitle`「今の本」を出す（AC-139） |
 | W-4 | ロック画面・コントロールセンター・アクションボタンに `control.startReading`「読み始める」（記号 `book`）の単発ボタン1つを出す（AC-126） | 今の本がないときに押されたら、アプリを前に出して S-1 の空状態を見せる（AC-117） | 押してから 0.5秒以内に `reading` にして Live Activity を出す（AC-114） | 保存に失敗したときは声・通知で `session.start.error` を返し `idle` のままにする（AC-119）。Live Activity の要求だけ失敗したときはアプリを前に出して S-2 を出す（AC-131） | なし（通信を使わない。機内モードでもそのまま動く。AC-125） | Live Activity がオフのときは、その場で `reading` にしてアプリを前に出し S-2 を出す（AC-118） | すでに `reading` のときに押されたら、二重に始めず `intent.start.alreadyReading` を返す（AC-115） |
-| W-5 | 「読み始める」：`intent.start.started` を声で返し Live Activity を開始。「どこまで読んだ？」：声と1行の小窓で `intent.whereStopped.page` / `location` / `percent` を返す。「続きから読む」：アプリを前に出して S-1 を開く | 「どこまで読んだ？」で進み具合がないときは `intent.whereStopped.noPage`、今の本がないときは `intent.whereStopped.noCurrent` を返す（AC-122）。「読み始める」「続きから読む」で今の本がないときは S-1 の空状態を開く（AC-117、AC-135） | なし（ローカルの SwiftData / 写しを読むだけで 0.5秒以内に返る） | 「どこまで読んだ？」で読み込みに失敗したときは `intent.whereStopped.error` を返す（AC-133）。「読み始める」で保存に失敗したときは `session.start.error` を返す（AC-119） | なし（通信を使わない。機内モードでも3つともそのまま動く。AC-125） | なし（「どこまで読んだ？」は `alwaysAllowed` でロック中も認証を求めない。`settings.hideOnWidgets` がオンでもページ・位置・％だけを答え、一行と書名は出さない。AC-121、AC-123） | すでに `reading` のときに「続きから読む」を動かすと S-2 を前に出し（AC-134）、「読み始める」を動かすと `intent.start.alreadyReading` を返す（AC-115） |
+| W-5 | 「読み始める」：`intent.start.started` を声で返し Live Activity を開始。「どこまで読んだ？」：声と1行の小窓で `intent.whereStopped.page` / `location` / `percent` を返す。「続きを読む」：アプリを前に出して S-1 を開く | 「どこまで読んだ？」で進み具合がないときは `intent.whereStopped.noPage`、今の本がないときは `intent.whereStopped.noCurrent` を返す（AC-122）。「読み始める」「続きを読む」で今の本がないときは S-1 の空状態を開く（AC-117、AC-135） | なし（ローカルの SwiftData / 写しを読むだけで 0.5秒以内に返る） | 「どこまで読んだ？」で読み込みに失敗したときは `intent.whereStopped.error` を返す（AC-133）。「読み始める」で保存に失敗したときは `session.start.error` を返す（AC-119） | なし（通信を使わない。機内モードでも3つともそのまま動く。AC-125） | なし（「どこまで読んだ？」は `alwaysAllowed` でロック中も認証を求めない。`settings.hideOnWidgets` がオンでもページ・位置・％だけを答え、一行と書名は出さない。AC-121、AC-123） | すでに `reading` のときに「続きを読む」を動かすと S-2 を前に出し（AC-134）、「読み始める」を動かすと `intent.start.alreadyReading` を返す（AC-115） |
 | S-1 | 書名、著者、縦書きの一行（全文）、「p.61」（または「位置1450」「52%」）、`bookmark.setMark`、`bookmark.finish`（`.bordered`）、下端に固定した `bookmark.start`、伏せる案内の1行（紙の本は `bookmark.flipHint`、電子書籍は `bookmark.flipHint.ebook`） | 本0冊：`ContentUnavailableView`（`bookmark.empty.title`、`bookmark.empty.message`、`bookmark.addBook`）。今の本なし・積読あり：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、積読から最大3冊の候補 `bookmark.noCurrent.next.<id>`（各行に `bookmark.noCurrent.choose`）と `bookmark.openShelf`（AC-145）。今の本なし・積読0冊：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、`bookmark.openShelf`。一行も場所もない：書名の下に `bookmark.noMark.message` | 起動して保存先を読む間、0.3秒を超えたら書名と一行の形の灰の帯（redacted）。空の状態を先に出さない | 保存先を読めない：`ContentUnavailableView`（`store.load.error.title`、`store.load.error`、`store.retry`）だけで、ツールバーは「設定」だけ（AC-90）。読み始めの保存失敗：知らせ `session.start.error`（AC-59）。読み終えたの保存失敗：知らせ `common.save.error`（AC-91） | なし（毎晩の道は通信を一切使わない。AC-62） | なし（S-1 自体は OS の許可を使わない。伏せ検知が使えない端末 H18 やオフのときは `bookmark.flipHint` を出さない。AC-51） | 名無しの今の本（`isTitlePending = true`）：`bookmark.title` に `widget.currentBookAsTitle`「今の本」を出し、下に `bookmark.setBookTitle`「書名を入れる」（`.bordered`）を出す（AC-139、AC-140）。一行あり・場所なし：場所の行を出さない。一行なし・場所あり：縦書きの所を詰め、著者の下に場所を出す |
 | S-2 | 書名（`reading.title`）、「21:04 から数えています。」（`reading.startedAt`）、数え続けることの1行（紙の本は `reading.note`、電子書籍は `reading.ebookNote`。AC-144）、下端に固定した「終える」（`reading.end`） | なし（今の本がないと読み始められない。AC-46） | なし（端末内の開始時刻を出すだけ。開き直したときは S-1 と同じ読み込みのあとに出す） | 終わりの保存の失敗：「終える」のすぐ上に知らせ `session.save.error`（閉じるボタンなし。もう一度 `reading.end` を押せる。AC-60、AC-132） | なし（通信を使わない。AC-62） | なし（許可を使わない） | 名無しの今の本（`isTitlePending = true`）：書名の位置に `widget.currentBookAsTitle`「今の本」を出す（AC-139） |
 | S-3 | 書名、問い「どこまで読みましたか。」、5つの道：`mark.photo`（ページを撮る）、`mark.screenshot`（スクリーンショットから選ぶ）、`mark.manual`（一行を入れる）、`mark.pageOnly`（ページ・位置・％だけ入れる）、`mark.later`（あとで挟む）と説明（AC-63） | 前のしおりがない：`mark.later` の下の文を `mark.later.note.empty`「しおりは空のままです。」に替える。読まずに挟むシート（AC-64）では `mark.later` は出さずツールバーに閉じる（`mark.cancel`）を出す | なし（読書の記録は「終える」を押した時点で保存済みで、0.5秒以内に開く。AC-55） | なし（この画面自体は保存を行わない。保存の失敗は S-3a〜S-3c で出す） | なし（通信を使わない。AC-62） | カメラの許可を断った状態で `mark.photo` を押したとき：カメラは開かず S-3 の中に `camera.denied` と `camera.openSettings`（「設定を開く」）を出し、同じ画面の `mark.screenshot`、`mark.manual`、`mark.pageOnly`、`mark.later` はそのまま押せる（AC-70、AC-142） | 名無しの今の本：書名の位置に `widget.currentBookAsTitle`「今の本」を出す。電子書籍（`isEbook = true`）：`mark.pageOnly` の表示文を進捗単位に合わせて出す |
@@ -522,7 +522,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-1 | 伏せる・電子書籍案内の1行（`isEbook = true` のとき） | `bookmark.flipHint.ebook` | 文言キー `bookmark.flipHint.ebook` の文（AC-144） |
 | S-1 | 本0冊の空状態の文 | `bookmark.empty.message` | 文言キー `bookmark.empty.message` の文（AC-1） |
 | S-1 | 本0冊のときの「本を加える」ボタン | `bookmark.addBook` | 「本を加える」（AC-1） |
-| S-1 | 今の本なしの文 | `bookmark.noCurrent.message` | 文言キー `bookmark.noCurrent.message` の文（AC-16、AC-145） |
+| S-1 | 今の本なしの文（および名無しの本があるときの案内） | `bookmark.noCurrent.message`（別名 `bookmark.unnamedNotice`）、第2ボタン `bookmark.addBook` | 文言キー `bookmark.noCurrent.message` の文（AC-16、AC-139、AC-145） |
 | S-1 | 今の本なし・積読ありのときの候補の行（最大3冊） | `bookmark.noCurrent.next.<id>`（前方一致 `bookmark.noCurrent.next`） | 「（書名）、（著者）、（理由）」（AC-145） |
 | S-1 | 今の本なしの候補の行の中の「この本を読む」ボタン | `bookmark.noCurrent.choose` | 「この本を読む、（書名）」（AC-145） |
 | S-1 | 本棚から選ぶボタン | `bookmark.openShelf`（足した） | 「本棚から選ぶ」 |
@@ -548,7 +548,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-3a、S-3b、S-3c | ページ・位置番号・％の入力欄 | `mark.pageField` | 単位に合わせて「ページ」「位置番号」「パーセント」（AC-65、AC-71、AC-73、AC-141） |
 | S-3a、S-3b、S-3c | 前の場所の消えない説明（前の値があるときだけ） | `mark.page.previous`（足した） | 文のとおり（「前のページは43です。…」） |
 | S-3a、S-3b、S-3c | 保存ボタン | `mark.save` | 「保存」（AC-65、AC-71、AC-73） |
-| S-3a、S-3b、S-3c | 一行・場所の入力誤りの文 | `mark.line.invalid`、`mark.page.invalid` | 文のとおり（出たときに1回読み上げ）（AC-72、AC-74、AC-141） |
+| S-3a、S-3b、S-3c | 一行・場所の入力誤りの文 | `mark.line.invalid`、`mark.page.invalid`（位置の範囲外 1〜999999 外の別名 `mark.progress.outOfRange.location`） | 文のとおり（出たときに1回読み上げ）（AC-72、AC-74、AC-141） |
 | S-3c | 読み取った列（または行）の枠ボタン（右から1始まり） | `mark.ocr.column.<n>`（例：`mark.ocr.column.1`〜`mark.ocr.column.6`、前方一致 `mark.ocr.column`） | 「列 <n>、（読み取った文字列）」。選ばれている枠には `.isSelected` トレイトを付ける（AC-65、AC-66、AC-142） |
 | S-3c、S-7c、S-8b、S-8d | 文字が1つも読み取れなかったときの文 | `mark.ocr.none` | 文言キー `mark.ocr.none` の文（AC-68） |
 | S-3c | 撮り直す（スクショのときは選び直す）ボタン | `mark.retake` | 「撮り直す」（スクショのときは「選び直す」）（AC-68） |
@@ -594,8 +594,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-8b | 表紙・背表紙・スクショの読み取り行の枠（1始まり） | `cover.ocr.line.<n>`（例：`cover.ocr.line.1`、`cover.ocr.line.2`、`cover.ocr.line.3`） | 「行 <n>、（読み取った文字列）」（AC-137） |
 | S-8b | 書名として選ばれた枠・欄の印、著者として選ばれた枠・欄の印 | `cover.selectTitle`、`cover.selectAuthor` | 「書名に選択」「著者に選択」（AC-137） |
 | S-8b | 表紙・背表紙・スクショから保存するボタン | `cover.save` | 「保存」（AC-137） |
-| S-8c | 書名の入力欄、著者の入力欄、保存ボタン、取り消すボタン | `manual.title`、`manual.author`、`manual.save`、`manual.cancel`（`cancel` は足した） | 「書名」「著者」「保存」「取り消す」（AC-4、AC-5、AC-7、AC-8） |
-| S-8c | `manual.title` に3字以上入れたときに出る端末内書誌 DB の候補の行（最大20件） | `search.row.<ISBN>`（例：`search.row.9784040000053`、前方一致 `search.row`） | 「（書名）、（著者）、（出版社）、（レーベル）、（出版年）」（選んだ行には `.isSelected` トレイトを付ける。AC-4） |
+| S-8c | 書名の入力欄（インクリメンタル検索欄）、著者の入力欄、電子書籍トグル、進捗単位ピッカー、保存ボタン、取り消すボタン | `manual.title`（別名 `manual.searchField`）、`manual.author`、`manual.isEbook`、`mark.progressUnit`、`manual.save`、`manual.cancel`（`cancel` は足した） | 「書名」「著者」「電子書籍」「進み具合の単位」「保存」「取り消す」（AC-4、AC-5、AC-7、AC-8、AC-141） |
+| S-8c | `manual.title` に3字以上入れたときに出る端末内書誌 DB の候補の行（最大20件） | `search.row.<ISBN>`（例：`search.row.9784040000053`、前方一致 `search.row`、別名 `manual.candidate.<ISBN>`） | 「（書名）、（著者）、（出版社）、（レーベル）、（出版年）」（選んだ行には `.isSelected` トレイトを付ける。AC-4） |
 | S-8c | 端末内書誌 DB に合う候補が0件のときの文 | `search.noResults` | 文言キー `search.noResults` の文（AC-5） |
 | S-8c、S-7a、S-8b | 書名・著者の入力誤りの文 | `book.title.invalid`、`book.author.invalid` | 文言キーのとおり（AC-8） |
 | S-8d | 本棚の写真から選んだ背表紙の候補行（1始まり） | `bookshelf.row.<n>`（例：`bookshelf.row.1`〜`bookshelf.row.3`） | 「候補 <n>、（書名）、（著者・出版社）」（AC-138） |
@@ -615,7 +615,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-10 | 一行と書名を隠すトグル | `settings.hideOnWidgets` | 「一行と書名を隠す」とオン・オフ（AC-34） |
 | S-10 | 見た目の選択画面を開く行 | `settings.appearance` | 「見た目、（現在の見た目名）」（AC-105） |
 | S-10 | 購入を復元するボタン | `settings.restorePurchases` | 「購入を復元する」（AC-108） |
-| S-10、S-8c | 端末内書誌 DB の状態と再試行ボタン | `catalog.status`、`catalog.retry`（足した。H28 連携） | 状態の文、「書誌データを再取得する」（AC-11） |
+| S-10、S-8c | 端末内書誌 DB の状態と再試行ボタン | `catalog.status`（別名 `settings.h20Status`）、`catalog.retry`（別名 `settings.h20Retry`。足した。H20/H28 連携） | 状態の文、「書誌データを今すぐ取得する」（AC-11、AC-92） |
 | S-10 | プライバシーポリシーへのリンク | `settings.privacyPolicy` | 「プライバシーポリシー、Safari で開きます」（AC-88） |
 | S-10 | 書誌の出どころの文と、CC BY 4.0 ライセンスへのリンク | `settings.dataSources`、`settings.dataSources.license` | 見出しと文言キー `settings.dataSources` の全文、「ライセンス、CC BY 4.0、Safari で開きます」（AC-93） |
 | S-10a | 見た目の選択肢の行（`default`、`kinari`、`sumi`、`shu`） | `appearance.row.default`、`appearance.row.kinari`、`appearance.row.sumi`、`appearance.row.shu`（足した） | 「標準（白と黒）、選択中」「生成り、よむま＋（未購入なら『鍵つき』）」など（AC-105、AC-106） |
@@ -851,7 +851,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `appearance.shu` | 朱 | Shu (Vermilion Seal) | S-10a（`shu`、よむま＋）。足した |
 | `store.product.title` | よむま＋（買い切り） | Yomuma+ (One-Time Purchase) | S-10a の購入シート。PRD（AC-105） |
 | `store.product.description` | 生成り・墨・朱の3つの見た目を、しおりの画面、ウィジェット、読み終えのカードで使えます。1回の購入でずっと使えます。 | Unlock three paper-and-ink appearances (Kinari, Sumi, Shu) for your bookmark screen, widgets, and finish cards. Pay once, keep forever. | S-10a の購入シート。PRD（AC-105） |
-| `store.buy` | よむま＋を買う | Buy Yomuma+ | S-10a の購入シートの主操作。PRD（AC-105、AC-106） |
+| `store.buy` | よむま＋を買う（¥980） | Buy Yomuma+ | S-10a の購入シートの主操作（`Product.displayPrice` を併記。基準価格 ¥980）。PRD（AC-105、AC-106） |
 | `store.restore` | 購入を復元する | Restore Purchases | S-10a の購入シート。PRD（AC-105） |
 | `store.close` | 閉じる | Close | S-10a の購入シート。PRD（AC-105） |
 | `store.purchase.error` | 購入を完了できませんでした。支払いは行われていません。もう一度試してください。 | Couldn't complete the purchase. You weren't charged. Please try again. | S-10a の購入シート。PRD（AC-107） |
