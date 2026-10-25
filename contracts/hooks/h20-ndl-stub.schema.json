@@ -1,243 +1,170 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h20-ndl-stub:1",
-  "title": "H20 書誌の問い合わせの差し替え（環境変数 UITEST_NDL_STUB の JSON）大きな版 1",
-  "description": "国立国会図書館サーチの GET /api/opensearch（contracts/ndl-opensearch.yaml の ndlOpenSearch）への応答を差し替える。要素の名前は国立国会図書館のまま（PRD 11 の冒頭）。つなぎ口はこの JSON から、本物と同じ名前空間の RSS 2.0 の XML を組んで返すので、アプリの XMLParser の読み方もそのまま通る。差し替えはアプリの通信の部品の一番下（送る直前）に入るので、差し替えた問い合わせも H29 に記録される。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[合わせ方] 問い合わせの isbn か title の値（アプリが送った値そのもの）が match と同じ rules を前から探し、最初に合ったものを使う。responses は前から1つずつ使い、最後の1つはそのあと何回でも使う。どれにも合わなければ unmatched（省けば zero）。\n\n[応答の種類] items：HTTP 200、item をその順で入れる（openSearch:totalResults は totalResults か items の数）。zero：HTTP 200 で item なし。paramError：国立国会図書館が引数の誤りに返す形と同じ HTTP 200 の0件（ndl-opensearch.yaml の ParamError の例）。http：その HTTP の状態と短い HTML。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "title": "H20 端末内の書誌 SQLite DB（Background Assets）および共起テーブルの差し替え（環境変数 UITEST_NDL_STUB の JSON）大きな版 1",
+  "description": "端末内の書誌 SQLite DB（Background Assets の catalog.sqlite）および共起テーブルの状態と中身を差し替える。外部への HTTP 通信は一切行わない（AC-103）。ファイル名と $id（urn:reading-app:contracts:hooks:h20-ndl-stub:1）は既存参照を壊さないよう維持する。関係：contracts/test-hooks.md、ADR 0004、ADR 0005、PRD 11 の冒頭のつなぎ口 H20（AC-2〜AC-6、AC-9〜AC-11、AC-78〜AC-81、AC-87、AC-92、AC-103、AC-138、AC-140、AC-146〜AC-149）。書いた役：tech-lead、2026-10-20、2026-10-25 に更新（G1 の 7-A）。\n\n[状態 status] ready（既定）：端末内に書誌 DB がある状態として books と cooccurrences を SQLite（FTS5 trigram を含む）に投入して検索に応答する。notDownloaded：Background Assets の書誌 DB がまだ端末にダウンロードされていない状態を模擬し、ISBN 検索で scan.dbNotReady を出す（AC-9）。\n\n[著者名の整形（AC-92）] books[].author が指定されていればそれを整形後の著者名として使い、dc:creator または rawCreator / rawAuthor が指定されていれば NDL 書誌データの著者名整形規則（役割語・生没年・カンマ・空白・2人目以降の除去）を通して表示・保存用の著者名を取り出す。\n\n[共起テーブル（AC-148）] cooccurrences[] は読み終えた本の ISBN（fromISBN）から次に読まれた本の ISBN（toISBN）、人数（count）、分類（ndc）を表す。アプリは文学（ndc が \"9\" で始まる）かつ count >= 10 の行だけを「この本を読み終えた人が、次に読んだ本」（rec.reason.readers）の候補に出し、具体的な人数は画面に出さない。",
   "type": "object",
   "required": [
     "stubVersion",
-    "rules"
+    "status"
   ],
   "additionalProperties": false,
   "properties": {
     "stubVersion": {
       "const": 1
     },
-    "rules": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/rule"
-      }
+    "status": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "notDownloaded"
+      ],
+      "default": "ready",
+      "description": "ready：端末内の書誌 DB が利用可能。notDownloaded：Background Assets 未取得状態（AC-9）。"
     },
-    "unmatched": {
-      "$ref": "#/$defs/response",
-      "description": "どの rules にも合わないときの応答。省けば zero。"
+    "books": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/catalogBook"
+      },
+      "description": "端末内の書誌 SQLite DB に投入する書誌レコードの一覧（AC-2〜AC-6、AC-10、AC-11、AC-78〜AC-81、AC-87、AC-92、AC-138、AC-140、AC-146〜AC-149）。"
+    },
+    "cooccurrences": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/cooccurrenceRow"
+      },
+      "description": "端末内の共起テーブル（この本を読み終えた人が次に読んだ本）に投入する行の一覧（AC-148）。"
     }
   },
   "$defs": {
-    "rule": {
+    "catalogBook": {
       "type": "object",
       "required": [
-        "match",
-        "responses"
+        "isbn",
+        "title"
       ],
       "additionalProperties": false,
       "properties": {
-        "match": {
-          "oneOf": [
-            {
-              "type": "object",
-              "required": [
-                "isbn"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "isbn": {
-                  "type": "string",
-                  "pattern": "^[0-9]{13}$"
-                }
-              }
-            },
-            {
-              "type": "object",
-              "required": [
-                "title"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              }
-            }
-          ]
-        },
-        "responses": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/$defs/response"
-          }
-        }
-      }
-    },
-    "response": {
-      "oneOf": [
-        {
-          "type": "object",
-          "required": [
-            "kind",
-            "items"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "kind": {
-              "const": "items"
-            },
-            "items": {
-              "type": "array",
-              "minItems": 1,
-              "maxItems": 200,
-              "items": {
-                "$ref": "#/$defs/item"
-              }
-            },
-            "totalResults": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "hold": {
-              "type": "boolean",
-              "default": false,
-              "description": "真なら、テストが Darwin の通知 yomuma.uitest.ndl.release を送るまで応答を止める（書誌を待つ間の画面を見るため。sleep で待たない）。"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "kind": {
-              "const": "zero"
-            },
-            "hold": {
-              "type": "boolean",
-              "default": false,
-              "description": "真なら、テストが Darwin の通知 yomuma.uitest.ndl.release を送るまで応答を止める（書誌を待つ間の画面を見るため。sleep で待たない）。"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "kind": {
-              "const": "paramError"
-            },
-            "hold": {
-              "type": "boolean",
-              "default": false,
-              "description": "真なら、テストが Darwin の通知 yomuma.uitest.ndl.release を送るまで応答を止める（書誌を待つ間の画面を見るため。sleep で待たない）。"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "kind",
-            "status"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "kind": {
-              "const": "http"
-            },
-            "status": {
-              "type": "integer",
-              "minimum": 400,
-              "maximum": 599
-            },
-            "hold": {
-              "type": "boolean",
-              "default": false,
-              "description": "真なら、テストが Darwin の通知 yomuma.uitest.ndl.release を送るまで応答を止める（書誌を待つ間の画面を見るため。sleep で待たない）。"
-            }
-          }
-        }
-      ]
-    },
-    "item": {
-      "type": "object",
-      "required": [
-        "dc:title"
-      ],
-      "additionalProperties": false,
-      "description": "item の子の要素。並びは XML の出る順。書かない要素は XML に出さない。",
-      "properties": {
-        "dc:title": {
+        "isbn": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^97[89][0-9]{10}$",
+          "description": "13桁の ISBN（ハイフンなし）。"
         },
-        "dcndl:volume": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          },
-          "description": "巻。アプリは1つ目を書名の後ろに足す（ndl-opensearch.yaml の対応表）。"
-        },
-        "author": {
+        "title": {
           "type": "string",
           "minLength": 1,
-          "description": "RSS の author 要素（dc:creator がないときに使う。AC-92）。"
+          "maxLength": 200,
+          "description": "書名（巻数を含む表示書名、または dc:title）。"
+        },
+        "author": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200,
+          "description": "整形済みの著者名、または NDL の author 要素（dc:creator がないときのフォールバック。AC-92）。"
+        },
+        "rawCreator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 400,
+          "description": "NDL 生データの dc:creator 文字列（1人分を文字列で書く場合。AC-92）。"
         },
         "dc:creator": {
           "type": "array",
           "items": {
             "type": "string",
             "minLength": 1
-          }
+          },
+          "description": "NDL 生データの dc:creator 配列（複数著者の先頭取り出し・生没年・カンマ・肩書き除去の検証用。AC-92）。"
         },
-        "dc:publisher": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
+        "publisher": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200,
+          "description": "出版社（例：新潮社、KADOKAWA）。"
         },
-        "dcndl:seriesTitle": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200,
+          "description": "レーベル・叢書名（例：新潮文庫、角川文庫）。空（null）のときに2段目の Cコードがあれば判型から補う（AC-3）。"
         },
-        "dcterms:issued": {
+        "publishedYear": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1800,
+          "maximum": 2100,
+          "description": "この版の出版年（西暦4桁）。"
+        },
+        "seriesTitle": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200,
+          "description": "シリーズ名・書名幹（シリーズの次の巻の推薦用。AC-87）。"
+        },
+        "volumeNumber": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 999,
+          "description": "シリーズ内の巻数（AC-87）。"
+        },
+        "ndc": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 20,
+          "description": "日本十進分類法（NDC。例：\"913.6\"、\"336\"。AC-148）。"
+        }
+      }
+    },
+    "cooccurrenceRow": {
+      "type": "object",
+      "required": [
+        "fromISBN",
+        "toISBN",
+        "count",
+        "ndc"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fromISBN": {
           "type": "string",
-          "minLength": 1
+          "pattern": "^97[89][0-9]{10}$",
+          "description": "起点となる読み終えた本の ISBN-13。"
         },
-        "dc:identifier": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "xsi:type",
-              "value"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "xsi:type": {
-                "enum": [
-                  "dcndl:ISBN",
-                  "dcndl:ISBN13",
-                  "dcndl:NDLBibID",
-                  "dcndl:JPNO"
-                ]
-              },
-              "value": {
-                "type": "string",
-                "pattern": "^[0-9Xx-]{1,20}$",
-                "description": "書かれたままの値。10桁（ハイフンつき）も、dcndl:ISBN13 の中の10桁も書ける。"
-              }
-            }
-          }
+        "toISBN": {
+          "type": "string",
+          "pattern": "^97[89][0-9]{10}$",
+          "description": "次に読まれた候補本の ISBN-13（books 内のレコードと結び付く）。"
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "遷移した人数。アプリは count >= 10 の行だけを候補にし、人数自体は画面に出さない（AC-148）。"
+        },
+        "ndc": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20,
+          "description": "候補本の NDC 分類（\"9\" で始まる文学のみ推薦対象。AC-148）。"
         }
       }
     }
@@ -245,124 +172,96 @@
   "examples": [
     {
       "stubVersion": 1,
-      "rules": [
+      "status": "ready",
+      "books": [
         {
-          "match": {
-            "isbn": "9784101000015"
-          },
-          "responses": [
-            {
-              "kind": "items",
-              "items": [
-                {
-                  "dc:title": "羅生門",
-                  "dcndl:volume": [
-                    "上"
-                  ],
-                  "author": "芥川, 龍之介, 1892-1927,芥川龍之介 著",
-                  "dc:creator": [
-                    "芥川, 龍之介, 1892-1927"
-                  ],
-                  "dc:publisher": [
-                    "新潮社"
-                  ],
-                  "dcndl:seriesTitle": [
-                    "新潮文庫 ; あ-1-1"
-                  ],
-                  "dcterms:issued": "2005.10",
-                  "dc:identifier": [
-                    {
-                      "xsi:type": "dcndl:ISBN",
-                      "value": "4-10-100001-8"
-                    },
-                    {
-                      "xsi:type": "dcndl:ISBN13",
-                      "value": "4-10-100001-8"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "isbn": "9784101000015",
+          "title": "こころ",
+          "author": "夏目漱石",
+          "publisher": "新潮社",
+          "label": "新潮文庫",
+          "publishedYear": 2004,
+          "seriesTitle": null,
+          "volumeNumber": null,
+          "ndc": "913.6"
         },
         {
-          "match": {
-            "isbn": "9784087000023"
-          },
-          "responses": [
-            {
-              "kind": "zero"
-            }
-          ]
+          "isbn": "9784087000023",
+          "title": "夜のピクニック",
+          "author": "恩田陸",
+          "publisher": "新潮社",
+          "label": null,
+          "publishedYear": 2006,
+          "seriesTitle": null,
+          "volumeNumber": null,
+          "ndc": "913.6"
         },
         {
-          "match": {
-            "isbn": "9791000000039"
-          },
-          "responses": [
-            {
-              "kind": "http",
-              "status": 503
-            },
-            {
-              "kind": "items",
-              "items": [
-                {
-                  "dc:title": "楽譜の本",
-                  "author": "中林くみこ 監修"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "match": {
-            "isbn": "9784000000048"
-          },
-          "responses": [
-            {
-              "kind": "paramError"
-            }
-          ]
-        },
-        {
-          "match": {
-            "title": "人間失格"
-          },
-          "responses": [
-            {
-              "kind": "items",
-              "totalResults": 264,
-              "hold": true,
-              "items": [
-                {
-                  "dc:title": "人間失格",
-                  "dc:creator": [
-                    "太宰, 治, 1909-1948"
-                  ],
-                  "dc:publisher": [
-                    "新潮社"
-                  ],
-                  "dcterms:issued": "2006.1",
-                  "dc:identifier": [
-                    {
-                      "xsi:type": "dcndl:ISBN13",
-                      "value": "978-4-10-100605-5"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "isbn": "9784041026000",
+          "title": "鹿の王 2",
+          "author": "上橋菜穂子",
+          "publisher": "KADOKAWA",
+          "label": "角川文庫",
+          "publishedYear": 2019,
+          "seriesTitle": "鹿の王",
+          "volumeNumber": 2,
+          "ndc": "913.6"
         }
       ],
-      "unmatched": {
-        "kind": "zero"
-      }
+      "cooccurrences": [
+        {
+          "fromISBN": "9784101000015",
+          "toISBN": "9784087000023",
+          "count": 12,
+          "ndc": "913.6"
+        },
+        {
+          "fromISBN": "9784101000015",
+          "toISBN": "9791000000039",
+          "count": 9,
+          "ndc": "913.6"
+        },
+        {
+          "fromISBN": "9784101000015",
+          "toISBN": "9784000000048",
+          "count": 25,
+          "ndc": "336"
+        }
+      ]
     },
     {
       "stubVersion": 1,
-      "rules": []
+      "status": "ready",
+      "books": [
+        {
+          "isbn": "9784101000015",
+          "title": "サンプル1",
+          "author": "伴名, 練, 1988-,伴名練 著",
+          "dc:creator": [
+            "伴名, 練, 1988-",
+            "山田, 花子, 1990-"
+          ],
+          "publisher": "新潮社",
+          "label": "新潮文庫",
+          "publishedYear": 2020
+        },
+        {
+          "isbn": "9784120000065",
+          "title": "サンプル6",
+          "author": "中林くみこ 監修",
+          "rawCreator": null,
+          "publisher": "中央公論新社",
+          "label": null,
+          "publishedYear": 2019
+        }
+      ],
+      "cooccurrences": []
+    },
+    {
+      "stubVersion": 1,
+      "status": "notDownloaded",
+      "books": [],
+      "cooccurrences": []
     }
   ]
 }

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h22-widget:1",
   "title": "H22 ウィジェットの中身（要素 hook.widget の accessibilityValue の JSON）大きな版 1",
-  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。 ADR 0003 の「H22 の口」。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0003、ADR 0005、PRD 11 の冒頭のつなぎ口（AC-14、AC-16、AC-27〜AC-35、AC-40、AC-62、AC-64、AC-73、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139〜AC-141）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：電子書籍の進み具合表示と名無しの今の本を反映）。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[進み具合と名無しの今の本（AC-139〜AC-141）] 進み具合の短い表示文字列（texts[\"widget.page\"] および composition.page.text）は、紙の本のページなら「p.61」、電子書籍の位置番号（location）なら「位置1450」（英語は \"Loc 1450\"）、パーセント（percent）なら「52%」が入る。名無しの今の本（isTitlePending が真。register.later）で一行がないときは texts[\"widget.title\"] に文言キー widget.currentBookAsTitle の文（「今の本」／英語 \"Reading Now\"）が入り、accessibility.label の書名の位置も同じ文になる。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
   "type": "object",
   "required": [
     "outputVersion",
@@ -181,13 +181,16 @@
           "description": "画面に出した文字（読み上げから隠した要素を含む）。出していないものはキーを書かない。",
           "properties": {
             "widget.title": {
-              "type": "string"
+              "type": "string",
+              "description": "一行がないときに出す書名。名無しの今の本（isTitlePending が真。AC-139）のときは文言キー widget.currentBookAsTitle の文（「今の本」／\"Reading Now\"）。"
             },
             "widget.line": {
-              "type": "string"
+              "type": "string",
+              "description": "出した一行の文字列（縮め方のあと）。"
             },
             "widget.page": {
-              "type": "string"
+              "type": "string",
+              "description": "進み具合の短い表示文字列。単位が page なら「p.61」、location なら「位置1450」（または \"Loc 1450\"）、percent なら「52%」（AC-141）。"
             },
             "messageKey": {
               "enum": [
@@ -454,7 +457,8 @@
               "properties": {
                 "text": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "description": "枠内に描いた進み具合の文字列（例：「p.61」「位置1450」「52%」。AC-141）。"
                 },
                 "x": {
                   "type": "number"
@@ -683,6 +687,123 @@
         "total": 1,
         "byCause": {
           "launch": 1
+        }
+      }
+    },
+    {
+      "outputVersion": 1,
+      "renders": [
+        {
+          "request": {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          },
+          "seq": 1,
+          "producedAt": "2026-10-18T13:20:00.000Z",
+          "snapshotSource": "file",
+          "state": "normal",
+          "url": "yomuma://open?entry=lock_widget",
+          "appearanceID": "kinari",
+          "accessibility": {
+            "identifier": "widget.rectangular",
+            "label": "夜のピクニック、位置1450。歩行祭は、いつも同じ道を歩く。",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.line": "歩行祭は、いつも同じ道を歩く。",
+            "widget.page": "位置1450"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-18T13:20:00.000Z",
+                "state": "normal"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 2.8
+          },
+          "composition": {
+            "frame": {
+              "W": 172,
+              "H": 76,
+              "i": 0,
+              "B": 43,
+              "g": 4,
+              "R": 0
+            },
+            "fontSize": 15,
+            "L": 5,
+            "referenceL": 5,
+            "columnCount": 3,
+            "feedCount": 0,
+            "kinsokuRelaxed": false,
+            "slack": {
+              "horizontal": 80.0,
+              "vertical": 1.0
+            },
+            "orientation": "vertical",
+            "displayedLine": "歩行祭は、いつも同じ道を歩く。",
+            "shortened": false,
+            "cells": [
+              {
+                "source": "歩",
+                "display": "歩",
+                "rotation": 0,
+                "dx": 0,
+                "dy": 0,
+                "column": 1,
+                "row": 1,
+                "x": 110,
+                "y": 0
+              }
+            ],
+            "page": {
+              "text": "位置1450",
+              "x": 129,
+              "y": 30
+            }
+          }
+        },
+        {
+          "request": {
+            "family": "systemSmall",
+            "width": 170,
+            "height": 170
+          },
+          "seq": 2,
+          "producedAt": "2026-10-18T13:20:00.000Z",
+          "snapshotSource": "file",
+          "state": "noLine",
+          "url": "yomuma://open?entry=small_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.small",
+            "label": "今の本、52パーセント",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.title": "今の本",
+            "widget.page": "52%"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-18T13:20:00.000Z",
+                "state": "noLine"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 1.1
+          }
+        }
+      ],
+      "reloadRequests": {
+        "total": 2,
+        "byCause": {
+          "launch": 1,
+          "mark.save": 1
         }
       }
     }

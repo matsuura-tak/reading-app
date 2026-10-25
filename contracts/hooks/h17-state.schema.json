@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h17-state:1",
   "title": "H9・H10・H17 状態の読み出し（要素 hook.state の accessibilityValue）の書き方 大きな版 1",
-  "description": "hook.state の値は1行の文字列（$defs/raw の形）。テストは次の決まりで読んで、このスキーマの形のオブジェクトに直してから比べる。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[読み方] (1) ; で区切る (2) 最初の = の前がキー、後ろが値 (3) announce、notice、widgetReloads の値は「名前:回数」を , で区切った並び（空なら値は空で、{} とする） (4) lat. と prevLat. で始まるキーの値は、ミリ秒の整数を , で区切った並び（測った順） (5) true と false は真偽、数字だけの値は整数、ほかは文字列。キーの順に意味はない。\n\n[数える範囲] haptic、announce、notice、widgetReloads、lat.* は、プロセスが始まってからの数（開き直すと0から）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。",
+  "description": "hook.state の値は1行の文字列（$defs/raw の形）。テストは次の決まりで読んで、このスキーマの形のオブジェクトに直してから比べる。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：Live Activity、App Intents、OCR、端末内書誌 DB 検索の区間を追加）。\n\n[読み方] (1) ; で区切る (2) 最初の = の前がキー、後ろが値 (3) announce、notice、widgetReloads の値は「名前:回数」を , で区切った並び（空なら値は空で、{} とする） (4) lat. と prevLat. で始まるキーの値は、ミリ秒の整数を , で区切った並び（測った順） (5) true と false は真偽、数字だけの値は整数、ほかは文字列。キーの順に意味はない。\n\n[数える範囲] haptic、announce、notice、widgetReloads、lat.* は、プロセスが始まってからの数（開き直すと0から）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
   "type": "object",
   "required": [
     "state",
@@ -46,6 +46,7 @@
       "enum": [
         "button",
         "flip",
+        "intent",
         "none"
       ],
       "description": "読書中の1件の始まり方。idle なら none。"
@@ -82,6 +83,9 @@
         "app",
         "lock_widget",
         "small_widget",
+        "live_activity",
+        "intent_start",
+        "intent_open",
         "none"
       ],
       "description": "このプロセスで最後に残った記録の入口の印（なければ none）。全部の記録の印は H13 の records[].entry。"
@@ -91,6 +95,9 @@
         "app",
         "lock_widget",
         "small_widget",
+        "live_activity",
+        "intent_start",
+        "intent_open",
         "none"
       ],
       "description": "読書中の1件の入口の印（idle なら none）。"
@@ -99,9 +106,12 @@
       "enum": [
         "lock_widget",
         "small_widget",
+        "live_activity",
+        "intent_start",
+        "intent_open",
         "none"
       ],
-      "description": "メモリの入口の候補（contracts/entry-urls.md の 4）。"
+      "description": "メモリの入口の候補（contracts/entry-urls.md の 1、4）。"
     },
     "widgetReloads": {
       "type": "object",
@@ -124,16 +134,16 @@
     }
   },
   "patternProperties": {
-    "^lat\\.(endToMark|shelfOpen|bookOpen)$": {
+    "^lat\\.(endToMark|shelfOpen|bookOpen|markWait|intentStartRequest|intentStartForeground|barcodeLookup|titleSearch)$": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "integer",
         "minimum": 0
       },
-      "description": "H10。区間の実時間（ミリ秒、切り上げ）。endToMark は AC-55、shelfOpen と bookOpen は AC-101。"
+      "description": "H10。区間の実時間（ミリ秒、切り上げ）。endToMark は AC-55、shelfOpen と bookOpen は AC-101、markWait は AC-94、intentStartRequest は AC-114、intentStartForeground は AC-115、barcodeLookup と titleSearch は AC-149。"
     },
-    "^prevLat\\.(endToMark|shelfOpen|bookOpen)$": {
+    "^prevLat\\.(endToMark|shelfOpen|bookOpen|markWait|intentStartRequest|intentStartForeground|barcodeLookup|titleSearch)$": {
       "type": "array",
       "minItems": 1,
       "items": {
@@ -176,7 +186,7 @@
           "minProperties": 1,
           "additionalProperties": false,
           "patternProperties": {
-            "^(endToMark|shelfOpen|bookOpen)$": {
+            "^(endToMark|shelfOpen|bookOpen|markWait|intentStartRequest|intentStartForeground|barcodeLookup|titleSearch)$": {
               "type": "array",
               "minItems": 1,
               "items": {
@@ -254,6 +264,38 @@
       "lat.endToMark": [
         212,
         198
+      ]
+    },
+    {
+      "state": "reading",
+      "idleTimerDisabled": false,
+      "proximity": false,
+      "flipMonitoring": "off",
+      "startedBy": "intent",
+      "haptic": 0,
+      "announce": {},
+      "notice": {},
+      "entry": "intent_open",
+      "sessionEntry": "intent_start",
+      "entryCandidate": "live_activity",
+      "widgetReloads": {
+        "launch": 1
+      },
+      "lat.intentStartRequest": [
+        185
+      ],
+      "lat.barcodeLookup": [
+        42,
+        38
+      ],
+      "lat.titleSearch": [
+        95
+      ],
+      "prevLat.markWait": [
+        120
+      ],
+      "prevLat.intentStartForeground": [
+        340
       ]
     }
   ]
