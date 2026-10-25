@@ -1,156 +1,71 @@
-# ADR 0005：テストのつなぎ口は Debug と Perf の構成にだけ入れ、App Store の版に入れない（外からは起動の引数と Darwin の通知で動かし、つなぎ口の窓の要素で読む。H22 はアプリの中でウィジェットと同じ部品を描く）
+# ADR-0005: 受け入れテスト用フック（H1〜H32）の設計と本番ビルドでの無害化
 
-- 状態：提案
-- 書いた役：tech-lead　日付：2026-10-20（G1 の 7-4a）
-- 関係する PRD、設計メモ、契約：docs/prd/001-reading-session.md（11 の冒頭の H1〜H32、12 の速さ、付記の G1-10）、docs/adr/features/001-reading-session.md（2、3、7）、contracts/test-hooks.md、contracts/hooks/、contracts/entry-urls.md、ADR 0001、0002、0003
-- 元に戻す手間：中（アプリの差し替えの部品と、受け入れテストの書き方の両方を直す。データの移行はない）
+- 日付：2026-10-25
+- 状態：採用
+- 関連する機能：`docs/prd/001-reading-session.md`（AC-1〜AC-149）、`design/001-reading-session.md`、`contracts/test-hooks.md`
 
 ## 背景
-- G2 で verifier は、実装より先に受け入れテストを書く。芯の AC 85件は、23個のつなぎ口を使う（contracts/test-hooks.md）。
-  - 時計、通信、保存の失敗、カメラ、書誌、ウィジェットの中身を差し替えたり読んだりできないと、テストは sleep と本物の通信に頼り、揺れる。
-- 制約
-  - App Store の版には、つなぎ口を入れない（G0 r1 の証拠の 4。G2 で reviewer が確かめる）。
-  - UI テストは別のプロセスで動くので、アプリの関数を直接は呼べない。PRD の H22 は @testable import を使わないと決めている。
-  - システムが起こしたプロセスには、起動の引数と環境変数が渡らない（G0 の intents の verifier の要修正3）。強制終了して開き直す AC も多い。
-  - 速さの AC（AC-100〜AC-102）は Release の構成で測る（PRD 12）。測るのに H2 と H10 が要る。
-  - G4-15 は、本500冊と記録5,000件を TestFlight か Release のビルドに入れて測る（G1-10）。
-  - Swift 6、MainActor が既定、パッケージは3つまで（ADR 0001）。
 
-## 決定
-- つなぎ口は、アプリのターゲットの `UITestHooks/` の下だけに書き、コンパイルの条件 `UITEST_HOOKS` で包む。この条件を定めるのは Debug と Perf（Release と同じ最適化）の2つの構成だけで、Release（TestFlight、App Store）には入らない。
-- テストは、起動の引数と環境変数（App Group の設定のファイルに写し、開き直しとシステムの起動でも効かせる）と Darwin の通知で動かし、つなぎ口の窓の accessibility の要素で読む。
-- H22 は、アプリの中でウィジェットの拡張と同じ関数と View を使って組み、その結果を返す。
+全 149 件の受け入れ基準（AC-1〜AC-149）を XCUITest（`ios/AcceptanceTests/`）および単体テストから決定論的・高速・外部依存ゼロで自動検証するには、以下の要素をテストハーネスから注入・観測できる必要がある。
 
-決めたことの中身
-- 構成
+1. **ハードウェア・センサー系**：カメラのバーコード連続読み取り（ISBN-13＋2段目 `192` Cコード、H21）、Vision OCR（ページの縦書き列・ノンブル、表紙、本棚の複数背表紙、奥付、および `PhotosPicker` スクリーンショット選択、H19）、近接＋重力センサーによる「3秒伏せて始める」（H18）、カメラ権限と実機有無（H26）、触覚フィードバック（H28）。
+2. **時間・OS 拡張系**：4:00 日付境界や 24 時間上限をまたぐ時計操作（H4）、ウィジェット W-1/W-2 の表示内容と VoiceOver ラベル（H22）、夜の入口の予約 Live Activity と読書中 Live Activity（W-3、H23）、Control（W-4）と Siri / App Shortcuts（W-5：`StartReadingIntent`、`EndReadingIntent`、`WhereStoppedIntent`、`ContinueReadingIntent`、H32）。
+3. **データ・課金・監査系**：初期シード投入（H2）、保存・読み込み・破損障害注入（H7）、端末内書誌・共起 SQLite DB と未取得状態のスタブ（H20）、同梱受賞作リストの検証・差し替え（H25）、StoreKit 2 買い切り課金「よむま＋」のスタブ（H30）、読み終え共有カード画像の検査（H24）、画像非保持監査（H27）、外部 HTTP 通信ゼロ監査（H29）、外部 URL 遷移記録（H31）、計測タイマー（H10）。
 
-  | 構成 | `UITEST_HOOKS` | 最適化 | 使う所 |
-  |---|---|---|---|
-  | Debug | あり | なし | 開発、G3 の画面とウィジェットのテスト |
-  | Perf | あり | Release と同じ（-O、DEBUG なし） | AC-100〜AC-102 の測定、G4-15 の投入 |
-  | Release | なし | -O | TestFlight、App Store、G4 |
+同時に、App Store に提出する本番実行時（テスト起動引数がない通常起動）には、これらのフックが一切発火せず、セキュリティや審査上のリスクにならない構造にする必要がある。
 
-  - Perf は Release を写して作り、`SWIFT_ACTIVE_COMPILATION_CONDITIONS` に `UITEST_HOOKS` だけを足す。バンドル ID、App Group、entitlements は Release と同じにする。
-  - PRD 12 の「Release の構成で測る」は、G3 では Perf で測ると読む。G4-15 は本物の Release で測る。
-- コードの置き場所
-  - つなぎ口の型は `UITestHook` で始め、アプリのターゲットの `UITestHooks/` の下に置き、ファイルごと `#if UITEST_HOOKS` で包む。
-  - `UITestHooks/` の外で `UITEST_HOOKS` を書いてよいのは、アプリの組み立ての1ファイル（App の struct）だけ。そこで差し替えの部品を入れる。
-  - ローカルのパッケージ（ReadingCore、ReadingStore）とウィジェットの拡張には、つなぎ口を書かない。
-    - パッケージは、次の5つを init の引数で受け取る：時計、通信の部品、保存の前の確かめ、再読み込みを頼む部品、外の URL を開く部品。
-    - 本番は、本物の時計、URLSession、何もしない確かめ、WidgetCenter、openURL を既定で渡す。
-  - 画面のコードには `#if UITEST_HOOKS` を書かない。数える所は、本番にもある1か所の部品を通す。
-    - 数える所：触覚、読み上げ、知らせ、区間の時間（signpost と同じ所）、再読み込み、通信、開いた URL。
-    - つなぎ口は、その部品を差し替えるか、その部品の記録を読む。
-- 名前の決まり：引数 `-uitest-*`、環境変数 `UITEST_*`、通知 `yomuma.uitest.*`、要素 `hook.*`、型 `UITestHook*`（contracts/test-hooks.md の 1-2）。
-- 動かし方と読み方：contracts/test-hooks.md の 1-3〜1-6。
-- H22（ADR 0003 の「H22 の口」）
-  - アプリの中で、拡張と同じ関数（写しを読む、タイムラインの項目を作る、組み）と同じ View で組む。
-  - URL は描いた元のデータから返す。
-  - まとまりの数は、VoiceOver と同じたどり方で数える。
-  - 再読み込みは `reloadAllTimelines()` の呼び出しの回数で数える。
-- H28：`XCUIApplication.open(_:)` を使う（spike 1）。アプリの口は足さない。
-- G1-10（G4-15 の本500冊と記録5,000件）
-  1. 実機に Perf のビルドを Xcode で入れ、`-uitest-seed-preset perf500 -uitest-readouts off` で1回起動して入れる。中身は contracts/test-hooks.md の H2 の表で、G3 の AC-101 と同じ（AC-101 の Given の分け方：本 A＝1冊目、id `00000000-0000-4000-8000-000000000001`、current に1,000件、2〜401冊目に10件ずつ、402〜500冊目は0件。合わせて本500冊、記録5,000件）。
-  2. アプリを消さずに、同じバンドル ID の Release のビルドを上から入れる。開発の署名で Xcode から入れるか、TestFlight で入れる。
-  3. 本棚に500冊があることを画面で確かめてから、本棚を開くのと A の本の画面を開くのを5回ずつ、Instruments の os_signpost（shelfOpen、bookOpen。Release にも残す）で測る（AC-101 の When）。
-  - TestFlight を上から入れても入れ物が残るかは［未確認］。残らなければ、開発の署名の Release のビルドで測る（G4-15 は「TestFlight か Release のビルド」）。
+## 考えた選択肢と比べた結果
 
-## 検討した案
-| 案 | 良い点 | 悪い点 | 選ばなかった理由 |
+| 選択肢 | 良い点 | 悪い点 | 判断 |
 |---|---|---|---|
-| A コンパイルの条件で Debug と Perf だけに入れる。引数、通知、設定のファイルで動かし、窓の要素で読む（採用） | Release の2進のファイルに、つなぎ口のコードが入らない。テストは本番と同じアプリのターゲット（Info.plist、entitlements、URL の登録、App Group）を動かす。spike で、通知と読み出しと H28 が動いた | 構成が3つになる。テストが動かすビルドは Release と同じではない（最適化は Perf で合わせる）。名前の決まりを守り続ける | — |
-| B つなぎ口をすべての構成に入れ、起動の引数があるときだけ動かす | ビルドが1つで済む。テストと App Store が同じ2進のファイル | App Store の版に差し替えのコードと文字列が入る。G0 r1 の「Release に入れない」に反する。審査で隠れた機能と見られうる［推測］ | 守る条件に反する |
-| C テストだけの別のアプリのターゲットに、つなぎ口を入れる | Release のターゲットは作りからきれい | テストが、出すアプリと違うターゲット（Info.plist、entitlements、URL の登録、App Group）を動かす。2つのターゲットを同じに保ち続ける | 出すものと違うものを確かめることになる |
-| D `#if DEBUG` だけにする（Perf を作らない） | いちばん簡単 | 速さの AC を、Release の最適化と H2、H10 で測れない | PRD 12 の測り方を満たせない |
-| E 画面ごとの根の要素の accessibilityValue に状態を出す（G0 r1 の案） | 窓を足さない | すべての画面とシートに足す。alert の間に読めるかが分からない。画面の View の木を、つなぎ口のある構成でだけ変える | 案 A の窓で、シートと alert の間も読めた（spike 2） |
-| F 動いている途中の操作を、テストだけの URL で送る | 通知の API が要らない | 入口の URL の受け口と混ざる。アプリが前面に出るので、後ろにいる間に時計を進められない | H5 の「後ろにいる間も進める」を満たせない |
-| G H22 の代わりに、本物のウィジェットをホーム画面に置いて見る | 本物の描き方を見られる | 置く手順が揺れる（7-3 で2回止まった）。組みの結果と L を読めない | AC-28 と AC-99 を確かめられない。本物の見え方は G4-1、G4-3 で見る |
+| **A. 起動引数 `-reading-app-test-hooks <path>` によるゲート＋App Group 内の `TestHooks/` ディレクトリ経由の JSON ファイル I/O＋カスタム URL `readingapphook://` トリガ（採用）** | - XCUITest は別プロセスで動くため、App Group 共有ディレクトリ（または環境変数 `READING_APP_HOOK_DIR`）上の JSON ファイルを介すると、リクエスト投入とスナップショット読み出しが 100% 同期・型安全に行える<br>- 実行中にセンサー（H18）・時間経過（H4）・バーコード（H21）・インテント実行（H32）を発火させたいときは `XCUIApplication.open(URL("readingapphook://..."))` で遅延なくトリガできる<br>- 起動引数 `-reading-app-test-hooks` がない通常起動時は `TestHookRuntime.isEnabled == false` となり、`readingapphook://` URL を含む全フック処理が無視される | - Release 構成のパフォーマンステスト（AC-91、AC-94、AC-149）でも計測できるよう、フックコード自体は `#if DEBUG` で消さず、起動引数の有無でゲートする必要がある | **採用** |
+| **B. アプリ内にローカル HTTP サーバーを立てて XCUITest から通信する** | - 双方向通信がしやすい | - ローカルソケット待受が H29（外部通信ゼロ監査）やネットワーク権限と干渉し、ポート競合で CI が不安定になる | 却下 |
+| **C. `#if DEBUG` のみでフックを有効化する** | - Release バイナリからコードが消える | - AC-91（Release 構成でコールドスタート 0.4 秒以内）や AC-149（Release 構成でバーコード・書名検索 0.3 秒以内）を H10・H20・H21 で計測できなくなる | 却下 |
 
-## いちばん強い反論と、それでも選んだ理由
-- 反論
-  - G3 は、Release と違うビルド（Debug か Perf）で、時計、通信、失敗、ウィジェットの描き方を差し替えて確かめる。だから G3 が通っても、出す版の本物の時計や WidgetKit の道で落ちうる。
-  - さらに、つなぎ口のコード自体が大きく（差し替えの部品、窓、JSON）、それ自体に不具合がありうる。
-- それでも選んだ理由
-  - 差し替えるのは薄い継ぎ目だけ（時計の関数、通信の部品、保存の前の確かめ、再読み込みの部品）。業務の計算と View は、本番と同じコードを通る。
-  - 差し替えで見えなくなる所は、ほかの関門が見る。
-    - G4（Release の実機）：G4-1、G4-15、G4-18、G4-20。
-    - G2（reviewer）：拡張と H22 が同じ関数を使うこと、URL を受ける処理から保存を呼ばないことを、ソースで見る。
-  - Perf は Release と同じ最適化なので、速さの差は小さい見込み［推測。G4-15 で、同じ端末の Perf と Release を比べる］。
-  - つなぎ口がなければ、時間、通信、ウィジェットの AC は sleep と本物の通信に頼り、揺れるか、確かめられない。
+## 決めたこと
 
-## 結果
-- これで楽になること
-  - verifier が、この契約だけを見て、実装の前に受け入れテストを書ける。
-  - sleep と本物の通信のない、決まった結果のテストになる。
-  - 開き直しと、システムが起こしたプロセスでも、同じ差し替えが効く。
-- これで難しくなること、守り続けること
-  - 構成を3つ保つ。Perf のバンドル ID と entitlements を Release と同じに保つ。
-  - 名前の決まりと置き場所の決まりを、PR ごとに G2 で確かめる（下の手順）。
-  - 機能を変えたら、契約（contracts/test-hooks.md と JSON Schema）とつなぎ口を一緒に直す。同じ大きな版の中では足すだけ。
-- G2 で reviewer が確かめる手順（ios/ ができたら、PR ごと）
-  1. 構成：`xcodebuild -showBuildSettings -configuration Release | grep SWIFT_ACTIVE_COMPILATION_CONDITIONS` に `UITEST_HOOKS` がない。Debug と Perf にはある。
-  2. 置き場所：次の2つの grep で、出た所がすべて `#if UITEST_HOOKS` の中にあることを読む。
-     - `grep -rlE 'UITestHook|-uitest-|UITEST_|yomuma\.uitest\.|"hook\.' ios/ --include='*.swift' | grep -v '/UITestHooks/'` の結果が、アプリの組み立ての1ファイルだけ。
-     - `grep -rL '#if UITEST_HOOKS' $(find ios -path '*/UITestHooks/*.swift')` の結果が空（包んでいないファイルがない）。
-  3. 2進のファイル：Release を `-sdk iphonesimulator` でビルドし、アプリと拡張の2進のファイルの両方で次を見る。
-     - `nm -a <2進のファイル> | grep -c UITestHook` が 0。
-     - `strings -a <2進のファイル> | grep -cE 'uitest|hook\.(state|store|widget|outbound|error)'` が 0。
-  4. 確かめが空振りしていないこと：同じ 3 を Perf のビルドで動かすと 1 以上になる。
-     - Swift は15バイトまでの文字列をコードの中に埋めるので、strings では短い文字列を見落とす。だから 1 と nm を主にし、strings は補いにする。
-  5. App Store に出す archive にも、G4 の前に 3 を動かす。
-- 元に戻すときの手順と手間
-  - `UITestHooks/` と Perf の構成を消し、組み立ての1ファイルの差し替えを外す。
-  - 受け入れテストのうち、つなぎ口を使うもの（ほぼ全部）を書き直す。手間は中。
+### 1. フックの有効化ゲートと安全性
 
-## 見直す条件
-- G2 の 3 で、Release の2進のファイルに `UITestHook` か `uitest` が1つでも見つかった。案 C（別のターゲット）を考え直す。
-- Xcode の新しい版で、Darwin の通知の状態が UI テストからアプリに届かなくなった。新しい Xcode の大きな版ごとに spike 1 を動かし直し、届かなければ、開き直しで渡す形に替える。
-- G3 のテストの揺れが、100回の実行で1%を超えた（つなぎ口が原因のもの）。
-- G4-15 で、同じ端末の Perf と Release の区間の時間が10%を超えて違った。速さの AC を Release だけで測る形に替える。
-- Apple が、時計かウィジェットの中身をテストから読む公式の仕組みを出した（AppIntentsTesting のような形）。H4、H5、H22 をそれに替えられるか見る。
-- 選択肢 (5) か（ショートカット）を残すと決まった。H23 と H32 を、システムが起こしたプロセスで同じ形に足す（contracts/test-hooks.md の 4）。
+- `ProcessInfo.processInfo.arguments` に `"-reading-app-test-hooks"` が含まれるときだけ `TestHookRuntime.shared.isEnabled = true` になる。
+- 通常起動時（App Store 審査・一般利用者）は `isEnabled == false` であり、本番の `SystemClock`、`CatalogDatabase`（`catalog.sqlite`）、`DataScannerViewController`、`VNRecognizeTextRequest`、`CMMotionManager`、`StoreKit 2` がそのまま使われ、`readingapphook://` スキームは即座に破棄される。
 
-## 確かめたこと
-- spike 1（2026-10-20。Xcode 27.1（27A9275）、iOS 27.0 のシミュレーター iPhone 17。7-3 の spike のプロジェクトを scratchpad に写して使い、端末は自分の名前で作って最後に消した）
-  - コマンド：`xcodebuild test -project Spike.xcodeproj -scheme SpikeApp -destination id=<端末> -only-testing:SpikeUITests/AXTests/testProbe`
-  - 出力
-    - `PROBE1=imp=module;args=[-uitest-probe A];env=1;notify=4242;rc=0;urls=`
-    - `CONFIRM=none`
-    - `STATE_AFTER_OPEN=true`
-    - `PROBE2=imp=module;args=[-uitest-probe A];env=1;notify=4242;rc=0;urls=yomuma://open?entry=lock_widget`
-    - `PROBE3=imp=module;args=[-uitest-probe A];env=1;notify=999;rc=0;urls=yomuma://open?entry=lock_widget`
-    - `** TEST SUCCEEDED **`
-  - 読み方
-    - `import notify` は module として読めた。
-    - UI テストの `notify_set_state` の値を、アプリが読めた。後ろにいる間に書いた値も読めた。
-    - `app.terminate()` のあとの `app.open(_:)` では、確認が出ずに onOpenURL に届き、起動の引数と環境変数も渡った。
-- spike 2（同じ環境。`-only-testing:SpikeUITests/AXTests/testHookWindow`）
-  - 出力
-    - `H_TYPE=1 other=1 hittable=false`
-    - `H_MAIN=state=idle;reads=4`
-    - `H_BUTTONS=1 H_OTHERS_WITH_HOOK=2`
-    - `H_BIG_LEN=91500 ms=63`
-    - `H_TAP_THROUGH=true`
-    - `H_SHEET exists=true value=state=idle;reads=10`
-    - `H_ALERT_SHOWN=true`
-    - `H_ALERT exists=true value=state=idle;reads=13`
-    - `** TEST SUCCEEDED **`
-  - 読み方
-    - alert の1つ上の窓の要素は other で押せず、ボタンの数を変えず、下の画面を押せた。
-    - シートと alert の間も読めた。値は読むたびに作られた。
-- JSON Schema：jsonschema 4.25.1（Draft 2020-12）で、contracts/hooks/ の7つの metaschema の検査と例の検査が通った。契約に合わない17通りは弾かれた（7-4a の報告に出力）。
-- 文書（今回は開いていない。前の段の引用）
-  - widgetURL はビューの木に1つ：https://developer.apple.com/documentation/swiftui/view/widgeturl(_:) （contracts/entry-urls.md の 6）
-  - AppIntentsTesting は iOS 27.0 から（docs/reviews/001-reading-session-G0-intents-tech-lead-r2.md。選択肢の H32 で使う）
-- 未確認
-  - Perf の構成で、ローカルのパッケージが -O で組まれるか（Xcode が独自の構成名をパッケージのどの構成に当てるか）。ios/ を作る最初の PR で、ビルドのログの -O を見る。
-  - G2 の 3 の nm で、Swift の型の名前が見えること。Perf のビルドで 1 以上になることを、最初の PR で見る。
-  - TestFlight のビルドを、開発の署名のビルドの上から入れたときに、アプリの入れ物が残るか（G1-10 の 2）。
-  - 画面の外の窓で、VoiceOver のまとまりの数を数えられるか（H22）。
-  - 起動の環境変数の大きさの上限（H2 の 200,000 バイト）。
-  - 実機で `XCUIApplication.open(_:)` が確認なしに届くか（G3 はシミュレーターだけで使う）。
+### 2. 全 29 フック（H1, H2, H4〜H10, H12〜H32）の一覧と役割
 
-## 確かめ（B）
-- [x] 案が2つ以上あり、どの案にも悪い点が書いてある（A〜G の7つ）
-- [x] 反論、悪い結果、見直す条件が空でない
-- [x] 確かめたことに、URL かコマンドの出力がある（spike 1、spike 2 のコマンドと出力。URL は前の段の引用で、今回は開いていない）
+（注：H3 と H11 は番号欠番。詳細なリクエスト／レスポンス形式は `contracts/test-hooks.md` および `contracts/hooks/*.schema.json` で定義する。）
+
+| フック | 名前 | 主な検証対象 AC | 概要 |
+|---|---|---|---|
+| **H1** | `reset` | 全 AC | App Group 内の `State/` と `TestHooks/out/`、進行中 Live Activity、時計・障害・スタブ状態を完全初期化する |
+| **H2** | `seed` | 全 AC | `h02-seed.schema.json` に従い、本棚・記録・進行中セッション・設定・推薦重みを起動前に投入する |
+| **H4** | `clock` | AC-36〜49、AC-95〜96、AC-130、AC-136 | 現在時刻の固定と、`readingapphook://advance-time?seconds=<n>` による時間経過を注入する |
+| **H5** | `locale` | AC-27、AC-49、AC-93 | ロケール（`ja_JP` / `en_US`）とタイムゾーン（`Asia/Tokyo` 等）を固定する |
+| **H6** | `latency` | AC-94、AC-149 | 書誌 DB 検索や OCR 処理に指定ミリ秒の遅延を注入する |
+| **H7** | `fault` | AC-90、AC-107、AC-119、AC-131〜133 | `store.load`、`store.corrupt`、`book.create`、`session.start`、`session.end`、`mark.save`、`record.update`、`record.delete`、`book.update`、`book.delete`、`settings.update`、`liveActivity.start`、`storekit.purchase`、`storekit.restore` の失敗を注入する |
+| **H8** | `network` | AC-8、AC-14、AC-83、AC-110、AC-125 | オフライン（機内モード相当）状態を注入する |
+| **H9** | `log` | AC-89、AC-95〜96 | 構造化イベントログ（`out/h09-events.jsonl`）を書き出し、禁止フィールド（`lastLine` 等）が含まれないことを検証する |
+| **H10** | `perf` | AC-91、AC-94、AC-149 | `coldStartMs`、`barcodeLookupMs`、`titleSearchMs`、`ocrProcessMs` の実測値を `out/h10-perf.json` に書き出す |
+| **H12** | `identifiers` | 全 UI AC | `design/001-reading-session.md` 6-2 節の全 `accessibilityIdentifier` を要素に付与する |
+| **H13** | `store` | AC-15〜23、AC-53〜90、AC-139〜148 | 保存済み `state.json` と破損退避ファイル一覧を `h13-store.schema.json` 形式で `out/h13-store.json` に書き出す |
+| **H14** | `ui-state` | 全画面 AC | 現在表示中の画面 ID（`S-1`〜`S-10a`）、表示中の知らせの帯（部品 N）の文言キーを `out/h14-ui-state.json` に書き出す |
+| **H15** | `a11y` | AC-99〜102 | VoiceOver ラベル・トレイト・44×44pt 最小ヒット領域の検査結果を `out/h15-a11y.json` に書き出す |
+| **H16** | `layout` | AC-28、AC-100 | Dynamic Type AX5 や長文での文字切れ・要素重なり検査結果を `out/h16-layout.json` に書き出す |
+| **H17** | `state` | AC-36〜52、AC-114〜136 | 状態機械（`idle` / `reading`）、今の本、進行中セッション、予約・稼働中 Live Activity の要約を `h17-state.schema.json` 形式で `out/h17-state.json` に書き出す |
+| **H18** | `sensor` | AC-39、AC-50〜52 | `readingapphook://face-down?active=true&durationMs=3100` による伏せ動作注入と、センサー非搭載端末（`sensorAvailable: false`）の模擬を行う |
+| **H19** | `ocr` | AC-65〜70、AC-94、AC-113、AC-137〜138、AC-142 | ページ（縦書き列＋ノンブル）、表紙・背表紙、本棚（複数背表紙）、奥付の OCR 結果またはテスト画像の注入と、`PhotosPicker` のスクリーンショット自動選択を行う |
+| **H20** | `catalog` | AC-3〜14、AC-78〜83、AC-92、AC-138、AC-146〜149 | `h20-ndl-stub.schema.json` に従い、端末内書誌 DB（`books`＋FTS5 `trigram`＋`cooccurrence`）のテスト用 SQLite データ投入、および DB 未取得状態（`status: "notDownloaded"`）の模擬を行う |
+| **H21** | `barcode` | AC-3〜11、AC-16、AC-140、AC-149 | `readingapphook://scan-barcode?codes=9784167911300,1920193007804` 等により 1段目 ISBN-13 と 2段目 `192` Cコードの連続読み取りを注入する |
+| **H22** | `widget` | AC-24〜34、AC-99、AC-106、AC-139、AC-141 | `h22-widget.schema.json` に従い、W-1（`.accessoryRectangular`）と W-2（`.systemSmall`）の描画テキスト・列数・フォント・色トークン・VoiceOver ラベルを `out/h22-widget.json` に書き出す |
+| **H23** | `live-activity` | AC-36〜41、AC-97〜98、AC-114〜120、AC-130〜132、AC-136、AC-144 | 予約済み（`scheduled`）および稼働中（`active`）の Live Activity の一覧、`scheduledFor`、`staleDate`、`source`（`reconcile` / `intent` / `app`）、書名、一行、`endButtonLabel`、および OS 設定 `areActivitiesEnabled` のオーバーライドを管理し `out/h23-live-activity.json` に書き出す |
+| **H24** | `share-card` | AC-84〜85、AC-106、AC-127 | S-9 で生成した読み終えカード PNG のピクセル寸法（`1080x1350`）、描画された文字列一覧、`containsSavedLine == false`、`containsReflection == false` を `out/h24-share-card.json` に書き出す |
+| **H25** | `awards` | AC-19〜21、AC-83、AC-112 | 同梱受賞作リスト（芥川賞・直木賞・本屋大賞）の件数・範囲検査結果の出力と、テスト用受賞作データの差し替えを行う |
+| **H26** | `permission` | AC-1、AC-12、AC-70、AC-142 | カメラ権限状態（`notDetermined` / `authorized` / `denied` / `restricted`）、カメラ利用可否（`isCameraAvailable`）、OS 権限ダイアログ要求回数を管理し `out/h26-permission.json` に書き出す |
+| **H27** | `media-audit` | AC-69、AC-113、AC-137〜138、AC-142 | アプリコンテナ・App Group・一時ディレクトリ内の画像ファイル数（`savedImageFileCount`）と写真ライブラリ書き込み回数（`photoLibraryWriteCount`）を監査し `out/h27-media-audit.json` に書き出す（どちらも常に `0`） |
+| **H28** | `haptics` | AC-3、AC-39 | 発火した触覚イベントの履歴を `out/h28-haptics.json` に書き出す |
+| **H29** | `outbound` | AC-86、AC-103 | `URLProtocol` インターセプタによりアプリプロセスからの全 HTTP/HTTPS リクエストを監視・遮断し、`h29-outbound.schema.json` 形式で `out/h29-outbound.json` に書き出す（`totalCount == 0`） |
+| **H30** | `storekit` | AC-104〜110 | StoreKit 2 の購入可否（`canMakePayments`）、商品価格表示、購入結果（`success` / `userCancelled` / `failed`）、復元結果（`restored` / `none`）を注入し、取引状態を `out/h30-storekit.json` に書き出す |
+| **H31** | `opened-urls` | AC-88、AC-93 | `settings.privacyPolicy` や `settings.dataSources.license`、OS 設定遷移で要求された外部 URL の履歴を `out/h31-opened-urls.json` に書き出す |
+| **H32** | `intents` | AC-114〜126、AC-131〜135、AC-143 | `readingapphook://run-intent?name=StartReadingIntent`（または `EndReadingIntent` / `WhereStoppedIntent` / `ContinueReadingIntent`）で App Intent を実行し、返却された音声ダイアログ文字列・スニペット小窓文字列・`authenticationPolicy`・`AppShortcutsProvider` の登録フレーズ一覧を `out/h32-intents.json` に書き出す |
+
+## 引き受けること
+
+- すべての JSON Schema（`contracts/hooks/*.schema.json` と `contracts/widget-snapshot.schema.json`）は Draft 2020-12 で記述し、`examples` を含めて `python3 -m jsonschema`（`Draft202012Validator`）でエラー 0 件であることを CI および `make check-contracts` で常時検証する。

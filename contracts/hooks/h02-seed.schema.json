@@ -1,415 +1,419 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:reading-app:contracts:hooks:h02-seed:1",
-  "title": "H2 データの投入（環境変数 UITEST_SEED の JSON）大きな版 1",
-  "description": "H2 で、本、記録、読書中の1件、設定を、本番と同じ保存先（SwiftData、Application Support）に入れる。投入は H1 の初期化を含む（先に全部消してから入れる）。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[入れ方] テストの起動（contracts/test-hooks.md の 2）で、環境変数 UITEST_SEED にこの JSON（UTF-8、200,000 バイトまで）を入れる。本500冊と記録5,000件は JSON でなく -uitest-seed-preset perf500（test-hooks.md の H2）。\n\n[つなぎ口が確かめること（JSON Schema で書けない分）] id が一意、session.bookID が shelf が current の本の id、字の数（書記素）が PRD 11 の冒頭の範囲。満たさなければ何も書かずに hook.error を出す（test-hooks.md の 2 の失敗）。\n\n[日時] RFC 3339 の時差つき（例 2026-10-15T23:50:00+09:00）。読み出し（H13）は UTC の Z で返す。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。\n\n[2026-10-20 の直し（G1 の reviewer r1）] 書名を省ける本（上の title の説明）を足し、id を大文字だけに絞った（P3）。main に出す前の版 1 の下書きの直しで、使う側（受け入れテスト）はまだないので、版は上げない。",
+  "$id": "https://readingapp.local/contracts/hooks/h02-seed.schema.json",
+  "title": "H02SeedPayload",
+  "description": "テストフック H2（seed）で起動前に App Group の State/state.json に投入する初期データ契約（AC-1〜AC-149）。",
   "type": "object",
-  "required": [
-    "seedVersion",
-    "books"
-  ],
   "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "books",
+    "records",
+    "activeSession",
+    "settings"
+  ],
   "properties": {
-    "seedVersion": {
+    "schemaVersion": {
+      "type": "integer",
       "const": 1
     },
     "books": {
       "type": "array",
-      "maxItems": 100,
       "items": {
-        "$ref": "#/$defs/book"
-      },
-      "not": {
-        "contains": {
-          "properties": {
-            "shelf": {
-              "const": "current"
-            }
-          },
-          "required": [
-            "shelf"
-          ]
-        },
-        "minContains": 2
-      },
-      "description": "今の本（shelf が current）は0冊か1冊。"
+        "$ref": "#/$defs/SeedBook"
+      }
     },
-    "session": {
-      "$ref": "#/$defs/session"
+    "records": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/SeedRecord"
+      }
+    },
+    "activeSession": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/SeedActiveSession" }
+      ]
     },
     "settings": {
-      "$ref": "#/$defs/settings"
+      "$ref": "#/$defs/SeedSettings"
     }
   },
   "$defs": {
-    "book": {
+    "SeedBook": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "id",
-        "shelf",
-        "addedAt"
+        "isbn13",
+        "title",
+        "author",
+        "publisher",
+        "label",
+        "publishedYear",
+        "status",
+        "page",
+        "lastLine",
+        "createdAt",
+        "updatedAt",
+        "finishedAt"
       ],
-      "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$",
-          "description": "本の id（UUID。16進の英字は大文字で書く。H13 と識別子 shelf.row.<id> も同じ大文字の形で出る）。投入の中で一意（つなぎ口が確かめる）。"
+          "format": "uuid"
         },
-        "isbn": {
-          "type": "string",
-          "pattern": "^97[89][0-9]{10}$",
-          "description": "13桁。手で入れた本（lookupStatus が none）は書かない。"
+        "isbn13": {
+          "type": ["string", "null"],
+          "pattern": "^97[89][0-9]{10}$"
         },
         "title": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 400,
-          "description": "保存した形の書名。1〜100字（書記素。つなぎ口が数える）。キーを省けるのは、isbn があり、lookupStatus が pending か notFound で、manuallyEdited が真でない本だけ（書誌を待っている本と、見つからなかった本。設計メモ 5、ADR 0004）。ほかの本には必ずある。"
+          "maxLength": 200
         },
         "author": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 400,
-          "description": "保存した形の著者（AC-92 の取り出しのあと）。1〜100字。著者なしはキーを書かない。"
+          "maxLength": 200
         },
         "publisher": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 400
+          "type": ["string", "null"],
+          "maxLength": 200
         },
         "label": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 400,
-          "description": "レーベル。"
+          "type": ["string", "null"],
+          "maxLength": 200
         },
         "publishedYear": {
-          "type": "integer",
-          "minimum": 1000,
-          "maximum": 9999
+          "type": ["integer", "null"],
+          "minimum": 1800,
+          "maximum": 2100
         },
-        "shelf": {
-          "enum": [
-            "current",
-            "tsundoku",
-            "finished"
-          ]
+        "seriesTitle": {
+          "type": ["string", "null"],
+          "maxLength": 200
         },
-        "addedAt": {
+        "volumeNumber": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999
+        },
+        "ndc": {
+          "type": ["string", "null"],
+          "maxLength": 20
+        },
+        "status": {
           "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
-          "description": "加えた日時。"
+          "enum": ["current", "tsundoku", "finished"]
         },
-        "tsundokuAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
-          "description": "積読に加えた日時。shelf が tsundoku で省いたときは addedAt と同じ値を入れる。"
+        "isEbook": {
+          "type": "boolean",
+          "default": false
         },
-        "finishedAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
-          "description": "読み終えた日時（design r1 の C の問い4、設計メモ 5）。shelf が finished のときだけ書ける。省いたときは addedAt と同じ値を入れる。"
+        "isTitlePending": {
+          "type": "boolean",
+          "default": false
         },
-        "line": {
+        "progressUnit": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 240,
-          "description": "しおりの一行。1〜60字（書記素）。"
+          "enum": ["page", "location", "percent"],
+          "default": "page"
         },
         "page": {
-          "type": "integer",
+          "type": ["integer", "null"],
           "minimum": 1,
           "maximum": 9999
         },
-        "lookupStatus": {
-          "enum": [
-            "none",
-            "pending",
-            "found",
-            "notFound"
-          ],
-          "description": "書誌の状態。省いたときは、isbn があれば found、なければ none。"
+        "location": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
         },
-        "lastLookupAt": {
+        "percent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "lastLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "createdAt": {
           "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
-          "description": "前に問い合わせた日時（AC-10、AC-113）。"
+          "format": "date-time"
         },
-        "manuallyEdited": {
-          "type": "boolean",
-          "default": false,
-          "description": "書名か著者を手で直した印（AC-113）。"
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
         },
-        "records": {
-          "type": "array",
-          "maxItems": 100,
-          "items": {
-            "$ref": "#/$defs/record"
-          }
+        "finishedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
         }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "shelf": {
-                "const": "finished"
-              }
-            },
-            "required": [
-              "shelf"
-            ]
-          },
-          "else": {
-            "not": {
-              "required": [
-                "finishedAt"
-              ]
-            }
-          }
-        },
-        {
-          "if": {
-            "required": [
-              "isbn"
-            ]
-          },
-          "then": {
-            "properties": {
-              "lookupStatus": {
-                "enum": [
-                  "pending",
-                  "found",
-                  "notFound"
-                ]
-              }
-            }
-          },
-          "else": {
-            "properties": {
-              "lookupStatus": {
-                "const": "none"
-              }
-            }
-          }
-        },
-        {
-          "$comment": "書名を省ける本の決まり（設計メモ 5）。条件に合わない本は title が必須。",
-          "if": {
-            "required": [
-              "isbn",
-              "lookupStatus"
-            ],
-            "properties": {
-              "lookupStatus": {
-                "enum": [
-                  "pending",
-                  "notFound"
-                ]
-              },
-              "manuallyEdited": {
-                "const": false
-              }
-            }
-          },
-          "else": {
-            "required": [
-              "title"
-            ]
-          }
-        }
-      ]
+      }
     },
-    "record": {
+    "SeedRecord": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "id",
+        "bookId",
         "startedAt",
-        "timeZoneID",
-        "minutes"
+        "endedAt",
+        "minutes",
+        "nightDate",
+        "entry",
+        "startPage",
+        "endPage",
+        "savedLine"
       ],
-      "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+          "format": "uuid"
+        },
+        "bookId": {
+          "type": "string",
+          "format": "uuid"
         },
         "startedAt": {
           "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
-          "description": "読み始めの日時。"
+          "format": "date-time"
         },
-        "timeZoneID": {
+        "endedAt": {
           "type": "string",
-          "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$",
-          "description": "読み始めたときのタイムゾーン（IANA。AC-22）。"
+          "format": "date-time"
         },
         "minutes": {
           "type": "integer",
           "minimum": 1,
           "maximum": 1440
         },
+        "nightDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
         "entry": {
+          "type": "string",
           "enum": [
             "app",
-            "lock_widget",
-            "small_widget"
-          ],
-          "default": "app",
-          "description": "入口の印（contracts/entry-urls.md の 4）。"
+            "face_down",
+            "widget",
+            "live_activity",
+            "intent_start",
+            "intent_open"
+          ]
+        },
+        "progressUnit": {
+          "type": "string",
+          "enum": ["page", "location", "percent"],
+          "default": "page"
+        },
+        "startPage": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "endPage": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "startLocation": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "endLocation": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "startPercent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "endPercent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "savedLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60
         }
       }
     },
-    "session": {
+    "SeedActiveSession": {
       "type": "object",
-      "required": [
-        "bookID",
-        "startedAt"
-      ],
       "additionalProperties": false,
-      "description": "読書中の1件。あれば状態は reading で起動する。",
+      "required": [
+        "bookId",
+        "startedAt",
+        "entry"
+      ],
       "properties": {
-        "bookID": {
+        "bookId": {
           "type": "string",
-          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+          "format": "uuid"
         },
         "startedAt": {
           "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$"
-        },
-        "timeZoneID": {
-          "type": "string",
-          "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$",
-          "description": "省いたときは H6 のタイムゾーン。"
+          "format": "date-time"
         },
         "entry": {
+          "type": "string",
           "enum": [
             "app",
-            "lock_widget",
-            "small_widget"
-          ],
-          "default": "app"
+            "face_down",
+            "widget",
+            "live_activity",
+            "intent_start",
+            "intent_open"
+          ]
         },
-        "startedBy": {
-          "enum": [
-            "button",
-            "flip"
-          ],
-          "default": "button"
+        "liveActivityId": {
+          "type": ["string", "null"]
         }
       }
     },
-    "settings": {
+    "RecommendationWeightCounter": {
       "type": "object",
       "additionalProperties": false,
+      "required": ["chosen", "skipped"],
       "properties": {
-        "flipToStart": {
-          "type": "boolean",
-          "default": true
+        "chosen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "SeedSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flipToStartEnabled",
+        "hideOnWidgets",
+        "hasShownWidgetGuide"
+      ],
+      "properties": {
+        "flipToStartEnabled": {
+          "type": "boolean"
         },
         "hideOnWidgets": {
+          "type": "boolean"
+        },
+        "hasShownWidgetGuide": {
+          "type": "boolean"
+        },
+        "entryTime": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):(00|15|30|45)$",
+          "default": "22:00"
+        },
+        "appearanceID": {
+          "type": "string",
+          "enum": ["default", "kinari", "sumi", "shu"],
+          "default": "default"
+        },
+        "isPlusPurchased": {
           "type": "boolean",
           "default": false
         },
-        "widgetGuideShown": {
-          "type": "boolean",
-          "default": true,
-          "description": "置き方の案内を見た印。投入で省いたときは真（PRD 11 の H2：AC-96 のほかのテストでは見た印を入れておく）。AC-96 は false を書く。H1 だけの起動では偽。"
+        "recommendationWeights": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "readers": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "nextVolume": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameAuthor": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameAward": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameLabel": { "$ref": "#/$defs/RecommendationWeightCounter" }
+          }
+        },
+        "firstNightCompletedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "seventhNightReachedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
         }
       }
     }
   },
   "examples": [
     {
-      "seedVersion": 1,
+      "schemaVersion": 1,
       "books": [
         {
-          "id": "6F1C2A10-0000-4000-8000-000000000001",
-          "isbn": "9784101000015",
-          "title": "羅生門",
-          "author": "芥川龍之介",
-          "publisher": "新潮社",
-          "label": "新潮文庫",
-          "publishedYear": 2005,
-          "shelf": "current",
-          "addedAt": "2026-10-01T21:00:00+09:00",
-          "line": "下人は、雨やみを待っていた。",
+          "id": "11111111-2222-4333-8444-555555555555",
+          "isbn13": "9784167911300",
+          "title": "蜜蜂と遠雷",
+          "author": "恩田 陸",
+          "publisher": "文藝春秋",
+          "label": "文春文庫",
+          "publishedYear": 2019,
+          "seriesTitle": "蜜蜂と遠雷",
+          "volumeNumber": 1,
+          "ndc": "913.6",
+          "status": "current",
+          "isEbook": false,
+          "isTitlePending": false,
+          "progressUnit": "page",
           "page": 61,
-          "lookupStatus": "found",
-          "lastLookupAt": "2026-10-01T21:00:05+09:00",
-          "records": [
-            {
-              "id": "6F1C2A10-0000-4000-8000-0000000000A1",
-              "startedAt": "2026-10-13T22:00:00+09:00",
-              "timeZoneID": "Asia/Tokyo",
-              "minutes": 20,
-              "entry": "lock_widget"
-            },
-            {
-              "id": "6F1C2A10-0000-4000-8000-0000000000A2",
-              "startedAt": "2026-10-15T01:30:00+09:00",
-              "timeZoneID": "Asia/Tokyo",
-              "minutes": 15
-            }
-          ]
-        },
-        {
-          "id": "6F1C2A10-0000-4000-8000-000000000002",
-          "isbn": "9784087000023",
-          "title": "こころ",
-          "author": "夏目漱石",
-          "shelf": "finished",
-          "addedAt": "2026-09-01T20:00:00+09:00",
-          "finishedAt": "2026-10-10T23:30:00+09:00"
-        },
-        {
-          "id": "6F1C2A10-0000-4000-8000-000000000003",
-          "title": "手で入れた本",
-          "shelf": "tsundoku",
-          "addedAt": "2026-10-02T08:00:00+09:00",
-          "tsundokuAt": "2026-10-03T08:00:00+09:00",
-          "lookupStatus": "none",
-          "manuallyEdited": true
+          "location": null,
+          "percent": null,
+          "lastLine": "世界はまだ、音楽で満ちていた。",
+          "createdAt": "2026-10-19T13:00:00Z",
+          "updatedAt": "2026-10-20T13:18:00Z",
+          "finishedAt": null
         }
       ],
-      "session": {
-        "bookID": "6F1C2A10-0000-4000-8000-000000000001",
-        "startedAt": "2026-10-15T23:40:00+09:00",
-        "timeZoneID": "Asia/Tokyo",
-        "entry": "small_widget",
-        "startedBy": "button"
-      },
-      "settings": {
-        "flipToStart": true,
-        "hideOnWidgets": false
-      }
-    },
-    {
-      "seedVersion": 1,
-      "books": [],
-      "settings": {
-        "widgetGuideShown": false
-      }
-    },
-    {
-      "seedVersion": 1,
-      "books": [
+      "records": [
         {
-          "id": "6F1C2A10-0000-4000-8000-000000000004",
-          "isbn": "9784396635121",
-          "shelf": "current",
-          "addedAt": "2026-10-18T21:00:00+09:00",
-          "lookupStatus": "notFound",
-          "lastLookupAt": "2026-10-18T21:00:00+09:00"
+          "id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+          "bookId": "11111111-2222-4333-8444-555555555555",
+          "startedAt": "2026-10-20T13:00:00Z",
+          "endedAt": "2026-10-20T13:18:00Z",
+          "minutes": 18,
+          "nightDate": "2026-10-20",
+          "entry": "face_down",
+          "progressUnit": "page",
+          "startPage": 43,
+          "endPage": 61,
+          "startLocation": null,
+          "endLocation": null,
+          "startPercent": null,
+          "endPercent": null,
+          "savedLine": "世界はまだ、音楽で満ちていた。"
         }
-      ]
+      ],
+      "activeSession": null,
+      "settings": {
+        "flipToStartEnabled": true,
+        "hideOnWidgets": false,
+        "hasShownWidgetGuide": true,
+        "entryTime": "22:00",
+        "appearanceID": "default",
+        "isPlusPurchased": false,
+        "recommendationWeights": {
+          "readers": { "chosen": 0, "skipped": 0 },
+          "nextVolume": { "chosen": 0, "skipped": 0 },
+          "sameAuthor": { "chosen": 0, "skipped": 0 },
+          "sameAward": { "chosen": 2, "skipped": 0 },
+          "sameLabel": { "chosen": 0, "skipped": 1 }
+        },
+        "firstNightCompletedAt": "2026-10-20T13:18:00Z",
+        "seventhNightReachedAt": null
+      }
     }
   ]
 }

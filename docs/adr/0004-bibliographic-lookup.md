@@ -1,203 +1,132 @@
-# ADR 0004：書誌の問い合わせ（国立国会図書館サーチの OpenSearch に、国立国会図書館の CC BY の書誌2つだけで問い合わせる。openBD は使わない）
+# ADR-0004: 端末内書誌・共起データベース（NDL CC BY 4.0・Background Assets・SQLite FTS5・2段目バーコード補完・推薦）
 
-- 状態：提案
-- 書いた役：tech-lead　日付：2026-10-20
-- 関係する PRD、設計メモ、契約：docs/prd/001-reading-session.md（6 の「書誌」、10 の「書誌の出どころが変わる」、11 の冒頭の著者の決まりと問い合わせ直し、AC-2〜AC-6、AC-9〜AC-11、AC-92、AC-93、AC-103、AC-113、12、15、16、17、18 の Q5、付記の G1-5、G1-6、G1-12、G1-13）、docs/adr/features/001-reading-session.md（5、7）、docs/adr/features/001-reading-session-ndl-check.md（結果）、contracts/ndl-opensearch.yaml
-- 元に戻す手間：中。送り先と送り方を変えるのは1〜2日［推測］。ただし、保存した本の書誌（書名、著者など）は v1.0 から端末に残るので、取り出し方を変えても前に加えた本は直らない（直すなら、問い合わせ直しの移行が要る）。
+- 日付：2026-10-25
+- 状態：採用
+- 関連する機能：`docs/prd/001-reading-session.md`（AC-3〜23、AC-78〜83、AC-92〜93、AC-103、AC-112、AC-138、AC-145〜149）、`design/001-reading-session.md`
 
 ## 背景
-- 決める必要があったこと
-  - 登録（バーコードの ISBN、書名で探す）、順番待ち、見つからなかった本の問い合わせ直しで、どこに、どの形で、どう送るか。
-  - 設定の画面に出すクレジットの文（G1-5）、プライバシー表示（G1-12）、ラテン文字の著者（G1-13）、openBD を使うか（G1-6）。
-- 制約
-  - v1 はサーバーなし。外に送るのは書誌の問い合わせだけ（AC-103）。
-  - 課金しても利用申請を出さない前提なので、国立国会図書館が自分で作った CC BY の書誌だけを使う（裁定 14）。
-  - 外部のライブラリは入れない（ADR 0001）。最低 iOS 26。3週の枠。
-  - 国立国会図書館サーチの決まり（API のヘルプ 17-4）
-    - (1)「APIをご利用いただく際は、多重アクセスが生じないようご対応をお願いいたします。」アクセス数の上限の数字は「お示しすることができません」とある。
-    - (2)「本APIを利用するサイトやアプリケーションには、NDLサーチのAPIを用いていることを明記してください。」「クレジット表示には、API提供対象データプロバイダ一覧に記載されているデータプロバイダ及びそのデータ提供機関の名称を含めてください。」
-- 確かめの結果（2026-10-20。docs/adr/features/001-reading-session-ndl-check.md の「結果」）
-  - 30件中29件で、書名、著者、出版社がそろった（線は27件）。合格。
-  - 出て14日以内の5件（記録だけ）は3件。
 
-## 決定
-国立国会図書館サーチの OpenSearch に、dpid を `iss-ndl-opac iss-ndl-opac-inprocess` に絞った GET だけを、ephemeral の URLSession で1件ずつ送る。openBD は v1.0 では使わない。細かい値は次の表のとおり（送る形と要素の対応は contracts/ndl-opensearch.yaml が正）。
+本棚に本を加えるとき（S-8a〜S-8d）や、1冊を読み終えた夜に次の1冊を選ぶとき（S-9、S-7、S-1）、以下の体験と制約を両立させる必要がある。
 
-| # | 決めること | 決めた値 | 根拠 |
+1. **アプリからの外部 HTTP 通信ゼロ（AC-103）**：アプリ実行時に外部の API（国立国会図書館サーチ API を含む）へ HTTP リクエストを送らない。機内モード（H8 通信なし）でもバーコード読み取り、書名検索、おすすめ候補の提示が 100% 動くこと（AC-8、AC-14、AC-83、AC-125）。
+2. **0.3 秒（300ms）以内の応答（AC-149）**：Release 構成で、バーコード読み取り（H21）から `scan.row` が出るまで、および手入力の書名（`manual.title`）に 3 字以上入れてから `search.row` が出るまでの 5 回平均が、どちらも 300ms 以内であること。
+3. **未収録本・書誌 DB 未取得時のフォールバック（AC-9〜11）**：端末内書誌 DB にない新しい本や同人誌でも、ISBN の出版者記号と日本図書コード（2段目 `192` バーコードの C コード）から出版社名・判型（文庫／新書／単行本）・分野（日本文学など）を即座に補い、行内の書名入力または表紙撮影で止めずに登録できること。
+4. **説明可能な 5 軸の推薦と共起の器、および端末内選好学習（AC-78〜83、AC-145〜148）**：AI による生成文を一切使わず、「この本を読み終えた人が、次に読んだ本（共起）」「同じシリーズの次の巻」「同じ著者の本」「同じ賞の受賞作」「同じレーベルの本」の事実 1 行の理由を出し、利用者の選択（`chosen`）・見送り（`skipped`）回数から端末内で軸の優先順を繰り上げること。
+
+## 考えた選択肢と比べた結果
+
+| 選択肢 | 良い点 | 悪い点 | 判断 |
 |---|---|---|---|
-| 1 | 送り先 | `https://ndlsearch.ndl.go.jp/api/opensearch` だけ。AC-103 と G4-20 の「書誌の出どころのホスト」は `ndlsearch.ndl.go.jp` | 契約 |
-| 2 | dpid | `iss-ndl-opac iss-ndl-opac-inprocess`（URL では空白を `%20`）。iss-ndl-opac-national は入れない。ほかの提供元も入れない | データプロバイダ一覧：iss-ndl-opac は新着書誌情報を「含まない」ので2つ要る。iss-ndl-opac-national は iss-ndl-opac の「うち」で、足しても増えない |
-| 3 | ISBN で引く形 | `dpid=…&isbn=<13桁>`。cnt は付けない。ISBN（10桁は13桁に直した値）が問い合わせた ISBN と同じ最初の item を使う。なければ「見つからない」 | 35件すべてが0件か1件だった。「最初の item」でも「一致する最初の item」でも29件で同じ |
-| 4 | 書名で探す形と件数 | `dpid=…&title=<書名>&cnt=200` を1回。ページ送りはしない。端末で、ISBN のない item を除き、同じ ISBN の2つ目から後ろを除き、並べ直す（そろえた書名が、そろえた入れた書名と同じ → それで始まる → ほか。同じ組の中は応答の順のまま）。そろえ方は PRD の 11 の冒頭の「名前のそろえ方」。書名の「+」は `%2B` にして送る | 仕様書の表 4-1 に並べ替えの引数はない。応答は書名の読みの順（ア→タ）だった。cnt=50 では「人間失格」の新潮文庫が入らない（264件中175番目）。cnt=200 は5.70秒、635,702 バイトで入る。cnt=500 は24.63秒。URLComponents は「+」をそのまま送る（相手が「+」を空白と読むかは未確認） |
-| 5 | 要素の対応 | 契約の 200 の応答の対応表。書名は dc:title に dcndl:volume を足す（例「マーブル館殺人事件 上」）。著者は PRD の 11 の冒頭の決まり（AC-92）。出版社は dc:publisher の1つ目。レーベルは dcndl:seriesTitle の「 ; 」より前。出版年は dcterms:issued の頭の4桁。書名と著者は100字を超えたら101字目から後ろを捨てる | 実際の応答。13桁の本の ISBN の要素に10桁の値（「4-10-100605-9」）が入っていた。PRD の 11 の冒頭は「鹿の王 上」の形の書名を前提にしている |
-| 6 | 同時に送る数 | 1件。前の応答か失敗を待ってから次を送る。わざと間を空けることはしない。待っている要求が2つ以上あれば、利用者の操作の要求（読み取り、書名で探す）を、回（下の決まりの (4)）の要求より先に送る。回は利用者の要求の合間に続ける。書名で探すを続けて押したら、送っている前の要求を取り消し（URLSessionTask の cancel）、その終わりを待ってから、最後に押した語だけを1回送る（reviewer r1 の P1） | 17-4 (1)（「多重アクセスが生じないよう」） |
-| 7 | 待ちの打ち切り | `timeoutIntervalForRequest` と `timeoutIntervalForResource` を、どちらも30秒 | 2026-10-20 の76件で p50 2.30秒、p90 7.18秒、最大14.83秒。dpid なしの1件は20秒で答えがなかった。最大の約2倍にした |
-| 8 | 応答の大きさの上限 | 2 MB。超えたら読むのをやめて「失敗」 | ISBN の形の最大は14,396 バイト。cnt=200 は635,702 バイト |
-| 9 | キャッシュとクッキー | `URLSessionConfiguration.ephemeral` に、`urlCache = nil`、`httpCookieStorage = nil`、`httpShouldSetCookies = false`、`requestCachePolicy = .reloadIgnoringLocalCacheData`。ヘッダーに ID を足さない | 応答に `Cache-Control: max-age=54294〜60581, public` が付いていた。既定の構成では、探した ISBN と書名がディスクのキャッシュに残りうる。Set-Cookie は一度も来なかったが、来ても残さない |
-| 10 | XML の読み方 | Foundation の XMLParser。`shouldResolveExternalEntities = false` をコードで明示する | ADR 0001（外部ライブラリなし）。既定値に頼らない |
-| 11 | 通信のコードの場所 | ReadingStore の中の1つのファイル（名前は仮で NDLOpenSearchClient.swift）だけ。AC-103 の G2 の grep（`URLSession|NWConnection|CFStream|WKWebView|URLRequest`）の当たりは、このファイルだけにする。テストの構成だけで入るつなぎ口（`UITestHooks/` の下で `#if UITEST_HOOKS` に包んだ H20 の差し替えと H29 の記録）の当たりは数えない（ADR 0002 の grep と同じ扱い。reviewer r1 の P9） | ADR 0001 の表で、書誌の問い合わせは ReadingStore が持つ |
-| 12 | 「見つからない」と「失敗」 | HTTP 200 で、使う item がない → 見つからない（AC-10、notFound）。通信の失敗、30秒の打ち切り、200 以外、2 MB 超え、XML として読めない → 失敗（AC-11、pending のまま） | 仕様書「引数（パラメータ）誤りの場合には検索結果ゼロ件となる」。だから URL の形を単体テストで固定する |
-| 13 | 問い合わせ直し | 下の「問い合わせ直しの決まり」 | PRD の 11 の冒頭 |
-| 14 | openBD | v1.0 では使わない。AC は足さない | 下の検討した案の B |
-| 15 | クレジットの文（G1-5） | 下の「クレジットの文」 | 17-4 (2)、CC BY 4.0 |
-| 16 | 「収集」に当たるか（G1-12） | 当たらない。App Store のプライバシーの答えは「データの収集なし」。PrivacyInfo.xcprivacy は、NSPrivacyTracking を false、NSPrivacyTrackingDomains を空、NSPrivacyCollectedDataTypes を空の配列、NSPrivacyAccessedAPITypes は ADR 0002 のとおり0件。最後に決めるのは G5 の reviewer | 下の「収集に当たるか」 |
-| 17 | ラテン文字の著者（G1-13） | 推奨は C（author 要素の責任表示から、表紙と同じ形の名前を取る）。PRD の決まりを変えるので、pdm と designer が決めるまでは A（PRD のまま）で作る | 下の「ラテン文字の著者」 |
-| 18 | プライバシーポリシーに書くこと（reviewer r1 の K1） | 送る情報（読み取った ISBN か、利用者が入れた書名）、送り先（国立国会図書館サーチ。ndlsearch.ndl.go.jp）、目的（書誌を得るため）を、プライバシーポリシーに書く（G5 で pdm）。電気通信事業法の外部送信規律に当たるかは法律の判断なので、指揮役が Takuma に確かめる | 設計メモ 7 |
+| **A. NDL CC BY 4.0 書誌データを事前加工した読み取り専用 SQLite DB（FTS5 `trigram`＋共起テーブル）を Apple-Hosted Background Assets で配信＋出版者記号／Cコード辞書＋同梱受賞作 JSON（採用）** | - 実行時の外部 HTTP 通信が 0 件になり AC-103 を完全に満たす<br>- SQLite 主キー検索（ISBN）は 1ms 未満、FTS5 `trigram` 3 字部分一致検索は 5〜15ms で完了し、AC-149（300ms 以内）に 20 倍以上の余裕がある<br>- Apple-Hosted Background Assets により独自配信サーバーの運用費・障害リスクがゼロになる<br>- 万一 Background Assets が未完了（`notDownloaded`）でも、バンドル同梱の出版者記号シード＋Cコード解析＋受賞作リストだけで登録が止まらない（AC-9〜11） | - リリース準備時に NDL 書誌データから SQLite ファイルを生成・圧縮して App Store Connect にアップロードするビルドスクリプトが必要 | **採用** |
+| **B. 実行時に国立国会図書館サーチ（NDL OpenSearch）API へ直接 HTTP GET する** | - アプリサイズが増えない | - AC-103（外部 HTTP 通信 0 件）に違反する<br>- 通信遅延・オフライン・タイムアウトでバーコード連続読み取りや手入力サジェストが止まる | 却下（`contracts/ndl-opensearch.yaml` は廃止・削除） |
+| **C. 295 万件の SQLite DB をメインアプリバンドルに直接同梱する** | - Background Assets 拡張がいらない | - `.ipa` 本体サイズが 500MB 近くなり、モバイル回線での初回インストール負荷と App Store 制限に抵触する | 却下 |
 
-### 問い合わせ直しの決まり
-AC-2（加える前に、読み取りの行に書誌が出る）と AC-11（加える前の1回を含めて、合わせて3回）の両方に合う読み方は1つだけなので、それを決まりにした（reviewer r1 の要修正3）。
-- (1) 読み取ったとき：バーコードを読んで読み取りの一覧に行を足したときに、その ISBN を1回だけ送る（S-8a。AC-2、AC-3、AC-92）。
-  - 読み取りの画面を開いている間、同じ ISBN は1回だけ。同じ本を2回読んでも、本棚にある本を読んでも送らない（AC-3）。
-  - 答えは読み取りの行に出す（AC-2 の Then）。
-- (2) 引き継ぎ：`scan.addToShelf` で加えた本は、(1) の結果を引き継ぐ。
-  - 見つかった → found（書誌を入れ、lastLookupAt を書く）。
-  - 0件 → notFound と lastLookupAt。
-  - 失敗した、まだ答えがない、通信がなくて送らなかった → pending（書名なし。設計メモ 5）。
-  - 加えたあとに (1) の答えが来たら、その ISBN の本がまだ pending で手で直していなければ、上と同じ形で入れる。
-- (3) 加えた直後には送り直さない。加えることは (4) の回のきっかけにしない。
-- (4) 回：pending の本と、期限の来た notFound の本に送る流れ。
-  - 始める時：アプリが前に来たとき（scenePhase が active になったとき。起動も含む）と、通信が戻ったとき（前面にいる間に、NWPathMonitor の status が satisfied でない → satisfied に変わったとき。監視を始めた最初の知らせは「戻った」に数えない）。後者は PRD 9 の「通信が戻ったら加えた順に書誌を埋める」。
-  - 重ねない：回は同時に1つだけ。回が動いている間に来たきっかけは捨てる（その回が同じ本を送るか、次のきっかけで拾う）。
-  - 入れ直さない：回で送る本は、始めたときに決める（pending を addedAt の古い順、そのあと期限の来た notFound を addedAt の古い順）。(1) の答えを待っている ISBN と、いま送っている本は入れない。1つの回で1冊に送るのは1回だけ。
-  - アプリが後ろに回ったら、その回は次を送らずに終える（送った1件の答えは入れる）。前に来たら新しい回を始める。
-- 通信がない（NWPathMonitor の status が satisfied でない）ときは、(1) も (4) も送らず、本は pending のまま（AC-9）。H29 に offline の要求は残らない（contracts/test-hooks.md の H8）。
-- 順と同時の数：1件ずつ（表の 6）。利用者の操作の要求を、回の要求より先に送る。
-- 失敗したら
-  - その回は残りを送らない（止まっている相手に続けて送らないため）。
-  - 本は pending（notFound の本は notFound）のまま。次のきっかけで、また送る。同じ回の中では送り直さない。
-- lastLookupAt は、HTTP 200 の応答を読めたとき（見つかった、見つからない）だけ書く。失敗では書かない。
-- notFound の本は PRD のとおり。手で直していない、前の問い合わせから24時間以上、加えてから1,080時間（45日）以内なら、回のときに1回（AC-113。上の「期限の来た notFound」）。
-- 見つかった本（found）は問い合わせ直さない。
-  - 新着書誌情報は「未完成の書誌であるため、後に修正される場合がある」が、v1.0 は最初に取った値を残す。利用者は手で直せる。
-- 回数と順の表（PRD の Then と照らした。数は H29 の要求。起動したときの回は、どの流れでも送る本がない）
+## 決めたこと
 
-| AC | 操作の順（When） | 送る時と結果 | H29 の要求（順） | PRD の Then |
-|---|---|---|---|---|
-| AC-2 | I1 を読む → 加える | 読んだときに I1（見つかった。行に書名、著者、出版社、レーベル）→ 加えた本は found を引き継ぐ。加えた直後は送らない | I1 の1件 | 加える前の行に「こころ」ほか。加えたあと `bookmark.title` に「こころ」 |
-| AC-9 | 通信なしで I1、I2、I3 を読む → 加える → H8 を外す → 後ろ → 前 | 通信なしなので読んだときは送らない → 3冊とも pending。H8 を外したとき（通信が戻った）に回を始め、I1、I2、I3 を1回ずつ。前に戻したときは、回が終わっていれば送る本がなく、途中で後ろに回って終えていれば残りの本だけを同じ順で送る | I1、I2、I3 の3件 | 前に戻してから10秒以内に3冊が埋まる。順は I1、I2、I3 |
-| AC-10 | I4 を読む → 加える → 後ろ → 前 | 読んだときに I4（0件）→ notFound と lastLookupAt を引き継ぐ。前に戻したときは24時間たっていないので送らない | I4 の1件 | 合わせて1回 |
-| AC-11 | I1 を読む → 加える → 後ろ → 前（2回） | 読んだときに I1（HTTP 500）→ pending。1回目に前に戻したときに I1（HTTP 500）。2回目に前に戻したときに I1（「こころ」） | I1 の3件 | 2回目に前に戻したあと埋まる。合わせて3回 |
-| AC-113 | H2 で始め、時計を進めるたびに後ろ → 前 | 回のときに、前の問い合わせから24時間以上たっていれば1回。(1) 24時間後〜1,080時間後 (2) 24時間後（0件）と48時間後（見つかった） (3) 手で直したので送らない | (1) 45件 (2) 2件 (3) 0件 | (1) 46回 (2) 3回 (3) 1回。PRD の数は、加えたときの1回（H2 の lastLookupAt。H29 に残らない）を含む |
+### 1. 端末内書誌・共起 SQLite データベース（`catalog.sqlite`）の DDL と配置
 
-### クレジットの文（G1-5。文言キー `settings.dataSources`。designer が文言表に写す）
-- 日本語の構成
-  > 書誌（書名、著者、出版社など）は、国立国会図書館サーチ（NDLサーチ）の API を用いて取得しています。書誌のデータは、NDLサーチの API から取得した「国立国会図書館蔵書」と「国立国会図書館新着書誌情報」（データ提供機関：国立国会図書館）に由来します。著者名などは、このアプリで表示用に整えています。ライセンスは、クリエイティブ・コモンズ 表示 4.0 国際 パブリック・ライセンス（CC BY 4.0）です。
-- 英語の構成（日本語の正式名も括弧で出す。データプロバイダ一覧の正は日本語の版で、英語の版の名前と両方で照らせるようにするため）
-  > Book details (title, author, publisher, and so on) are retrieved using the NDL Search API (National Diet Library Search). The bibliographic data derives from “National Diet Library Catalog” (国立国会図書館蔵書) and “NDL newly acquired bibliographic data” (国立国会図書館新着書誌情報), provided by the National Diet Library, Japan (国立国会図書館), via the NDL Search API. Author names and other fields are formatted for display by this app. License: Creative Commons Attribution 4.0 International (CC BY 4.0).
-- `settings.dataSources.license` で開く URL
-  - 日本語の構成は `https://creativecommons.org/licenses/by/4.0/deed.ja`、英語の構成は `https://creativecommons.org/licenses/by/4.0/`。
-  - どちらも AC-93 の「`https://creativecommons.org/licenses/by/4.0/` で始まる」を満たす。
-- 照らした条件
-  - 17-4 (2) の「NDLサーチのAPIを用いていることを明記」：1文目。
-  - 同じく「データプロバイダ及びそのデータ提供機関の名称」：一覧の表の名前のとおり（日本語：国立国会図書館蔵書、国立国会図書館新着書誌情報、データ提供機関は国立国会図書館。英語：National Diet Library Catalog、NDL newly acquired bibliographic data）。
-  - 17-4 の表示例の形（「…国立国会図書館サーチのAPIから取得した[△△デジタルアーカイブ]（[データ提供機関]が運営）に由来します。 ライセンスは クリエイティブ・コモンズ 表示 4.0 国際 パブリック・ライセンス です。」）に合わせた。
-  - CC BY 4.0 の 3(a)(1)(B)「indicate if You modified the Licensed Material」：3文目（著者の取り出し、書名に巻を足すこと）。
-  - openBD を使わないので「openBD」は入れない（AC-93）。
+リリース準備時のオフラインバッチで、国立国会図書館サーチの CC BY 4.0 書誌データ（国立国会図書館蔵書・新着書誌情報・全国書誌情報、約 295 万件）を整形し、以下のスキーマを持つ読み取り専用 SQLite3 ファイル（`page_size = 4096`、`VACUUM` 済み、約 440〜490MB）を生成する。
 
-### 収集に当たるか（G1-12）
-- Apple の定義
-  - "“Collect” refers to transmitting data off the device in a way that allows you and/or your third-party partners to access it for a period longer than what is necessary to service the transmitted request in real time."
-  - "“Third-party partners” refers to analytics tools, advertising networks, third-party SDKs, or other external vendors whose code you’ve added to your app."
-- 当てはめ
-  - 開発者はサーバーを持たず、国立国会図書館サーチの記録を読めない。
-  - 国立国会図書館のコードはアプリに入れていない。アプリの URLSession で GET を送るだけ。
-  - 送るのは ISBN か書名だけ。ID、クッキーを送らず、キャッシュも残さない（表の 9）。
-  - だから「開発者か third-party partners が、要求に答えるのに要る時間より長く読める形で送る」に当たらない。
-- PRD の 15 の表の「Book Info Requested」の行は、この決定で「収集に当たらない」に確定してよい［G5 で reviewer が確かめる］。
+```sql
+CREATE TABLE catalog_meta (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+) WITHOUT ROWID;
+-- key = 'version' (例: '2026.10'), 'retrieved_date' (例: '2026-10-01')
 
-### ラテン文字の著者（G1-13）
-| 案 | 実際の応答で出た値 | 良い点 | 悪い点 |
+CREATE TABLE books (
+    rowid          INTEGER PRIMARY KEY,
+    isbn13         TEXT NOT NULL UNIQUE,
+    title          TEXT NOT NULL,
+    author         TEXT NOT NULL,
+    publisher      TEXT,
+    label          TEXT,
+    published_year INTEGER,
+    series_title   TEXT,
+    volume_number  INTEGER,
+    ndc            TEXT
+);
+
+CREATE INDEX idx_books_series ON books(series_title, volume_number) WHERE series_title IS NOT NULL;
+CREATE INDEX idx_books_author ON books(author);
+
+CREATE VIRTUAL TABLE books_fts USING fts5(
+    title,
+    author,
+    content='books',
+    content_rowid='rowid',
+    tokenize='trigram'
+);
+
+CREATE TABLE cooccurrence (
+    from_isbn13 TEXT NOT NULL,
+    to_isbn13   TEXT NOT NULL,
+    count       INTEGER NOT NULL,
+    PRIMARY KEY (from_isbn13, to_isbn13)
+) WITHOUT ROWID;
+```
+
+- **Apple-Hosted Background Assets による配信とバックアップ除外（G0 提案 2）**：
+  - `ReadingBackgroundAssetsExtension`（`BADownloaderExtension`）がインストール時およびバックグラウンドで `catalog.sqlite` を取得し、App Group コンテナ内の `Catalog/catalog.sqlite` に配置する。
+  - 配置時に必ず `var rv = URLResourceValues(); rv.isExcludedFromBackup = true; try fileURL.setResourceValues(rv)` を設定し、iCloud / Finder バックアップを肥大化させない。
+- **SQLite 接続設定**：
+  - `ReadingStore.CatalogDatabase` は `sqlite3_open_v2(path, &db, SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nil)` で開き、`PRAGMA query_only = ON; PRAGMA mmap_size = 67108864;`（64MB メモリマップ）を設定する。
+  - ISBN 検索は `SELECT ... FROM books WHERE isbn13 = ?1 LIMIT 1;`（< 1ms）。
+  - 書名 3 字以上の候補検索（S-8c、AC-14、AC-149）は、入力文字列を NFKC 正規化した上で `SELECT b.* FROM books_fts f JOIN books b ON b.rowid = f.rowid WHERE f.title MATCH ?1 ORDER BY length(b.title) ASC, b.published_year DESC LIMIT 5;` を実行する（5〜15ms）。
+  - 本棚写真（S-8d、AC-138）の背表紙書名照合は `SELECT * FROM books WHERE title = ?1;` を実行し、結果が **ちょうど 1 件**のときのみ著者・出版社・ISBN を自動補完する。
+
+### 2. 著者名の整形規則（AC-92）と CC BY 4.0 出典表示（AC-93）
+
+1. **著者名の整形（`AuthorNameFormatter`、AC-92）**：
+   - 生没年（`, 1923-1996`、`1950-`、`（1923-1996）` 等）を正規表現で除去する。
+   - `"姓, 名"` のカンマ区切りを `"姓 名"`（半角スペース 1 つ）に置換する。
+   - 末尾の役割語（`著`、`編`、`訳`、`作`、`他著`、`ほか`）を除去する。
+   - 複数著者は `" / "` または `"・"` で連結する。
+   - この整形関数はオフライン DB 生成時と、実行時（H20 のスタブレコード読み込み時を含む）の両方で通すことで、どんな入力に対しても AC-92 を保証する。
+2. **国立国会図書館書誌データの 3 条件出典表示（AC-93）**：
+   - S-10 の `settings.dataSources` に、(1) 出典名（「国立国会図書館蔵書」「国立国会図書館新着書誌情報」「全国書誌情報」、データ提供機関：国立国会図書館、取得日）、(2) 国立国会図書館サーチの API を用いて取得したデータを加工して端末内の書誌データベース（版）を作成している旨、(3) CC BY 4.0 ライセンス表示とリンクボタン `settings.dataSources.license`（日本語 `https://creativecommons.org/licenses/by/4.0/deed.ja` ／英語 `https://creativecommons.org/licenses/by/4.0/`）、および共起データが NDL とは無関係である注記をすべて表示する。
+
+### 3. 2段目バーコード（`192` Cコード）と ISBN 出版者記号による未収録本補完（AC-9、AC-10、AC-11）
+
+カメラ（S-8a、`DataScannerViewController` / H21）は EAN-13 シンボルを連続認識する。
+
+- **1段目バーコード（`978` または `979` で始まる 13 桁）**：
+  - モジュラス 10 ウェイト 3（ISBN-13 チェックディジット）を検証し、無効なコードは `scan.invalidCode` を出す（AC-5）。
+  - すでに同じセッションまたは本棚にある ISBN は再登録せず、「すでに本棚にあります（積読／今の本／読み終えた）」（`scan.duplicate.inShelf`）を出す（AC-6、AC-16）。
+- **2段目バーコード（`192` で始まる 13 桁：日本図書コード）**：
+  - 単体では本を作らず（AC-5）、直前または同じフレームの ISBN-13 に紐づけて C コード（4〜7 桁目の 4 桁 `C1 C2 C3 C4`）を解析する。
+  - `C2`（発行形態）：`1` = 文庫、`2` = 新書、`0` = 単行本、`3` = 全集・双書。
+  - `C3 C4`（内容コード）：`93` = 日本文学・小説・物語、`97` = 外国文学小説、`91` = 日本文学総記、`92` = 日本文学詩歌、`95` = 日本文学評論・随筆、など。
+- **ISBN 出版者記号シード（バンドル同梱 `publisher-prefixes.json`）**：
+  - `978-4-<prefix>-...` の出版者記号（主要約 200 社：新潮社 `10`、講談社 `06`、文藝春秋 `16`、KADOKAWA `04`、集英社 `08`、岩波書店 `00`、早川書房 `15`、筑摩書房 `480`、河出書房新社 `309`、東京創元社 `488`、光文社 `334`、幻冬舎 `344`、双葉社 `575`、宝島社 `299`、中央公論新社 `12`、PHP研究所 `569` 等）から出版社名を引く。
+  - 端末内書誌 DB に未収録（または DB 未取得）のときも、出版社名と C コードの判型・分野を組み合わせたレーベル（例：出版社 `"新潮社"`、レーベル `"新潮文庫（日本文学）"`）を `scan.row.<ISBN>` に自動で入れ、行内の `scan.row.editTitle` または `scan.row.captureCover` で書名だけを補えば登録できるようにする（AC-9、AC-10、AC-11）。
+
+### 4. 同梱の文学賞受賞作リスト（`awards.json`、H25、AC-19〜21、AC-83、AC-112）
+
+- `docs/prd/001-reading-session-awards.md` に定義された全受賞作（芥川龍之介賞 第1回〜第174回、直木三十五賞 第1回〜第174回、本屋大賞 第1回〜第22回）をアプリバンドル内の `awards.json` に同梱する。
+- **受賞歴の照合（AC-19〜21）**：
+  1. `book.isbn13` が受賞作の `isbn13` と一致する場合にマッチする。
+  2. 単行本と文庫本で ISBN が異なる場合、または手入力で ISBN がない場合でも、正規化した書名（空白・副題括弧を除いた完全一致）かつ著者名の先頭一致でマッチする（AC-20）。
+  3. 複数の賞を受賞している作品（例：『蜜蜂と遠雷』の直木賞と本屋大賞）はすべての賞を配列で返し、奥付の `colophon.award` に併記する（AC-21）。
+
+### 5. 3箇所の推薦エンジンと端末内の選好重み学習（AC-78〜83、AC-145〜148）
+
+推薦候補は以下の 3 箇所で提示し、いずれも AI 生成文を使わず定型の事実テンプレート（`rec.reason.*`）だけを使う。
+
+| 場所 | 対象ソース | 最大件数 | 既定の理由の優先順と抽出条件 |
 |---|---|---|---|
-| A PRD のまま（(5) で半角空白を挟む） | Horowitz Anthony、Kiyosaki Robert T、Donati Alba、Rees Laurence、Fitzgerald Francis Scott | 決まりも AC-92 も今のまま | 姓が先のラテン文字で、表紙（アンソニー・ホロヴィッツ）と違う。35件中5件（14%）に当たった |
-| B ラテン文字なら2つの部分を入れ替える | Anthony Horowitz、Robert T Kiyosaki | 決まりが短い | 表紙のカタカナとやはり違う。PRD と AC-92 を直す手間は C と同じ |
-| C ラテン文字なら、author 要素の責任表示の最初の部分を使う（推奨） | アンソニー・ホロヴィッツ、ロバート・キヨサキ、アルバ・ドナーティ、ローレンス・リース、スコット・フィッツジェラルド | 表紙と同じ形。5件すべてで取れた | 決まりが長くなる。PRD の 11 の冒頭を pdm が直し、AC-92 に行を verifier が足す |
-- C の決まり（案）
-  - (1)〜(5) で取り出した値に、かなも漢字もないときだけ使う。
-  - author 要素が「dc:creator の値を出てきた順に「,」でつないだもの」と「,」で始まるなら、その残りを「,」で区切った最初の部分に (2)〜(5) を当てる。
-  - 結果にかなか漢字があればそれを使う。なければ A の値を使う。
-  - 例：dc:creator「Horowitz, Anthony, 1955-」「山田, 蘭, 1964-」、author「Horowitz, Anthony, 1955-,山田, 蘭, 1964-,アンソニー・ホロヴィッツ 著,山田蘭 訳」→ 残り「アンソニー・ホロヴィッツ 著,山田蘭 訳」→「アンソニー・ホロヴィッツ」。
-- カタカナの著者（例「ペク, スンヨン」→「ペクスンヨン」）は、国立国会図書館の責任表示も「ペクスンヨン 著」なので、どの案でも変えない。
+| **1. S-9 読み終えた画面の「次の1冊」（AC-78〜83）** | 積読（`tsundoku`）を優先し、3 冊に満たない分を未所有（端末内書誌 DB・受賞作リスト）から補う | **最大 3 冊** | ① 共起 `readers`（`cooccurrence.count >= 10` かつ `to_isbn13` の `ndc` が `'9'` 始まり、AC-148）<br>② 同じシリーズの次巻 `nextVolume`（`seriesTitle` 一致かつ `volumeNumber == current + 1`）<br>③ 同じ著者 `sameAuthor`<br>④ 同じ賞の受賞作 `sameAward`<br>⑤ 同じレーベル `sameLabel`<br>⑥ 積読の新しい順 `tsundoku` |
+| **2. S-7 読み終えた本の「この本のあとに」（AC-146）** | 未所有の本（本棚の `current` / `tsundoku` / `finished` にない本）のみ | **最大 5 冊** | ① 共起 `readers`（AC-148）<br>② 同じシリーズの次巻 `nextVolume`<br>③ 同じ著者 `sameAuthor`<br>④ 同じ賞の受賞作 `sameAward`<br>⑤ 同じレーベル `sameLabel` |
+| **3. S-1 今の本が0冊で積読があるときの候補（AC-145）** | 積読（`tsundoku`）のみ | **最大 3 冊** | 直近に読み終えた本があればその関連順（`nextVolume` → `sameAuthor` → `sameAward` → `sameLabel`）、なければ積読に加えた新しい順 |
 
-## 検討した案
-### 書誌の出どころ
-| 案 | 良い点 | 悪い点 | 選ばなかった理由 |
-|---|---|---|---|
-| A 国立国会図書館サーチの OpenSearch、dpid 2つ（採用） | CC BY なので課金しても申請が要らない（裁定 14）。30件中29件。送り先が1つ。ISBN は完全一致 | 出て14日以内の本は5件中3件。書名で探すと、並びが読みの順で、録音資料なども混ざる。引数の誤りが0件に見える | — |
-| B A に openBD を補いとして足す | NDL になかった3件（出て14日以内の2件と、岩波書店の1件）を、openBD は3件とも返した（1件は出版社が空） | 送り先が2つになる（AC-103、G4-20、プライバシーポリシー）。「本の販促・紹介目的に限り」と有料のアプリの関係が未確認。著者が空白区切りで役割の語がなく（例「ヴァレンティーナ・ゴッタルディ ダニオ・ミゼロッキ マチェイ・ミフノ 森敦子 国立科学博物館」）、AC-92 の決まりが使えないので AC を足す要がある。キャッシュの条項（変更の反映、削除の要請）を守る仕組みが要る | 線を NDL だけで満たした。足りない新刊は AC-113 の問い合わせ直しで埋まる見込み［推測］。条項の確かめと AC の追加が3週の枠に合わない |
-| C dpid を付けずに NDL サーチ全体を引く | NDL になかった3件は、どれもほかの提供元にあった（2件は出版情報登録センター（JPRO）） | CC BY でない書誌が混ざり、課金するなら利用申請が要る | 裁定 14 に反する |
-| D SRU（CQL）に替える | 書名の完全一致や並べ替えで引ける見込み［推測］ | 応答の形が別で、契約とテストを作り直す。並べ替えと完全一致は確かめていない（未確認） | 7-2 で確かめていない。見直す条件に回す |
+- **端末内の選好重みによる並び替え（AC-147）**：
+  - 利用者が S-9 または S-7 で候補を選んだとき（`next.choose` / `next.addToShelf` / `after.addToShelf`）、その候補の理由の軸（`readers` / `nextVolume` / `sameAuthor` / `sameAward` / `sameLabel`）の `chosen` を `+1` する。
+  - S-9 で選ばずに閉じた（`next.skip` または別の候補を選んだ）候補の軸は `skipped` を `+1` する。
+  - 各軸のスコアを `score = chosen * 2 - skipped` で計算し、**`score` が高い軸を既定の優先順より上に繰り上げる**（同点のときは既定の順序を維持する）。すべて `state.json` 内で完結し、外部送信は一切行わない。
+- **共起（`cooccurrence`）の器とプライバシー制約（AC-148）**：
+  - `cooccurrence` テーブルから `from_isbn13 = ?1 AND count >= 10` を満たし、結合先の `books.ndc LIKE '9%'`（文学）であり、かつ本棚に未所有の本を抽出する。
+  - 理由文言は `rec.reason.readers`（「この本を読み終えた人が、次に読んだ本」）固定とし、**何人が読んだかの人数（`count`）は画面のどこにも一切表示しない**（AC-148）。
 
-### 書名で探す件数
-| 案 | 良い点 | 悪い点 | 選ばなかった理由 |
-|---|---|---|---|
-| E cnt=50 を1回（design r1 の推奨） | 159,572 バイトと軽い | 並びが読みの順で、「人間失格」の新潮文庫が入らない（50件中、ISBN のある21件はどれも別の本） | AC-4 の目的（探した本を選べる）に届かない |
-| F cnt=200 を1回（採用） | 新潮文庫が入る（175番目）。端末で並べ直せば上に来る | 5.70秒、635,702 バイト。200件を超える書名では、読みの順で後ろの本が入らない | — |
-| G cnt=500 を1回 | 264件すべて | 24.63秒、761,549 バイト | 遅い |
+## 引き受けること
 
-### 収集に当たるか
-| 案 | 良い点 | 悪い点 | 選ばなかった理由 |
-|---|---|---|---|
-| 当たらない（採用） | 「データの収集なし」と出せる。PRD の 15 の見込みと同じ | 審査で問われたら、答えを直す手間がある | — |
-| 当たるとして「検索履歴」（ユーザーに結び付かない、トラッキングなし）を申告する | 慎重で、問われにくい［推測］ | 表示が実際（だれも記録を読めない）と合わない。「データの収集なし」でなくなる | Apple の定義に当たらない |
-
-## いちばん強い反論と、それでも選んだ理由
-- 反論1：「出て14日以内の本は、5件中2件が CC BY の書誌になかった。新刊を買ったその夜に登録する人は多く［推測］、最初の体験で『見つからない』が出る。openBD か JPRO を足せば埋まる。」
-  - 線は「15〜28日前に出た本」で決めてあり、そこは10件中9件（うち6件は新着書誌情報から）。
-  - 新着書誌情報は「当館納入後約4日で取得可能」。見つからない本は、手で入れられ（AC-7）、24時間ごとに45日まで問い合わせ直す（AC-113）。
-  - JPRO を足すと CC BY の外になり、課金するなら申請が要る。openBD を足すと、条項の確かめと AC の追加が要る。
-  - だから v1.0 は A のまま。G4-10（10冊中9冊）に届かなければ見直す。
-- 反論2：「国立国会図書館サーチは、送られた ISBN、書名、IP アドレスを記録しているかもしれない。送り先を選んだのは開発者なので、『other external vendors』に当たると読む審査員もいる。」
-  - 定義の vendors には「whose code you’ve added to your app」がかかっていて、このアプリには入れていない。開発者も記録を読めない。
-  - 審査で問われたら、「検索履歴」（ユーザーに結び付かない、アプリの機能のため、トラッキングなし）の申告に切り替える。
-
-## 結果
-- これで楽になること
-  - サーバー、利用申請、外部のライブラリが要らない。送り先は1つで、AC-103 と G4-20 が単純になる。
-  - プライバシー表示を「データの収集なし」で出せる見込み。
-- これで難しくなること、守り続けること
-  - dpid の2つを変えない。変えると CC BY の外の書誌が混ざりうる。
-  - 引数の誤りは0件に見えるので、送る URL の形を単体テストで固定する。公開の前（G4）に、このときの問い合わせのスクリプト（scratchpad の g1-7-2/py/ndl.py）と同じ形で、3件以上を本番に問い合わせて1件以上返ることを見る。
-  - クレジットの文の名前を、データプロバイダ一覧の名前に合わせ続ける。
-  - 新着書誌情報の書誌が後で直っても、アプリの本は直らない。
-  - 書名で探すと、関わりの薄い本も最大200件並ぶ（ISBN のある分だけ）。
-- 元に戻すときの手順と手間
-  - 送り先を足す（openBD など）：ホストを AC-103、G4-20、プライバシーポリシー、クレジットの文に足し、著者の取り出しの AC を足す。2〜3日［推測］。
-  - 保存した本の書誌は前の決まりのまま残る。直すなら、found の本も問い合わせ直す移行を足す。
-
-## 見直す条件
-- G4-10 で、10冊中9冊に書名、著者、出版社が埋まらない回が1回でもある。
-- 公開のあと、「本が見つからない」という問い合わせが1か月に5件を超える［推測の線］。
-- 国立国会図書館サーチの仕様書の版が第1.5版（2026-09-25）から上がった、または、データプロバイダ一覧で2つの書誌の利用条件が CC BY でなくなった。G4 の前に一覧と仕様書を開いて確かめる。
-- G4 の実機で、30秒の打ち切りによる失敗が10回の問い合わせのうち2回以上ある。
-- App Review がデータの収集を問うた（反論2の切り替え）。
-- G3 で design-reviewer か verifier が「書名で探しても、探した本が出ない」と判定した。案 D（SRU）の spike を行う。
-- openBD の条項が変わった。または、18 の Q5 で書誌の出どころを変えると決まった。
-
-## 確かめたこと
-- 開いたページ（2026-10-20）
-  - https://ndlsearch.ndl.go.jp/help/api ：17-4 (1) と (2) の原文（上の「背景」に引用）。17-4 の表示例「本サービスで提供するのメタデータの一部は、国立国会図書館サーチのAPIから取得した[△△デジタルアーカイブ]（[データ提供機関]が運営）に由来します。 ライセンスは クリエイティブ・コモンズ 表示 4.0 国際 パブリック・ライセンス です。」
-  - https://ndlsearch.ndl.go.jp/help/api/provider ：表の行「R100000002／国立国会図書館蔵書／国立国会図書館／iss-ndl-opac／CC BY (1)」「R100000002／国立国会図書館新着書誌情報／国立国会図書館／iss-ndl-opac-inprocess／CC BY (1)」「R100000002／国立国会図書館全国書誌情報／国立国会図書館／iss-ndl-opac-national／CC BY (1)」。注 (1)「国立国会図書館が作成し提供する書誌データの二次利用条件 クリエイティブ・コモンズ 表示 4.0 国際 パブリックライセンス（CC BY）と互換性がある。」iss-ndl-opac の説明「次のデータプロバイダのメタデータは含まない。 国立国会図書館新着書誌情報（iss-ndl-opac-inprocess）」。新着書誌情報の説明「当館納入後約4日で取得可能。未完成の書誌であるため、後に修正される場合がある。」全国書誌情報の説明「国立国会図書館蔵書（iss-ndl-opac）のうち、作成が完了した全国書誌データ…が対象。」
-  - https://ndlsearch.ndl.go.jp/en/help/api/provider ：表の行「National Diet Library Catalog／iss-ndl-opac」「NDL newly acquired bibliographic data／iss-ndl-opac-inprocess」。
-  - https://ndlsearch.ndl.go.jp/file/help/api/specifications/ndlsearch_api_20260925.pdf （外部提供インタフェース仕様書 第1.5版。PDFKit で文字を取り出して読んだ）：表 4-1 の cnt「出力レコード上限値（省略時は200 とする）」、isbn「10 桁または13 桁で入力した場合は、10 桁、13 桁の両方に変換して完全一致検索を行う。」注「dpid と mediatype に関しては OR 検索、他は AND 検索となる。dpid のみ指定した検索はできない。」「引数（パラメータ）誤りの場合には検索結果ゼロ件となる。」(4)「デフォルトの返戻件数は200 件で、一度に取得できる最大件数は 500 件である。」並べ替えの引数は表 4-1 にない。
-  - https://developer.apple.com/app-store/app-privacy-details/ ：「Collect」と「Third-party partners」の定義（上に引用）。"Data that is processed only on device is not “collected” and does not need to be disclosed in your answers."
-  - https://developer.apple.com/documentation/foundation/urlsessionconfiguration/ephemeral ："the corresponding session object doesn’t store caches, credential stores, or any session-related data to disk. Instead, session-related data is stored in RAM."
-  - https://developer.apple.com/documentation/foundation/urlsessionconfiguration/timeoutintervalforrequest ："how long (in seconds) a task should wait for additional data to arrive before giving up." timeoutintervalforresource："how long (in seconds) to wait for an entire resource to transfer before giving up."
-  - https://developer.apple.com/documentation/bundleresources/privacy-manifest-files ：キーの名前 NSPrivacyTracking、NSPrivacyTrackingDomains、NSPrivacyCollectedDataTypes、NSPrivacyAccessedAPITypes。
-  - https://creativecommons.org/licenses/by/4.0/legalcode.en ：3(a)(1)(B)「indicate if You modified the Licensed Material and retain an indication of any previous modifications」。
-- 動かしたもの（リポジトリの外：/private/tmp/claude-501/-Users-takumamatsuura-reading-app/54111b04-6b80-410d-9782-7fbf5f807550/scratchpad/g1-7-2/）
-  - `python3 -I py/ndl.py query <一覧> <作業のフォルダ>`：2026-10-20 01:48:57〜01:55:05 に76件を1件ずつ。数えた形の35件はすべて HTTP 200。結果は一覧のファイルの「結果」。
-  - 引数の誤りの3件（cnt=abc、知らない dpid、dpid だけ）：どれも HTTP 200、`openSearch:totalResults` 0。
-  - 書名で探す（人間失格）：cnt=50 は264件中50件（図書39、録音資料9、映像資料2）、ISBN のある item 21件、新潮文庫なし。cnt=200 は5.70秒、ISBN のある item 110件、新潮文庫は175番目。cnt=500 は24.63秒、264件。
-  - spectral：`spectral-macos-arm64 lint contracts/ndl-opensearch.yaml --ruleset <scratchpad>/spectral/.spectral.yaml --fail-severity hint`（v6.17.0。ルールは `extends: ["spectral:oas"]`）→ `No results with a severity of 'hint' or higher found!`、exit 0。既定の重さの線でも `No results with a severity of 'error' found!`、exit 0。
-  - 契約の XML の例3つは、Python の ElementTree で読めた（`xml examples well-formed: 3`）。
-- 未確認
-  - HTTP 200 のほかの応答の形（仕様書になく、問い合わせでも出なかった）。
-  - dpid で絞ったとき、item の値に、同定でまとめたほかの提供元の値が入ることがないか。仕様書の 2 (6) に「同一と見なした資料について同定を行ったメタデータを検索の対象」とある。返った item の link はすべて R100000002 で、ほかの提供元は rdfs:seeAlso の URL にだけ出た。
-  - 相手が「+」を空白と読むか（表の 4。`%2B` にして避ける）。
-  - Swift での作り（ephemeral の構成、XMLParser、NWPathMonitor）は spike をしていない。G2 の前に ios-engineer の単体テストで確かめる。
-  - 案 D（SRU）の並べ替えと完全一致。
-
-## 確かめ（B）
-- [x] 案が2つ以上あり、どの案にも悪い点が書いてある
-- [x] 反論、悪い結果、見直す条件が空でない
-- [x] 確かめたことに、URL かコマンドの出力がある
+- `contracts/ndl-opensearch.yaml` および OpenAPI リンター設定（`contracts/.spectral.yaml`）は、実行時の外部 HTTP 通信をゼロにする方針（AC-103）に伴い廃止・削除した。代わりに端末内書誌 DB・共起スタブの契約を `contracts/hooks/h20-ndl-stub.schema.json` と `contracts/test-hooks.md` で厳密に管理する。

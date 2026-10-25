@@ -1,495 +1,473 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:reading-app:contracts:hooks:h13-store:1",
-  "title": "H13 保存の読み出し（要素 hook.store の accessibilityValue の JSON）大きな版 1",
-  "description": "保存先の全項目を、画面を通さずに外から読む。値は読んだ瞬間に保存先から作る（要素の値を読むたびに作り直す。spike：91,500字を 63ms で読めた）。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）。\n\n[並び] books は addedAt の古い順、同じなら id の順。日時はすべて UTC の Z とミリ秒。値がない項目はキーを書かない（空の文字列は値なしとして書かない）。\n\n[snapshot] App Group の widget-snapshot.json をそのまま読んだ結果。中身は contracts/widget-snapshot.schema.json で検査できる。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。選択肢（(5)、課金、ショートカットほか）を残すときに足す値は contracts/test-hooks.md の 4 に書く。\n\n[2026-10-20 の直し（G1 の reviewer r1）] 書名を省ける本（上の title の説明）を足した。main に出す前の版 1 の下書きの直しで、使う側（受け入れテスト）はまだないので、版は上げない。",
+  "$id": "https://readingapp.local/contracts/hooks/h13-store.schema.json",
+  "title": "H13StoreReadout",
+  "description": "テストフック H13（store）が out/h13-store.json に書き出す永続化状態と破損退避ファイル一覧の契約（AC-15〜23、AC-53〜90、AC-139〜148）。",
   "type": "object",
-  "required": [
-    "readoutVersion",
-    "readAt",
-    "storeSchemaVersion",
-    "books",
-    "settings",
-    "snapshot"
-  ],
   "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dumpedAt",
+    "corruptBackupFiles",
+    "state"
+  ],
   "properties": {
-    "readoutVersion": {
+    "schemaVersion": {
+      "type": "integer",
       "const": 1
     },
-    "readAt": {
+    "dumpedAt": {
       "type": "string",
-      "format": "date-time",
-      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-      "description": "読んだ時のアプリの時計（H4、H5）。"
+      "format": "date-time"
     },
-    "storeSchemaVersion": {
-      "const": 1,
-      "description": "SwiftData の VersionedSchema の版（SchemaV1）。"
-    },
-    "books": {
+    "corruptBackupFiles": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/book"
-      }
+        "type": "string",
+        "pattern": "^state\\.corrupt-[0-9]+\\.json$"
+      },
+      "description": "AC-90 で破損した state.json を退避したファイル名の一覧。"
     },
-    "session": {
-      "$ref": "#/$defs/session",
-      "description": "読書中の1件。idle のときはキーがない。"
-    },
-    "settings": {
-      "$ref": "#/$defs/settings"
-    },
-    "snapshot": {
-      "$ref": "#/$defs/snapshot"
+    "state": {
+      "$ref": "#/$defs/PersistedState"
     }
   },
   "$defs": {
-    "book": {
+    "PersistedState": {
       "type": "object",
-      "required": [
-        "id",
-        "shelf",
-        "addedAt",
-        "lookupStatus",
-        "manuallyEdited",
-        "records"
-      ],
       "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "books",
+        "records",
+        "activeSession",
+        "settings"
+      ],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
-        },
-        "isbn": {
-          "type": "string",
-          "pattern": "^97[89][0-9]{10}$",
-          "description": "13桁。手で入れた本（lookupStatus が none）は書かない。"
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 400,
-          "description": "保存した形の書名。1〜100字（書記素。つなぎ口が数える）。キーを省けるのは、isbn があり、lookupStatus が pending か notFound で、manuallyEdited が真でない本だけ（書誌を待っている本と、見つからなかった本。設計メモ 5、ADR 0004）。ほかの本には必ずある。"
-        },
-        "author": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 400,
-          "description": "保存した形の著者（AC-92 の取り出しのあと）。1〜100字。著者なしはキーを書かない。"
-        },
-        "publisher": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 400
-        },
-        "label": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 400,
-          "description": "レーベル。"
-        },
-        "publishedYear": {
+        "schemaVersion": {
           "type": "integer",
-          "minimum": 1000,
-          "maximum": 9999
+          "const": 1
         },
-        "shelf": {
-          "enum": [
-            "current",
-            "tsundoku",
-            "finished"
-          ]
-        },
-        "addedAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-          "description": "加えた日時。"
-        },
-        "tsundokuAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-          "description": "積読に加えた日時。shelf が tsundoku で省いたときは addedAt と同じ値を入れる。"
-        },
-        "finishedAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-          "description": "読み終えた日時（design r1 の C の問い4、設計メモ 5）。shelf が finished のときだけ書ける。省いたときは addedAt と同じ値を入れる。"
-        },
-        "line": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 240,
-          "description": "しおりの一行。1〜60字（書記素）。"
-        },
-        "page": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9999
-        },
-        "lookupStatus": {
-          "enum": [
-            "none",
-            "pending",
-            "found",
-            "notFound"
-          ],
-          "description": "書誌の状態。省いたときは、isbn があれば found、なければ none。"
-        },
-        "lastLookupAt": {
-          "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
-          "description": "前に問い合わせた日時（AC-10、AC-113）。"
-        },
-        "manuallyEdited": {
-          "type": "boolean"
+        "books": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StoredBook"
+          }
         },
         "records": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/record"
-          },
-          "description": "startedAt の古い順、同じなら id の順。"
-        }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "shelf": {
-                "const": "finished"
-              }
-            },
-            "required": [
-              "shelf"
-            ]
-          },
-          "else": {
-            "not": {
-              "required": [
-                "finishedAt"
-              ]
-            }
+            "$ref": "#/$defs/StoredRecord"
           }
         },
-        {
-          "if": {
-            "required": [
-              "isbn"
-            ]
-          },
-          "then": {
-            "properties": {
-              "lookupStatus": {
-                "enum": [
-                  "pending",
-                  "found",
-                  "notFound"
-                ]
-              }
-            }
-          },
-          "else": {
-            "properties": {
-              "lookupStatus": {
-                "const": "none"
-              }
-            }
-          }
+        "activeSession": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/StoredActiveSession" }
+          ]
         },
-        {
-          "$comment": "書名を省ける本の決まり（設計メモ 5）。条件に合わない本は title が必須。",
-          "if": {
-            "required": [
-              "isbn",
-              "lookupStatus"
-            ],
-            "properties": {
-              "lookupStatus": {
-                "enum": [
-                  "pending",
-                  "notFound"
-                ]
-              },
-              "manuallyEdited": {
-                "const": false
-              }
-            }
-          },
-          "else": {
-            "required": [
-              "title"
-            ]
-          }
+        "settings": {
+          "$ref": "#/$defs/StoredSettings"
         }
-      ]
+      }
     },
-    "record": {
+    "StoredBook": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "id",
-        "startedAt",
-        "timeZoneID",
-        "minutes",
-        "entry"
+        "isbn13",
+        "title",
+        "author",
+        "publisher",
+        "label",
+        "publishedYear",
+        "seriesTitle",
+        "volumeNumber",
+        "ndc",
+        "status",
+        "isEbook",
+        "isTitlePending",
+        "progressUnit",
+        "page",
+        "location",
+        "percent",
+        "lastLine",
+        "createdAt",
+        "updatedAt",
+        "finishedAt"
       ],
-      "additionalProperties": false,
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+          "format": "uuid"
+        },
+        "isbn13": {
+          "type": ["string", "null"],
+          "pattern": "^97[89][0-9]{10}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "author": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "publisher": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "label": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "publishedYear": {
+          "type": ["integer", "null"],
+          "minimum": 1800,
+          "maximum": 2100
+        },
+        "seriesTitle": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "volumeNumber": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999
+        },
+        "ndc": {
+          "type": ["string", "null"],
+          "maxLength": 20
+        },
+        "status": {
+          "type": "string",
+          "enum": ["current", "tsundoku", "finished"]
+        },
+        "isEbook": {
+          "type": "boolean"
+        },
+        "isTitlePending": {
+          "type": "boolean"
+        },
+        "progressUnit": {
+          "type": "string",
+          "enum": ["page", "location", "percent"]
+        },
+        "page": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "location": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "percent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "lastLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "finishedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "StoredRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "bookId",
+        "startedAt",
+        "endedAt",
+        "minutes",
+        "nightDate",
+        "entry",
+        "progressUnit",
+        "startPage",
+        "endPage",
+        "startLocation",
+        "endLocation",
+        "startPercent",
+        "endPercent",
+        "savedLine"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "bookId": {
+          "type": "string",
+          "format": "uuid"
         },
         "startedAt": {
           "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+          "format": "date-time"
         },
-        "timeZoneID": {
+        "endedAt": {
           "type": "string",
-          "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$"
+          "format": "date-time"
         },
         "minutes": {
           "type": "integer",
           "minimum": 1,
           "maximum": 1440
         },
+        "nightDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
         "entry": {
+          "type": "string",
           "enum": [
             "app",
-            "lock_widget",
-            "small_widget"
+            "face_down",
+            "widget",
+            "live_activity",
+            "intent_start",
+            "intent_open"
           ]
+        },
+        "progressUnit": {
+          "type": "string",
+          "enum": ["page", "location", "percent"]
+        },
+        "startPage": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "endPage": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "startLocation": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "endLocation": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "startPercent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "endPercent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "savedLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60
         }
       }
     },
-    "session": {
+    "StoredActiveSession": {
       "type": "object",
-      "required": [
-        "bookID",
-        "startedAt",
-        "timeZoneID",
-        "entry",
-        "startedBy"
-      ],
       "additionalProperties": false,
+      "required": [
+        "bookId",
+        "startedAt",
+        "entry",
+        "liveActivityId"
+      ],
       "properties": {
-        "bookID": {
+        "bookId": {
           "type": "string",
-          "pattern": "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
+          "format": "uuid"
         },
         "startedAt": {
           "type": "string",
-          "format": "date-time",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
-        },
-        "timeZoneID": {
-          "type": "string",
-          "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$"
+          "format": "date-time"
         },
         "entry": {
+          "type": "string",
           "enum": [
             "app",
-            "lock_widget",
-            "small_widget"
+            "face_down",
+            "widget",
+            "live_activity",
+            "intent_start",
+            "intent_open"
           ]
         },
-        "startedBy": {
-          "enum": [
-            "button",
-            "flip"
-          ]
+        "liveActivityId": {
+          "type": ["string", "null"]
         }
       }
     },
-    "settings": {
+    "RecommendationWeightCounter": {
       "type": "object",
-      "required": [
-        "flipToStart",
-        "hideOnWidgets",
-        "widgetGuideShown"
-      ],
       "additionalProperties": false,
+      "required": ["chosen", "skipped"],
       "properties": {
-        "flipToStart": {
+        "chosen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "StoredSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flipToStartEnabled",
+        "hideOnWidgets",
+        "hasShownWidgetGuide",
+        "entryTime",
+        "appearanceID",
+        "isPlusPurchased",
+        "recommendationWeights",
+        "firstNightCompletedAt",
+        "seventhNightReachedAt"
+      ],
+      "properties": {
+        "flipToStartEnabled": {
           "type": "boolean"
         },
         "hideOnWidgets": {
           "type": "boolean"
         },
-        "widgetGuideShown": {
+        "hasShownWidgetGuide": {
           "type": "boolean"
+        },
+        "entryTime": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):(00|15|30|45)$"
+        },
+        "appearanceID": {
+          "type": "string",
+          "enum": ["default", "kinari", "sumi", "shu"]
+        },
+        "isPlusPurchased": {
+          "type": "boolean"
+        },
+        "recommendationWeights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "readers",
+            "nextVolume",
+            "sameAuthor",
+            "sameAward",
+            "sameLabel"
+          ],
+          "properties": {
+            "readers": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "nextVolume": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameAuthor": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameAward": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameLabel": { "$ref": "#/$defs/RecommendationWeightCounter" }
+          }
+        },
+        "firstNightCompletedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "seventhNightReachedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
         }
       }
-    },
-    "snapshot": {
-      "oneOf": [
-        {
-          "type": "object",
-          "required": [
-            "status",
-            "content"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "status": {
-              "const": "ok"
-            },
-            "content": {
-              "$ref": "urn:reading-app:contracts:widget-snapshot:1"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "status"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "status": {
-              "const": "missing"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "required": [
-            "status",
-            "reason"
-          ],
-          "additionalProperties": false,
-          "properties": {
-            "status": {
-              "const": "unreadable"
-            },
-            "reason": {
-              "type": "string"
-            }
-          }
-        }
-      ]
     }
   },
   "examples": [
     {
-      "readoutVersion": 1,
-      "readAt": "2026-10-15T14:50:00.000Z",
-      "storeSchemaVersion": 1,
-      "books": [
-        {
-          "id": "6F1C2A10-0000-4000-8000-000000000002",
-          "isbn": "9784087000023",
-          "title": "こころ",
-          "author": "夏目漱石",
-          "shelf": "finished",
-          "addedAt": "2026-09-01T11:00:00.000Z",
-          "finishedAt": "2026-10-10T14:30:00.000Z",
-          "lookupStatus": "found",
-          "manuallyEdited": false,
-          "records": []
-        },
-        {
-          "id": "6F1C2A10-0000-4000-8000-000000000001",
-          "isbn": "9784101000015",
-          "title": "羅生門",
-          "author": "芥川龍之介",
-          "publisher": "新潮社",
-          "label": "新潮文庫",
-          "publishedYear": 2005,
-          "shelf": "current",
-          "addedAt": "2026-10-01T12:00:00.000Z",
-          "line": "下人は、雨やみを待っていた。",
-          "page": 61,
-          "lookupStatus": "found",
-          "lastLookupAt": "2026-10-01T12:00:05.000Z",
-          "manuallyEdited": false,
-          "records": [
-            {
-              "id": "6F1C2A10-0000-4000-8000-0000000000A1",
-              "startedAt": "2026-10-13T13:00:00.000Z",
-              "timeZoneID": "Asia/Tokyo",
-              "minutes": 20,
-              "entry": "lock_widget"
-            }
-          ]
-        }
-      ],
-      "session": {
-        "bookID": "6F1C2A10-0000-4000-8000-000000000001",
-        "startedAt": "2026-10-15T14:40:00.000Z",
-        "timeZoneID": "Asia/Tokyo",
-        "entry": "small_widget",
-        "startedBy": "button"
-      },
-      "settings": {
-        "flipToStart": true,
-        "hideOnWidgets": false,
-        "widgetGuideShown": true
-      },
-      "snapshot": {
-        "status": "ok",
-        "content": {
-          "schemaVersion": 1,
-          "hideOnWidgets": false,
-          "appearanceID": "default",
-          "currentBook": {
-            "title": "羅生門",
-            "line": "下人は、雨やみを待っていた。",
-            "page": 61
+      "schemaVersion": 1,
+      "dumpedAt": "2026-10-20T13:18:05Z",
+      "corruptBackupFiles": [],
+      "state": {
+        "schemaVersion": 1,
+        "books": [
+          {
+            "id": "11111111-2222-4333-8444-555555555555",
+            "isbn13": "9784167911300",
+            "title": "蜜蜂と遠雷",
+            "author": "恩田 陸",
+            "publisher": "文藝春秋",
+            "label": "文春文庫",
+            "publishedYear": 2019,
+            "seriesTitle": null,
+            "volumeNumber": null,
+            "ndc": "913.6",
+            "status": "current",
+            "isEbook": false,
+            "isTitlePending": false,
+            "progressUnit": "page",
+            "page": 61,
+            "location": null,
+            "percent": null,
+            "lastLine": "世界はまだ、音楽で満ちていた。",
+            "createdAt": "2026-10-19T13:00:00Z",
+            "updatedAt": "2026-10-20T13:18:00Z",
+            "finishedAt": null
           }
-        }
-      }
-    },
-    {
-      "readoutVersion": 1,
-      "readAt": "2026-10-15T14:50:00.000Z",
-      "storeSchemaVersion": 1,
-      "books": [],
-      "settings": {
-        "flipToStart": true,
-        "hideOnWidgets": false,
-        "widgetGuideShown": false
-      },
-      "snapshot": {
-        "status": "missing"
-      }
-    },
-    {
-      "readoutVersion": 1,
-      "readAt": "2026-10-15T14:50:00.000Z",
-      "storeSchemaVersion": 1,
-      "books": [
-        {
-          "id": "6F1C2A10-0000-4000-8000-000000000001",
-          "addedAt": "2026-10-01T12:00:00.000Z",
-          "isbn": "9784101000015",
-          "shelf": "current",
-          "line": "私はその人を常に先生と呼んでいた。",
-          "page": 12,
-          "lookupStatus": "pending",
-          "manuallyEdited": false,
-          "records": []
-        }
-      ],
-      "settings": {
-        "flipToStart": true,
-        "hideOnWidgets": false,
-        "widgetGuideShown": true
-      },
-      "snapshot": {
-        "status": "ok",
-        "content": {
-          "schemaVersion": 1,
-          "hideOnWidgets": false,
-          "appearanceID": "default",
-          "currentBook": {
-            "line": "私はその人を常に先生と呼んでいた。",
-            "page": 12
+        ],
+        "records": [
+          {
+            "id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+            "bookId": "11111111-2222-4333-8444-555555555555",
+            "startedAt": "2026-10-20T13:00:00Z",
+            "endedAt": "2026-10-20T13:18:00Z",
+            "minutes": 18,
+            "nightDate": "2026-10-20",
+            "entry": "face_down",
+            "progressUnit": "page",
+            "startPage": 43,
+            "endPage": 61,
+            "startLocation": null,
+            "endLocation": null,
+            "startPercent": null,
+            "endPercent": null,
+            "savedLine": "世界はまだ、音楽で満ちていた。"
           }
+        ],
+        "activeSession": null,
+        "settings": {
+          "flipToStartEnabled": true,
+          "hideOnWidgets": false,
+          "hasShownWidgetGuide": true,
+          "entryTime": "22:00",
+          "appearanceID": "default",
+          "isPlusPurchased": false,
+          "recommendationWeights": {
+            "readers": { "chosen": 0, "skipped": 0 },
+            "nextVolume": { "chosen": 0, "skipped": 0 },
+            "sameAuthor": { "chosen": 0, "skipped": 0 },
+            "sameAward": { "chosen": 0, "skipped": 0 },
+            "sameLabel": { "chosen": 0, "skipped": 0 }
+          },
+          "firstNightCompletedAt": "2026-10-20T13:18:00Z",
+          "seventhNightReachedAt": null
         }
       }
     }

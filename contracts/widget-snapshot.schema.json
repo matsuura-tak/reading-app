@@ -1,109 +1,161 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:reading-app:contracts:widget-snapshot:1",
-  "title": "ウィジェットの写し（App Group の widget-snapshot.json）大きな版 1",
-  "description": "アプリと W-1、W-2 のウィジェットの拡張が分け合う、今の本の写し。書いた役：tech-lead、2026-10-20（G1 の 7-3）。関係：ADR 0002（保存と共有）、ADR 0003（縦書きの組み）、設計メモ 5、PRD 12（App Group には今の本の書名、一行、ページ、出さない設定だけを置く）、AC-14、AC-16、AC-27〜AC-35、AC-82、AC-99、AC-102。\n\n[置き場所と書き方] App Group の入れ物の直下の widget-snapshot.json の1ファイル。UTF-8 の JSON。書くのはアプリだけ（ReadingStore の保存の後ろの1か所）、読むのは拡張だけ（アプリは書いたあとに読み直さない）。書くときは Data.write(options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])。書く時：起動のたびと、今の本、書名、一行、ページ、出さない設定、見た目の id のどれかを変えた保存のあと。書いたあとにウィジェットの再読み込みを1回だけ求める（AC-33）。今の本がなくなったら currentBook を書かない。\n\n[書く側の決まり] この文書の形どおりに書く（知らない項目を足さない）。値がない項目はキーごと書かない（null を書かない。Swift の JSONEncoder の既定）。hideOnWidgets が真のときは、書名と一行を書かない（ページだけ。拡張は持っていないものを出せない）。ISBN、著者、本の id、日時は書かない（PRD 12。ウィジェットに要らない）。\n\n[読む側の決まり] 次のときは、どれも『読めない』として文言キー widget.unavailable の文を出し、読み上げのラベルも同じ文にする。押したときの URL は入口の URL のまま（contracts/entry-urls.md）。拡張は落ちず、写しを書き直さない：(1) ファイルがない (2) 開けない（保護の等級で開けないときを含む） (3) JSON でない、型が違う、必須の項目がない (4) schemaVersion が 1 でない（知らない大きな版） (5) 値が範囲の外（書名 0字か101字以上、一行 0字か61字以上、ページ 0 か 10000 以上。字は書記素で数える） (6) hideOnWidgets が真なのに書名か一行がある。次は読み流す：知らない項目は無視する（同じ大きな版で足した項目）。null の title、line、page はないものとして読む。appearanceID が知らない値なら default で描く。\n\n[出し方] currentBook がない：widget.empty。hideOnWidgets が真：widget.hidden の文とページ（ページがなければ widget.hidden だけ）。line がある：一行の組み（ADR 0003）とページ。title がなくても同じ（書名はもともと見えない。仕様の決定 66）。line がない：書名の所と、page があれば p.ページ（なければ書名の所だけ）。書名の所は、title があれば title、なければ文言キー widget.currentBookAsTitle の文（「今の本」／Reading Now。書誌を待っているか見つからなかった今の本。title と同じ字と場所。拡張が描くときに出し、アプリは写しの title に入れない。仕様の決定 66）。ISBN は出さない（写しにない）。title がないことは読めない扱い（widget.unavailable）にしない。H22 の状態は title の有無で変えない（line があれば normal、line がなく page があれば noLine、どちらもなければ noLineNoPage。contracts/test-hooks.md の H22）。[読み上げのラベル] 書名の所から始める（AC-99。仕様 6、9）。書名の所は [出し方] と同じ（title か widget.currentBookAsTitle の文）。書式は title の有無で変えない：line と page があれば widget.spoken（書名の所、page.spoken、line）、line だけなら widget.spoken.noPage（書名の所、line）、page だけなら widget.spoken.noLine（書名の所、page.spoken）、どちらもなければ書名の所だけ。例：「今の本、61ページ。下人は、雨やみを待っていた。」「今の本。下人は、雨やみを待っていた。」「今の本、120ページ」「今の本」。hideOnWidgets が真のときは、書名の所が widget.hidden の文になる（例「しおり、61ページ」。仕様 6）。\n\n[版] schemaVersion は大きな版。同じ大きな版の中では、省ける項目を足すことだけをする（項目の名前、型、意味、範囲を変えない。必須の項目を足さない）。それ以外の変更は schemaVersion を 2 にし、ADR を書く。2026-10-20 の G1 の直し（reviewer r1 の要修正2）で、visibleBook の title を省けるようにした。main に出す前の版 1 の下書きの直しなので、版は上げない。アプリと拡張は同じ版で配られるので、版のずれはアップデートの直後の短い間だけで、アプリの起動で写しが書き直される（ADR 0002）。",
-  "$comment": "maxLength は JSON Schema では符号位置で数えるので、PRD の書記素の上限（書名 100字、一行 60字）は表せない。ここの maxLength は壊れた写しを弾くための上限で、書記素の上限は読む側が数えて確かめる（description の (5)）。",
+  "$id": "https://readingapp.local/contracts/widget-snapshot.schema.json",
+  "title": "WidgetSnapshot",
+  "description": "App Group 内の State/widget-snapshot.json に書き出され、ロック画面ウィジェット（W-1: accessoryRectangular）、ホーム画面・StandBy ウィジェット（W-2: systemSmall）、Live Activity（W-3）、および Siri『どこまで読んだ？』（W-5: WhereStoppedIntent）が読み取るスナップショット契約（AC-24〜34、AC-99、AC-106、AC-120〜123、AC-139、AC-141、AC-143）。",
   "type": "object",
-  "required": ["schemaVersion", "hideOnWidgets"],
   "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "generatedAt",
+    "hideOnWidgets",
+    "appearanceID",
+    "book"
+  ],
   "properties": {
     "schemaVersion": {
+      "type": "integer",
       "const": 1,
-      "description": "写しの大きな版。読む側は 1 のときだけ読む。"
+      "description": "スナップショットのスキーマ版番号（固定値 1）。"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "スナップショットを書き出した ISO 8601 UTC 日時。"
     },
     "hideOnWidgets": {
       "type": "boolean",
-      "description": "設定の「一行と書名を隠す」（settings.hideOnWidgets。AC-34）。真なら currentBook に title と line を書かない。"
+      "description": "S-10 の settings.hideOnWidgets がオンのとき true。true のとき W-1・W-2・W-3 には書名と一行を描画せず widget.hidden（『しおり』）と場所のみを表示する（AC-34、AC-41、AC-120）。"
     },
     "appearanceID": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
-      "default": "default",
-      "description": "ウィジェットの見た目の id（PRD 11 の冒頭。H22 で読む）。省いたときと知らない値のときは default。有料の見た目の id は選択肢（課金）で designer が決める。"
+      "enum": ["default", "kinari", "sumi", "shu"],
+      "description": "現在適用されている見た目 ID（AC-105、AC-106）。"
     },
-    "currentBook": {
-      "description": "今の本。キーがないときは今の本なし（本0冊も。AC-32）。"
+    "book": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/WidgetBookSnapshot" }
+      ],
+      "description": "現在 status == 'current' の本。今の本が 0 冊のときは null（AC-31）。"
     }
   },
-  "if": {
-    "properties": { "hideOnWidgets": { "const": true } },
-    "required": ["hideOnWidgets"]
-  },
-  "then": {
-    "properties": { "currentBook": { "$ref": "#/$defs/hiddenBook" } }
-  },
-  "else": {
-    "properties": { "currentBook": { "$ref": "#/$defs/visibleBook" } }
-  },
   "$defs": {
-    "page": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 9999,
-      "description": "しおりのページ（PRD 11 の冒頭：1〜9999 の整数）。キーがないときはページなし。"
-    },
-    "visibleBook": {
+    "WidgetBookSnapshot": {
       "type": "object",
       "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "author",
+        "isEbook",
+        "isTitlePending",
+        "progressUnit",
+        "page",
+        "location",
+        "percent",
+        "lastLine"
+      ],
       "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "今の本の UUID。"
+        },
         "title": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 1000,
-          "description": "書名。前後の空白を除いた 1〜100 字（書記素）。キーがないのは、今の本の書誌を待っているか見つからなかったとき（設計メモ 5。書誌が見つかった本、手で入れた本、手で直した本には必ずある）。書誌から取った書名は巻を足し、100字で切った形（ADR 0004）。ウィジェットに出すのは一行がないときだけで、横書き。読み上げのラベルにはいつも入る（AC-99）。"
+          "maxLength": 200,
+          "description": "今の本の書名。isTitlePending == true のときは表示時に widget.currentBookAsTitle（『今の本』）を使う（AC-139）。"
         },
-        "line": {
+        "author": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 600,
-          "description": "続きの一行の全文。前後の空白を除いた 1〜60 字（書記素）。ウィジェットの25字への縮め方は、描くときに ReadingCore が行う（AC-29）。写しには縮めない全文を書く。キーがないときは一行なし（AC-31）。"
+          "maxLength": 200,
+          "description": "著者名（空文字列可）。"
         },
-        "page": { "$ref": "#/$defs/page" }
+        "isEbook": {
+          "type": "boolean",
+          "description": "電子書籍のとき true（AC-141、AC-144）。"
+        },
+        "isTitlePending": {
+          "type": "boolean",
+          "description": "S-8 の register.later（あとで登録）で作られた名無しの本のとき true（AC-139、AC-140）。"
+        },
+        "progressUnit": {
+          "type": "string",
+          "enum": ["page", "location", "percent"],
+          "description": "進み具合の単位（紙の本は常に page、電子書籍は page / location / percent、AC-141）。"
+        },
+        "page": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999,
+          "description": "progressUnit == 'page' のときのページ番号（1〜9999）。未記録時は null。"
+        },
+        "location": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999,
+          "description": "progressUnit == 'location' のときの位置番号（1〜999999、AC-141）。未記録時は null。"
+        },
+        "percent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "progressUnit == 'percent' のときのパーセント値（0〜100、AC-141）。未記録時は null。"
+        },
+        "lastLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60,
+          "description": "最後に保存した一行（改行を空白に正規化済み、最大 60 文字）。未記録またはページ番号のみ保存時は null（AC-30、AC-53、AC-54）。"
+        }
       }
-    },
-    "hiddenBook": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "page": { "$ref": "#/$defs/page" }
-      },
-      "description": "隠す設定のときの今の本。ページだけを持つ。"
     }
   },
   "examples": [
     {
       "schemaVersion": 1,
+      "generatedAt": "2026-10-20T13:15:00Z",
       "hideOnWidgets": false,
       "appearanceID": "default",
-      "currentBook": { "title": "羅生門", "line": "下人は、雨やみを待っていた。", "page": 61 }
+      "book": {
+        "id": "11111111-2222-4333-8444-555555555555",
+        "title": "蜜蜂と遠雷",
+        "author": "恩田 陸",
+        "isEbook": false,
+        "isTitlePending": false,
+        "progressUnit": "page",
+        "page": 61,
+        "location": null,
+        "percent": null,
+        "lastLine": "世界はまだ、音楽で満ちていた。"
+      }
     },
     {
       "schemaVersion": 1,
+      "generatedAt": "2026-10-20T14:00:00Z",
+      "hideOnWidgets": false,
+      "appearanceID": "kinari",
+      "book": {
+        "id": "22222222-3333-4444-8555-666666666666",
+        "title": "三体",
+        "author": "劉 慈欣",
+        "isEbook": true,
+        "isTitlePending": false,
+        "progressUnit": "location",
+        "page": null,
+        "location": 1450,
+        "percent": null,
+        "lastLine": "不要回答！"
+      }
+    },
+    {
+      "schemaVersion": 1,
+      "generatedAt": "2026-10-20T15:00:00Z",
       "hideOnWidgets": false,
       "appearanceID": "default",
-      "currentBook": { "title": "檸檬", "page": 120 }
-    },
-    {
-      "schemaVersion": 1,
-      "hideOnWidgets": false,
-      "currentBook": { "title": "檸檬" }
-    },
-    {
-      "schemaVersion": 1,
-      "hideOnWidgets": false,
-      "currentBook": { "line": "私はその人を常に先生と呼んでいた。", "page": 12 }
-    },
-    {
-      "schemaVersion": 1,
-      "hideOnWidgets": true,
-      "appearanceID": "default",
-      "currentBook": { "page": 61 }
-    },
-    {
-      "schemaVersion": 1,
-      "hideOnWidgets": false,
-      "appearanceID": "default"
+      "book": null
     }
   ]
 }
