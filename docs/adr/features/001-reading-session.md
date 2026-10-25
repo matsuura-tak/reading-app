@@ -271,9 +271,11 @@ flowchart LR
 
 - **spectral / oasdiff の出力**：
   - 外部 HTTP API 0 件（AC-103）のため `contracts/ndl-opensearch.yaml` を廃止・削除した（ADR 0004）。OpenAPI 契約が存在しないため spectral / oasdiff は対象外（該当なし）。
-- **JSON Schema（Draft 2020-12）の検証コマンドと出力**：
+- **JSON Schema（Draft 2020-12）の検証コマンドと出力（`Makefile` の `check-contracts` ターゲット）**：
+  - `Makefile` の `check-contracts` ターゲットは、Python の `jsonschema.Draft202012Validator` と `referencing.Registry` のワンライナーにより、全 8 スキーマ（`contracts/hooks/*.schema.json` 7 ファイル＋`contracts/widget-snapshot.schema.json` 1 ファイル）の metaschema 適合性と `$id`（`urn:reading-app:contracts:...:1`）の参照解決、および全 25 件の `examples` を一括検証する（外部スクリプトファイルは使わず `Makefile` 内のワンライナーで完結する）。
   ```text
-  $ /tmp/reading-app-schema-venv/bin/python -I -c 'import json,sys; from jsonschema import Draft202012Validator as V; from referencing import Registry,Resource; S=[json.load(open(p,encoding="utf-8")) for p in sys.argv[1:]]; [V.check_schema(s) for s in S]; R=Registry().with_resources([(s["$id"],Resource.from_contents(s)) for s in S]); n=sum(1 for s in S for e in s.get("examples",[]) if V(s,registry=R).validate(e) is None)+sum(1 for s in S for d in s.get("$defs",{}).values() for e in d.get("examples",[]) if V(d,registry=R).validate(e) is None); print(f"ALL PASSED: {len(S)} schemas, {n} examples validated with 0 errors.")' contracts/hooks/*.schema.json contracts/widget-snapshot.schema.json
+  $ make check-contracts
+  /tmp/reading-app-schema-venv/bin/python -I -c 'import json,sys; from jsonschema import Draft202012Validator as V; from referencing import Registry,Resource; S=[json.load(open(p,encoding="utf-8")) for p in sys.argv[1:]]; [V.check_schema(s) for s in S]; R=Registry().with_resources([(s["$id"],Resource.from_contents(s)) for s in S]); n=sum(1 for s in S for e in s.get("examples",[]) if V(s,registry=R).validate(e) is None)+sum(1 for s in S for d in s.get("$defs",{}).values() for e in d.get("examples",[]) if V(d,registry=R).validate(e) is None); print(f"ALL PASSED: {len(S)} schemas, {n} examples validated with 0 errors.")' contracts/hooks/*.schema.json contracts/widget-snapshot.schema.json
   ALL PASSED: 8 schemas, 25 examples validated with 0 errors.
   ```
 - **互換性を壊す変更**：なし（v1.0 の初回リリース）。
@@ -374,10 +376,39 @@ flowchart LR
   - `docs/adr/0003-vertical-composition.md`：縦書き組版（`VerticalLineLayout`）、4つの見た目（`default` / `kinari` / `sumi` / `shu`）、読み終えカード PNG 描画（`ImageRenderer`）、端末内 Vision OCR（本棚背表紙 `minimumTextHeightFraction = 0.005`、画像非保持）。
   - `docs/adr/0004-bibliographic-lookup.md`：外部 HTTP 通信0件（`contracts/ndl-opensearch.yaml` 廃止）、NDL CC BY 4.0 書誌＋共起 SQLite DB（`catalog.sqlite`、FTS5 `trigram`、Apple-Hosted Background Assets）、2段目 `192` Cコード＋出版者記号補完、同梱受賞作リスト、3箇所の推薦と選好重み付け（`score = chosen * 2 - skipped`）。
   - `docs/adr/0005-test-hooks.md`：全149 AC を検証するテストのつなぎ口（H1〜H32）と本番ビルドでの無害化。
+- **G1 での受賞一覧（`docs/prd/001-reading-session-awards.md`）20行以上の公式 URL 照合記録（AC-112、PRD 17章）**：
+  - `docs/prd/001-reading-session-awards.md`（全 76 行：芥川龍之介賞 23 行、直木三十五賞 31 行、本屋大賞 22 行）から、3 賞にわたる計 **24 行** を各賞の公式 Web ページ（`curl -sL` で取得した公式 HTML）と 1 行ずつ照合し、賞名・回（年）・題名・著者がすべて公式発表と完全一致していることを 2026-10-25 に確認した。
+
+  | # | `001-reading-session-awards.md` の行 | 賞 | 回（年） | 題名 | 著者 | 照合した公式 URL | 確認日 | 結果 |
+  |---|---|---|---|---|---|---|---|---|
+  | 1 | 13行 | 芥川龍之介賞 | 第130回 | 蹴りたい背中 | 綿矢りさ | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">130</span>...綿矢りさ...蹴りたい背中`） |
+  | 2 | 14行 | 芥川龍之介賞 | 第130回 | 蛇にピアス | 金原ひとみ | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">130</span>...金原ひとみ...蛇にピアス`） |
+  | 3 | 18行 | 芥川龍之介賞 | 第153回 | 火花 | 又吉直樹 | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">153</span>...又吉直樹...火花`） |
+  | 4 | 20行 | 芥川龍之介賞 | 第155回 | コンビニ人間 | 村田沙耶香 | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">155</span>...村田沙耶香...コンビニ人間`） |
+  | 5 | 25行 | 芥川龍之介賞 | 第164回 | 推し、燃ゆ | 宇佐見りん | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">164</span>...宇佐見りん...推し、燃ゆ`） |
+  | 6 | 28行 | 芥川龍之介賞 | 第169回 | ハンチバック | 市川沙央 | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">169</span>...市川沙央...ハンチバック`） |
+  | 7 | 29行 | 芥川龍之介賞 | 第170回 | 東京都同情塔 | 九段理江 | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">170</span>...九段理江...東京都同情塔`） |
+  | 8 | 31行 | 芥川龍之介賞 | 第171回 | バリ山行 | 松永K三蔵 | `https://bungakushinko.or.jp/award/akutagawa/list.html` | 2026-10-25 | 一致（`<span class="no">171</span>...松永K三蔵...バリ山行`） |
+  | 9 | 36行 | 直木三十五賞 | 第134回 | 容疑者Ｘの献身 | 東野圭吾 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">134</span>...東野圭吾...容疑者Ｘの献身`） |
+  | 10 | 40行 | 直木三十五賞 | 第145回 | 下町ロケット | 池井戸潤 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">145</span>...池井戸潤...下町ロケット`） |
+  | 11 | 42行 | 直木三十五賞 | 第148回 | 何者 | 朝井リョウ | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">148</span>...朝井リョウ...何者`） |
+  | 12 | 47行 | 直木三十五賞 | 第156回 | 蜜蜂と遠雷 | 恩田陸 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">156</span>...恩田陸...蜜蜂と遠雷`） |
+  | 13 | 51行 | 直木三十五賞 | 第160回 | 宝島 | 真藤順丈 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">160</span>...真藤順丈...宝島`） |
+  | 14 | 57行 | 直木三十五賞 | 第166回 | 黒牢城 | 米澤穂信 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">166</span>...米澤穂信...黒牢城`） |
+  | 15 | 58行 | 直木三十五賞 | 第168回 | 地図と拳 | 小川哲 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">168</span>...小川哲...地図と拳`） |
+  | 16 | 63行 | 直木三十五賞 | 第170回 | 八月の御所グラウンド | 万城目学 | `https://bungakushinko.or.jp/award/naoki/list.html` | 2026-10-25 | 一致（`<span class="no">170</span>...万城目学...八月の御所グラウンド`） |
+  | 17 | 67行 | 本屋大賞 | 2004年 | 博士の愛した数式 | 小川洋子 | `https://www.hontai.or.jp/history/index.html` / `hontai2004.html` | 2026-10-25 | 一致（「博士の愛した数式」小川洋子著） |
+  | 18 | 75行 | 本屋大賞 | 2012年 | 舟を編む | 三浦しをん | `https://www.hontai.or.jp/history/index.html` / `hontai2012.html` | 2026-10-25 | 一致（2012年本屋大賞『舟を編む』三浦しをん） |
+  | 19 | 79行 | 本屋大賞 | 2016年 | 羊と鋼の森 | 宮下奈都 | `https://www.hontai.or.jp/history/index.html` / `hontai2016.html` | 2026-10-25 | 一致（2016年本屋大賞「羊と鋼の森」宮下奈都） |
+  | 20 | 80行 | 本屋大賞 | 2017年 | 蜜蜂と遠雷 | 恩田陸 | `https://www.hontai.or.jp/history/index.html` / `hontai2017.html` | 2026-10-25 | 一致（2017年本屋大賞『蜜蜂と遠雷』恩田陸） |
+  | 21 | 81行 | 本屋大賞 | 2018年 | かがみの孤城 | 辻村深月 | `https://www.hontai.or.jp/history/index.html` / `hontai2018.html` | 2026-10-25 | 一致（2018年本屋大賞「かがみの孤城」辻村深月） |
+  | 22 | 83行 | 本屋大賞 | 2020年 | 流浪の月 | 凪良ゆう | `https://www.hontai.or.jp/history/index.html` / `hontai2020.html` | 2026-10-25 | 一致（2020年本屋大賞『流浪の月』凪良ゆう） |
+  | 23 | 87行 | 本屋大賞 | 2024年 | 成瀬は天下を取りにいく | 宮島未奈 | `https://www.hontai.or.jp/history/index.html` / `hontai2024.html` | 2026-10-25 | 一致（2024年本屋大賞『成瀬は天下を取りにいく』宮島未奈） |
+  | 24 | 88行 | 本屋大賞 | 2025年 | カフネ | 阿部暁子 | `https://www.hontai.or.jp/history/index.html` / `hontai2025.html` | 2026-10-25 | 一致（2025年本屋大賞『カフネ』阿部暁子） |
+
 - **未確認の項目、確かめる方法、確かめる役**：
   1. `ios/` Xcode プロジェクトの実ビルドと単体・受け入れテスト実行：G1 設計段階では `ios/` を作らない決まりのため、現時点では `make ios-build` と `make ios-test` が未作成エラー（exit 1）を返すことまでを確認済み。G2 で `verifier`、G3 で `ios-engineer` が `ios/` を作成して `make ios-build` と `make ios-test` を通す。
-  2. `docs/prd/001-reading-session-awards.md` の配置：AC-112 と `contracts/dependencies.md` で参照する受賞一覧の Markdown 表。G2 で `verifier` が AC-112 のテストを書く前までに `pdm`（または指揮役）が配置する。
-  3. 実機でのみ確認できる項目（ロック画面 vibrant 表示、予約 Live Activity の起動と通知音、机・ベッドでの伏せ検知、実機カメラでのバーコード10冊連続登録と文庫5枚 OCR、Sandbox 課金復元、App プライバシーレポートでの外部通信0件確認、ロック中 Siri / Control の応答）：G4 で Takuma が PRD 11 末尾の G4-1〜G4-22 の表に従って実機で確かめる。
+  2. 実機でのみ確認できる項目（ロック画面 vibrant 表示、予約 Live Activity の起動と通知音、机・ベッドでの伏せ検知、実機カメラでのバーコード10冊連続登録と文庫5枚 OCR、Sandbox 課金復元、App プライバシーレポートでの外部通信0件確認、ロック中 Siri / Control の応答）：G4 で Takuma が PRD 11 末尾の G4-1〜G4-22 の表に従って実機で確かめる。
 
 ## 確かめ（A）
 - [x] 2 の表に PRD の全 AC があり、空の欄がない

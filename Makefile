@@ -55,5 +55,6 @@ ios-test-perf:
 		-destination "$(SIM_DESTINATION)" \
 		-only-testing:AcceptanceTests/PerformanceTests
 
+# check-contracts: Python jsonschema.Draft202012Validator ワンライナーによる全8スキーマ＋全25 examples の自動検証（外部スクリプト不使用）
 check-contracts:
 	"$(SCHEMA_PYTHON)" -I -c 'import json,sys; from jsonschema import Draft202012Validator as V; from referencing import Registry,Resource; S=[json.load(open(p,encoding="utf-8")) for p in sys.argv[1:]]; [V.check_schema(s) for s in S]; R=Registry().with_resources([(s["$$id"],Resource.from_contents(s)) for s in S]); n=sum(1 for s in S for e in s.get("examples",[]) if V(s,registry=R).validate(e) is None)+sum(1 for s in S for d in s.get("$$defs",{}).values() for e in d.get("examples",[]) if V(d,registry=R).validate(e) is None); print(f"ALL PASSED: {len(S)} schemas, {n} examples validated with 0 errors.")' contracts/hooks/*.schema.json contracts/widget-snapshot.schema.json
