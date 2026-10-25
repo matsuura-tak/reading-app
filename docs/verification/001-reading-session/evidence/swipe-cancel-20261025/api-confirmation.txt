@@ -1,0 +1,1 @@
+All UI APIs reuse existing compiled Acceptance code: AC48 navigationBar containing session.finish.cancel, wait(isHittable), coordinate drag withVelocity .fast; AppSession.replaceText/expectState/shot; Wait.value/label; AppSession.advance through T16; XCTest attachment string. No new app hook or implementation read.

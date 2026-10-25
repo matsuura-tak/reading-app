@@ -1,0 +1,64 @@
+import AppKit
+import Foundation
+
+let args = CommandLine.arguments
+if args.count != 7 {
+    fatalError("usage: pixel_measure image name x y width height (pixels)")
+}
+let url = URL(fileURLWithPath: args[1])
+let data = try Data(contentsOf: url)
+guard let bitmap = NSBitmapImageRep(data: data) else { fatalError("image decode failed") }
+let name = args[2]
+let values = args[3...6].map { Int($0)! }
+let (x0,y0,w,h) = (values[0],values[1],values[2],values[3])
+var histogram: [String:Int] = [:]
+var darkHistogram: [String:Int] = [:]
+var darkBounds = [Int.max,Int.max,Int.min,Int.min]
+func rgbKey(_ color: NSColor) -> String {
+    let c = color.usingColorSpace(.sRGB)!
+    return [c.redComponent,c.greenComponent,c.blueComponent].map { String(Int(($0 * 255).rounded())) }.joined(separator: ",")
+}
+func luminance(_ rgb: [Double]) -> Double {
+    let linear = rgb.map { $0 <= 0.04045 ? $0/12.92 : pow(($0+0.055)/1.055,2.4) }
+    return linear[0]*0.2126 + linear[1]*0.7152 + linear[2]*0.0722
+}
+for y in y0..<min(y0+h,bitmap.pixelsHigh) {
+    for x in x0..<min(x0+w,bitmap.pixelsWide) {
+        guard let color = bitmap.colorAt(x:x,y:y) else { continue }
+        let key = rgbKey(color)
+        histogram[key,default:0] += 1
+        let channels = key.split(separator:",").map { Double($0)! / 255 }
+        if luminance(channels) < 0.05 {
+            darkHistogram[key,default:0] += 1
+            darkBounds = [min(x,darkBounds[0]),min(y,darkBounds[1]),max(x,darkBounds[2]),max(y,darkBounds[3])]
+        }
+    }
+}
+let top = histogram.sorted { $0.value > $1.value }.prefix(5).map { ["rgb":$0.key,"count":String($0.value)] }
+let dark = darkHistogram.max { $0.value < $1.value }
+let background = histogram.max { $0.value < $1.value }
+var result: [String:Any] = ["name":name,"image":url.path,"imageSizePixels":[bitmap.pixelsWide,bitmap.pixelsHigh],"cropPixels":values,"topColors":top,"darkPixelBounds":darkBounds]
+if let dark, let background {
+    let a = luminance(dark.key.split(separator:",").map { Double($0)! / 255 })
+    let b = luminance(background.key.split(separator:",").map { Double($0)! / 255 })
+    result["darkCoreModeRGB"] = dark.key
+    result["darkCoreModeCount"] = dark.value
+    result["backgroundModeRGB"] = background.key
+    result["sampledContrastRatio"] = (max(a,b)+0.05)/(min(a,b)+0.05)
+}
+if darkBounds[0] != Int.max {
+    let points = [
+        [darkBounds[0]-6,(darkBounds[1]+darkBounds[3])/2],
+        [darkBounds[2]+6,(darkBounds[1]+darkBounds[3])/2],
+        [(darkBounds[0]+darkBounds[2])/2,darkBounds[1]-6],
+        [(darkBounds[0]+darkBounds[2])/2,darkBounds[3]+6]
+    ]
+    result["adjacentBackgroundSamples"] = points.compactMap { point -> [String:Any]? in
+        guard point[0] >= 0, point[1] >= 0, point[0] < bitmap.pixelsWide, point[1] < bitmap.pixelsHigh,
+              let color = bitmap.colorAt(x:point[0],y:point[1]) else { return nil }
+        let rgb = rgbKey(color)
+        return ["pointPixels":point,"rgb":rgb,"contrastToBlackCore":(luminance(rgb.split(separator:",").map { Double($0)!/255 })+0.05)/0.05]
+    }
+}
+let output = try JSONSerialization.data(withJSONObject:result,options:[.prettyPrinted,.sortedKeys])
+print(String(data:output,encoding:.utf8)!)

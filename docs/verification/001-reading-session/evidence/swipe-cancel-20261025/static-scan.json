@@ -1,0 +1,10 @@
+{
+  "sleep": 0,
+  "skip_or_expected_failure": 0,
+  "internal_import": 0,
+  "index_selector": 0,
+  "new_test_methods": [
+    "test_AC64_swipeCancelFailureKeepsInput",
+    "test_AC65_swipeCancelRetryReturnsToReading"
+  ]
+}

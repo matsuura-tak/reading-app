@@ -1,0 +1,140 @@
+[
+  {
+    "line": 1318,
+    "screen": "S1_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x10564af60, {{32.0, 184.0}, {32.0, 20.3}}, label: '今週'"
+  },
+  {
+    "line": 1361,
+    "screen": "S1_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x10504d810, {{331.3, 184.0}, {38.7, 20.3}}, label: '30分'"
+  },
+  {
+    "line": 1448,
+    "screen": "S2_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x105762f40, {{20.0, 82.0}, {95.7, 36.0}}, identifier: 'book.add.cancel', label: 'キャンセル'"
+  },
+  {
+    "line": 1485,
+    "screen": "S2_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x10577de90, {{334.0, 82.0}, {48.0, 36.0}}, identifier: 'book.save', label: '追加'"
+  },
+  {
+    "line": 1522,
+    "screen": "S2_normal_light",
+    "type": 1,
+    "description": "Contrast failed | Contrast failed for SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x105797130, {{16.0, 132.0}, {370.0, 35.7}}, label: '題名（必須）'"
+  },
+  {
+    "line": 1591,
+    "screen": "S3_normal_light",
+    "type": 4,
+    "description": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+  },
+  {
+    "line": 1593,
+    "screen": "S3_normal_light",
+    "type": 4,
+    "description": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+  },
+  {
+    "line": 1595,
+    "screen": "S3_normal_light",
+    "type": 4,
+    "description": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+  },
+  {
+    "line": 1603,
+    "screen": "S3_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x1058c5a60, {{334.0, 310.7}, {36.0, 20.3}}, label: '24%'"
+  },
+  {
+    "line": 1646,
+    "screen": "S3_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x1057d3820, {{16.0, 469.3}, {370.0, 35.7}}, identifier: 'book.sessionCount', label: '記録 3件'"
+  },
+  {
+    "line": 1688,
+    "screen": "S3_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x1057d09e0, {{32.0, 310.7}, {63.7, 20.3}}, label: '進み具合'"
+  },
+  {
+    "line": 1731,
+    "screen": "S3_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x1057f0050, {{339.0, 363.0}, {31.0, 20.3}}, label: '300'"
+  },
+  {
+    "line": 1774,
+    "screen": "S3_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x10ea2ae00, {{32.0, 363.0}, {79.7, 20.3}}, label: '総ページ数'"
+  },
+  {
+    "line": 1885,
+    "screen": "S5_normal_light",
+    "type": 1,
+    "description": "Contrast failed | Contrast failed for SwiftUI.AccessibilityNode | element=Attributes: StaticText, 0x10e89f0b0, {{16.0, 132.0}, {370.0, 35.7}}, identifier: 'session.finish.book', label: '坊っちゃん'"
+  },
+  {
+    "line": 1929,
+    "screen": "S5_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x10e89f630, {{334.0, 82.0}, {48.0, 36.0}}, identifier: 'session.finish.save', label: '保存'"
+  },
+  {
+    "line": 1967,
+    "screen": "S5_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this SwiftUI.AccessibilityNode | element=Attributes: Button, 0x10ea8f610, {{20.0, 82.0}, {95.7, 36.0}}, identifier: 'session.finish.cancel', label: 'キャンセル'"
+  },
+  {
+    "line": 2058,
+    "screen": "S6_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10eabb830, {{71.0, 404.7}, {260.0, 58.0}}, label: '合計時間から30分を引きます。最後のページは変わりません。消した記録は元に戻せません。'"
+  },
+  {
+    "line": 2089,
+    "screen": "S6_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+  },
+  {
+    "line": 2097,
+    "screen": "S6_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+  },
+  {
+    "line": 2108,
+    "screen": "S6_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10eac9ed0, {{71.0, 377.0}, {260.0, 20.3}}, label: 'この記録を消しますか？'"
+  },
+  {
+    "line": 2210,
+    "screen": "S7_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10eaf2e10, {{71.0, 387.0}, {260.0, 20.3}}, label: '変更を保存できませんでした'"
+  },
+  {
+    "line": 2241,
+    "screen": "S7_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=nil"
+  },
+  {
+    "line": 2252,
+    "screen": "S7_normal_light",
+    "type": 65536,
+    "description": "Dynamic Type font sizes are partially unsupported | User will not be able to change the font size of this UILabel | element=Attributes: StaticText, 0x10ef0b8f0, {{71.0, 414.7}, {260.0, 38.0}}, label: '記録は消えていません。もう一度消してください。'"
+  }
+]

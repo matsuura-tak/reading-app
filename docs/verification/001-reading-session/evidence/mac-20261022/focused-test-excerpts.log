@@ -1,0 +1,53 @@
+Excerpts only. These are focused tests, not the full Acceptance plan.
+Parent app code: 3710550; test-helper fix: 3c3f790.
+
+Home AC56/57 ja_JP
+Source: /private/tmp/reading-app-pr2-home-failure.log
+Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime]' passed (33.692 seconds).
+Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle]' passed (24.378 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 58.070 (58.073) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 58.070 (58.074) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 58.070 (58.075) seconds
+** TEST SUCCEEDED **
+
+Book detail AC56/57 ja_JP
+Source: /private/tmp/reading-app-pr2-detail-failure.log
+Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromBookDetailStartsAtRetryTime]' passed (36.590 seconds).
+Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromBookDetailKeepsIdle]' passed (24.512 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 61.102 (61.105) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 61.102 (61.107) seconds
+	 Executed 2 tests, with 0 failures (0 unexpected) in 61.102 (61.109) seconds
+** TEST SUCCEEDED **
+
+AC63/64 ja_JP and en_US
+Source: /private/tmp/reading-app-pr2-button-count.log
+Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused]' passed (40.696 seconds).
+Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading]' passed (38.680 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 79.376 (79.379) seconds
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput]' passed (48.872 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 48.872 (48.873) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 128.249 (128.253) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 128.249 (128.254) seconds
+Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhileReading]' passed (38.037 seconds).
+Test Case '-[YomutokiAcceptanceTests.ReadingScreenAcceptanceTests test_AC63_beginFinishRetryWhilePaused]' passed (39.091 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 77.128 (77.131) seconds
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC64_cancelFinishFailureKeepsInput]' passed (50.935 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 50.935 (50.936) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 128.064 (128.068) seconds
+	 Executed 3 tests, with 0 failures (0 unexpected) in 128.064 (128.069) seconds
+** TEST SUCCEEDED **
+
+Focused English regression; diagnostics collection still running
+Source: /private/tmp/reading-app-pr2-en-regression.log
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC47_cancelFinishResetsMinutesDraft]' passed (42.085 seconds).
+Test Case '-[YomutokiAcceptanceTests.FinishInputAcceptanceTests test_AC35_retryAfterOneFailureAddsExactlyOne]' passed (33.902 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 75.987 (75.990) seconds
+Test Case '-[YomutokiAcceptanceTests.LibraryAcceptanceTests test_AC3_blankTitleCannotBeSaved]' passed (139.188 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 139.188 (139.189) seconds
+Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC56_startFailureFromHomeKeepsIdle]' passed (25.508 seconds).
+Test Case '-[YomutokiAcceptanceTests.BookDetailAcceptanceTests test_AC57_startRetryFromHomeStartsAtRetryTime]' passed (32.611 seconds).
+	 Executed 2 tests, with 0 failures (0 unexpected) in 58.119 (58.120) seconds
+Test Case '-[YomutokiAcceptanceTests.AddBookAcceptanceTests test_AC31_totalPagesOutsideOneTo9999AreRejected]' passed (48.308 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 48.308 (48.309) seconds
+	 Executed 6 tests, with 0 failures (0 unexpected) in 321.602 (321.610) seconds
+	 Executed 6 tests, with 0 failures (0 unexpected) in 321.602 (321.612) seconds

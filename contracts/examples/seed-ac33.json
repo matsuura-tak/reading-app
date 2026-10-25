@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "books": [
+    { "id": "00000000-0000-4000-8000-000000000001", "title": "坊っちゃん", "totalPages": 300, "lastPage": 72, "addedAt": "2026-10-01T20:00:00" }
+  ],
+  "sessions": [],
+  "active": { "bookId": "00000000-0000-4000-8000-000000000001", "state": "paused", "startedAt": "2026-10-21T21:00:00", "pausedTotalSeconds": 0, "pausedAt": "2026-10-21T21:05:00", "finishedAt": null, "wasPaused": true },
+  "flags": { "firstOpenedAt": "2026-10-01T19:55:00", "firstSessionStarted": true, "first5minDone": false, "weekReachedWeekStart": null }
+}

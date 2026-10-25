@@ -1,0 +1,67 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+        "deviceName" : "iPhone 17 26.0",
+        "modelName" : "iPhone 17",
+        "osBuildNumber" : "23A343",
+        "osVersion" : "26.0",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 2,
+      "passedTests" : 0,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "ja_JP"
+      }
+    }
+  ],
+  "environmentDescription" : "Acceptance · Built with macOS 27.0.1",
+  "expectedFailures" : 0,
+  "failedTests" : 2,
+  "finishTime" : 1792898422.881,
+  "passedTests" : 0,
+  "result" : "Failed",
+  "runtimeWarnings" : [
+    {
+      "issueType" : "Runtime Warning",
+      "message" : "Invalid frame dimension (negative or non-finite)."
+    },
+    {
+      "issueType" : "Runtime Warning",
+      "message" : "Invalid frame dimension (negative or non-finite)."
+    }
+  ],
+  "skippedTests" : 0,
+  "startTime" : 1792897783.271,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "Failed to get matching snapshot: No matches found for first query match sequence: `Descendants matching type Any` -> `Elements matching predicate '\"error.saveFailed\" IN identifiers'`, given input App element pid: 57964",
+      "targetName" : "YomutokiAcceptanceTests",
+      "testIdentifier" : 1,
+      "testIdentifierString" : "FinishInputAcceptanceTests/test_AC64_swipeCancelFailureKeepsInput()",
+      "testIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/FinishInputAcceptanceTests/test_AC64_swipeCancelFailureKeepsInput",
+      "testName" : "test_AC64_swipeCancelFailureKeepsInput()"
+    },
+    {
+      "failureText" : "Failed to get matching snapshot: No matches found for first query match sequence: `Descendants matching type Any` -> `Elements matching predicate '\"error.saveFailed\" IN identifiers'`, given input App element pid: 58113",
+      "targetName" : "YomutokiAcceptanceTests",
+      "testIdentifier" : 2,
+      "testIdentifierString" : "FinishInputAcceptanceTests/test_AC65_swipeCancelRetryReturnsToReading()",
+      "testIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/FinishInputAcceptanceTests/test_AC65_swipeCancelRetryReturnsToReading",
+      "testName" : "test_AC65_swipeCancelRetryReturnsToReading()"
+    }
+  ],
+  "title" : "Test - Yomutoki",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 2
+}

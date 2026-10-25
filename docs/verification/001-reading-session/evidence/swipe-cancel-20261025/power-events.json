@@ -1,0 +1,17 @@
+{
+  "start": "2026-10-25T03:08:40+00:00",
+  "checked_until": "2026-10-25T03:13:41.070048+00:00",
+  "command": [
+    "pmset",
+    "-g",
+    "log"
+  ],
+  "exit": 0,
+  "matching_lines": [
+    "2026-10-25 12:10:30 +0900 Assertions          \tPID 353(powerd) Released PreventUserIdleSystemSleep \"Powerd - Prevent sleep while display is on\" 00:10:34  id:0x0x10000960a [System: PrevIdle]          ",
+    "2026-10-25 12:10:30 +0900 Assertions          \tPID 380(apsd) Summary NoIdleSleepAssertion \"com.apple.apsd-keepalive-push.apple.com-NonCellular\" 00:00:01  id:0x0x100009692 [System: PrevIdle]          ",
+    "2026-10-25 12:10:30 +0900 Assertions          \tPID 57742(xcodebuild) Summary PreventUserIdleSystemSleep \"Xcode running tests.\" 00:00:47  id:0x0x100009685 [System: PrevIdle]          ",
+    "2026-10-25 12:10:49 +0900 Assertions          \tPID 380(apsd) Released NoIdleSleepAssertion \"com.apple.apsd-keepalive-push.apple.com-NonCellular\" 00:00:20  id:0x0x100009692 [System: PrevIdle SysAct]          "
+  ],
+  "stderr": ""
+}

@@ -1,0 +1,1 @@
+ios/AcceptanceTests/ac18-reboot.sh:99:    sleep "$STATE_WAIT_STEP"

@@ -1,0 +1,208 @@
+{
+  "devices" : [
+    {
+      "architecture" : "arm64",
+      "deviceId" : "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+      "deviceName" : "iPhone 17 26.0",
+      "modelName" : "iPhone 17",
+      "osBuildNumber" : "23A343",
+      "osVersion" : "26.0",
+      "platform" : "iOS Simulator"
+    }
+  ],
+  "testNodes" : [
+    {
+      "children" : [
+        {
+          "children" : [
+            {
+              "children" : [
+                {
+                  "children" : [
+                    {
+                      "name" : "XCTAssertTrue failed - AX5 minutes can be reached by scrolling",
+                      "nodeType" : "Failure Message",
+                      "sourceLocation" : {
+                        "filePath" : "/tmp/reading-app-pr2-20261023-resume/ios/AcceptanceTests/Tests/G3VisualAuditTemporaryTests.swift",
+                        "lineNumber" : 112
+                      }
+                    },
+                    {
+                      "name" : "Failed to get matching snapshot: No matches found for first query match sequence: `Descendants matching type StaticText` -> `Elements matching predicate '\"book.sessionCount\" IN identifiers'`, given input App element pid: 9872\nPossibly caused by runtime issues:\nAutomation type mismatch: computed Other from legacy attributes vs StaticText from modern attribute. Input attributes and values: {\n    \"XC_kAXXCAttributeAutomationType\" = 48;\n    \"XC_kAXXCAttributeElementBaseType\" = UILabel;\n    \"XC_kAXXCAttributeElementType\" = UILabel;\n    \"XC_kAXXCAttributeTraits\" = 8590000128;\n}\nSee test report attachments for more detail.",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Invalid frame dimension (negative or non-finite).",
+                      "nodeType" : "Runtime Warning"
+                    }
+                  ],
+                  "duration" : "1分",
+                  "durationInSeconds" : 60.13683605194092,
+                  "name" : "test_G3_ax5()",
+                  "nodeIdentifier" : "G3VisualAuditTemporaryTests/test_G3_ax5()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_ax5",
+                  "nodeType" : "Test Case",
+                  "result" : "Failed"
+                },
+                {
+                  "children" : [
+                    {
+                      "name" : "Invalid frame dimension (negative or non-finite).",
+                      "nodeType" : "Runtime Warning"
+                    }
+                  ],
+                  "duration" : "1分16秒",
+                  "durationInSeconds" : 76.25349509716034,
+                  "name" : "test_G3_en()",
+                  "nodeIdentifier" : "G3VisualAuditTemporaryTests/test_G3_en()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_en",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "children" : [
+                    {
+                      "name" : "Invalid frame dimension (negative or non-finite).",
+                      "nodeType" : "Runtime Warning"
+                    }
+                  ],
+                  "duration" : "1分15秒",
+                  "durationInSeconds" : 75.146045088768,
+                  "name" : "test_G3_dark()",
+                  "nodeIdentifier" : "G3VisualAuditTemporaryTests/test_G3_dark()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_dark",
+                  "nodeType" : "Test Case",
+                  "result" : "Passed"
+                },
+                {
+                  "children" : [
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Contrast failed",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Hit area is too small",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Hit area is too small",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Hit area is too small",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Contrast failed",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Dynamic Type font sizes are partially unsupported",
+                      "nodeType" : "Failure Message"
+                    },
+                    {
+                      "name" : "Invalid frame dimension (negative or non-finite).",
+                      "nodeType" : "Runtime Warning"
+                    }
+                  ],
+                  "duration" : "1分48秒",
+                  "durationInSeconds" : 108.43335998058319,
+                  "name" : "test_G3_light()",
+                  "nodeIdentifier" : "G3VisualAuditTemporaryTests/test_G3_light()",
+                  "nodeIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests/test_G3_light",
+                  "nodeType" : "Test Case",
+                  "result" : "Failed"
+                }
+              ],
+              "name" : "G3VisualAuditTemporaryTests",
+              "nodeIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests/G3VisualAuditTemporaryTests",
+              "nodeType" : "Test Suite",
+              "result" : "Failed"
+            }
+          ],
+          "name" : "YomutokiAcceptanceTests",
+          "nodeIdentifierURL" : "test://com.apple.xcode/Yomutoki/YomutokiAcceptanceTests",
+          "nodeType" : "UI test bundle",
+          "result" : "Failed"
+        }
+      ],
+      "name" : "Acceptance",
+      "nodeType" : "Test Plan",
+      "result" : "Failed"
+    }
+  ],
+  "testPlanConfigurations" : [
+    {
+      "configurationId" : "1",
+      "configurationName" : "ja_JP"
+    }
+  ]
+}

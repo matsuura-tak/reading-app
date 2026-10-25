@@ -1,0 +1,42 @@
+{
+  "old_image": "screens/S2_normal_dark.png",
+  "new_image": "s2-after/S2_after_dark.png",
+  "image_size": [
+    1206,
+    2622
+  ],
+  "point_frame": [
+    334,
+    82,
+    48,
+    36
+  ],
+  "scale": 3,
+  "pixel_ROI": [
+    1002,
+    246,
+    1146,
+    354
+  ],
+  "pixel_count": 15552,
+  "old_exact_black": 1474,
+  "new_exact_black": 0,
+  "old_exact_white": 0,
+  "new_exact_white": 1474,
+  "black_to_white_same_position": 1474,
+  "most_common_old_color": [
+    159,
+    88,
+    51
+  ],
+  "most_common_old_color_count": 12468,
+  "most_common_new_color": [
+    159,
+    88,
+    51
+  ],
+  "most_common_new_color_count": 12468,
+  "background_color_positions_unchanged": 12468,
+  "changed_pixels": 2318,
+  "limitations": "同一ボタン矩形のラベル内側と背景色の比較。画像は加工せず画素を読むだけ。全画面/全設定のcontrast監査ではない。"
+}

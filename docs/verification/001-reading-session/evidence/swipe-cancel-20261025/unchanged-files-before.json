@@ -1,0 +1,246 @@
+[
+  {
+    "path": "ios/AcceptanceTests/AC18Reboot.xctestplan",
+    "sha256": "4a0e4f1d0f3ff30a570a107114171031ed6cf3b8cc896d3fd8f82c9a391333eb"
+  },
+  {
+    "path": "ios/AcceptanceTests/Acceptance.xctestplan",
+    "sha256": "68d7f540741c5b1ba3294ea32362785afbeb595afc9545e400c40528b03a6795"
+  },
+  {
+    "path": "ios/AcceptanceTests/Support/AcceptanceTestCase.swift",
+    "sha256": "91b2fe99155f31189ac13bdf49da03ae8d802ac5351493b2d3ff5afeed50feb4"
+  },
+  {
+    "path": "ios/AcceptanceTests/Support/AppSession.swift",
+    "sha256": "988ea1ac8f105415152d0a9c20de29dd7199910801916a3c32bf7e98014edfea"
+  },
+  {
+    "path": "ios/AcceptanceTests/Support/Fixture.swift",
+    "sha256": "a5c7796c1d5ccfe62d77d5e04e66adf0fe613257b1e36ee7822d994b72cea3d8"
+  },
+  {
+    "path": "ios/AcceptanceTests/Support/L10n.swift",
+    "sha256": "2a84b89ae0df35940f4ce65a0aa631793dc29d2b1fa6d7d450d9d30f04027e77"
+  },
+  {
+    "path": "ios/AcceptanceTests/Support/TelemetryReceiver.swift",
+    "sha256": "f977f5c782305f336b8879ff9656274c9318526fa508545f05d468bb899a0fb8"
+  },
+  {
+    "path": "ios/AcceptanceTests/Support/UIHelpers.swift",
+    "sha256": "5bceb295eb6f40cecca15a9b2056edfddfedeff86c71cea76bbb20d78b22cf3e"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/AC18RebootTests.swift",
+    "sha256": "59cfab392f08e5b8a0e9d9df69fc8c126446c58cb040c2fb441aa627ef055198"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift",
+    "sha256": "0c37a0fe4bb0c66768cfd71ae32bdd4e24ca5fa8fec0342d1cf2b8423ae30d3c"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+    "sha256": "d1ad3801e02759552c98e20b56c03312306f5c686631103d30c16019803e31a2"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift",
+    "sha256": "febd46561fd332dcd246bf5c62b3863564081f3258b69f5723eeb83e8b98a4e5"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+    "sha256": "4f9d6a8deb9f58ee71ec88412258fe4459296736b89d2c6b11711a64aced22e7"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift",
+    "sha256": "00a93c054cfad38449f57b9bef3ea2528865c9fff0ae66af3541de7ccd923a89"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift",
+    "sha256": "1e0d7951458f6174d6a6e036fcc83822cbf26ffe868693ac4c1d62e1ae6fdd7e"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+    "sha256": "b8b3a6f2fdb5774a8882eb25d06e37cdd988a019d75d1f39b88a4fede4b1a96d"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+    "sha256": "0fe892a81c527e0a597680bde5911d04b375f25c9e88134af1e70620fa732aff"
+  },
+  {
+    "path": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+    "sha256": "72d1c3f41d06aeb210f5274118533fa4af36997b4fc8316fd5bb486a4424c4b2"
+  },
+  {
+    "path": "ios/AcceptanceTests/ac18-reboot.sh",
+    "sha256": "a138028596a590bfdfd2772d75acbcb58226d58b4d65974840f490fc925c7643"
+  },
+  {
+    "path": "ios/AcceptanceTests/ac39-xcstrings.sh",
+    "sha256": "da079646af22a2caededd2b73a6732dfaf24e35d0559794f56ee452c41613759"
+  },
+  {
+    "path": "ios/AcceptanceTests/run-acceptance.sh",
+    "sha256": "30d7a3f2c502ce63869c02e86860b9eb33130b5fd8e6251330dd49317b9246f0"
+  },
+  {
+    "path": "ios/AcceptanceTests/target.yml",
+    "sha256": "c1dcbb97bc3b9840367914815601717eb0d012d443c787bb080b5a80ac3bcc64"
+  },
+  {
+    "path": "ios/Yomutoki/App/YomutokiApp.swift",
+    "sha256": "eb50a32ddfd25820977cefcd90b7b0220df73ed306b5cd4282392b1651df1193"
+  },
+  {
+    "path": "ios/Yomutoki/Debug/HTTPTelemetrySink.swift",
+    "sha256": "c0650a861df7765c55ae9ff1846bd707940180f2371d1344c23d3107bd0bd0da"
+  },
+  {
+    "path": "ios/Yomutoki/Debug/UITestHooks.swift",
+    "sha256": "51c6bc666e5380ab032c521d544282787ecfe1052679ac132cc4e7f56973bf31"
+  },
+  {
+    "path": "ios/Yomutoki/Info-Debug.plist",
+    "sha256": "6e8e9631cb13f1662fe5e5ed4f21431c386835f0c12a3642edbefc5cde293623"
+  },
+  {
+    "path": "ios/Yomutoki/Info.plist",
+    "sha256": "0f20da6b5d393717639ca35de4519ba27210cb8da54d80459df6c4daae25bf64"
+  },
+  {
+    "path": "ios/Yomutoki/Model/AppClock.swift",
+    "sha256": "23e762fa1a6f931958fa16ebfe6df3e0a2db546720eed8eea8524db3e1f442c4"
+  },
+  {
+    "path": "ios/Yomutoki/Model/DisplayRules.swift",
+    "sha256": "e22438514a38a36a92e103deabac813a04ce9702d7187e2a7d759d0da6efde3f"
+  },
+  {
+    "path": "ios/Yomutoki/Model/LibraryStore.swift",
+    "sha256": "49b1e4fb0a9163d2e6ebe42477490bac0a9cf7c7121f34fa75fcb5d47fd63ab9"
+  },
+  {
+    "path": "ios/Yomutoki/Model/ReadingRules.swift",
+    "sha256": "b766298cedcd58d2c12bb40c2b344c17edad0050107c3587995fa309b4a03790"
+  },
+  {
+    "path": "ios/Yomutoki/Model/Schema.swift",
+    "sha256": "1f87c1eb04cdb900f77acaec87f6aef3b1718319f9550c1fd07da0ec7cdc9479"
+  },
+  {
+    "path": "ios/Yomutoki/PrivacyInfo.xcprivacy",
+    "sha256": "a331d51864743ebe4e00dd22360b4a538b6b3ac26a6b3eb54094e60a36959a12"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/Assets.xcassets/AccentColor.colorset/Contents.json",
+    "sha256": "109c9ded8d8914c35933884015b0548e0ad6788fbb7b80208759ad14e2e62801"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json",
+    "sha256": "d776cfae1b33325f70befa1b0fc5e5420c660655603409e8588d94fd8fc6e112"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/Assets.xcassets/BookmarkFill.colorset/Contents.json",
+    "sha256": "4ef8661fc81aa21d948de170accc39c3bd9f610ca6c09ad19ef3d37a6a3fe1a6"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/Assets.xcassets/Contents.json",
+    "sha256": "0fd49ba3c3585c709678e0046a821c3c60685ec7063720d30d3a3448be3a208b"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/Assets.xcassets/OnAccent.colorset/Contents.json",
+    "sha256": "d828918e2398c3b9568e5fa48a22afca53fc28c80faae23c5b5314381f9ecc91"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/InfoPlist.xcstrings",
+    "sha256": "60198c8019ad3e9a83cbff7963c021010caa0f015fc004f99a4424f23d95f7e9"
+  },
+  {
+    "path": "ios/Yomutoki/Resources/Localizable.xcstrings",
+    "sha256": "90924410019e01818213e1e161d6d60ea7c40e8fb525afcdb4c1c68782e34193"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/AddBookView.swift",
+    "sha256": "604d14eacb971af2f55143319b2435f179f0b692d023f16e36f5bb732b531a4d"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/AppStyle.swift",
+    "sha256": "3fb1a151900239170c1d96fbca4822a698d413f2ac60698eb60da94b26b97aca"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/BookDetailView.swift",
+    "sha256": "a814090c375a7f4c05b59e9d905f1133de7759d278c9cc20fc52682a185dcc9d"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/FinishSessionView.swift",
+    "sha256": "d056eb4a904342171c4193dcf1e25f94623dcae4eefa8544dd9da0d44069fea8"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/HomeView.swift",
+    "sha256": "7d845427527d875f1bb2d93a14514139f27e1c47438b0f8995e3c476a6e886a8"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/Localized.swift",
+    "sha256": "859f160c5143d96116633ffc1c0afa7c59b736a1cffd12a7d7b10b773e67f8e4"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/PreviewSupport.swift",
+    "sha256": "35c4c09a1983fe260d3b90894845a79890b5144706450cd76057a09307d1881c"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/ReadingView.swift",
+    "sha256": "81ab8d7cb3887d6f28b643716055988cae1e5eed8b0ab26846fdf1d163b262a3"
+  },
+  {
+    "path": "ios/Yomutoki/Screens/RootView.swift",
+    "sha256": "4243b7069f5c2a5894fb09663c97a0d5320503270ad6ab9241f4860354fe6360"
+  },
+  {
+    "path": "ios/Yomutoki/Telemetry/PerfSignpost.swift",
+    "sha256": "26547078aab20d9a14682a30d7b36dffe07b232aef7a1c2cc84c71657b1c1539"
+  },
+  {
+    "path": "ios/Yomutoki/Telemetry/TelemetryEvent.swift",
+    "sha256": "93ca00462717dd51fbfd1822cf9c73b1f0fa76a70b7fa7237d95dd0e6511bb1b"
+  },
+  {
+    "path": "ios/Yomutoki/Telemetry/TelemetryRecorder.swift",
+    "sha256": "97989a1da25d387624ad7e3e8a78584f7213152720421e3354197b657eac6622"
+  },
+  {
+    "path": "ios/Yomutoki/Telemetry/TelemetrySink.swift",
+    "sha256": "2270f88ccdc0a694c84c3ac6fcfaaa050c0dd38cc170dee424980a900c16d7a1"
+  },
+  {
+    "path": "ios/Yomutoki/Yomutoki.entitlements",
+    "sha256": "e33441ee52d385c3f31e78b370e436e5fdbaa003132d5acf047642bb2f028fcc"
+  },
+  {
+    "path": "ios/YomutokiTests/DisplayRulesTests.swift",
+    "sha256": "155c6aba215a04cf9efb47f6bccace65c3b177d53cc4a1d79de37dd5efe9e63b"
+  },
+  {
+    "path": "ios/YomutokiTests/LibraryStoreTests.swift",
+    "sha256": "948faee73661628daf1dcd0bfeb0fc97ae5cf037ecd7a7f71633ef3fae6c9e4f"
+  },
+  {
+    "path": "ios/YomutokiTests/ReadingRulesTests.swift",
+    "sha256": "0798d53bf04954c4c0fbf16aaccbbce42871ae9bfb6cffe76636b5ca96cfd399"
+  },
+  {
+    "path": "ios/YomutokiTests/TelemetryTests.swift",
+    "sha256": "eb62cd2a8b1eddf0d18b93416e637c4f304dc299761549f6a581434b43c6404b"
+  },
+  {
+    "path": "ios/YomutokiTests/UITestHooksTests.swift",
+    "sha256": "321adce9f076b81e9921403e818ba08d8088ab3f9d055fa9b0bb7e89ad0ebe1a"
+  },
+  {
+    "path": "ios/YomutokiTests/Unit.xctestplan",
+    "sha256": "485e742a458c843922e7ae20971b3f6f60bdfffd033c00e0aea2bbeb9b644351"
+  },
+  {
+    "path": "ios/project.yml",
+    "sha256": "ceaa99b13eaa90fac7ad82ae6bb4ab0dd9dda947533b85f8ccde5b4381aa6e98"
+  }
+]

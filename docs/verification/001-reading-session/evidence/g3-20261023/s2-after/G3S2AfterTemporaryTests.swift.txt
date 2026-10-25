@@ -1,0 +1,46 @@
+import XCTest
+
+// Temporary verifier capture for the one-line S2 label-color fix. No AC expectations changed.
+final class G3S2AfterTemporaryTests: AcceptanceTestCase {
+    @MainActor func test_G3_S2_light() { capture("light") }
+    @MainActor func test_G3_S2_dark() { capture("dark") }
+    @MainActor func test_G3_S2_ax5() { capture("ax5") }
+    @MainActor func test_G3_S2_en() { capture("en") }
+
+    @MainActor private func capture(_ variant: String) {
+        XCUIDevice.shared.appearance = variant == "dark" ? .dark : .light
+        let app = XCUIApplication(bundleIdentifier: "com.example.yomutoki")
+        let english = variant == "en"
+        app.launchArguments = ["-UITest", "-AppleLanguages", english ? "(en)" : "(ja)", "-AppleLocale", english ? "en_US" : "ja_JP",
+            "-UIPreferredContentSizeCategoryName", variant == "ax5" ? "UICTContentSizeCategoryAccessibilityXXXL" : "UICTContentSizeCategoryL"]
+        app.launchEnvironment = ["UITEST_SEED": Seed(books: []).jsonString(), "UITEST_NOW": Fixture.now.text,
+            "UITEST_CLOCK_FROZEN": "1", "UITEST_TIME_ZONE": WallClock.timeZoneID, "UITEST_LOCALE": english ? "en_US" : "ja_JP"]
+        app.launch()
+        let add = app.buttons.matching(identifier: "library.addBook").firstMatch
+        Wait.exists(add, "S2 entry")
+        add.tap()
+        let title = app.textFields.matching(identifier: "book.add.title").firstMatch
+        Wait.exists(title, "S2 title")
+        title.tap()
+        title.typeText("Reading notes")
+        if english {
+            let systemContinue = app.buttons.matching(NSPredicate(format: "label == %@", "Continue")).firstMatch
+            if systemContinue.waitForExistence(timeout: Wait.optional) { systemContinue.tap() }
+        }
+        let save = app.buttons.matching(identifier: "book.save").firstMatch
+        Wait.exists(save, "S2 add")
+        XCTAssertTrue(save.isEnabled)
+        XCTAssertTrue(save.isHittable)
+        let picture = XCTAttachment(screenshot: app.screenshot())
+        picture.name = "S2_after_\(variant)"
+        picture.lifetime = .keepAlways
+        self.add(picture)
+        let tree = XCTAttachment(string: app.debugDescription)
+        tree.name = "S2_after_\(variant)_tree"
+        tree.lifetime = .keepAlways
+        self.add(tree)
+        print("[G3-S2-AFTER] \(variant) addFrame=\(save.frame)")
+        app.terminate()
+        XCUIDevice.shared.appearance = .light
+    }
+}

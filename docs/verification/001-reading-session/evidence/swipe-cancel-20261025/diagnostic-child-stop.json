@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-25T03:20:22.727618+00:00",
+  "ps_exit": 0,
+  "ps_stdout": "58204 57742 /Library/Developer/PrivateFrameworks/CoreSimulator.framework/Versions/A/Resources/bin/simctl diagnose -l -b --timeout=600 --log-option=--last --log-option=4m --output=/tmp/reading-app-swipe-cancel-red-20261025.xcresult/Staging/1_Test/Diagnostics/simctl_diagnostics --no-archive --udid=B18DB71A-DB50-4F84-9DDD-7D63541CF3BB\n",
+  "ps_stderr": "",
+  "signal_sent": "SIGTERM"
+}

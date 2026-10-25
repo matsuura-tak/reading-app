@@ -1,0 +1,46 @@
+{
+  "configurations" : [
+    {
+      "id" : "1CEB16C3-A29D-43F3-AA42-17CC0705CE62",
+      "name" : "ja_JP",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "ACCEPTANCE_LANG",
+            "value" : "ja"
+          },
+          {
+            "key" : "ACCEPTANCE_TELEMETRY_PATH",
+            "value" : "http"
+          }
+        ],
+        "language" : "ja",
+        "region" : "JP"
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-UITest"
+      }
+    ],
+    "preferredScreenCaptureFormat" : "screenshots",
+    "uiTestingScreenshotsLifetime" : "keepAlways"
+  },
+  "testTargets" : [
+    {
+      "selectedTests" : [
+        "AC18RebootTests\/test_AC18_1_seedLibraryBeforeReboot()",
+        "AC18RebootTests\/test_AC18_2_libraryRemainsAfterReboot()"
+      ],
+      "target" : {
+        "containerPath" : "container:Yomutoki.xcodeproj",
+        "identifier" : "DC1C774817D8D1F9A3D54A52",
+        "name" : "YomutokiAcceptanceTests"
+      }
+    }
+  ],
+  "version" : 1
+}

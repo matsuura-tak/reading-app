@@ -1,0 +1,101 @@
+{
+  "exit": 65,
+  "issues": [
+    {
+      "variant": "A",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "A",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "A",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "A",
+      "type": 1,
+      "detail": "Contrast nearly passed | Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger. | element=Attributes: StaticText, 0x1099114d0, {{16.0, 168.0}, {370.0, 40.3}}, label: '坊っちゃん'"
+    },
+    {
+      "variant": "A",
+      "type": 1,
+      "detail": "Contrast nearly passed | Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger. | element=Attributes: StaticText, 0x10654dae0, {{16.0, 435.3}, {370.0, 40.3}}, label: '記録 3件'"
+    },
+    {
+      "variant": "B",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "B",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "B",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "B",
+      "type": 1,
+      "detail": "Contrast nearly passed | Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger. | element=Attributes: StaticText, 0x106572670, {{16.0, 168.0}, {370.0, 40.3}}, label: '坊っちゃん'"
+    },
+    {
+      "variant": "B",
+      "type": 1,
+      "detail": "Contrast nearly passed | Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger. | element=Attributes: StaticText, 0x106571d10, {{16.0, 435.3}, {370.0, 40.3}}, label: '記録 3件'"
+    },
+    {
+      "variant": "C",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "C",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "C",
+      "type": 4,
+      "detail": "Hit area is too small | The size of this SwiftUI.AccessibilityNode is too small for user to interact. | element=nil"
+    },
+    {
+      "variant": "C",
+      "type": 1,
+      "detail": "Contrast nearly passed | Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger. | element=nil"
+    },
+    {
+      "variant": "C",
+      "type": 1,
+      "detail": "Contrast nearly passed | Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger. | element=nil"
+    }
+  ],
+  "counts": {
+    "A": {
+      "1": 2,
+      "4": 3,
+      "65536": 0
+    },
+    "B": {
+      "1": 2,
+      "4": 3,
+      "65536": 0
+    },
+    "C": {
+      "1": 2,
+      "4": 3,
+      "65536": 0
+    }
+  },
+  "issueCount": 15,
+  "auditBegins": 3,
+  "auditEnds": 3,
+  "testCaseStarts": 1
+}

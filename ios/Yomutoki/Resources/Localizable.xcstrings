@@ -1,0 +1,1556 @@
+{
+  "sourceLanguage" : "ja",
+  "strings" : {
+    "action.continue" : {
+      "comment" : "同上（最後のページが0で、記録が1件以上）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "続きを読む"
+          }
+        }
+      }
+    },
+    "action.readFromPage" : {
+      "comment" : "S1 の主操作の2行目、S3 の主操作（最後のページが1以上）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read from Page %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldページから読む"
+          }
+        }
+      }
+    },
+    "action.resume" : {
+      "comment" : "S1 と S3 の主操作（reading。finishing をやめた後を含む。AC-52）、S3 の book.openActiveReading（別の本が reading のとき）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書に戻る"
+          }
+        }
+      }
+    },
+    "action.resumePaused" : {
+      "comment" : "S1 と S3 の主操作（paused。AC-52）、S3 の book.openActiveReading（別の本が paused のとき）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to Paused Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止中の読書に戻る"
+          }
+        }
+      }
+    },
+    "action.start" : {
+      "comment" : "同上（最後のページが0で、記録が0件）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み始める"
+          }
+        }
+      }
+    },
+    "book.add.discard.confirm" : {
+      "comment" : "S2 の確認のダイアログ（destructive）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close Without Adding"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加せずに閉じる"
+          }
+        }
+      }
+    },
+    "book.add.discard.title" : {
+      "comment" : "S2 の確認のダイアログの題",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close without adding this book?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この本を追加せずに閉じますか？"
+          }
+        }
+      }
+    },
+    "book.add.navTitle" : {
+      "comment" : "S2 の題",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Book"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本を追加"
+          }
+        }
+      }
+    },
+    "book.add.titleField" : {
+      "comment" : "S2 の題名の欄の見出し（Section の header）と、欄の VoiceOver のラベル（必須であることを見出しで伝える。placeholder は置かない。D-49）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title (Required)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "題名（必須）"
+          }
+        }
+      }
+    },
+    "book.add.titleLimit.onSave" : {
+      "comment" : "S2 の題名の欄の下（形B。整えたあとの字数が100を超えている間だけ。%lld は100。識別子は book.add.titleLimit。D-57）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Titles can have up to %lld character. Extra characters won't be saved."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Titles can have up to %lld characters. Extra characters won't be saved."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "題名は%lld字までです。超えた分は保存しません。"
+          }
+        }
+      }
+    },
+    "book.add.totalPagesField" : {
+      "comment" : "S2 の総ページ数の欄の見出しと、欄の VoiceOver のラベル（D-49）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Pages (Optional)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "総ページ数（任意）"
+          }
+        }
+      }
+    },
+    "book.add.totalPagesHint" : {
+      "comment" : "S2 の総ページ数の下",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add this to see your progress as a percentage."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入れると、進み具合を％で出します。"
+          }
+        }
+      }
+    },
+    "book.add.totalPagesOutOfRange" : {
+      "comment" : "S2 の総ページ数の下（範囲の外か数字でないとき。ヒントと入れ替える）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a number from 1 to 9999."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1から9999までの数字で入れてください。"
+          }
+        }
+      }
+    },
+    "book.save" : {
+      "comment" : "S2 の確定のボタン",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加"
+          }
+        }
+      }
+    },
+    "book.sessionCount" : {
+      "comment" : "S3 の記録の見出し",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld session"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld sessions"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録 %lld件"
+          }
+        }
+      }
+    },
+    "book.sessions.empty" : {
+      "comment" : "S3 の記録が0件のとき",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No sessions yet. Finished sessions appear here."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだ記録はありません。読書を終えると、ここに残ります。"
+          }
+        }
+      }
+    },
+    "book.start.busy" : {
+      "comment" : "S3 の主操作の上（別の本が読書中）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're reading “%@.” Finish that session to start this book."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」を読書中です。その読書を終えると、この本で読み始められます。"
+          }
+        }
+      }
+    },
+    "book.stat.lastPage" : {
+      "comment" : "S3 の値の行の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最後のページ"
+          }
+        }
+      }
+    },
+    "book.stat.progress" : {
+      "comment" : "S3 の値の行の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progress"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "進み具合"
+          }
+        }
+      }
+    },
+    "book.stat.totalPages" : {
+      "comment" : "S3 の値の行の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Pages"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "総ページ数"
+          }
+        }
+      }
+    },
+    "book.stat.totalTime" : {
+      "comment" : "S3 の値の行の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Time"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合計時間"
+          }
+        }
+      }
+    },
+    "common.cancel" : {
+      "comment" : "S2 と S5 の左上、S6 の alert の取り消し",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
+          }
+        }
+      }
+    },
+    "common.loading" : {
+      "comment" : "S1、S3 の ProgressView",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込み中"
+          }
+        }
+      }
+    },
+    "common.ok" : {
+      "comment" : "S7 のボタン",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "error.loadFailed.message" : {
+      "comment" : "同上",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing on this iPhone was deleted. Try loading again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "端末の中の記録は消していません。もう一度読み込んでください。"
+          }
+        }
+      }
+    },
+    "error.loadFailed.retry" : {
+      "comment" : "同上のボタン",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度読み込む"
+          }
+        }
+      }
+    },
+    "error.loadFailed.title" : {
+      "comment" : "S1、S3 の読み込みの失敗（AC-54）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Load Your Books"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本と記録を読み込めませんでした"
+          }
+        }
+      }
+    },
+    "error.retry" : {
+      "comment" : "S2 と S5 のエラーの区画のボタン（識別子 error.retry）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度保存"
+          }
+        }
+      }
+    },
+    "error.retry.cancel" : {
+      "comment" : "S5 のエラーの区画のボタン（識別子 error.retry。やめる保存の失敗。AC-64、AC-65）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Returning to Reading Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度読書に戻る"
+          }
+        }
+      }
+    },
+    "error.retry.finish" : {
+      "comment" : "S4 の右のボタンの場所の再試行（識別子 error.retry。「終える」と60秒未満で終える、の両方。AC-62、AC-63、AC-66、AC-67）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Finishing Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度終える"
+          }
+        }
+      }
+    },
+    "error.retry.pause" : {
+      "comment" : "S4 の左のボタンの場所の再試行（識別子 error.retry。AC-58、AC-59）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Pausing Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度一時停止"
+          }
+        }
+      }
+    },
+    "error.retry.resume" : {
+      "comment" : "S4 の左のボタンの場所の再試行（識別子 error.retry。AC-60、AC-61）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Resuming Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度再開"
+          }
+        }
+      }
+    },
+    "error.retry.start" : {
+      "comment" : "S1、S3 の主操作の場所の再試行（識別子 error.retry。AC-56、AC-57）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Starting Again"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もう一度読み始める"
+          }
+        }
+      }
+    },
+    "error.saveFailed" : {
+      "comment" : "S2、S5 のエラーの区画の題、S1、S3、S4 のエラーの区画の題（読み始め、一時停止、再開、「終える」の保存の失敗）、S7 の題",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Save Changes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "変更を保存できませんでした"
+          }
+        }
+      }
+    },
+    "error.saveFailed.book" : {
+      "comment" : "S2 のエラーの区画",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What you entered is still here. Try saving again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入れた題名はそのままです。もう一度保存してください。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.cancel" : {
+      "comment" : "S5 のエラーの区画の文（やめる保存の失敗。「キャンセル」と下へのスワイプ。AC-64）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You haven't returned to reading yet. What you entered is still here. Time on this screen isn't counted."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだ読書に戻っていません。入れた値はそのままです。この画面にいる間の時間は数えません。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.delete" : {
+      "comment" : "S7 の本文",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The session wasn't deleted. Try deleting it again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録は消えていません。もう一度消してください。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.finish" : {
+      "comment" : "S4 のエラーの区画の文（「終える」の保存の失敗。経過60秒以上と60秒未満の両方。AC-62、AC-66）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your reading session hasn't ended. The time so far hasn't been lost."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書はまだ終わっていません。ここまでの時間は消えていません。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.pause" : {
+      "comment" : "S4 のエラーの区画の文（一時停止の保存の失敗。AC-58）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your reading isn't paused. The timer is still running."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書は止まっていません。時間は数え続けています。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.resume" : {
+      "comment" : "S4 のエラーの区画の文（再開の保存の失敗。AC-60）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your reading is still paused. The timer is stopped."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書は一時停止のままです。時間は止まっています。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.session" : {
+      "comment" : "S5 のエラーの区画",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your reading session is still here, and the time hasn't changed. Try saving again."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書は消えていません。読んだ時間も変わっていません。もう一度保存してください。"
+          }
+        }
+      }
+    },
+    "error.saveFailed.start" : {
+      "comment" : "S1、S3 のエラーの区画の文（読み始めの保存の失敗。AC-56）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your reading session hasn't started, and the timer isn't running."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書はまだ始まっていません。時間は数えていません。"
+          }
+        }
+      }
+    },
+    "format.minutes" : {
+      "comment" : "S1 の今週、S3 の合計時間、記録の行の分",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld分"
+          }
+        }
+      }
+    },
+    "format.percent" : {
+      "comment" : "S3 の進み具合の値（例 24%）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        }
+      }
+    },
+    "home.bookCount" : {
+      "comment" : "S1 の冊数の見出し",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld book"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld books"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld冊"
+          }
+        }
+      }
+    },
+    "home.primary.a11y" : {
+      "comment" : "S1 の主操作と、そこに出る error.retry の VoiceOver のラベル（1つ目は題名、2つ目は上の action.* か error.retry.start）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@、%2$@"
+          }
+        }
+      }
+    },
+    "home.title" : {
+      "comment" : "S1 の見出し",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書"
+          }
+        }
+      }
+    },
+    "home.weekTotal.label" : {
+      "comment" : "S1 の今週の行の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Week"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今週"
+          }
+        }
+      }
+    },
+    "library.addBook" : {
+      "comment" : "S1 の「＋」のラベル、空の状態のボタン",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Book"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本を追加"
+          }
+        }
+      }
+    },
+    "library.empty.message" : {
+      "comment" : "S1 の空の状態",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the title of a book you're reading, and you can start right away."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読んでいる本の題名を入れると、すぐに読み始められます。"
+          }
+        }
+      }
+    },
+    "library.empty.title" : {
+      "comment" : "S1 の空の状態",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Books Yet"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本がまだありません"
+          }
+        }
+      }
+    },
+    "reading.elapsed.hms" : {
+      "comment" : "S4 の経過の VoiceOver のラベル（60分以上）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@hours@, %#@minutes@, %#@seconds@"
+          },
+          "substitutions" : {
+            "hours" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg hour"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg hours"
+                    }
+                  }
+                }
+              }
+            },
+            "minutes" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg minute"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg minutes"
+                    }
+                  }
+                }
+              }
+            },
+            "seconds" : {
+              "argNum" : 3,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg second"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg seconds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld時間%2$lld分%3$lld秒"
+          }
+        }
+      }
+    },
+    "reading.elapsed.ms" : {
+      "comment" : "S4 の経過の VoiceOver のラベル（60分未満）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@minutes@, %#@seconds@"
+          },
+          "substitutions" : {
+            "minutes" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg minute"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg minutes"
+                    }
+                  }
+                }
+              }
+            },
+            "seconds" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg second"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg seconds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld分%2$lld秒"
+          }
+        }
+      }
+    },
+    "reading.finish" : {
+      "comment" : "S4 の主操作",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "終える"
+          }
+        }
+      }
+    },
+    "reading.fromPage" : {
+      "comment" : "S4 の題名の下",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "From page %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldページから"
+          }
+        }
+      }
+    },
+    "reading.pause" : {
+      "comment" : "S4 のボタン",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止"
+          }
+        }
+      }
+    },
+    "reading.resume" : {
+      "comment" : "S4 のボタン",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再開"
+          }
+        }
+      }
+    },
+    "reading.state.paused" : {
+      "comment" : "S4 の状態の文字",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paused"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一時停止中"
+          }
+        }
+      }
+    },
+    "reading.state.reading" : {
+      "comment" : "S4 の状態の文字",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書中"
+          }
+        }
+      }
+    },
+    "session.delete.confirm" : {
+      "comment" : "S6 の alert の消すボタン（destructive の形は付けない。D-16）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Session"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "記録を消す"
+          }
+        }
+      }
+    },
+    "session.delete.message" : {
+      "comment" : "S6 の alert の本文",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute will be subtracted from the total time. The last page won't change. You can't undo this."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes will be subtracted from the total time. The last page won't change. You can't undo this."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合計時間から%lld分を引きます。最後のページは変わりません。消した記録は元に戻せません。"
+          }
+        }
+      }
+    },
+    "session.delete.title" : {
+      "comment" : "S6 の alert の題",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete this session?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この記録を消しますか？"
+          }
+        }
+      }
+    },
+    "session.finish.minutes.hint" : {
+      "comment" : "S5 の読んだ時間の下",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minute has passed. If you weren't reading the whole time, enter less."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld minutes have passed. If you weren't reading the whole time, enter less."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "経過は%lld分です。読んでいない時間があれば、短く直せます。"
+          }
+        }
+      }
+    },
+    "session.finish.minutes.label" : {
+      "comment" : "S5 の欄の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutes Read"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読んだ時間（分）"
+          }
+        }
+      }
+    },
+    "session.finish.minutesOutOfRange" : {
+      "comment" : "S5 の読んだ時間の下（%lld は経過の分数。ヒントと入れ替える）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a number from 1 to %lld."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1から%lldまでの数字で入れてください。"
+          }
+        }
+      }
+    },
+    "session.finish.navTitle" : {
+      "comment" : "S5 の題",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Reading"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読書を終える"
+          }
+        }
+      }
+    },
+    "session.finish.page.hint" : {
+      "comment" : "S5 の今のページの下（最後のページが1以上）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last time you were on page %lld. You can also save without a page."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前回は%lldページでした。入れずに保存もできます。"
+          }
+        }
+      }
+    },
+    "session.finish.page.hintFirst" : {
+      "comment" : "S5 の今のページの下（最後のページが0）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can also save without a page."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入れずに保存もできます。"
+          }
+        }
+      }
+    },
+    "session.finish.page.label" : {
+      "comment" : "S5 の欄の項目名",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今のページ"
+          }
+        }
+      }
+    },
+    "session.finish.pageOutOfRange" : {
+      "comment" : "S5 の今のページの下（%lld は総ページ数。未設定なら 9999。ヒントと入れ替える）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a number from 0 to %lld."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0から%lldまでの数字で入れてください。"
+          }
+        }
+      }
+    },
+    "session.finish.save" : {
+      "comment" : "S5 の確定のボタン（ツールバーの右と、キーボードの上の session.finish.saveKeyboard）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        }
+      }
+    },
+    "session.finish.tooShort" : {
+      "comment" : "S3 の先頭（60秒未満で終えた直後）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That was under a minute, so it wasn't saved."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1分未満だったので、記録しませんでした。"
+          }
+        }
+      }
+    },
+    "session.row.delete" : {
+      "comment" : "S3 の行のスワイプ",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "削除"
+          }
+        }
+      }
+    },
+    "session.row.pages" : {
+      "comment" : "S3 の記録の行のページ（その記録で進んだページの数。読み返しは0。D-54）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld page read"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld pages read"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldページ進んだ"
+          }
+        }
+      }
+    },
+    "session.saved.announcement" : {
+      "comment" : "読書を保存して S3 に出たときの VoiceOver の知らせ（画面には出さない）",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Saved %lld minute."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Saved %lld minutes."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld分を記録しました。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

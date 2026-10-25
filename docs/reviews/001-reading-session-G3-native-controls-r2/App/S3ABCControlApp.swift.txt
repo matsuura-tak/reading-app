@@ -1,0 +1,101 @@
+import SwiftUI
+
+enum ControlVariant: String {
+    case A, B, C
+
+    static var requested: Self {
+        let argument = ProcessInfo.processInfo.arguments.first { $0.hasPrefix("--variant=") }
+        return argument.flatMap { Self(rawValue: String($0.dropFirst("--variant=".count))) } ?? .A
+    }
+}
+
+@main
+struct S3ABCControlApp: App {
+    var body: some Scene {
+        WindowGroup { S3ControlView(variant: .requested) }
+    }
+}
+
+struct S3ControlView: View {
+    let variant: ControlVariant
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("坊っちゃん") {
+                    stat("最後のページ", value: "72", identifier: "control.stat.lastPage")
+                    stat("進み具合", value: "24%", identifier: "control.stat.progress")
+                    stat("総ページ数", value: "300", identifier: "control.stat.totalPages")
+                    stat("合計時間", value: "60分", identifier: "control.stat.totalMinutes")
+                }
+                Section("記録 3件") {
+                    switch variant {
+                    case .A:
+                        ForEach(0..<3, id: \.self) { index in
+                            record(index)
+                                .swipeActions {
+                                    Button("削除", role: .destructive) {}
+                                }
+                        }
+                    case .B:
+                        ForEach(0..<3, id: \.self) { index in
+                            record(index)
+                        }
+                        .onDelete { _ in }
+                    case .C:
+                        ForEach(0..<3, id: \.self) { index in
+                            record(index)
+                                .swipeActions {
+                                    Button("削除", role: .destructive) {}
+                                }
+                        }
+                        .onDelete { _ in }
+                    }
+                }
+            }
+            .navigationTitle("本の詳細")
+            .toolbar {
+                if variant != .A {
+                    ToolbarItem(placement: .topBarTrailing) { EditButton() }
+                }
+            }
+        }
+    }
+
+    private func stat(_ label: String, value: String, identifier: String) -> some View {
+        Group {
+            LabeledContent {
+                Text(value)
+                    .monospacedDigit()
+                    .foregroundStyle(Color.primary)
+            } label: {
+                Text(label)
+            }
+        }
+        .foregroundStyle(Color.primary)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(label))
+        .accessibilityValue(Text(verbatim: value))
+        .accessibilityIdentifier(identifier)
+    }
+
+    private func record(_ index: Int) -> some View {
+        VStack(alignment: .leading) {
+            Text(["2026年10月23日", "2026年10月22日", "2026年10月21日"][index])
+                .font(.subheadline)
+            HStack {
+                Text(["30分", "20分", "10分"][index])
+                    .font(.body)
+                    .monospacedDigit()
+                Text(["72ページ", "40ページ", "20ページ"][index])
+                    .font(.body)
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("control.record.\(index)")
+    }
+}
+
+#Preview("A swipeActions") { S3ControlView(variant: .A) }
+#Preview("B onDelete EditButton") { S3ControlView(variant: .B) }
+#Preview("C both") { S3ControlView(variant: .C) }

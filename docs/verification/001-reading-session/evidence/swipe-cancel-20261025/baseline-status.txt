@@ -1,0 +1,16 @@
+ M docs/progress.md
+ M docs/verification/001-reading-session/test-plan.md
+ M ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift
+?? docs/reviews/001-reading-session-G2-ci-facb324.log
+?? docs/reviews/001-reading-session-G2-ci-facb324.md
+?? docs/reviews/001-reading-session-G3-cloud-cohort-plan.md
+?? docs/reviews/001-reading-session-G3-design-reviewer-r1.md
+?? docs/reviews/001-reading-session-G3-ios-static-triage-r1.md
+?? docs/reviews/001-reading-session-G3-stability-cloud-r1.md
+?? docs/reviews/001-reading-session-G3-stability-cloud-r1/
+?? docs/reviews/001-reading-session-G3-stability-local-r1/
+?? docs/verification/001-reading-session/evidence/g3-stability-20261024/
+?? docs/verification/001-reading-session/evidence/g3-states-20261024/
+?? docs/verification/001-reading-session/evidence/swipe-cancel-20261025/
+?? docs/verification/001-reading-session/stability-20261024.md
+?? docs/verification/001-reading-session/states-20261024.md

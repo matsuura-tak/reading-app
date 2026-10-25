@@ -1,0 +1,554 @@
+{
+  "prdACs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67
+  ],
+  "testACsIncludingCatalogScript": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67
+  ],
+  "missing": [],
+  "extra": [],
+  "uiMethods": [
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC9_enteringPageRecordsProgress",
+      "ac": 9
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC10_finishWithoutPage",
+      "ac": 10
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC11_pageAboveTotalPagesIsRejected",
+      "ac": 11
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC12_editMinutesWhenFinishing",
+      "ac": 12
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC19_saveFailureKeepsFinishingSession",
+      "ac": 19
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC29_lowerPageMeansRereading",
+      "ac": 29
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift",
+      "method": "test_AC30_minutesOutsideOneToElapsedAreRejected",
+      "ac": 30
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC32_pageAbove9999IsRejectedWithoutTotalPages",
+      "ac": 32
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC34_finishingIsRestoredAfterForceQuit",
+      "ac": 34
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC35_retryAfterOneFailureAddsExactlyOne",
+      "ac": 35
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC45_timeInFinishInputIsNotCounted",
+      "ac": 45
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC46_cancelFinishReturnsToReading",
+      "ac": 46
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC47_cancelFinishResetsMinutesDraft",
+      "ac": 47
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC48_swipeDownDismissEqualsCancel",
+      "ac": 48
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC50_afterSaveShowsBookDetail",
+      "ac": 50
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC64_cancelFinishFailureKeepsInput",
+      "ac": 64
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift",
+      "method": "test_AC65_cancelFinishRetryReturnsToReading",
+      "ac": 65
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/AC18RebootTests.swift",
+      "method": "test_AC18_1_seedLibraryBeforeReboot",
+      "ac": 18
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/AC18RebootTests.swift",
+      "method": "test_AC18_2_libraryRemainsAfterReboot",
+      "ac": 18
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+      "method": "test_AC20_allOperationsWorkWhenTelemetryIsUnreachable",
+      "ac": 20
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+      "method": "test_AC20_allOperationsWorkWhenTelemetryReturns500",
+      "ac": 20
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+      "method": "test_AC20_allOperationsWorkWhenTelemetryHangs",
+      "ac": 20
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+      "method": "test_AC21_noPermissionPromptsDuringFirstSession",
+      "ac": 21
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+      "method": "test_AC23_telemetryHasNoTitleOrPageValues",
+      "ac": 23
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift",
+      "method": "test_AC24_weekReachedIsSentOncePerWeek",
+      "ac": 24
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC36_weekTotalIsZeroWithoutSessionsThisWeek",
+      "ac": 36
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC37_bookWithoutSessionsShowsEmptyState",
+      "ac": 37
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC38_cancelDeleteKeepsSession",
+      "ac": 38
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC43_deleteFailureKeepsSession",
+      "ac": 43
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC44_sessionAcrossWeekBoundaryCountsInStartWeek",
+      "ac": 44
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC51_tooShortShowsNoticeOnBookDetail",
+      "ac": 51
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC52_bookDetailOffersResumeWhileReading",
+      "ac": 52
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC52_bookDetailOffersResumeWhilePaused",
+      "ac": 52
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC52_bookDetailOffersResumeAfterCancellingFinish",
+      "ac": 52
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC56_startFailureFromHomeKeepsIdle",
+      "ac": 56
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC56_startFailureFromBookDetailKeepsIdle",
+      "ac": 56
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC57_startRetryFromHomeStartsAtRetryTime",
+      "ac": 57
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift",
+      "method": "test_AC57_startRetryFromBookDetailStartsAtRetryTime",
+      "ac": 57
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift",
+      "method": "test_AC1_emptyLibraryShowsEmptyStateAndOnlyAddBook",
+      "ac": 1
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift",
+      "method": "test_AC2_addBookWithTitleOnly",
+      "ac": 2
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift",
+      "method": "test_AC3_blankTitleCannotBeSaved",
+      "ac": 3
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift",
+      "method": "test_AC4_zeroBooksToReadingInThreeTapsOrFewer",
+      "ac": 4
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift",
+      "method": "test_AC22_twentyFirstBookHasNoLimitOrPaywall",
+      "ac": 22
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift",
+      "method": "test_AC54_loadFailureShowsRetryInsteadOfEmpty",
+      "ac": 54
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift",
+      "method": "test_AC55_loadRetryRestoresLibrary",
+      "ac": 55
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC33_pausedIsRestoredAfterForceQuit",
+      "ac": 33
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC40_elapsedLabelReadsMinutesAndSeconds",
+      "ac": 40
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC41_clockSetBackShowsZeroNotNegative",
+      "ac": 41
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC58_pauseFailureKeepsReading",
+      "ac": 58
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC59_pauseRetryStopsAtRetryTime",
+      "ac": 59
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC60_resumeFailureKeepsPaused",
+      "ac": 60
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC61_resumeRetryStartsAtRetryTime",
+      "ac": 61
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC62_beginFinishFailureWhileReading",
+      "ac": 62
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC62_beginFinishFailureWhilePaused",
+      "ac": 62
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC63_beginFinishRetryWhileReading",
+      "ac": 63
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC63_beginFinishRetryWhilePaused",
+      "ac": 63
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC66_discardFailureKeepsReading",
+      "ac": 66
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift",
+      "method": "test_AC67_discardRetryShowsNoticeWithoutRecord",
+      "ac": 67
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift",
+      "method": "test_AC31_totalPagesOutsideOneTo9999AreRejected",
+      "ac": 31
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift",
+      "method": "test_AC42_bookAddFailureKeepsTitle",
+      "ac": 42
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift",
+      "method": "test_AC49_afterAddShowsNewBookDetail",
+      "ac": 49
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift",
+      "method": "test_AC53_discardingAddKeepsBookCount",
+      "ac": 53
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift",
+      "method": "test_AC14_bookTotalsAreShown",
+      "ac": 14
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift",
+      "method": "test_AC14_totalAddsSecondsBeforeFlooring",
+      "ac": 14
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift",
+      "method": "test_AC15_weekTotalExcludesLastWeek",
+      "ac": 15
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift",
+      "method": "test_AC16_deleteSessionKeepsLastPage",
+      "ac": 16
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift",
+      "method": "test_AC28_noProgressWithoutTotalPages",
+      "ac": 28
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC5_previousBookStartsFromHomeInOneTap",
+      "ac": 5
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC5_startToFirstElapsedMeasuredBySignpost",
+      "ac": 5
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC6_pausedTimeIsNotCounted",
+      "ac": 6
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC7_elapsedKeepsRunningInBackground",
+      "ac": 7
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC8_forceQuitRestoresReadingAndElapsed",
+      "ac": 8
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC13_underOneMinuteIsNotRecorded",
+      "ac": 13
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC13_boundarySixtySecondsOpensFinishInput",
+      "ac": 13
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC17_cannotStartAnotherBookWhileReading",
+      "ac": 17
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC17_cannotStartAnotherBookWhilePaused",
+      "ac": 17
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC17_cannotStartAnotherBookWhileFinishing",
+      "ac": 17
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC25_previousBookIsTheLastSavedOne",
+      "ac": 25
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC26_withoutSessionsPreviousBookIsTheLastAdded",
+      "ac": 26
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC27_homeShowsOnlyResumeWhileReading",
+      "ac": 27
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC27_homeShowsOnlyResumeWhilePaused",
+      "ac": 27
+    },
+    {
+      "file": "ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift",
+      "method": "test_AC27_homeShowsOnlyResumeWhileFinishing",
+      "ac": 27
+    }
+  ]
+}

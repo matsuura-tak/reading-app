@@ -1,0 +1,2170 @@
+diff --git a/ios/AcceptanceTests/Support/AcceptanceTestCase.swift b/ios/AcceptanceTests/Support/AcceptanceTestCase.swift
+new file mode 100644
+index 0000000..bd300e8
+--- /dev/null
++++ b/ios/AcceptanceTests/Support/AcceptanceTestCase.swift
+@@ -0,0 +1,66 @@
++import XCTest
++
++/// 受け入れテストの共通の基底。落ちたテストの直後に、画面の要素の木（app.debugDescription の先頭 diagnosticLineLimit 行）と、
++/// 直前のスクリーンショット（AppSession.shot）の有無を標準出力に出す。CI のログだけで落ちた理由を読めるようにするため
++/// （CI 807f934 の仕分けでは、ログに画面の様子がなく原因を決められないテストがあった。
++/// docs/verification/001-reading-session/ci-runs/807f934-acceptance-en.md の 5）。
++/// 落ちた直後の画面のスクリーンショットも添付する（lifetime は keepAlways）。合否は変えない（XCTAssert を足さない）。
++/// grep の目印は行頭の「[AT-DIAG]」。
++class AcceptanceTestCase: XCTestCase {
++    /// 要素の木を出す行数の上限（CI のログの長さを抑える。1本あたり200行）。
++    static let diagnosticLineLimit = 200
++    /// AppSession.shot が残した最後のスクリーンショットの名前と枚数（落ちたときに出す）。
++    var lastShotName: String?
++    var shotCount = 0
++
++    override func tearDownWithError() throws {
++        if let testRun, testRun.totalFailureCount > 0 {
++            let testName = name
++            let shotNote = lastShotName.map { "あり（\(shotCount)枚。最後は \($0)）" } ?? "なし"
++            let limit = Self.diagnosticLineLimit
++            print("[AT-DIAG] 落ちたテスト：\(testName)")
++            // xcodebuild はログに構成（ja_JP／en_US）の名前を出さないので、どの回で落ちたかを run-acceptance.sh の要約が結べるように出す
++            // （ci-runs/c9e7427-acceptance.md の 3）。
++            let lang = ProcessInfo.processInfo.environment["ACCEPTANCE_LANG"] ?? "なし"
++            print("[AT-DIAG] 構成：ACCEPTANCE_LANG=\(lang)")
++            print("[AT-DIAG] 直前のスクリーンショット（AppSession.shot）：\(shotNote)")
++            // UI テストの tearDown は主スレッドで呼ばれる。XCUIApplication は MainActor なので、その上で動いていると宣言して使う。
++            // self を閉包に持ち込まないよう、Sendable な値（文字と PNG）だけを返し、添付は閉包の外で行う。
++            let snapshot: (state: String, lines: [String], png: Data?, systemAlerts: [String]) = MainActor.assumeIsolated {
++                let app = XCUIApplication()
++                // システムのダイアログ（T16 の「開く」の確かめなど）はアプリの要素の木に入らないので、SpringBoard の alert を別に見る
++                // （ci-runs/c9e7427-acceptance.md の 4 の見立て (i)）。
++                let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
++                let systemAlerts: [String] = springboard.alerts.allElementsBoundByIndex.prefix(3).map { alert in
++                    let buttons = alert.buttons.allElementsBoundByIndex.map { $0.label }.joined(separator: "／")
++                    return "「\(alert.label)」 ボタン：\(buttons)"
++                }
++                switch app.state {
++                case .notRunning, .unknown:
++                    return ("動いていない（rawValue=\(app.state.rawValue)）", [], nil, systemAlerts)
++                default:
++                    let png = app.screenshot().pngRepresentation
++                    let lines = app.debugDescription.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
++                    return ("動いている（rawValue=\(app.state.rawValue)）", lines, png, systemAlerts)
++                }
++            }
++            let alertNote = snapshot.systemAlerts.isEmpty ? "なし" : snapshot.systemAlerts.joined(separator: "、")
++            print("[AT-DIAG] システムのダイアログ（SpringBoard の alert、3つまで）：\(alertNote)")
++            print("[AT-DIAG] アプリ：\(snapshot.state)")
++            if let png = snapshot.png {
++                let attachment = XCTAttachment(data: png, uniformTypeIdentifier: "public.png")
++                attachment.name = "FAIL_\(testName)"
++                attachment.lifetime = .keepAlways
++                add(attachment)
++                print("[AT-DIAG] 落ちた直後のスクリーンショットを添付した：FAIL_\(testName)")
++            }
++            if !snapshot.lines.isEmpty {
++                print("[AT-DIAG] 要素の木（先頭 \(min(snapshot.lines.count, limit)) 行／全 \(snapshot.lines.count) 行）")
++                for line in snapshot.lines.prefix(limit) {
++                    print("[AT-DIAG] \(line)")
++                }
++            }
++        }
++        try super.tearDownWithError()
++    }
++}
+diff --git a/ios/AcceptanceTests/Support/AppSession.swift b/ios/AcceptanceTests/Support/AppSession.swift
+index 7463bd9..b80edc9 100644
+--- a/ios/AcceptanceTests/Support/AppSession.swift
++++ b/ios/AcceptanceTests/Support/AppSession.swift
+@@ -111,12 +111,31 @@ final class AppSession {
+             XCTFail("時計の URL を作れない: \(query)", file: file, line: line)
+             return
+         }
+-        app.open(url)
++        // CI 807f934（Xcode 26.6、iOS 26.5）で XCUIApplication.open(_:) はアプリを起動し直した（ログ：「Open … with URL」の下に
++        // 「Launch」「Setting up automation session」。2回目の操作で uitest.clock.applied が「1」に戻った）。起動し直すと
++        // UITEST_SEED と UITEST_RESET が入り直り、テストの中で作った状態（S5、保存の失敗の区画、読み始めた読書）が消える。
++        // そこで、システムから URL を開き、動いているアプリの onOpenURL に渡す（XCUIDevice.system.open、iOS 16.4 以上）。
++        XCUIDevice.shared.system.open(url)
+         clockApplied += 1
+         let marker = app.descendants(matching: .any)["uitest.clock.applied"]
++        if !Wait.until(NSPredicate(format: "label == %@", String(clockApplied)), marker, timeout: Wait.optional) {
++            confirmOpenIfAsked()
++        }
++        // 起動し直したら label は数え直しの値（1）になるので、2回目からの操作では起動し直しをここで見分けられる。
+         Wait.label(marker, equals: String(clockApplied), "T16 の時計の操作（\(query)）が効いた", file: file, line: line)
+     }
+ 
++    /// システムが URL を開く前に確かめるダイアログ（「"Yomutoki"で開きますか？」）を出したときだけ「開く」を押す。
++    /// システムの部品なので文字で探す（design 6 の (b)）。出るかは CI で未確認（contracts/test-hooks.md の T16 の備考）。
++    private func confirmOpenIfAsked() {
++        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
++        let open = springboard.buttons.matching(NSPredicate(format: "label IN %@", L10n.systemOpenLabels)).firstMatch
++        if open.waitForExistence(timeout: Wait.optional) {
++            print("[AT-DIAG] T16：システムの確かめのダイアログが出たので「\(open.label)」を押した")
++            open.tap()
++        }
++    }
++
+     // MARK: 証拠
+ 
+     /// スクリーンショットを残す（名前は AC3_オフライン の形。lifetime は keepAlways）。
+@@ -125,5 +144,10 @@ final class AppSession {
+         attachment.name = name
+         attachment.lifetime = .keepAlways
+         test.add(attachment)
++        // 落ちたときに AcceptanceTestCase が「直前のスクリーンショット」として出す（ci-runs/807f934-acceptance-en.md の 5）。
++        if let base = test as? AcceptanceTestCase {
++            base.lastShotName = name
++            base.shotCount += 1
++        }
+     }
+ }
+diff --git a/ios/AcceptanceTests/Support/L10n.swift b/ios/AcceptanceTests/Support/L10n.swift
+index 23021c4..f17f861 100644
+--- a/ios/AcceptanceTests/Support/L10n.swift
++++ b/ios/AcceptanceTests/Support/L10n.swift
+@@ -1,4 +1,5 @@
+ import Foundation
++import XCTest
+ 
+ /// テストを動かす言語。Acceptance.xctestplan の構成（ja_JP、en_US）が、テストを動かす側の環境変数 ACCEPTANCE_LANG で渡す。
+ enum Lang: String, Sendable {
+@@ -109,6 +110,9 @@ enum L10n {
+     static var backButtonLabels: [String] { [homeTitle, pick("戻る", "Back")] }
+     /// 編集メニューの「ペースト」（システムの文字。AC-3 の改行とタブを入れるため）。
+     static var systemPaste: String { pick("ペースト", "Paste") }
++    /// URL を開く前のシステムの確かめの「開く」（T16。AppSession.confirmOpenIfAsked）。ダイアログはシステムの言語で出て、
++    /// アプリの言語（test plan の構成）とは別なので、両方の文字で探す。
++    static var systemOpenLabels: [String] { ["開く", "Open"] }
+ 
+     // MARK: 数の書式（7 の決まり：分、冊、件は地域の書式で桁区切りあり。ページの数は桁区切りなし）
+ 
+@@ -154,3 +158,25 @@ enum L10n {
+     /// 範囲の秒（両端を含む）の label の並び。AC の「11:00 以上 11:05 以下」をそのまま表す。
+     static func elapsedLabels(_ seconds: ClosedRange<Int>) -> [String] { seconds.map { elapsedLabel($0) } }
+ }
++
++// MARK: 再試行のボタンの文（design 6 の error.retry の行と、7 の error.retry.start などのキー。AC の Then の外）
++
++@MainActor
++extension AppSession {
++    /// error.retry の label が、design 6 の文（どの操作の再試行か：error.retry.start、.pause、.resume、.finish、.cancel）と同じかを見る。
++    /// AC-56〜AC-66 の Then が求めるのは「error.retry が1個」まで。ボタンの文は design の決まりで、PRD の AC の Then の外にある。
++    /// そのため、違っても AC の判定に数えない。XCTAssert にしないのは、continueAfterFailure = false で、AC の Then を
++    /// 見る前にテストが止まるのを避けるため。違ったときは「DESIGN_retryLabel_<場面>」の添付（.keepAlways）を残す。
++    /// G3 で xcresult から添付を書き出してその数を数え、verification.md に「提案」（design 6 との食い違い）として1件ずつ書く（test-plan の 5）。
++    func noteRetryLabel(_ expected: String, _ scene: String) {
++        let retry = el("error.retry")
++        if Wait.until(NSPredicate(format: "label == %@", expected), retry, timeout: Wait.optional) { return }
++        let now = retry.exists ? retry.label : "要素なし"
++        XCTContext.runActivity(named: "DESIGN_retryLabel_\(scene)：「\(expected)」ではなく「\(now)」") { activity in
++            let attachment = XCTAttachment(string: "design 6 の文：\(expected)\n今の label：\(now)")
++            attachment.name = "DESIGN_retryLabel_\(scene)"
++            attachment.lifetime = .keepAlways
++            activity.add(attachment)
++        }
++    }
++}
+diff --git a/ios/AcceptanceTests/Support/TelemetryReceiver.swift b/ios/AcceptanceTests/Support/TelemetryReceiver.swift
+index f474d90..4d36e86 100644
+--- a/ios/AcceptanceTests/Support/TelemetryReceiver.swift
++++ b/ios/AcceptanceTests/Support/TelemetryReceiver.swift
+@@ -1,10 +1,16 @@
+ import Foundation
++// @preconcurrency：SDK の版によっては Network の型（NWListener、NWConnection など）の Sendable の注釈がそろっておらず、
++// Swift 6 の言語モード（target.yml の SWIFT_VERSION 6.0）でハンドラーの閉包が誤りになることがあるため、警告に下げる。
++// 並行の安全は、下の TelemetryReceiver の lock と直列の queue で守る。
+ @preconcurrency import Network
+ import XCTest
+ 
+ /// 計測の受け口（contracts/telemetry.md の「テストの受け口」、test-hooks.md の T6、T7、T13、T19）。
+ /// テストの側に NWListener（A47）で localhost の HTTP の受け口を立て、POST /events と POST /flushed を受ける。
+ /// 127.0.0.1 は使わない（A48）。アプリには http://localhost:<port> を渡す。
++/// @unchecked Sendable の理由：NWListener と NWConnection のハンドラーは queue（直列）から呼ばれ、テストの側（MainActor）からも
++/// requests などを読む。可変の状態（listener、connections、received、boundPort）は、すべて lock の中で読み書きする。
++/// mode、queue、lock は let。これをコンパイラーに示す方法がないので、@unchecked にして lock で守る。
+ final class TelemetryReceiver: @unchecked Sendable {
+     enum Mode: Sendable {
+         /// 204 を返す
+@@ -52,8 +58,10 @@ final class TelemetryReceiver: @unchecked Sendable {
+         newListener.newConnectionHandler = { [weak self] connection in
+             self?.accept(connection)
+         }
+-        newListener.start(queue: queue)
++        lock.lock()
+         listener = newListener
++        lock.unlock()
++        newListener.start(queue: queue)
+         guard XCTWaiter.wait(for: [ready], timeout: timeout) == .completed, let port = newListener.port?.rawValue else {
+             throw ReceiverError.notReady
+         }
+@@ -65,9 +73,10 @@ final class TelemetryReceiver: @unchecked Sendable {
+     func stop() {
+         lock.lock()
+         let open = connections
++        let current = listener
+         connections = []
+         lock.unlock()
+-        listener?.cancel()
++        current?.cancel()
+         open.forEach { $0.cancel() }
+     }
+ 
+diff --git a/ios/AcceptanceTests/Support/UIHelpers.swift b/ios/AcceptanceTests/Support/UIHelpers.swift
+index a8c932d..cb6c348 100644
+--- a/ios/AcceptanceTests/Support/UIHelpers.swift
++++ b/ios/AcceptanceTests/Support/UIHelpers.swift
+@@ -1,7 +1,8 @@
+ import UIKit
+ import XCTest
+ 
+-/// 待ち方。sleep は使わず、要素や値の変化を XCTNSPredicateExpectation（A27）と waitForExistence で待つ。
++/// 待ち方。存在・消失・単一のラベルは XCUIElement の標準 API で待つ。
++/// 複合条件は XCTNSPredicateExpectation（A27）。sleep は使わない。
+ /// 待ち時間はこの型の定数だけ。
+ @MainActor
+ enum Wait {
+@@ -26,15 +27,19 @@ enum Wait {
+     }
+ 
+     static func gone(_ element: XCUIElement, _ what: String, file: StaticString = #filePath, line: UInt = #line) {
+-        XCTAssertTrue(until(NSPredicate(format: "exists == false"), element), "\(what) が消えない", file: file, line: line)
++        XCTAssertTrue(element.waitForNonExistence(timeout: timeout), "\(what) が消えない", file: file, line: line)
+     }
+ 
+     static func label(
+         _ element: XCUIElement, equals expected: String, _ what: String,
+         file: StaticString = #filePath, line: UInt = #line
+     ) {
+-        if !until(NSPredicate(format: "label == %@", expected), element) {
+-            XCTFail("\(what)：label が「\(expected)」にならない（今は「\(currentLabel(element))」）", file: file, line: line)
++        if !element.wait(for: \.label, toEqual: expected, timeout: timeout) {
++            // 待機後の追加の取得で一致しても、時間内に確かめられなかった失敗は維持する。
++            let afterWait = currentLabel(element)
++            XCTFail(
++                "\(what)：label が「\(expected)」にならない（待機後の取得は「\(afterWait)」、一致：\(afterWait == expected)）",
++                file: file, line: line)
+         }
+     }
+ 
+@@ -78,6 +83,15 @@ extension AppSession {
+         app.descendants(matching: .any).matching(identifier: id).count
+     }
+ 
++    /// 操作の数を数える。iOS 26 のツールバーは同じ識別子を Other と中の Button に付けるため、
++    /// 全種類の要素数では1つのボタンが2個になる。実際の Button を数え、識別子が外側だけなら中の Button を数える。
++    /// AC-63・AC-64 は design 3・6 の「保存」ボタンが1つあることを確認する。2つのボタンは2個のまま数える。
++    func buttonCount(_ id: String) -> Int {
++        let direct = app.buttons.matching(identifier: id)
++        if direct.count > 0 { return direct.count }
++        return app.descendants(matching: .any).matching(identifier: id).descendants(matching: .button).count
++    }
++
+     /// 識別子が prefix で始まる要素（library.book.、session.row.id.、error. など）。
+     func elements(prefixed prefix: String) -> XCUIElementQuery {
+         app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix))
+@@ -98,16 +112,49 @@ extension AppSession {
+         (el(id).value as? String) ?? ""
+     }
+ 
+-    /// 欄の文字を全部消してから入れる（欄の右端をタップして、カーソルを末尾に置く）。
++    /// 欄の文字を全部消してから入れる。
++    /// CI 807f934（iOS 26.5）で、右寄せの数字の欄（S5 の分）の右から5%の所をタップすると、文字が1〜2字のときカーソルが先頭に付き、
++    /// 消す文字が効かずに前へ足された（AC-47：「10」→「510」、AC-30：「1」→「1801」［推測：AC-30 は値の並びからの見立て］）。
++    /// そこで、右端（99%）をタップして消し、消えたかを確かめ、残ったら右端の語をダブルタップで選んで消す。
++    /// それでも消せない、または入れた後の値が違うときは「前提」で落とし、AC の Then の失敗と分ける。
+     func replaceText(_ id: String, with text: String, file: StaticString = #filePath, line: UInt = #line) {
+         let field = el(id)
+         Wait.exists(field, id, file: file, line: line)
+-        field.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+-        let current = fieldText(id)
++        let trailingEdge = field.coordinate(withNormalizedOffset: CGVector(dx: 0.99, dy: 0.5))
++        trailingEdge.tap()
++        var current = typedText(field)
++        if !current.isEmpty {
++            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
++            current = typedText(field)
++        }
+         if !current.isEmpty {
++            trailingEdge.doubleTap()
+             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
++            current = typedText(field)
+         }
++        XCTAssertEqual(current, "", "前提：\(id) の欄を空にできた", file: file, line: line)
+         if !text.isEmpty { field.typeText(text) }
++        XCTAssertEqual(typedText(field), text, "前提：\(id) の欄に「\(text)」が入った", file: file, line: line)
++    }
++
++    /// 欄に入っている文字。空の欄の value は placeholder になるので、placeholder と同じなら空とみなす。
++    private func typedText(_ field: XCUIElement) -> String {
++        let value = (field.value as? String) ?? ""
++        if let placeholder = field.placeholderValue, !placeholder.isEmpty, value == placeholder { return "" }
++        return value
++    }
++
++    /// 押せるか（isEnabled）を見るための要素。CI 807f934（iOS 26.5）では、ツールバーのボタン（book.save、session.finish.save、
++    /// session.finish.cancel、book.add.cancel）の識別子が種類 Other の要素に付いて見え（ログ：Check for interrupting elements
++    /// affecting "book.save" Other）、題名が空でも isEnabled が true だった（AC-3、AC-31）［推測：Other の isEnabled は
++    /// 中の Button の .disabled を映さない］。識別子の付いた Button があればそれ、なければ識別子の要素の中の最初の Button、
++    /// どちらもなければ識別子の要素を返す。押す操作は今までどおり el(id) で行う。
++    func control(_ id: String) -> XCUIElement {
++        let button = app.buttons.matching(identifier: id).firstMatch
++        if button.exists { return button }
++        let inner = el(id).descendants(matching: .button).firstMatch
++        if inner.exists { return inner }
++        return el(id)
+     }
+ 
+     /// 改行とタブを1行の欄に入れるため、貼り付けで入れる（G0 r2 の AC-3 の条件）。編集メニューの「ペースト」はシステムの文字で探す。
+@@ -231,3 +278,68 @@ extension AppSession {
+         return rows.first
+     }
+ }
++
++// MARK: 後半（AC-31〜AC-67）で足した部品
++
++@MainActor
++extension Wait {
++    /// isEnabled が expected になるのを待つ（AC-31、AC-37、AC-52。押せるかの変化は入力の後に遅れて来ることがある）。
++    static func enabled(
++        _ element: XCUIElement, _ expected: Bool, _ what: String,
++        file: StaticString = #filePath, line: UInt = #line
++    ) {
++        let predicate = NSPredicate(format: "exists == true AND isEnabled == %@", NSNumber(value: expected))
++        if !until(predicate, element) {
++            let now = element.exists ? String(element.isEnabled) : "要素なし"
++            XCTFail("\(what)：isEnabled が \(expected) にならない（今は \(now)）", file: file, line: line)
++        }
++    }
++}
++
++@MainActor
++extension AppSession {
++    /// 保存の失敗の区画（design 6：題 error.saveFailed と、再試行 error.retry）が1個ずつ出ていること（AC-42、AC-56〜AC-66 の Then）。
++    func expectSaveFailed(_ step: String, file: StaticString = #filePath, line: UInt = #line) {
++        Wait.label(el("error.saveFailed"), equals: L10n.errorSaveFailed, "\(step)：error.saveFailed", file: file, line: line)
++        Wait.exists(el("error.retry"), "\(step)：error.retry", file: file, line: line)
++        XCTAssertEqual(count("error.saveFailed"), 1, "\(step)：error.saveFailed は1個", file: file, line: line)
++        XCTAssertEqual(count("error.retry"), 1, "\(step)：error.retry は1個", file: file, line: line)
++    }
++
++    /// 保存の失敗の区画が消えたこと（再試行が通った後。AC-35、AC-57〜AC-65、AC-67 の「error.saveFailed は0個」）。
++    func expectNoSaveFailed(_ step: String, file: StaticString = #filePath, line: UInt = #line) {
++        Wait.gone(el("error.saveFailed"), "\(step)：error.saveFailed", file: file, line: line)
++        XCTAssertEqual(count("error.saveFailed"), 0, "\(step)：error.saveFailed は0個", file: file, line: line)
++    }
++
++    /// S4 か S5 から本の S3 へ行き、記録の数を見る（test-plan 2 の「件数を見る」。AppSession.goToBookDetail を使う）。
++    func expectSessionCount(
++        _ n: Int, bookId: String, _ step: String, file: StaticString = #filePath, line: UInt = #line
++    ) {
++        goToBookDetail(id: bookId, file: file, line: line)
++        Wait.label(el("book.sessionCount"), equals: L10n.sessionCount(n), "\(step)：book.sessionCount", file: file, line: line)
++    }
++
++    /// S3 の記録の行をスワイプして「削除」を押し、S6 を開く（AC-38、AC-43）。システムの部品は識別子か 7 の文字で探す（design 6 の (b)）。
++    func beginDeleteSession(id: String, file: StaticString = #filePath, line: UInt = #line) {
++        let row = el("session.row.id.\(id)")
++        Wait.exists(row, "記録の行 \(id)", file: file, line: line)
++        row.swipeLeft()
++        let delete = systemButton(id: "session.row.delete", text: L10n.sessionRowDelete)
++        Wait.exists(delete, "行の「削除」", file: file, line: line)
++        delete.tap()
++    }
++}
++
++@MainActor
++extension AppSession {
++    /// S1 > S3 > S4 の S4 から S3 へ戻る（AC-57。design 1 の S3 からの読み始め）。戻るボタンの文字は S3 のナビゲーションバーの題名
++    /// （本の題名。design 5 の長い題名）か、システムの「戻る」。システムの部品なので文字で探す（design 6 の (b)）。
++    func goBack(toBookTitled title: String, file: StaticString = #filePath, line: UInt = #line) {
++        let labels = [title] + L10n.backButtonLabels
++        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
++        Wait.exists(back, "S3 への戻るボタン", file: file, line: line)
++        back.tap()
++        Wait.label(el("book.title"), equals: title, "戻った本の詳細", file: file, line: line)
++    }
++}
+diff --git a/ios/AcceptanceTests/Tests/AC18RebootTests.swift b/ios/AcceptanceTests/Tests/AC18RebootTests.swift
+index 3427c1e..8cf1df7 100644
+--- a/ios/AcceptanceTests/Tests/AC18RebootTests.swift
++++ b/ios/AcceptanceTests/Tests/AC18RebootTests.swift
+@@ -3,7 +3,7 @@ import XCTest
+ /// AC-18：端末（シミュレーター）を再起動しても、本と記録が残る（T11）。
+ /// この2つは Acceptance.xctestplan の skippedTests に入れ、ac18-reboot.sh が AC18Reboot.xctestplan で順に動かす：
+ /// 1 を動かす → xcrun simctl shutdown と boot → 2 を動かす。1つだけで動かしても意味がないので、通常の実行には入れない。
+-final class AC18RebootTests: XCTestCase {
++final class AC18RebootTests: AcceptanceTestCase {
+     override func setUpWithError() throws {
+         continueAfterFailure = false
+     }
+diff --git a/ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift b/ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift
+new file mode 100644
+index 0000000..fd2cb37
+--- /dev/null
++++ b/ios/AcceptanceTests/Tests/AddBookAcceptanceTests.swift
+@@ -0,0 +1,134 @@
++import XCTest
++
++/// S2 本を追加：総ページ数の範囲、保存の失敗、保存の後の画面、追加をやめる（AC-31、AC-42、AC-49、AC-53）。
++/// 期待する値は docs/verification/001-reading-session/test-plan.md の 2。文字は design/ の 7（Support/L10n.swift）。
++final class AddBookAcceptanceTests: AcceptanceTestCase {
++    override func setUpWithError() throws {
++        continueAfterFailure = false
++    }
++
++    /// 本が「坊っちゃん」1冊だけ（記録0件。AC-42、AC-53 の Given「本が1冊」）。
++    private var oneBook: Seed {
++        Seed(books: [Fixture.book(1, Fixture.botchan, totalPages: 300, lastPage: 0)])
++    }
++
++    // MARK: AC-31
++
++    /// AC-31：題名「坊っちゃん」で、総ページ数が 0 と 10000 なら book.save は無効で book.add.totalPagesOutOfRange
++    /// （「1から9999までの数字で入れてください。」）が出る。1 と 9999 では book.save は有効。本の数は変わらない（0冊のまま）。
++    /// 境界の外と中を交互に入れ、誤りの文が出ることと消えることの両方を見る。
++    @MainActor
++    func test_AC31_totalPagesOutsideOneTo9999AreRejected() throws {
++        let s = AppSession.launch(.fresh)
++        s.tap("library.addBook")
++        let title = s.el("book.add.title")
++        Wait.exists(title, "book.add.title")
++        title.tap()
++        title.typeText(Fixture.botchan)
++        // iOS 26 のツールバーのボタンは Other に識別子が付き、その isEnabled は .disabled を映さない［推測］。押せるかは Button で見る（UIHelpers.swift の control。CI 807f934）
++        Wait.enabled(s.control("book.save"), true, "前提：題名だけなら book.save は有効")
++
++        let values: [(text: String, accepted: Bool)] = [("0", false), ("1", true), ("9999", true), ("10000", false)]
++        for (text, accepted) in values {
++            s.replaceText("book.add.totalPages", with: text)
++            XCTAssertEqual(s.fieldText("book.add.totalPages"), text, "前提：総ページ数の欄に \(text) が入った")
++            if accepted {
++                Wait.gone(s.el("book.add.totalPagesOutOfRange"), "\(text)：book.add.totalPagesOutOfRange")
++                Wait.enabled(s.control("book.save"), true, "\(text)：book.save")
++            } else {
++                Wait.label(
++                    s.el("book.add.totalPagesOutOfRange"), equals: L10n.bookAddTotalPagesOutOfRange,
++                    "\(text)：book.add.totalPagesOutOfRange")
++                Wait.enabled(s.control("book.save"), false, "\(text)：book.save")
++                s.el("book.save").tap()
++                XCTAssertTrue(s.el("book.add.title").exists, "\(text)：押しても保存されず、入力は開いたまま")
++                s.shot("AC31_総ページ数\(text)", self)
++            }
++        }
++
++        s.cancelAddBook()
++        Wait.exists(s.el("library.empty.title"), "本は0冊のまま（空の状態）")
++        XCTAssertEqual(s.bookRows().count, 0, "本の行は0個")
++    }
++
++    // MARK: AC-42
++
++    /// AC-42：本の追加の保存が毎回失敗する（UITEST_FAIL=book_add:*）、本は1冊。題名「こころ」で保存すると、
++    /// error.saveFailed（「変更を保存できませんでした」）と error.retry（「もう一度保存」）が出て、題名の欄は「こころ」のまま。
++    /// 閉じた後の一覧の本は1冊のまま。
++    @MainActor
++    func test_AC42_bookAddFailureKeepsTitle() throws {
++        var config = LaunchConfig.seeded(oneBook)
++        config.fail = "book_add:*"
++        let s = AppSession.launch(config)
++        Wait.label(s.el("home.bookCount"), equals: L10n.bookCount(1), "前提：本は1冊")
++
++        s.tap("library.addBook")
++        let title = s.el("book.add.title")
++        Wait.exists(title, "book.add.title")
++        title.tap()
++        title.typeText(Fixture.kokoro)
++        s.tap("book.save")
++
++        s.expectSaveFailed("本の追加の保存の失敗")
++        Wait.label(s.el("error.retry"), equals: L10n.errorRetry, "error.retry の文（もう一度保存）")
++        Wait.value(s.el("book.add.title"), equals: Fixture.kokoro, "題名の欄は「こころ」のまま")
++        s.shot("AC42_本の追加の失敗", self)
++
++        s.cancelAddBook()
++        Wait.label(s.el("home.bookCount"), equals: L10n.bookCount(1), "閉じた後も本は1冊")
++        XCTAssertEqual(s.bookRows(titled: Fixture.kokoro).count, 0, "「こころ」の行は0個")
++    }
++
++    // MARK: AC-49
++
++    /// AC-49：「坊っちゃん」に記録1件（home.startReading は「坊っちゃん」を指す）、読書中はない。題名「こころ」で追加すると、
++    /// 本を追加する入力は閉じ（book.add.title は0個）、book.title が「こころ」の詳細が出て、book.startReading が1個で押せる。
++    @MainActor
++    func test_AC49_afterAddShowsNewBookDetail() throws {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(lastPage: 40)))
++        s.expectState(.idle)
++        Wait.exists(s.el("home.startReading"), "前提：home.startReading")
++
++        s.addBook(title: Fixture.kokoro)
++        Wait.gone(s.el("book.add.title"), "本を追加する入力")
++        XCTAssertEqual(s.count("book.add.title"), 0, "book.add.title は0個")
++        Wait.label(s.el("book.title"), equals: Fixture.kokoro, "追加した本の詳細の題名")
++        let start = s.el("book.startReading")
++        Wait.exists(start, "book.startReading")
++        XCTAssertEqual(s.count("book.startReading"), 1, "book.startReading は1個")
++        XCTAssertTrue(start.isHittable, "book.startReading が押せる")
++        s.shot("AC49_追加した本の詳細", self)
++    }
++
++    // MARK: AC-53
++
++    /// AC-53：本は「坊っちゃん」1冊。題名の欄に「こころ」を入れて book.add.cancel を押し、確認で「追加せずに閉じる」
++    /// （book.add.discard.confirm。識別子が付かなければ 7 の文字）を選ぶと、入力は閉じ、home.bookCount は「1冊」のまま、
++    /// label が「こころ」の本の行は0個。起動し直しても同じ。
++    @MainActor
++    func test_AC53_discardingAddKeepsBookCount() throws {
++        let s = AppSession.launch(.seeded(oneBook))
++        Wait.label(s.el("home.bookCount"), equals: L10n.bookCount(1), "前提：本は1冊")
++
++        s.tap("library.addBook")
++        let title = s.el("book.add.title")
++        Wait.exists(title, "book.add.title")
++        title.tap()
++        title.typeText(Fixture.kokoro)
++        s.tap("book.add.cancel")
++        let confirm = s.systemButton(id: "book.add.discard.confirm", text: L10n.bookAddDiscardConfirm)
++        Wait.exists(confirm, "確認の「追加せずに閉じる」")
++        s.shot("AC53_追加をやめる確認", self)
++        confirm.tap()
++
++        Wait.gone(s.el("book.add.title"), "本を追加する入力")
++        XCTAssertEqual(s.count("book.add.title"), 0, "book.add.title は0個")
++        Wait.label(s.el("home.bookCount"), equals: L10n.bookCount(1), "本は1冊のまま")
++        XCTAssertEqual(s.bookRows(titled: Fixture.kokoro).count, 0, "「こころ」の行は0個")
++
++        s.relaunch(now: Fixture.now)
++        Wait.label(s.el("home.bookCount"), equals: L10n.bookCount(1), "起動し直した後も本は1冊")
++        XCTAssertEqual(s.bookRows(titled: Fixture.kokoro).count, 0, "起動し直した後も「こころ」の行は0個")
++    }
++}
+diff --git a/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift b/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift
+new file mode 100644
+index 0000000..bc66781
+--- /dev/null
++++ b/ios/AcceptanceTests/Tests/BookDetailAcceptanceTests.swift
+@@ -0,0 +1,289 @@
++import XCTest
++
++/// S1 の今週の合計（0件、週をまたぐ記録）と S3 本の詳細：記録0件、消す確認の取り消し、削除の失敗、60秒未満の知らせ、
++/// 読書中の主操作、読み始めの保存の失敗と再試行（AC-36〜AC-38、AC-43、AC-44、AC-51、AC-52、AC-56、AC-57）。
++final class BookDetailAcceptanceTests: AcceptanceTestCase {
++    override func setUpWithError() throws {
++        continueAfterFailure = false
++    }
++
++    /// 「坊っちゃん」（300、最後のページ72）に記録2件（101 が20分、102 が30分。AC-38、AC-43）。
++    private var botchanTwentyAndThirty: Seed {
++        Seed(
++            books: [Fixture.book(1, Fixture.botchan, totalPages: 300, lastPage: 72)],
++            sessions: [
++                Fixture.session(101, book: Fixture.botchanId, startedAt: WallClock("2026-10-19T21:00:00"), seconds: 1200, endPage: 40, pagesRead: 40),
++                Fixture.session(102, book: Fixture.botchanId, startedAt: WallClock("2026-10-20T21:00:00"), seconds: 1800, endPage: 72, pagesRead: 32),
++            ])
++    }
++
++    // MARK: AC-36
++
++    /// AC-36：週の始めは月曜（UITEST_FIRST_WEEKDAY=2）、今日は 2026-10-21（水）。今週の記録は0件で、先週（10-18 日）に40分。
++    /// ホームの home.weekTotal は「0分」。
++    @MainActor
++    func test_AC36_weekTotalIsZeroWithoutSessionsThisWeek() throws {
++        let seed = Seed(
++            books: [Fixture.book(1, Fixture.botchan, totalPages: 300, lastPage: 40)],
++            sessions: [
++                Fixture.session(111, book: Fixture.botchanId, startedAt: WallClock("2026-10-18T22:00:00"), seconds: 2400, endPage: 40, pagesRead: 40)
++            ])
++        var config = LaunchConfig.seeded(seed)
++        config.firstWeekday = 2
++        let s = AppSession.launch(config)
++        Wait.value(s.el("home.weekTotal"), equals: L10n.minutes(0), "今週の合計")
++        s.shot("AC36_今週0分", self)
++    }
++
++    // MARK: AC-37
++
++    /// AC-37：「坊っちゃん」（300、最後のページ0）に記録0件。詳細に合計「0分」、「記録 0件」、進み具合「0%」、
++    /// book.sessions.empty（「まだ記録はありません。読書を終えると、ここに残ります。」）が出て、book.startReading は有効。
++    @MainActor
++    func test_AC37_bookWithoutSessionsShowsEmptyState() throws {
++        let s = AppSession.launch(.seeded(Seed(books: [Fixture.book(1, Fixture.botchan, totalPages: 300, lastPage: 0)])))
++        s.openBook(id: Fixture.botchanId)
++        Wait.value(s.el("book.totalTime"), equals: L10n.minutes(0), "合計時間")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(0), "記録の数")
++        Wait.value(s.el("book.progress"), equals: L10n.percent(0), "進み具合")
++        Wait.label(s.el("book.sessions.empty"), equals: L10n.bookSessionsEmpty, "book.sessions.empty")
++        XCTAssertEqual(s.elements(prefixed: "session.row.id.").count, 0, "記録の行は0個")
++        Wait.enabled(s.el("book.startReading"), true, "book.startReading")
++        s.shot("AC37_記録0件の詳細", self)
++    }
++
++    // MARK: AC-38
++
++    /// AC-38：「坊っちゃん」に記録2件（20分、30分）。30分の記録を消そうとし、S6 で「キャンセル」（session.delete.cancel。
++    /// 識別子が付かなければ 7 の文字）を選ぶと、記録は「2件」のままで、合計は「50分」。
++    @MainActor
++    func test_AC38_cancelDeleteKeepsSession() throws {
++        let s = AppSession.launch(.seeded(botchanTwentyAndThirty))
++        s.openBook(id: Fixture.botchanId)
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "前提：記録は2件")
++
++        s.beginDeleteSession(id: Fixture.id(102))
++        let cancel = s.systemButton(id: "session.delete.cancel", text: L10n.commonCancel)
++        Wait.exists(cancel, "S6 の「キャンセル」")
++        s.shot("AC38_消す確認", self)
++        cancel.tap()
++        Wait.gone(cancel, "S6")
++
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "記録は2件のまま")
++        Wait.value(s.el("book.totalTime"), equals: L10n.minutes(50), "合計時間は50分のまま")
++        XCTAssertTrue(s.el("session.row.id.\(Fixture.id(102))").exists, "30分の記録の行は残る")
++    }
++
++    // MARK: AC-43
++
++    /// AC-43：記録の削除の保存が毎回失敗する（UITEST_FAIL=session_delete:*）、記録2件（20分、30分）。30分の記録を消して確認で消すと、
++    /// S7 に error.saveFailed（「変更を保存できませんでした」）が出て、「OK」の後も記録は「2件」、合計は「50分」。起動し直しても同じ。
++    /// S7 は alert なので、題は識別子か 7 の文字で、「OK」は 7 の文字で探す（design 6 の (b)）。
++    @MainActor
++    func test_AC43_deleteFailureKeepsSession() throws {
++        var config = LaunchConfig.seeded(botchanTwentyAndThirty)
++        config.fail = "session_delete:*"
++        let s = AppSession.launch(config)
++        s.openBook(id: Fixture.botchanId)
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "前提：記録は2件")
++
++        s.beginDeleteSession(id: Fixture.id(102))
++        let confirm = s.systemButton(id: "session.delete.confirm", text: L10n.sessionDeleteConfirm)
++        Wait.exists(confirm, "S6 の「記録を消す」")
++        confirm.tap()
++
++        let alert = s.app.alerts.firstMatch
++        Wait.exists(alert, "S7（記録を消せなかった知らせ）")
++        let title = alert.descendants(matching: .any).matching(
++            NSPredicate(format: "identifier == %@ OR label == %@", "error.saveFailed", L10n.errorSaveFailed)).firstMatch
++        Wait.exists(title, "S7 の題 error.saveFailed（「\(L10n.errorSaveFailed)」）")
++        s.shot("AC43_削除の失敗", self)
++        let ok = alert.buttons.matching(NSPredicate(format: "label == %@", L10n.commonOK)).firstMatch
++        Wait.exists(ok, "S7 の「\(L10n.commonOK)」")
++        ok.tap()
++        Wait.gone(alert, "S7")
++
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "記録は2件のまま")
++        Wait.value(s.el("book.totalTime"), equals: L10n.minutes(50), "合計時間は50分のまま")
++        XCTAssertTrue(s.el("session.row.id.\(Fixture.id(102))").exists, "30分の記録の行は残る")
++
++        s.relaunch(now: Fixture.now)
++        s.openBook(id: Fixture.botchanId)
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "起動し直した後も記録は2件")
++        Wait.value(s.el("book.totalTime"), equals: L10n.minutes(50), "起動し直した後も合計時間は50分")
++    }
++
++    // MARK: AC-44
++
++    /// AC-44：週の始めは日曜（UITEST_FIRST_WEEKDAY=1）、今日は 2026-10-25（日）21:30。土曜 23:50 に始めて日曜 0:20 に終えた30分の記録と、
++    /// 日曜 9:00 に始めた20分の記録。ホームの home.weekTotal は「20分」（30分の記録は始めた土曜の週に数える）。
++    @MainActor
++    func test_AC44_sessionAcrossWeekBoundaryCountsInStartWeek() throws {
++        let sunday = WallClock("2026-10-25T21:30:00")
++        let seed = Seed(
++            books: [Fixture.book(1, Fixture.botchan, totalPages: 300, lastPage: 40)],
++            sessions: [
++                Fixture.session(121, book: Fixture.botchanId, startedAt: WallClock("2026-10-24T23:50:00"), seconds: 1800, endPage: 20, pagesRead: 20),
++                Fixture.session(122, book: Fixture.botchanId, startedAt: WallClock("2026-10-25T09:00:00"), seconds: 1200, endPage: 40, pagesRead: 20),
++            ])
++        var config = LaunchConfig.seeded(seed)
++        config.now = sunday
++        config.firstWeekday = 1
++        let s = AppSession.launch(config)
++        Wait.value(s.el("home.weekTotal"), equals: L10n.minutes(20), "今週の合計")
++        s.shot("AC44_週をまたぐ記録", self)
++    }
++
++    // MARK: AC-51
++
++    /// AC-51：記録1件の「坊っちゃん」を home.startReading で読み始め、経過0:59で終えると、終える入力は出ず（session.finish.save は0個）、
++    /// book.title が「坊っちゃん」の詳細に session.finish.tooShort が1個、「記録 1件」のまま、アラートは0個、状態は idle。
++    @MainActor
++    func test_AC51_tooShortShowsNoticeOnBookDetail() throws {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(lastPage: 40)))
++        s.tap("home.startReading")
++        s.expectState(.reading)
++        s.advance(seconds: 59)
++        Wait.label(s.el("reading.elapsed"), equals: L10n.elapsedLabel(59), "前提：経過 0:59")
++
++        s.tap("reading.finish")
++        Wait.label(s.el("book.title"), equals: Fixture.botchan, "終えた後の本の詳細")
++        XCTAssertEqual(s.count("session.finish.save"), 0, "終える入力は出ない")
++        Wait.label(s.el("session.finish.tooShort"), equals: L10n.sessionFinishTooShort, "session.finish.tooShort")
++        XCTAssertEqual(s.count("session.finish.tooShort"), 1, "session.finish.tooShort は1個")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "記録は1件のまま")
++        XCTAssertEqual(s.app.alerts.count, 0, "アラートは0個")
++        s.expectState(.idle)
++        s.shot("AC51_1分未満の知らせ", self)
++    }
++
++    // MARK: AC-52
++
++    /// AC-52（reading）：「坊っちゃん」の詳細の book.resumeReading が1個で有効、label「読書に戻る」、book.startReading と book.start.busy は0個。
++    @MainActor
++    func test_AC52_bookDetailOffersResumeWhileReading() throws {
++        assertAC52(state: "reading")
++    }
++
++    /// AC-52（paused）：label は「一時停止中の読書に戻る」。
++    @MainActor
++    func test_AC52_bookDetailOffersResumeWhilePaused() throws {
++        assertAC52(state: "paused")
++    }
++
++    /// AC-52（finishing。終える入力をやめてから開く。やめると reading になり、label は「読書に戻る」）。
++    @MainActor
++    func test_AC52_bookDetailOffersResumeAfterCancellingFinish() throws {
++        assertAC52(state: "finishing")
++    }
++
++    @MainActor
++    private func assertAC52(state: String, file: StaticString = #filePath, line: UInt = #line) {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(lastPage: 40, active: Fixture.active(state, book: Fixture.botchanId))))
++        if state == "finishing" {
++            s.expectState(.finishing, file: file, line: line)
++            s.tap("session.finish.cancel", file: file, line: line)
++            Wait.gone(s.el("session.finish.save"), "終える入力", file: file, line: line)
++        }
++        let paused = state == "paused"
++        s.expectState(paused ? .paused : .reading, file: file, line: line)
++        s.goBack(file: file, line: line)
++        s.openBook(id: Fixture.botchanId, file: file, line: line)
++
++        let resume = s.el("book.resumeReading")
++        Wait.exists(resume, "\(state)：book.resumeReading", file: file, line: line)
++        XCTAssertEqual(s.count("book.resumeReading"), 1, "\(state)：book.resumeReading は1個", file: file, line: line)
++        Wait.enabled(resume, true, "\(state)：book.resumeReading", file: file, line: line)
++        Wait.label(resume, equals: paused ? L10n.actionResumePaused : L10n.actionResume, "\(state)：book.resumeReading の label", file: file, line: line)
++        XCTAssertEqual(s.count("book.startReading"), 0, "\(state)：book.startReading は0個", file: file, line: line)
++        XCTAssertEqual(s.count("book.start.busy"), 0, "\(state)：book.start.busy は0個", file: file, line: line)
++        s.shot("AC52_\(state)_本の詳細", self)
++    }
++
++    // MARK: AC-56、AC-57
++
++    /// AC-56 と AC-57 の共通の前半：記録1件の「坊っちゃん」、idle、読み始めの保存が1回だけ失敗する（session_start:1）。
++    /// fromHome なら home.startReading、そうでなければ詳細の book.startReading を押す。
++    @MainActor
++    private func failStart(fromHome: Bool, file: StaticString = #filePath, line: UInt = #line) -> AppSession {
++        var config = LaunchConfig.seeded(Seeds.botchanOneSession(lastPage: 40))
++        config.fail = "session_start:1"
++        let s = AppSession.launch(config)
++        s.expectState(.idle, file: file, line: line)
++        if fromHome {
++            s.tap("home.startReading", file: file, line: line)
++        } else {
++            s.openBook(id: Fixture.botchanId, file: file, line: line)
++            s.tap("book.startReading", file: file, line: line)
++        }
++        s.expectSaveFailed(fromHome ? "ホームで読み始めの失敗" : "本の詳細で読み始めの失敗", file: file, line: line)
++        s.noteRetryLabel(fromHome ? L10n.homePrimary(Fixture.botchan, L10n.errorRetryStart) : L10n.errorRetryStart, fromHome ? "AC56_ホーム" : "AC56_本の詳細")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
++        return s
++    }
++
++    /// AC-56 の Then：操作した画面に error.saveFailed と error.retry が1個ずつ、session.state.idle が1個、reading.elapsed は0個、
++    /// 「坊っちゃん」の記録は1件のまま。
++    @MainActor
++    private func assertAC56(fromHome: Bool, file: StaticString = #filePath, line: UInt = #line) {
++        let s = failStart(fromHome: fromHome, file: file, line: line)
++        let name = fromHome ? "ホーム" : "本の詳細"
++        if fromHome {
++            Wait.exists(s.el("home.bookCount"), "\(name)：ホームのまま", file: file, line: line)
++        } else {
++            Wait.label(s.el("book.title"), equals: Fixture.botchan, "\(name)：本の詳細のまま", file: file, line: line)
++        }
++        s.expectState(.idle, file: file, line: line)
++        XCTAssertEqual(s.count("session.state.idle"), 1, "\(name)：session.state.idle は1個", file: file, line: line)
++        XCTAssertEqual(s.count("reading.elapsed"), 0, "\(name)：reading.elapsed は0個", file: file, line: line)
++        s.shot("AC56_\(name)_読み始めの失敗", self)
++        if fromHome {
++            s.openBook(id: Fixture.botchanId, file: file, line: line)
++        }
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "\(name)：記録は1件のまま", file: file, line: line)
++    }
++
++    @MainActor
++    func test_AC56_startFailureFromHomeKeepsIdle() throws {
++        assertAC56(fromHome: true)
++    }
++
++    @MainActor
++    func test_AC56_startFailureFromBookDetailKeepsIdle() throws {
++        assertAC56(fromHome: false)
++    }
++
++    /// AC-57 の Then：失敗の60秒後に error.retry を押すと、reading、reading.title「坊っちゃん」、経過は「0分0秒」か「0分1秒」
++    /// （失敗から再試行までの60秒は数えない）、error.saveFailed は0個、記録は1件のまま。
++    @MainActor
++    private func assertAC57(fromHome: Bool, file: StaticString = #filePath, line: UInt = #line) {
++        let s = failStart(fromHome: fromHome, file: file, line: line)
++        let name = fromHome ? "ホーム" : "本の詳細"
++        s.advance(seconds: 60, file: file, line: line)
++        s.tap("error.retry", file: file, line: line)
++
++        s.expectState(.reading, file: file, line: line)
++        Wait.label(s.el("reading.title"), equals: Fixture.botchan, "\(name)：読書中の本の題名", file: file, line: line)
++        Wait.label(s.el("reading.elapsed"), in: L10n.elapsedLabels(0...1), "\(name)：再試行の直後の経過（0:00 か 0:01）", file: file, line: line)
++        s.expectNoSaveFailed("\(name)：再試行の後", file: file, line: line)
++        s.shot("AC57_\(name)_読み始めの再試行の後", self)
++
++        // 記録の数：S4 から戻る。ホームから始めたなら S1 > S4 なのでホームに、本の詳細から始めたなら S1 > S3 > S4 なので S3 に戻る（design 1）。
++        if fromHome {
++            s.goBack(file: file, line: line)
++            s.openBook(id: Fixture.botchanId, file: file, line: line)
++        } else {
++            s.goBack(toBookTitled: Fixture.botchan, file: file, line: line)
++        }
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "\(name)：記録は1件のまま", file: file, line: line)
++    }
++
++    @MainActor
++    func test_AC57_startRetryFromHomeStartsAtRetryTime() throws {
++        assertAC57(fromHome: true)
++    }
++
++    @MainActor
++    func test_AC57_startRetryFromBookDetailStartsAtRetryTime() throws {
++        assertAC57(fromHome: false)
++    }
++}
+diff --git a/ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift b/ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift
+index a9f0708..bbac2b7 100644
+--- a/ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift
++++ b/ios/AcceptanceTests/Tests/BookStatsAcceptanceTests.swift
+@@ -1,7 +1,7 @@
+ import XCTest
+ 
+ /// S3 本の詳細の合計と、S1 の今週の合計、記録を消す（AC-14〜AC-16、AC-28）。
+-final class BookStatsAcceptanceTests: XCTestCase {
++final class BookStatsAcceptanceTests: AcceptanceTestCase {
+     override func setUpWithError() throws {
+         continueAfterFailure = false
+     }
+diff --git a/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift b/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift
+new file mode 100644
+index 0000000..3654785
+--- /dev/null
++++ b/ios/AcceptanceTests/Tests/FinishInputAcceptanceTests.swift
+@@ -0,0 +1,282 @@
++import XCTest
++
++/// S5 終える入力：ページの上限、強制終了からの戻り、再試行、入力中の時間、やめる、下へのスワイプ、保存の後の画面、
++/// やめる保存の失敗と再試行（AC-32、AC-34、AC-35、AC-45〜AC-48、AC-50、AC-64、AC-65）。
++/// 時計は UITEST_NOW と UITEST_CLOCK_FROZEN で止め、T16 で決まった秒だけ進める（実時間で待たない）。
++final class FinishInputAcceptanceTests: AcceptanceTestCase {
++    override func setUpWithError() throws {
++        continueAfterFailure = false
++    }
++
++    /// 「坊っちゃん」（300、最後のページ40）に記録2件（20分ずつ）。active は「坊っちゃん」に付ける（AC-35、AC-48）。
++    private func botchanTwoSessions(active: SeedActive) -> Seed {
++        Seed(
++            books: [Fixture.book(1, Fixture.botchan, totalPages: 300, lastPage: 40)],
++            sessions: [
++                Fixture.session(101, book: Fixture.botchanId, startedAt: WallClock("2026-10-19T21:00:00"), seconds: 1200, endPage: 20, pagesRead: 20),
++                Fixture.session(102, book: Fixture.botchanId, startedAt: WallClock("2026-10-20T21:00:00"), seconds: 1200, endPage: 40, pagesRead: 20),
++            ],
++            active: active)
++    }
++
++    /// S4 で「終える」を押し、S5 が開くのを待つ。
++    @MainActor
++    private func openFinish(_ s: AppSession, file: StaticString = #filePath, line: UInt = #line) {
++        s.tap("reading.finish", file: file, line: line)
++        Wait.exists(s.el("session.finish.save"), "終える入力（session.finish.save）", file: file, line: line)
++        s.expectState(.finishing, file: file, line: line)
++    }
++
++    // MARK: AC-32
++
++    /// AC-32：総ページ数が未設定で最後のページ40の「こころ」、finishing（経過10:00）。今のページ10000で保存しようとすると、
++    /// 記録は増えず、session.finish.pageOutOfRange（「0から9999までの数字で入れてください。」）が出て finishing のまま。
++    /// 9999 なら保存でき、記録が1件増えて「記録 2件」、最後のページ「9999」、状態は idle（G0 r2 の読み）。
++    @MainActor
++    func test_AC32_pageAbove9999IsRejectedWithoutTotalPages() throws {
++        let seed = Seed(
++            books: [Fixture.book(2, Fixture.kokoro, totalPages: nil, lastPage: 40)],
++            sessions: [
++                Fixture.session(201, book: Fixture.kokoroId, startedAt: WallClock("2026-10-19T22:00:00"), seconds: 900, endPage: 40, pagesRead: 40)
++            ],
++            active: Fixture.finishing(Fixture.kokoroId, elapsed: 600))
++        let s = AppSession.launch(.seeded(seed))
++        s.expectState(.finishing)
++
++        s.replaceText("session.finish.page", with: "10000")
++        s.el("session.finish.save").tap()
++        Wait.label(s.el("session.finish.pageOutOfRange"), equals: L10n.sessionFinishPageOutOfRange(9999), "10000：session.finish.pageOutOfRange")
++        s.expectState(.finishing)
++        XCTAssertTrue(s.el("session.finish.save").exists, "10000：終える入力は開いたまま")
++        s.shot("AC32_ページ10000", self)
++
++        s.replaceText("session.finish.page", with: "9999")
++        Wait.gone(s.el("session.finish.pageOutOfRange"), "9999 では誤りの文")
++        s.tap("session.finish.save")
++        Wait.label(s.el("book.title"), equals: Fixture.kokoro, "保存の後の本の詳細")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "記録は1件だけ増えて2件")
++        Wait.value(s.el("book.lastPage"), equals: "9999", "最後のページ")
++        s.expectState(.idle)
++    }
++
++    // MARK: AC-34
++
++    /// AC-34：経過10:00で終えた finishing のときに強制終了し、5分後に起動すると、finishing で戻り、読んだ時間は「10」
++    /// （5分は足されない）、今のページの欄は空、記録の数は変わらない（1件）。
++    /// 欄が空であることに意味を持たせるため、強制終了の前に今のページ72を入れておく（入れかけの値は保存しない。PRD 10）。
++    @MainActor
++    func test_AC34_finishingIsRestoredAfterForceQuit() throws {
++        let seed = Seeds.botchanOneSession(lastPage: 40, active: Fixture.finishing(Fixture.botchanId, elapsed: 600))
++        let s = AppSession.launch(.seeded(seed))
++        s.expectState(.finishing)
++        Wait.value(s.el("session.finish.minutes"), equals: "10", "前提：読んだ時間は10分")
++        s.replaceText("session.finish.page", with: "72")
++
++        s.relaunch(now: Fixture.now.adding(minutes: 5))
++        s.expectState(.finishing)
++        Wait.exists(s.el("session.finish.save"), "起動し直した後の終える入力")
++        Wait.value(s.el("session.finish.minutes"), equals: "10", "起動し直した後の読んだ時間（5分は足されない）")
++        XCTAssertEqual(s.fieldText("session.finish.page"), "", "今のページの欄は空")
++        s.shot("AC34_起動し直した後", self)
++
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録の数は変わらない")
++    }
++
++    // MARK: AC-35
++
++    /// AC-35：記録の保存が1回だけ失敗する（UITEST_FAIL=session_finish:1）、記録2件。経過10:00で終えた読書の保存に失敗し、
++    /// error.retry を1回押すと、記録は「3件」、状態は idle、error.saveFailed は0個。起動し直しても「3件」（ちょうど1件増えた）。
++    @MainActor
++    func test_AC35_retryAfterOneFailureAddsExactlyOne() throws {
++        var config = LaunchConfig.seeded(botchanTwoSessions(active: Fixture.finishing(Fixture.botchanId, elapsed: 600)))
++        config.fail = "session_finish:1"
++        let s = AppSession.launch(config)
++        s.expectState(.finishing)
++
++        s.tap("session.finish.save")
++        s.expectSaveFailed("記録の保存の失敗")
++        s.tap("error.retry")
++
++        Wait.label(s.el("book.title"), equals: Fixture.botchan, "再試行の後の本の詳細")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(3), "記録は3件")
++        s.expectState(.idle)
++        s.expectNoSaveFailed("再試行の後")
++        s.shot("AC35_再試行の後", self)
++
++        s.relaunch(now: Fixture.now)
++        s.openBook(id: Fixture.botchanId)
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(3), "起動し直した後も記録は3件")
++    }
++
++    // MARK: AC-45
++
++    /// AC-45：reading で経過2:00。終えて60秒たってから保存すると、その記録の行の読んだ時間は「2分」（60秒を含めると「3分」）。
++    @MainActor
++    func test_AC45_timeInFinishInputIsNotCounted() throws {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(active: Fixture.reading(Fixture.botchanId, elapsed: 120))))
++        s.expectState(.reading)
++        Wait.label(s.el("reading.elapsed"), equals: L10n.elapsedLabel(120), "前提：経過 2:00")
++
++        openFinish(s)
++        s.advance(seconds: 60)
++        s.tap("session.finish.save")
++        Wait.label(s.el("book.title"), equals: Fixture.botchan, "保存の後の本の詳細")
++        guard let row = s.singleNewSessionRow(excluding: [Fixture.id(101)]) else { return }
++        Wait.label(row.descendants(matching: .any)["session.row.minutes"], equals: L10n.minutes(2), "その記録の行の読んだ時間")
++        s.shot("AC45_記録の行", self)
++    }
++
++    // MARK: AC-46
++
++    /// AC-46：経過10:00で終えて今のページに72を入れ、2分後に session.finish.cancel を押すと、reading に戻り、
++    /// 経過は「10分0秒」か「10分1秒」、記録の数は変わらない。続けて終えると、今のページの欄は空。
++    @MainActor
++    func test_AC46_cancelFinishReturnsToReading() throws {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(active: Fixture.reading(Fixture.botchanId, elapsed: 600))))
++        s.expectState(.reading)
++        openFinish(s)
++        s.replaceText("session.finish.page", with: "72")
++        s.advance(seconds: 120)
++
++        s.tap("session.finish.cancel")
++        Wait.gone(s.el("session.finish.save"), "終える入力")
++        s.expectState(.reading)
++        Wait.label(s.el("reading.elapsed"), in: L10n.elapsedLabels(600...601), "やめた後の経過（10:00 か 10:01）")
++        s.shot("AC46_やめた後", self)
++
++        openFinish(s)
++        XCTAssertEqual(s.fieldText("session.finish.page"), "", "次の終える入力の今のページの欄は空")
++
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録の数は変わらない")
++    }
++
++    // MARK: AC-47
++
++    /// AC-47：経過10:00で終え、分の欄を「10」から「5」に直してから、時計を進めずにやめる。5分後に終えると、finishing で、
++    /// session.finish.minutes の value は「15」（直した「5」も、前の初めの値「10」も残らない）。
++    @MainActor
++    func test_AC47_cancelFinishResetsMinutesDraft() throws {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(active: Fixture.reading(Fixture.botchanId, elapsed: 600))))
++        s.expectState(.reading)
++        openFinish(s)
++        Wait.value(s.el("session.finish.minutes"), equals: "10", "前提：分の欄の初めの値は10")
++        s.replaceText("session.finish.minutes", with: "5")
++        XCTAssertEqual(s.fieldText("session.finish.minutes"), "5", "前提：分の欄を5に直した")
++
++        s.tap("session.finish.cancel")
++        Wait.gone(s.el("session.finish.save"), "終える入力")
++        s.expectState(.reading)
++        s.advance(seconds: 300)
++
++        openFinish(s)
++        Wait.value(s.el("session.finish.minutes"), equals: "15", "5分後に終えたときの分の欄の初めの値")
++        s.shot("AC47_次の終える入力", self)
++    }
++
++    // MARK: AC-48
++
++    /// AC-48：記録2件、経過10:00で終えて今のページに72を入れ、2分後に終える入力のシートを下へスワイプして閉じると、
++    /// reading に戻り、経過は「10分0秒」か「10分1秒」、session.finish.save は0個、記録は「2件」のまま。
++    /// スワイプは、欄の上でなく S5 のナビゲーションバー（session.finish.cancel を含むバー）に対して行う（design 6 の (d)）。
++    @MainActor
++    func test_AC48_swipeDownDismissEqualsCancel() throws {
++        let s = AppSession.launch(.seeded(botchanTwoSessions(active: Fixture.reading(Fixture.botchanId, elapsed: 600))))
++        s.expectState(.reading)
++        openFinish(s)
++        s.replaceText("session.finish.page", with: "72")
++        s.advance(seconds: 120)
++
++        let bar = s.app.navigationBars.containing(.any, identifier: "session.finish.cancel").firstMatch
++        Wait.exists(bar, "S5 のナビゲーションバー（session.finish.cancel を含む）")
++        XCTAssertTrue(bar.wait(for: \.isHittable, toEqual: true, timeout: Wait.timeout), "スワイプの起点を操作できる")
++        // バー中央を起点、画面下部を終点として1回だけ下向きのジェスチャを送る。
++        // キャンセルを押す代替や、閉じるまで繰り返す操作は行わない（PRD AC-48、design 6(d)）。
++        let start = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
++        let end = s.app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
++        start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0)
++
++        Wait.gone(s.el("session.finish.save"), "終える入力")
++        XCTAssertEqual(s.count("session.finish.save"), 0, "session.finish.save は0個")
++        s.expectState(.reading)
++        Wait.label(s.el("reading.elapsed"), in: L10n.elapsedLabels(600...601), "閉じた後の経過（10:00 か 10:01）")
++        s.shot("AC48_スワイプで閉じた後", self)
++
++        s.expectSessionCount(2, bookId: Fixture.botchanId, "記録は2件のまま")
++    }
++
++    // MARK: AC-50
++
++    /// AC-50：記録1件の「坊っちゃん」を home.startReading で読み始め、経過10:00で終えて保存すると、終える入力と読書中の画面は閉じ
++    /// （session.finish.save と reading.finish は0個）、book.title が「坊っちゃん」の詳細が出て、「記録 2件」、状態は idle。
++    @MainActor
++    func test_AC50_afterSaveShowsBookDetail() throws {
++        let s = AppSession.launch(.seeded(Seeds.botchanOneSession(lastPage: 40)))
++        s.tap("home.startReading")
++        s.expectState(.reading)
++        s.advance(seconds: 600)
++        Wait.label(s.el("reading.elapsed"), equals: L10n.elapsedLabel(600), "前提：経過 10:00")
++        openFinish(s)
++
++        s.tap("session.finish.save")
++        Wait.label(s.el("book.title"), equals: Fixture.botchan, "保存の後の本の詳細")
++        Wait.gone(s.el("session.finish.save"), "終える入力")
++        Wait.gone(s.el("reading.finish"), "読書中の画面")
++        XCTAssertEqual(s.count("session.finish.save"), 0, "session.finish.save は0個")
++        XCTAssertEqual(s.count("reading.finish"), 0, "reading.finish は0個")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "記録は2件")
++        s.expectState(.idle)
++        s.shot("AC50_保存の後", self)
++    }
++
++    // MARK: AC-64、AC-65
++
++    /// AC-64 と AC-65 の共通の前半：記録1件、経過10:00で終えて今のページに72を入れ、やめる保存が1回だけ失敗する
++    /// （UITEST_FAIL=session_cancel_finish:1）状態で session.finish.cancel を押し、60秒たつ。
++    @MainActor
++    private func failCancelFinish(file: StaticString = #filePath, line: UInt = #line) -> AppSession {
++        var config = LaunchConfig.seeded(Seeds.botchanOneSession(active: Fixture.reading(Fixture.botchanId, elapsed: 600)))
++        config.fail = "session_cancel_finish:1"
++        let s = AppSession.launch(config)
++        s.expectState(.reading, file: file, line: line)
++        openFinish(s, file: file, line: line)
++        s.replaceText("session.finish.page", with: "72", file: file, line: line)
++        s.tap("session.finish.cancel", file: file, line: line)
++        s.expectSaveFailed("やめる保存の失敗", file: file, line: line)
++        s.noteRetryLabel(L10n.errorRetryCancel, "AC64_やめる")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
++        s.advance(seconds: 60, file: file, line: line)
++        return s
++    }
++
++    /// AC-64：やめる保存の失敗の後、error.saveFailed と error.retry が1個ずつ、終える入力は閉じず（session.finish.save が1個）、
++    /// finishing のまま（reading は0個）、今のページは「72」、分は「10」、記録は1件のまま。
++    @MainActor
++    func test_AC64_cancelFinishFailureKeepsInput() throws {
++        let s = failCancelFinish()
++        s.expectSaveFailed("60秒後")
++        XCTAssertEqual(s.buttonCount("session.finish.save"), 1, "session.finish.save のボタンは1個")
++        s.expectState(.finishing)
++        XCTAssertEqual(s.count("session.state.reading"), 0, "session.state.reading は0個")
++        Wait.value(s.el("session.finish.page"), equals: "72", "今のページは72のまま")
++        Wait.value(s.el("session.finish.minutes"), equals: "10", "読んだ時間は10のまま")
++        s.shot("AC64_やめる保存の失敗", self)
++
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++
++    /// AC-65：AC-64 の後に error.retry を1回押すと、終える入力は閉じ（session.finish.save は0個）、reading、
++    /// 経過は「10分0秒」か「10分1秒」（終える操作から再試行までの60秒は足されない）、error.saveFailed は0個、記録は1件のまま。
++    @MainActor
++    func test_AC65_cancelFinishRetryReturnsToReading() throws {
++        let s = failCancelFinish()
++        s.tap("error.retry")
++
++        Wait.gone(s.el("session.finish.save"), "終える入力")
++        XCTAssertEqual(s.count("session.finish.save"), 0, "session.finish.save は0個")
++        s.expectState(.reading)
++        Wait.label(s.el("reading.elapsed"), in: L10n.elapsedLabels(600...601), "再試行の後の経過（10:00 か 10:01）")
++        s.expectNoSaveFailed("再試行の後")
++        s.shot("AC65_やめる再試行の後", self)
++
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++}
+diff --git a/ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift b/ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift
+index 566ed40..355304d 100644
+--- a/ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift
++++ b/ios/AcceptanceTests/Tests/FinishSessionAcceptanceTests.swift
+@@ -1,7 +1,7 @@
+ import XCTest
+ 
+ /// S5 読書を終える：ページ、分、範囲の外、保存の失敗（AC-9〜AC-12、AC-19、AC-29、AC-30）。
+-final class FinishSessionAcceptanceTests: XCTestCase {
++final class FinishSessionAcceptanceTests: AcceptanceTestCase {
+     override func setUpWithError() throws {
+         continueAfterFailure = false
+     }
+@@ -20,7 +20,9 @@ final class FinishSessionAcceptanceTests: XCTestCase {
+         s.expectState(.reading)
+         s.finishAndSave(title: Fixture.botchan, page: "72")
+ 
+-        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "記録は1件増えて2件")
++        Wait.label(
++            s.app.staticTexts.matching(identifier: "book.sessionCount").firstMatch,
++            equals: L10n.sessionCount(2), "記録は1件増えて2件")
+         guard let row = s.singleNewSessionRow(excluding: seededSessions) else { return }
+         Wait.label(row.descendants(matching: .any)["session.row.page"], equals: L10n.pagesRead(32), "その記録の行の読んだページ")
+         Wait.value(s.el("book.lastPage"), equals: "72", "最後のページ")
+@@ -29,7 +31,9 @@ final class FinishSessionAcceptanceTests: XCTestCase {
+ 
+         s.relaunch(now: Fixture.now)
+         s.openBook(id: Fixture.botchanId)
+-        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "起動し直した後の記録の数")
++        Wait.label(
++            s.app.staticTexts.matching(identifier: "book.sessionCount").firstMatch,
++            equals: L10n.sessionCount(2), "起動し直した後の記録の数")
+         Wait.value(s.el("book.lastPage"), equals: "72", "起動し直した後の最後のページ")
+         Wait.value(s.el("book.progress"), equals: L10n.percent(24), "起動し直した後の進み具合")
+     }
+@@ -72,7 +76,8 @@ final class FinishSessionAcceptanceTests: XCTestCase {
+ 
+         s.replaceText("session.finish.page", with: "300")
+         Wait.gone(s.el("session.finish.pageOutOfRange"), "300 では誤りの文")
+-        XCTAssertTrue(s.el("session.finish.save").isEnabled, "300 なら保存できる")
++        // 押せるかはツールバーの Button で見る（iOS 26 では識別子が Other に付く。UIHelpers.swift の control。CI 807f934）
++        XCTAssertTrue(s.control("session.finish.save").isEnabled, "300 なら保存できる")
+ 
+         s.goToBookDetail(id: Fixture.botchanId)
+         Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "記録は増えていない")
+@@ -169,7 +174,7 @@ final class FinishSessionAcceptanceTests: XCTestCase {
+         for accepted in ["1", "180"] {
+             s.replaceText("session.finish.minutes", with: accepted)
+             Wait.gone(s.el("session.finish.minutesOutOfRange"), "\(accepted)分では誤りの文")
+-            XCTAssertTrue(s.el("session.finish.save").isEnabled, "\(accepted)分なら保存できる")
++            XCTAssertTrue(s.control("session.finish.save").isEnabled, "\(accepted)分なら保存できる")
+         }
+ 
+         s.goToBookDetail(id: Fixture.botchanId)
+diff --git a/ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift b/ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift
+index a748a96..d6fe6c2 100644
+--- a/ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift
++++ b/ios/AcceptanceTests/Tests/LibraryAcceptanceTests.swift
+@@ -1,7 +1,7 @@
+ import XCTest
+ 
+ /// S1 ホームと S2 本を追加（AC-1〜AC-4、AC-22）。期待する値は docs/verification/001-reading-session/test-plan.md の 2。
+-final class LibraryAcceptanceTests: XCTestCase {
++final class LibraryAcceptanceTests: AcceptanceTestCase {
+     override func setUpWithError() throws {
+         continueAfterFailure = false
+     }
+@@ -63,13 +63,18 @@ final class LibraryAcceptanceTests: XCTestCase {
+             Wait.exists(field, "book.add.title")
+             if viaPaste {
+                 s.paste(text, into: "book.add.title")
++                // 貼り付けが黙って失敗すると空文字の例と同じになるので、欄に何か入ったことを見る（空の欄の value は placeholder になる）
++                let placeholder = field.placeholderValue ?? ""
++                XCTAssertTrue(
++                    Wait.until(NSPredicate(format: "value != nil AND value != %@ AND value != %@", "", placeholder), field),
++                    "前提：\(name) の貼り付けで欄が空でなくなった（今の value「\(s.fieldText("book.add.title"))」）")
+             } else if !text.isEmpty {
+                 field.tap()
+                 field.typeText(text)
+                 XCTAssertEqual(s.fieldText("book.add.title"), text, "前提：\(name) が欄に入った")
+             }
+-            let save = s.el("book.save")
+-            Wait.exists(save, "book.save")
++            Wait.exists(s.el("book.save"), "book.save")
++            let save = s.control("book.save")  // iOS 26 のツールバーのボタンは Other に識別子が付く。押せるかは Button で見る（UIHelpers.swift の control）
+             XCTAssertFalse(save.isEnabled, "\(name)：book.save は無効")
+             save.tap()
+             XCTAssertFalse(save.isEnabled, "\(name)：押しても book.save は無効のまま")
+@@ -84,15 +89,15 @@ final class LibraryAcceptanceTests: XCTestCase {
+ 
+     /// AC-4：本が0冊から、題名の入力を除いて3回以下のタップで reading になり、題名は「坊っちゃん」。
+     /// 題名の欄に入るタップとキーボードの操作は数えない（AC-4 の Then）。
++    /// 注：タップの数を数える変数は置かない（手順で決まった数なので、比べても必ず通るため）。合否は、数えるタップを
++    /// 3回（library.addBook、book.save、book.startReading）だけした後に reading になり、題名が「坊っちゃん」になる流れで決まる。
+     @MainActor
+     func test_AC4_zeroBooksToReadingInThreeTapsOrFewer() throws {
+         let s = AppSession.launch(.fresh)
+-        var taps = 0
+ 
+         let add = s.el("library.addBook")
+         Wait.exists(add, "library.addBook")
+-        add.tap()
+-        taps += 1
++        add.tap()  // 1回目
+ 
+         let title = s.el("book.add.title")
+         Wait.exists(title, "book.add.title")
+@@ -101,17 +106,14 @@ final class LibraryAcceptanceTests: XCTestCase {
+ 
+         let save = s.el("book.save")
+         Wait.exists(save, "book.save")
+-        save.tap()
+-        taps += 1
++        save.tap()  // 2回目
+ 
+         let start = s.el("book.startReading")
+         Wait.exists(start, "book.startReading")
+-        start.tap()
+-        taps += 1
++        start.tap()  // 3回目（ここまでで数えるタップは3回）
+ 
+         s.expectState(.reading)
+-        Wait.label(s.el("reading.title"), equals: Fixture.botchan, "読書中の本の題名")
+-        XCTAssertLessThanOrEqual(taps, 3, "題名の入力を除くタップの数")
++        Wait.label(s.el("reading.title"), equals: Fixture.botchan, "3回のタップの後、読書中の本の題名")
+         s.shot("AC4_読書中", self)
+     }
+ 
+diff --git a/ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift b/ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift
+new file mode 100644
+index 0000000..3377ccc
+--- /dev/null
++++ b/ios/AcceptanceTests/Tests/LoadFailureAcceptanceTests.swift
+@@ -0,0 +1,60 @@
++import XCTest
++
++/// S1 の読み込みの失敗と再試行（AC-54、AC-55）。データは contracts/seed.example.json と同じ5件（Seeds.libraryOfFive）。
++/// 読み込みの失敗は UITEST_FAIL の load（T5）。seed を入れる保存は UITEST_FAIL の数に入らない（test-hooks.md の起動の順番の4）。
++final class LoadFailureAcceptanceTests: AcceptanceTestCase {
++    override func setUpWithError() throws {
++        continueAfterFailure = false
++    }
++
++    @MainActor
++    private func launch(fail: String) -> AppSession {
++        var config = LaunchConfig.seeded(Seeds.libraryOfFive())
++        config.fail = fail
++        return AppSession.launch(config)
++    }
++
++    // MARK: AC-54
++
++    /// AC-54：「坊っちゃん」に記録3件、「こころ」に記録2件ある端末で、読み込みが毎回失敗する（UITEST_FAIL=load:*）。起動すると、
++    /// error.loadFailed.title（「本と記録を読み込めませんでした」）、error.loadFailed.message、error.loadFailed.retry（「もう一度読み込む」）が
++    /// 1個ずつ出て、library.empty.title、home.bookCount、home.weekTotal、home.startReading は0個。
++    @MainActor
++    func test_AC54_loadFailureShowsRetryInsteadOfEmpty() throws {
++        let s = launch(fail: "load:*")
++        Wait.label(s.el("error.loadFailed.title"), equals: L10n.errorLoadFailedTitle, "error.loadFailed.title")
++        Wait.label(s.el("error.loadFailed.message"), equals: L10n.errorLoadFailedMessage, "error.loadFailed.message")
++        Wait.label(s.el("error.loadFailed.retry"), equals: L10n.errorLoadFailedRetry, "error.loadFailed.retry")
++        for id in ["error.loadFailed.title", "error.loadFailed.message", "error.loadFailed.retry"] {
++            XCTAssertEqual(s.count(id), 1, "\(id) は1個")
++        }
++        for id in ["library.empty.title", "home.bookCount", "home.weekTotal", "home.startReading"] {
++            XCTAssertEqual(s.count(id), 0, "\(id) は0個")
++        }
++        s.shot("AC54_読み込みの失敗", self)
++    }
++
++    // MARK: AC-55
++
++    /// AC-55：同じ端末で、読み込みが1回だけ失敗する（UITEST_FAIL=load:1）。error.loadFailed.retry を1回押すと、
++    /// error.loadFailed.title は0個、home.bookCount は「2冊」、「坊っちゃん」の book.totalTime は「60分」、「こころ」は「40分」（記録は計5件）。
++    @MainActor
++    func test_AC55_loadRetryRestoresLibrary() throws {
++        let s = launch(fail: "load:1")
++        Wait.exists(s.el("error.loadFailed.retry"), "前提：error.loadFailed.retry")
++        s.tap("error.loadFailed.retry")
++
++        Wait.gone(s.el("error.loadFailed.title"), "error.loadFailed.title")
++        XCTAssertEqual(s.count("error.loadFailed.title"), 0, "error.loadFailed.title は0個")
++        Wait.label(s.el("home.bookCount"), equals: L10n.bookCount(2), "本の数")
++        s.shot("AC55_再試行の後", self)
++
++        s.openBook(id: Fixture.botchanId)
++        Wait.value(s.el("book.totalTime"), equals: L10n.minutes(60), "「坊っちゃん」の合計時間")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(3), "「坊っちゃん」の記録の数")
++        s.goBack()
++        s.openBook(id: Fixture.kokoroId)
++        Wait.value(s.el("book.totalTime"), equals: L10n.minutes(40), "「こころ」の合計時間")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(2), "「こころ」の記録の数（計5件）")
++    }
++}
+diff --git a/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift b/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift
+new file mode 100644
+index 0000000..9be8982
+--- /dev/null
++++ b/ios/AcceptanceTests/Tests/ReadingScreenAcceptanceTests.swift
+@@ -0,0 +1,281 @@
++import XCTest
++
++/// S4 読書中の画面：一時停止で強制終了、経過の読み上げ、時計の戻し、一時停止・再開・「終える」・60秒未満で終える保存の失敗と再試行
++/// （AC-33、AC-40、AC-41、AC-58〜AC-63、AC-66、AC-67）。
++/// 時計は UITEST_NOW と UITEST_CLOCK_FROZEN で止め、T16 で決まった秒だけ進める（実時間で待たない）。
++final class ReadingScreenAcceptanceTests: AcceptanceTestCase {
++    override func setUpWithError() throws {
++        continueAfterFailure = false
++    }
++
++    /// 経過5:00で一時停止した paused（止めたのは今。AC-33、AC-60、AC-62 (b)）。
++    private var pausedAtFive: SeedActive { Fixture.paused(Fixture.botchanId, elapsedAtPause: 300, pausedFor: 0) }
++
++    /// 記録1件の「坊っちゃん」に active を付けて起動する。fail は UITEST_FAIL（T5）。
++    @MainActor
++    private func launch(active: SeedActive, fail: String? = nil) -> AppSession {
++        var config = LaunchConfig.seeded(Seeds.botchanOneSession(lastPage: 40, active: active))
++        config.fail = fail
++        return AppSession.launch(config)
++    }
++
++    @MainActor
++    private func expectElapsed(
++        _ s: AppSession, _ seconds: ClosedRange<Int>, _ what: String, file: StaticString = #filePath, line: UInt = #line
++    ) {
++        Wait.label(s.el("reading.elapsed"), in: L10n.elapsedLabels(seconds), what, file: file, line: line)
++    }
++
++    // MARK: AC-33
++
++    /// AC-33：経過5:00で一時停止した paused のときに強制終了し、5分後に起動すると、「坊っちゃん」の読書中の画面が paused で戻り、
++    /// 経過は「5分0秒」のまま（止めていた5分は足されない）。contracts/examples/seed-ac33.json と同じ形。
++    @MainActor
++    func test_AC33_pausedIsRestoredAfterForceQuit() throws {
++        let s = launch(active: pausedAtFive)
++        s.expectState(.paused)
++        expectElapsed(s, 300...300, "前提：経過 5:00")
++
++        s.relaunch(now: Fixture.now.adding(minutes: 5))
++        s.expectState(.paused)
++        Wait.label(s.el("reading.title"), equals: Fixture.botchan, "戻った読書中の画面の題名")
++        expectElapsed(s, 300...300, "起動し直した後の経過（5:00 のまま）")
++        s.shot("AC33_起動し直した後", self)
++    }
++
++    // MARK: AC-40
++
++    /// AC-40：reading で経過12:30（時計を止める）。reading.elapsed の label は ja「12分30秒」、en「12 minutes, 30 seconds」。
++    @MainActor
++    func test_AC40_elapsedLabelReadsMinutesAndSeconds() throws {
++        let s = launch(active: Fixture.reading(Fixture.botchanId, elapsed: 750))
++        s.expectState(.reading)
++        Wait.label(s.el("reading.elapsed"), equals: L10n.pick("12分30秒", "12 minutes, 30 seconds"), "経過の読み上げ")
++        s.shot("AC40_経過12分30秒", self)
++    }
++
++    // MARK: AC-41
++
++    /// AC-41：reading で経過5:00（読み始め 21:25、今 21:30）。時計を読み始めの10分前（21:15:00）に戻すと、経過は「0分0秒」、
++    /// 「-」で始まる表示は0個、状態は reading のまま。
++    @MainActor
++    func test_AC41_clockSetBackShowsZeroNotNegative() throws {
++        let s = launch(active: Fixture.reading(Fixture.botchanId, elapsed: 300))
++        s.expectState(.reading)
++        expectElapsed(s, 300...300, "前提：経過 5:00")
++
++        s.setClock(WallClock("2026-10-21T21:15:00"))
++        expectElapsed(s, 0...0, "時計を戻した後の経過")
++        // 「-」（U+002D）と、数の書式が使うことのある負の記号（U+2212）の両方を数える。
++        let negative = s.app.descendants(matching: .any).matching(
++            NSPredicate(format: "label BEGINSWITH %@ OR label BEGINSWITH %@", "-", "\u{2212}"))
++        XCTAssertEqual(negative.count, 0, "「-」で始まる表示は0個")
++        s.expectState(.reading)
++        s.shot("AC41_時計を戻した後", self)
++    }
++
++    // MARK: AC-58、AC-59
++
++    /// AC-58 と AC-59 の共通の前半：経過10:00の reading、一時停止の保存が1回だけ失敗する（session_pause:1）。一時停止して60秒たつ。
++    @MainActor
++    private func failPause(file: StaticString = #filePath, line: UInt = #line) -> AppSession {
++        let s = launch(active: Fixture.reading(Fixture.botchanId, elapsed: 600), fail: "session_pause:1")
++        s.expectState(.reading, file: file, line: line)
++        s.tap("reading.pause", file: file, line: line)
++        s.expectSaveFailed("一時停止の保存の失敗", file: file, line: line)
++        s.noteRetryLabel(L10n.errorRetryPause, "AC58_一時停止")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
++        s.advance(seconds: 60, file: file, line: line)
++        return s
++    }
++
++    /// AC-58：一時停止の保存の失敗の60秒後、error.saveFailed と error.retry が1個ずつ、reading のまま、
++    /// 経過は「11分0秒」か「11分1秒」、記録は1件のまま。
++    @MainActor
++    func test_AC58_pauseFailureKeepsReading() throws {
++        let s = failPause()
++        s.expectSaveFailed("60秒後")
++        s.expectState(.reading)
++        expectElapsed(s, 660...661, "60秒後の経過（11:00 か 11:01）")
++        s.shot("AC58_一時停止の失敗", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++
++    /// AC-59：AC-58 の後に error.retry を押し、さらに60秒たつと、paused、経過は「11分0秒」か「11分1秒」のまま、
++    /// error.saveFailed は0個、記録は1件のまま。
++    @MainActor
++    func test_AC59_pauseRetryStopsAtRetryTime() throws {
++        let s = failPause()
++        s.tap("error.retry")
++        s.expectState(.paused)
++        s.advance(seconds: 60)
++        s.expectState(.paused)
++        expectElapsed(s, 660...661, "再試行の60秒後の経過（11:00 か 11:01 のまま）")
++        s.expectNoSaveFailed("再試行の後")
++        s.shot("AC59_一時停止の再試行の後", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++
++    // MARK: AC-60、AC-61
++
++    /// AC-60 と AC-61 の共通の前半：経過5:00の paused、再開の保存が1回だけ失敗する（session_resume:1）。再開して60秒たつ。
++    @MainActor
++    private func failResume(file: StaticString = #filePath, line: UInt = #line) -> AppSession {
++        let s = launch(active: pausedAtFive, fail: "session_resume:1")
++        s.expectState(.paused, file: file, line: line)
++        s.tap("reading.resume", file: file, line: line)
++        s.expectSaveFailed("再開の保存の失敗", file: file, line: line)
++        s.noteRetryLabel(L10n.errorRetryResume, "AC60_再開")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
++        s.advance(seconds: 60, file: file, line: line)
++        return s
++    }
++
++    /// AC-60：再開の保存の失敗の60秒後、error.saveFailed と error.retry が1個ずつ、paused のまま、経過は「5分0秒」のまま、記録は1件のまま。
++    @MainActor
++    func test_AC60_resumeFailureKeepsPaused() throws {
++        let s = failResume()
++        s.expectSaveFailed("60秒後")
++        s.expectState(.paused)
++        expectElapsed(s, 300...300, "60秒後の経過（5:00 のまま）")
++        s.shot("AC60_再開の失敗", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++
++    /// AC-61：AC-60 の後に error.retry を押し、さらに60秒たつと、reading、経過は「6分0秒」か「6分1秒」
++    /// （失敗から再試行までの60秒は足されない）、error.saveFailed は0個、記録は1件のまま。
++    @MainActor
++    func test_AC61_resumeRetryStartsAtRetryTime() throws {
++        let s = failResume()
++        s.tap("error.retry")
++        s.expectState(.reading)
++        s.advance(seconds: 60)
++        expectElapsed(s, 360...361, "再試行の60秒後の経過（6:00 か 6:01）")
++        s.expectNoSaveFailed("再試行の後")
++        s.shot("AC61_再開の再試行の後", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++
++    // MARK: AC-62、AC-63
++
++    /// AC-62 と AC-63 の共通の前半：「終える」の保存が1回だけ失敗する（session_begin_finish:1）。
++    /// (a) 経過10:00の reading、(b) 経過5:00の paused。終えて60秒たつ。
++    @MainActor
++    private func failBeginFinish(paused: Bool, file: StaticString = #filePath, line: UInt = #line) -> AppSession {
++        let active = paused ? pausedAtFive : Fixture.reading(Fixture.botchanId, elapsed: 600)
++        let s = launch(active: active, fail: "session_begin_finish:1")
++        s.expectState(paused ? .paused : .reading, file: file, line: line)
++        s.tap("reading.finish", file: file, line: line)
++        s.expectSaveFailed("「終える」の保存の失敗", file: file, line: line)
++        s.noteRetryLabel(L10n.errorRetryFinish, paused ? "AC62_終える_一時停止中" : "AC62_終える_読書中")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
++        s.advance(seconds: 60, file: file, line: line)
++        return s
++    }
++
++    /// AC-62 の Then（(a) と (b) で共通の所と、状態と経過）。
++    @MainActor
++    private func assertAC62(paused: Bool, file: StaticString = #filePath, line: UInt = #line) {
++        let s = failBeginFinish(paused: paused, file: file, line: line)
++        let name = paused ? "paused" : "reading"
++        s.expectSaveFailed("\(name)：60秒後", file: file, line: line)
++        XCTAssertEqual(s.count("session.finish.save"), 0, "\(name)：session.finish.save は0個", file: file, line: line)
++        XCTAssertEqual(s.count("session.state.finishing"), 0, "\(name)：session.state.finishing は0個", file: file, line: line)
++        if paused {
++            s.expectState(.paused, file: file, line: line)
++            expectElapsed(s, 300...300, "paused：60秒後の経過（5:00 のまま）", file: file, line: line)
++        } else {
++            s.expectState(.reading, file: file, line: line)
++            expectElapsed(s, 660...661, "reading：60秒後の経過（11:00 か 11:01）", file: file, line: line)
++        }
++        s.shot("AC62_\(name)_終えるの失敗", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "\(name)：記録は1件のまま", file: file, line: line)
++    }
++
++    /// AC-62 (a)：reading（経過10:00）で「終える」の保存に失敗。
++    @MainActor
++    func test_AC62_beginFinishFailureWhileReading() throws {
++        assertAC62(paused: false)
++    }
++
++    /// AC-62 (b)：paused（経過5:00）で「終える」の保存に失敗。
++    @MainActor
++    func test_AC62_beginFinishFailureWhilePaused() throws {
++        assertAC62(paused: true)
++    }
++
++    /// AC-63 の Then：error.retry を押し、さらに60秒たつと、finishing、session.finish.save が1個、
++    /// session.finish.minutes の value は (a)「11」（「10」でも「12」でもない）、(b)「5」。error.saveFailed は0個、記録は1件のまま。
++    @MainActor
++    private func assertAC63(paused: Bool, file: StaticString = #filePath, line: UInt = #line) {
++        let s = failBeginFinish(paused: paused, file: file, line: line)
++        let name = paused ? "paused" : "reading"
++        s.tap("error.retry", file: file, line: line)
++        Wait.exists(s.el("session.finish.save"), "\(name)：終える入力", file: file, line: line)
++        s.advance(seconds: 60, file: file, line: line)
++        s.expectState(.finishing, file: file, line: line)
++        XCTAssertEqual(s.buttonCount("session.finish.save"), 1, "\(name)：session.finish.save のボタンは1個", file: file, line: line)
++        Wait.value(s.el("session.finish.minutes"), equals: paused ? "5" : "11", "\(name)：読んだ時間の欄", file: file, line: line)
++        s.expectNoSaveFailed("\(name)：再試行の後", file: file, line: line)
++        s.shot("AC63_\(name)_終えるの再試行の後", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "\(name)：記録は1件のまま", file: file, line: line)
++    }
++
++    /// AC-63 (a)
++    @MainActor
++    func test_AC63_beginFinishRetryWhileReading() throws {
++        assertAC63(paused: false)
++    }
++
++    /// AC-63 (b)
++    @MainActor
++    func test_AC63_beginFinishRetryWhilePaused() throws {
++        assertAC63(paused: true)
++    }
++
++    // MARK: AC-66、AC-67
++
++    /// AC-66 と AC-67 の共通の前半：経過0:30の reading、60秒未満で終える保存が1回だけ失敗する（session_discard:1）。終えて10秒たつ。
++    @MainActor
++    private func failDiscard(file: StaticString = #filePath, line: UInt = #line) -> AppSession {
++        let s = launch(active: Fixture.reading(Fixture.botchanId, elapsed: 30), fail: "session_discard:1")
++        s.expectState(.reading, file: file, line: line)
++        expectElapsed(s, 30...30, "前提：経過 0:30", file: file, line: line)
++        s.tap("reading.finish", file: file, line: line)
++        s.expectSaveFailed("60秒未満で終える保存の失敗", file: file, line: line)
++        s.noteRetryLabel(L10n.errorRetryFinish, "AC66_60秒未満で終える")  // design 6 の文。AC の Then の外なので、違っても AC の判定に数えない（L10n.swift の noteRetryLabel）
++        s.advance(seconds: 10, file: file, line: line)
++        return s
++    }
++
++    /// AC-66：60秒未満で終える保存の失敗の10秒後、error.saveFailed と error.retry が1個ずつ、reading のまま、
++    /// 経過は「0分40秒」か「0分41秒」、session.finish.tooShort と session.finish.save は0個、記録は1件のまま。
++    @MainActor
++    func test_AC66_discardFailureKeepsReading() throws {
++        let s = failDiscard()
++        s.expectSaveFailed("10秒後")
++        s.expectState(.reading)
++        expectElapsed(s, 40...41, "10秒後の経過（0:40 か 0:41）")
++        XCTAssertEqual(s.count("session.finish.tooShort"), 0, "session.finish.tooShort は0個")
++        XCTAssertEqual(s.count("session.finish.save"), 0, "session.finish.save は0個")
++        s.shot("AC66_60秒未満で終える失敗", self)
++        s.expectSessionCount(1, bookId: Fixture.botchanId, "記録は1件のまま")
++    }
++
++    /// AC-67：AC-66 の後（経過0:40）に error.retry を押すと、idle、book.title が「坊っちゃん」の詳細、session.finish.tooShort が1個、
++    /// 「記録 1件」のまま、reading.elapsed と error.saveFailed は0個、アラートは0個。
++    /// 40秒で押すので、再試行は session_discard の2回目の保存になり通る（T5 の備考）。
++    @MainActor
++    func test_AC67_discardRetryShowsNoticeWithoutRecord() throws {
++        let s = failDiscard()
++        s.tap("error.retry")
++
++        Wait.label(s.el("book.title"), equals: Fixture.botchan, "再試行の後の本の詳細")
++        s.expectState(.idle)
++        Wait.label(s.el("session.finish.tooShort"), equals: L10n.sessionFinishTooShort, "session.finish.tooShort")
++        XCTAssertEqual(s.count("session.finish.tooShort"), 1, "session.finish.tooShort は1個")
++        Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "記録は1件のまま")
++        Wait.gone(s.el("reading.elapsed"), "reading.elapsed")
++        XCTAssertEqual(s.count("reading.elapsed"), 0, "reading.elapsed は0個")
++        s.expectNoSaveFailed("再試行の後")
++        XCTAssertEqual(s.app.alerts.count, 0, "アラートは0個")
++        s.shot("AC67_60秒未満の再試行の後", self)
++    }
++}
+diff --git a/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift b/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift
+index c4d6e91..ead29ac 100644
+--- a/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift
++++ b/ios/AcceptanceTests/Tests/ReadingSessionAcceptanceTests.swift
+@@ -2,7 +2,7 @@ import XCTest
+ 
+ /// 読み始め、経過、一時停止、裏と強制終了、前の本、読書中は1件（AC-5〜AC-8、AC-13、AC-17、AC-25〜AC-27）。
+ /// 時計は UITEST_NOW と UITEST_CLOCK_FROZEN で止め、T16 で決まった秒だけ進める（実時間で待たない）。
+-final class ReadingSessionAcceptanceTests: XCTestCase {
++final class ReadingSessionAcceptanceTests: AcceptanceTestCase {
+     override func setUpWithError() throws {
+         continueAfterFailure = false
+     }
+diff --git a/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift b/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift
+index 707e8aa..bcd1beb 100644
+--- a/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift
++++ b/ios/AcceptanceTests/Tests/TelemetryAndPrivacyAcceptanceTests.swift
+@@ -2,7 +2,7 @@ import XCTest
+ 
+ /// 計測の送り先の失敗、権限、計測の中身（AC-20、AC-21、AC-23、AC-24）。
+ /// 受け口は TelemetryReceiver（localhost の HTTP。T6、T7、T13、T19）。届かないと CI で分かったら T22 に替える（TelemetryProbe）。
+-final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
++final class TelemetryAndPrivacyAcceptanceTests: AcceptanceTestCase {
+     override func setUpWithError() throws {
+         continueAfterFailure = false
+     }
+@@ -68,13 +68,26 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
+ 
+     /// AC-21：初めて開いてから、本を追加し、読書を1回終えて保存するまでに、権限を求めるシステムのダイアログは0回。
+     /// 権限は前もって未回答に戻しておく（T12。resetAuthorizationStatus は起動の前に呼ぶ）。
++    /// 手順の区切りの4か所で数えるのに加え、手順の途中に出た割り込みも addUIInterruptionMonitor で記録して落とす。
+     @MainActor
+     func test_AC21_noPermissionPromptsDuringFirstSession() throws {
+         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+         let beforeLaunch = XCUIApplication()
+-        for resource in [XCUIProtectedResource.camera, .photos, .location] {
++        // 4つの case の名前は Apple の文書（XCUIAutomation の XCUIProtectedResource の一覧）で確かめた（2026-10-21）。
++        // iOS 17 のシミュレーターでリセットが効くこと（userTracking を含む）は CI で確かめる。
++        for resource in [XCUIProtectedResource.camera, .photos, .location, .userTracking] {
+             beforeLaunch.resetAuthorizationStatus(for: resource)
+         }
++        // 割り込み（システムのダイアログ）が出たら、種類と label を記録して XCTFail する。true は「処理した」の印で、閉じはしない。
++        // 閉包は MainActor のこの関数の中で作るので、element と interruptions は MainActor で読み書きする（CI でコンパイルを確かめる）。
++        var interruptions: [String] = []
++        let monitor = addUIInterruptionMonitor(withDescription: "AC-21：権限などのシステムのダイアログ") { element in
++            let found = "type \(element.elementType.rawValue)「\(element.label)」"
++            interruptions.append(found)
++            XCTFail("AC-21：手順の途中でシステムのダイアログが出た：\(found)")
++            return true
++        }
++        defer { removeUIInterruptionMonitor(monitor) }
+         let s = AppSession.launch(.fresh)
+         func expectNoPrompt(_ step: String) {
+             XCTAssertEqual(springboard.alerts.count, 0, "\(step)：システムのダイアログ")
+@@ -92,13 +105,15 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
+         s.finishAndSave(title: Fixture.botchan)
+         Wait.label(s.el("book.sessionCount"), equals: L10n.sessionCount(1), "読書を1回終えて保存した")
+         expectNoPrompt("終えて保存した後")
++        XCTAssertEqual(interruptions, [], "addUIInterruptionMonitor が記録した割り込み")
+     }
+ 
+     // MARK: AC-23
+ 
+     /// AC-23：App First Opened は送り済み（T2 の flags）で本が0冊。題名「坊っちゃん」で追加し、読み始め、5分読んで、ページ72で終える。
+     /// 15 の名前のイベントは Book Added、Reading Session Started、Reading Session Finished の3件。届いたものの全体に「坊っちゃん」が0回
+-    /// （UTF-8 のままと、パーセントエンコードした形）。プロパティの値で 72 と等しいものは0個。
++    /// （UTF-8 のままと、パーセントエンコードした形の大文字と小文字）。JSON を読み直した events の全部の値にも0回
++    /// （\uXXXX で書き出された題名は本文の文字では見つからないため）。プロパティの値で 72 と等しいものは0個。
+     @MainActor
+     func test_AC23_telemetryHasNoTitleOrPageValues() throws {
+         let probe = try TelemetryProbe(eventsMode: .ok, separateControl: false, test: self)
+@@ -118,12 +133,39 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
+             named.sorted(), ["Book Added", "Reading Session Finished", "Reading Session Started"],
+             "15 の名前のイベント（届いた順：\(snapshot.names)）")
+ 
++        // パーセントエンコードの形は UTF-8 のバイト列から自分で作る。addingPercentEncoding(withAllowedCharacters: .alphanumerics) は
++        // Unicode の L*、M*、N* を許すので、5文字とも Lo の「坊っちゃん」を変えずに返す（G2 r1 の重大1）。
++        let encodedUpper = Fixture.botchan.utf8.map { String(format: "%%%02X", $0) }.joined()
++        let encodedLower = encodedUpper.lowercased()
++        XCTAssertNotEqual(encodedUpper, Fixture.botchan, "前提：パーセントエンコードの形は元の文字と違う")
++        XCTAssertEqual(encodedUpper, "%E5%9D%8A%E3%81%A3%E3%81%A1%E3%82%83%E3%82%93", "前提：パーセントエンコード（大文字）の形")
++        XCTAssertEqual(encodedLower, "%e5%9d%8a%e3%81%a3%e3%81%a1%e3%82%83%e3%82%93", "前提：パーセントエンコード（小文字）の形")
++        let titleForms = [("UTF-8", Fixture.botchan), ("パーセントエンコード（大文字）", encodedUpper), ("パーセントエンコード（小文字）", encodedLower)]
++
+         let everything = snapshot.rawTexts.joined(separator: "\n")
+-        let encodedUpper = Fixture.botchan.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
+-        XCTAssertFalse(encodedUpper.isEmpty, "前提：パーセントエンコードの形を作れた")
+-        XCTAssertEqual(everything.components(separatedBy: Fixture.botchan).count - 1, 0, "UTF-8 の「坊っちゃん」の数")
+-        XCTAssertEqual(everything.components(separatedBy: encodedUpper).count - 1, 0, "パーセントエンコード（大文字）の数")
+-        XCTAssertEqual(everything.components(separatedBy: encodedUpper.lowercased()).count - 1, 0, "パーセントエンコード（小文字）の数")
++        for (form, text) in titleForms {
++            XCTAssertEqual(everything.components(separatedBy: text).count - 1, 0, "届いたものの全体で \(form) の「坊っちゃん」の数")
++        }
++
++        // JSON を読み直した events の全部の値（キーと入れ子も）を見る。\uXXXX で書き出された題名は、読み直すと「坊っちゃん」に戻る。
++        var titleFound: [String] = []
++        func findTitle(_ value: Any, _ path: String) {
++            switch value {
++            case let object as [String: Any]:
++                for (key, child) in object {
++                    findTitle(key, "\(path).<key>")
++                    findTitle(child, "\(path).\(key)")
++                }
++            case let array as [Any]:
++                for (index, child) in array.enumerated() { findTitle(child, "\(path)[\(index)]") }
++            case let text as String:
++                for (form, title) in titleForms where text.contains(title) { titleFound.append("\(path)（\(form)）") }
++            default:
++                break
++            }
++        }
++        for (index, event) in snapshot.events.enumerated() { findTitle(event, "events[\(index)]") }
++        XCTAssertEqual(titleFound, [], "読み直した events の値に「坊っちゃん」が出た場所")
+ 
+         var equalTo72: [String] = []
+         for event in snapshot.events {
+@@ -173,6 +215,6 @@ final class TelemetryAndPrivacyAcceptanceTests: XCTestCase {
+         let reached = snapshot.events.filter { ($0["name"] as? String) == "Reading Week Reached" }
+         XCTAssertEqual(reached.count, 1, "Reading Week Reached の数（届いた順：\(snapshot.names)）")
+         let threshold = (reached.first?["properties"] as? [String: Any])?["threshold_min"]
+-        XCTAssertEqual(threshold.map { "\($0)" }, "60", "threshold_min")
++        XCTAssertEqual(threshold as? String, "60", "threshold_min は文字の \"60\"（contracts/telemetry.md）")
+     }
+ }
+diff --git a/ios/AcceptanceTests/ac18-reboot.sh b/ios/AcceptanceTests/ac18-reboot.sh
+index 981735a..b5859fb 100755
+--- a/ios/AcceptanceTests/ac18-reboot.sh
++++ b/ios/AcceptanceTests/ac18-reboot.sh
+@@ -1,10 +1,14 @@
+ #!/usr/bin/env bash
+ # AC-18：端末（シミュレーター）を再起動しても、本と記録が残る（contracts/test-hooks.md の T11、A53）。
+-# 使い方（CLAUDE.md の ios_test の最後。ios/ の中で動かす）：bash AcceptanceTests/ac18-reboot.sh 'iPhone 16'
++# 使い方（CLAUDE.md の ios_test の最後。ios/ の中で動かす）：bash AcceptanceTests/ac18-reboot.sh 'iPhone 17'
+ #   1. データを作る実行（AC18RebootTests/test_AC18_1_seedLibraryBeforeReboot だけ）
+-#   2. xcrun simctl shutdown と boot（起動し終わるまで bootstatus で待つ）
++#   2. 再起動：simctl list devices -j で state を読み、Booted なら shutdown、Shutdown なら飛ばす（xcodebuild test の後に止まっていることがある。
++#      CI run 22 で shutdown が code=405「Unable to shutdown device in current state: Shutdown」で落ちた）。続けて boot（Booted なら飛ばす）と bootstatus
+ #   3. 確かめる実行（AC18RebootTests/test_AC18_2_libraryRemainsAfterReboot だけ。UITEST_RESET も UITEST_SEED も渡さない）
+ # 再試行はしない（xcodebuild に再試行の引数を付けない）。どこかで落ちたら、その終了コードで終わる。
++# 動いたテストの数は xcodebuild の出力（<結果の場所>/<テスト名>.log に tee で残す）の「Executed 1 test, with 0 failures」で確かめる。
++# 0本のまま成功で終わった（xctestplan のターゲットの ID や -only-testing の名前が合わない）ときは 65 で終わる。
++# 再起動の段で state が Booted か Shutdown に決まらない（Booting、Shutting Down などのまま 60 秒）ときは 67、UDID が一覧から消えたときは 66 で終わる。
+ # 結果のファイル（.xcresult）はリポジトリの外に置く（既定は ${TMPDIR:-/tmp}/ac18-reboot。AC18_RESULTS_DIR で変えられる）。
+ set -euo pipefail
+ 
+@@ -36,8 +40,9 @@ mkdir -p "$RESULTS_DIR"
+ run_one() {
+   local test_name="$1"
+   local bundle="$RESULTS_DIR/$test_name.xcresult"
+-  rm -rf "$bundle"
+-  echo "ac18-reboot: run $TARGET/$test_name"
++  local log="$RESULTS_DIR/$test_name.log"
++  rm -rf "$bundle" "$log"
++  echo "ac18-reboot: run $TARGET/$test_name (log=$log)"
+   set +e
+   xcodebuild test \
+     -project "$IOS_DIR/Yomutoki.xcodeproj" \
+@@ -46,22 +51,89 @@ run_one() {
+     -destination "id=$UDID" \
+     -only-testing:"$TARGET/$test_name" \
+     -resultBundlePath "$bundle" \
+-    CODE_SIGNING_ALLOWED=NO
+-  local code=$?
++    CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$log"
++  local code="${PIPESTATUS[0]}"
+   set -e
+   echo "ac18-reboot: $test_name exit=$code"
+-  return "$code"
++  if [ "$code" -ne 0 ]; then
++    return "$code"
++  fi
++  if ! grep -q 'Executed 1 test, with 0 failures' "$log"; then
++    echo "ac18-reboot: $test_name の出力に「Executed 1 test, with 0 failures」がない（動いたテストが1本ではない。$log）" >&2
++    return 65
++  fi
++  PASSED=$((PASSED + 1))
++  return 0
+ }
+ 
++# UDID の今の state（Booted、Shutdown、Booting、Shutting Down など）を出す。一覧にないときは空。UDID の決め方と同じく python3 -I で読む。
++sim_state() {
++  xcrun simctl list devices -j | python3 -I -c '
++import json, sys
++udid = sys.argv[1]
++devices = json.load(sys.stdin)["devices"]
++found = [d.get("state", "") for runtime in devices for d in devices[runtime] if d.get("udid") == udid]
++print(found[0] if found else "")
++' "$UDID"
++}
++
++# state が Booted か Shutdown になるまで待ち、SIM_STATE に入れる。待つのは state の変化（2 秒ごとに読み直す）で、最大 60 秒。
++# 決まらなければ 67、UDID が一覧にないときは 66 を返す。simctl か python3 が落ちたときは 0 でない終了コード（pipefail なので右端の失敗。simctl が落ちると python3 の 1）を返す。
++STATE_WAIT_MAX=60
++STATE_WAIT_STEP=2
++SIM_STATE=""
++wait_settled_state() {
++  local waited=0
++  local state
++  state="$(sim_state)" || return $?
++  while [ "$state" != "Booted" ] && [ "$state" != "Shutdown" ]; do
++    if [ -z "$state" ]; then
++      echo "ac18-reboot: udid=$UDID が simctl list devices -j にない" >&2
++      return 66
++    fi
++    if [ "$waited" -ge "$STATE_WAIT_MAX" ]; then
++      echo "ac18-reboot: state=$state のまま ${STATE_WAIT_MAX} 秒たっても Booted か Shutdown にならない" >&2
++      return 67
++    fi
++    echo "ac18-reboot: state=$state → Booted か Shutdown になるのを待つ（${waited} 秒経過）"
++    sleep "$STATE_WAIT_STEP"
++    waited=$((waited + STATE_WAIT_STEP))
++    state="$(sim_state)" || return $?
++  done
++  SIM_STATE="$state"
++  return 0
++}
++
++PASSED=0
++
+ # 1. データを作る実行
+ run_one test_AC18_1_seedLibraryBeforeReboot || exit $?
+ 
+-# 2. 再起動（A53）
++# 2. 再起動（A53）。止める → 起動する → 起動し終わるのを待つ。
++# xcodebuild test が終わるとシミュレーターが Shutdown に戻っていることがある（CI run 22、macos-latest、Xcode 26.6）。
++# そのときは shutdown を飛ばす（止まっている状態から起動するので、再起動の意味は変わらない）。
+ echo "ac18-reboot: reboot $UDID"
+-xcrun simctl shutdown "$UDID"
+-xcrun simctl boot "$UDID"
++wait_settled_state || exit $?
++if [ "$SIM_STATE" = "Booted" ]; then
++  echo "ac18-reboot: state=$SIM_STATE → shutdown する"
++  xcrun simctl shutdown "$UDID"
++else
++  echo "ac18-reboot: state=$SIM_STATE → shutdown を飛ばす（もう止まっている）"
++fi
++wait_settled_state || exit $?
++if [ "$SIM_STATE" = "Booted" ]; then
++  echo "ac18-reboot: state=$SIM_STATE → boot を飛ばす（もう起動している）"
++else
++  echo "ac18-reboot: state=$SIM_STATE → boot する"
++  xcrun simctl boot "$UDID"
++fi
+ xcrun simctl bootstatus "$UDID"
++echo "ac18-reboot: state=$(sim_state)（bootstatus の後）"
+ 
+ # 3. 確かめる実行
+ run_one test_AC18_2_libraryRemainsAfterReboot || exit $?
+-echo "ac18-reboot: passed 2 of 2 (seed, verify after reboot)"
++if [ "$PASSED" -ne 2 ]; then
++  echo "ac18-reboot: 通った実行は $PASSED 本（2本のはず）" >&2
++  exit 1
++fi
++echo "ac18-reboot: passed $PASSED of 2 (seed, verify after reboot)"
+diff --git a/ios/AcceptanceTests/ac39-xcstrings.sh b/ios/AcceptanceTests/ac39-xcstrings.sh
+new file mode 100644
+index 0000000..bc27bd1
+--- /dev/null
++++ b/ios/AcceptanceTests/ac39-xcstrings.sh
+@@ -0,0 +1,40 @@
++#!/usr/bin/env bash
++# AC-39：日本語と英語の文言がそろっている（contracts/test-hooks.md の T14）。
++# String Catalog（ios/Yomutoki/Resources/*.xcstrings）で、ja か en の訳がない（state が translated でない）キーが0件であること。
++# T14 のコマンド `python3 -I contracts/tools/xcstrings_untranslated.py ios/Yomutoki/Resources/*.xcstrings` を包むだけ。
++# 合格：出力の最後の行が `untranslated_keys=0` で、終了コード0。
++# 使い方（リポジトリのどこからでもよい）：bash ios/AcceptanceTests/ac39-xcstrings.sh
++# CLAUDE.md の ios_test に入っていないので、G3 で verifier が手で動かす（test-plan の 5。app.json に足すかは Takuma。P-12）。
++# Linux でも動く（Python 3 だけを使う）。再試行はしない。
++set -euo pipefail
++
++HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++ROOT="$(cd "$HERE/../.." && pwd)"
++TOOL="$ROOT/contracts/tools/xcstrings_untranslated.py"
++
++test_AC39_stringCatalogFullyTranslated() {
++  local name="test_AC39_stringCatalogFullyTranslated"
++  shopt -s nullglob
++  local files=("$ROOT"/ios/Yomutoki/Resources/*.xcstrings)
++  shopt -u nullglob
++  if [ "${#files[@]}" -eq 0 ]; then
++    echo "$name: FAIL（ios/Yomutoki/Resources/*.xcstrings が1つもない）"
++    return 1
++  fi
++  echo "$name: files=${files[*]#"$ROOT/"}"
++  local out code
++  set +e
++  out="$(python3 -I "$TOOL" "${files[@]}")"
++  code=$?
++  set -e
++  printf '%s\n' "$out"
++  local last
++  last="$(printf '%s\n' "$out" | tail -n 1)"
++  if [ "$code" -ne 0 ] || [ "$last" != "untranslated_keys=0" ]; then
++    echo "$name: FAIL（exit=${code}、最後の行=${last}）"
++    return 1
++  fi
++  echo "$name: PASS（exit=0、最後の行=${last}）"
++}
++
++test_AC39_stringCatalogFullyTranslated
+diff --git a/ios/AcceptanceTests/run-acceptance.sh b/ios/AcceptanceTests/run-acceptance.sh
+new file mode 100644
+index 0000000..8e16088
+--- /dev/null
++++ b/ios/AcceptanceTests/run-acceptance.sh
+@@ -0,0 +1,230 @@
++#!/usr/bin/env bash
++# 受け入れテスト（Acceptance.xctestplan。構成 ja_JP と en_US の2つの回）を再試行なしで1回動かし、終わったら要約を出す。
++# 使い方（CLAUDE.md の ios_test。ios/ の中で動かす）：bash AcceptanceTests/run-acceptance.sh 'iPhone 17'
++# なぜ：CI のログは末尾 5,000 行しか取れず、先に走る回（ja_JP）の失敗の文言と [AT-DIAG] が切れる
++#   （docs/verification/001-reading-session/ci-runs/c9e7427-acceptance.md）。そこで xcodebuild の出力を全部
++#   <結果の場所>/Acceptance.log に tee で残し、最後に要約を標準出力に出して、両方の回の失敗の文言がログの末尾に残るようにする。
++# 要約（「=== ACCEPTANCE SUMMARY ===」から「=== END ACCEPTANCE SUMMARY ===」まで）：
++#   a. 回の区切りと件数（Test Suite の started／passed／failed と Executed の行。xcodebuild は構成の名前を出さないので、回は
++#      最上位のスイート（Selected tests か All tests）の started で数え、[AT-DIAG] の「構成：ACCEPTANCE_LANG=」で言語を結ぶ）
++#   b. 失敗の文言（「.swift:<行>: error:」の行、全件）と、落ちた Test Case の行、異常終了の行
++#   c. 「Failing tests:」の節
++#   d. [AT-DIAG] の行（全体で DIAG_LIMIT 行まで。超えた分は Acceptance.log にあると書く）
++#   e. 落ちたテストの数と名前（c から。回ごとの内訳は b の Test Case の行から）
++#   f. .xcresult の構成ごとの件数と失敗（xcrun xcresulttool で読めたときだけ。読めなくても合否は変えない）
++# 再試行はしない（xcodebuild に再試行の引数を付けない。xctestplan にも testRepetitionMode を書かない）。
++# 終了コード：xcodebuild の終了コードをそのまま返す（要約の有無で合否を変えない）。ただし xcodebuild が 0 で終わったのに、
++#   動いたテストが0本（「Executed <1以上> test」の行がない。xctestplan のターゲットの ID が合わないなど）なら 65（ac18-reboot.sh と同じ守り）。
++#   引数の誤りは 64。
++# 結果（.xcresult とログ）はリポジトリの外に置く（既定は ${TMPDIR:-/tmp}/acceptance。AC_RESULTS_DIR で変えられる）。
++set -euo pipefail
++
++if [ "$#" -ne 1 ] || [ -z "$1" ]; then
++  echo "usage: bash AcceptanceTests/run-acceptance.sh '<シミュレーターの名前>'" >&2
++  exit 64
++fi
++SIM_NAME="$1"
++HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++IOS_DIR="$(cd "$HERE/.." && pwd)"
++RESULTS_DIR="${AC_RESULTS_DIR:-${TMPDIR:-/tmp}/acceptance}"
++BUNDLE="$RESULTS_DIR/Acceptance.xcresult"
++LOG="$RESULTS_DIR/Acceptance.log"
++XCRESULT_JSON="$RESULTS_DIR/Acceptance-xcresult.json"
++# [AT-DIAG] の行を要約に出す上限。1本の要素の木は AcceptanceTestCase.diagnosticLineLimit（200行）で切れるので、4本までは全部出る。
++DIAG_LIMIT=800
++
++mkdir -p "$RESULTS_DIR"
++# xcodebuild は -resultBundlePath がすでにあると落ちるので、前の結果を消す。
++rm -rf "$BUNDLE" "$LOG" "$XCRESULT_JSON" "$XCRESULT_JSON.err"
++echo "run-acceptance: simulator=$SIM_NAME results=$RESULTS_DIR log=$LOG"
++
++set +e
++xcodebuild test \
++  -project "$IOS_DIR/Yomutoki.xcodeproj" \
++  -scheme Yomutoki \
++  -testPlan Acceptance \
++  -destination "platform=iOS Simulator,name=$SIM_NAME" \
++  -resultBundlePath "$BUNDLE" \
++  CODE_SIGNING_ALLOWED=NO 2>&1 | tee "$LOG"
++CODE="${PIPESTATUS[0]}"
++set -e
++echo "run-acceptance: xcodebuild exit=$CODE"
++
++# f. の材料（Xcode 16 以降の xcresulttool。読めなければ空のまま）。
++XCRESULT_ARG=""
++if [ -d "$BUNDLE" ] && command -v xcrun >/dev/null 2>&1; then
++  if xcrun xcresulttool get test-results summary --path "$BUNDLE" >"$XCRESULT_JSON" 2>"$XCRESULT_JSON.err"; then
++    XCRESULT_ARG="$XCRESULT_JSON"
++  fi
++fi
++
++echo "=== ACCEPTANCE SUMMARY ==="
++echo "xcodebuild の終了コード：$CODE"
++echo "ログ：$LOG"
++echo "結果：$BUNDLE"
++set +e
++python3 -I - "$LOG" "$HERE/Acceptance.xctestplan" "$XCRESULT_ARG" "$DIAG_LIMIT" <<'PY'
++import json
++import os
++import re
++import sys
++
++log_path, plan_path, xcresult_json, diag_limit = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
++
++# CI のログ（GitHub Actions）は行の頭に時刻（と、まれに BOM）が付く。tee のログには付かない。どちらも同じに読む。
++PREFIX = re.compile(r"^﻿?(?:\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z )?")
++SUITE = re.compile(r"^Test Suite '([^']+)' (started|passed|failed) at ")
++TOP_SUITES = {"Selected tests", "All tests"}
++EXECUTED = re.compile(r"^\s*Executed (\d+) tests?, with (\d+) failures?")
++ERROR = re.compile(r"\.swift:\d+: error: ")
++CASE_STARTED = re.compile(r"^Test Case '-\[[\w.]+ \w+\]' started")
++CASE_FAILED = re.compile(r"^Test Case '-\[([\w.]+) (\w+)\]' failed")
++CASE_DONE = re.compile(r"^Test Case '-\[([\w.]+) (\w+)\]' (passed|failed) \(([\d.]+) seconds\)")
++ABNORMAL = re.compile(
++    r"Restarting after unexpected exit|Early unexpected exit|Test crashed|crashed with signal|Test runner exited|"
++    r"timed out while|exceeded execution time allowance|\*\* TEST (?:EXECUTE )?(?:FAILED|INTERRUPTED|SUCCEEDED) \*\*"
++)
++FAILING_HEAD = re.compile(r"^Failing tests:\s*$")
++FAILING_NAME = re.compile(r"^\s+(\w+\.\w+\(\))\s*$")
++FAILING_END = re.compile(r"^\*\* TEST ")
++DIAG = re.compile(r"\[AT-DIAG\]")
++DIAG_LANG = re.compile(r"\[AT-DIAG\] 構成：ACCEPTANCE_LANG=(\w+)")
++SECTION_CAP = 200
++
++with open(log_path, encoding="utf-8", errors="replace") as f:
++    lines = [PREFIX.sub("", raw.rstrip("\r\n")) for raw in f]
++
++run = 0
++saw_top_start = False
++run_langs = {}
++suites, cases, errors, failed_cases, abnormal, failing, diags = [], [], [], [], [], [], []
++case_index = {}
++in_failing = False
++
++def tag():
++    return f"[回{run}]" if run else "[回?]"
++
++for line in lines:
++    m = SUITE.match(line)
++    if m and m.group(1) in TOP_SUITES and m.group(2) == "started":
++        run += 1
++        saw_top_start = True
++    elif run == 0 and (
++        m or EXECUTED.match(line) or CASE_STARTED.match(line) or CASE_DONE.match(line)
++        or ERROR.search(line) or DIAG.search(line)
++    ):
++        run = 1  # ログの頭が切れて、最上位の started がない
++    if m or EXECUTED.match(line):
++        suites.append(f"{tag()} {line.strip()}")
++    dm = CASE_DONE.match(line)
++    if dm:
++        case_index[run] = case_index.get(run, 0) + 1
++        cls = dm.group(1).split(".")[-1]
++        cases.append(f"{tag()} {case_index[run]:>3} {dm.group(3):<6} {cls}.{dm.group(2)} ({dm.group(4)}s)")
++    if ERROR.search(line):
++        errors.append(f"{tag()} {line}")
++    cm = CASE_FAILED.match(line)
++    if cm:
++        failed_cases.append((run, f"{cm.group(1)}.{cm.group(2)}", line))
++    if ABNORMAL.search(line):
++        abnormal.append(f"{tag()} {line.strip()}")
++    if FAILING_HEAD.match(line):
++        in_failing = True
++    if in_failing:
++        failing.append(line)
++        if FAILING_END.match(line):
++            in_failing = False
++    if DIAG.search(line):
++        diags.append(f"{tag()} {line.strip()}")
++        lm = DIAG_LANG.search(line)
++        if lm:
++            run_langs.setdefault(run, set()).add(lm.group(1))
++
++def capped(items, cap, what):
++    for item in items[:cap]:
++        print(item)
++    if len(items) > cap:
++        print(f"…ほか {len(items) - cap} 行（{what}）は {log_path} にある")
++
++try:
++    with open(plan_path, encoding="utf-8") as f:
++        plan_names = [c.get("name", "?") for c in json.load(f).get("configurations", [])]
++except (OSError, ValueError) as e:
++    plan_names = [f"読めない（{e}）"]
++
++print("--- a. 回の区切りと件数 ---")
++print(f"計画の構成の順：{'、'.join(plan_names)}（xcodebuild はログに構成の名前を出さない。回の番号は最上位のスイートの started の順）")
++if not saw_top_start:
++    print("注意：最上位のスイート（Selected tests／All tests）の started がない。ログの頭が切れていて、回の番号は当てにならない")
++for r in sorted(run_langs):
++    print(f"回{r} の言語（[AT-DIAG] の構成の行から）：{'、'.join(sorted(run_langs[r]))}")
++capped(suites, SECTION_CAP, "Test Suite と Executed の行")
++print(f"--- a2. 回ごとの実行順（順番、結果、テスト、秒）{len(cases)} 行 ---")
++capped(cases, 2 * SECTION_CAP, "Test Case の終わりの行")
++
++print(f"--- b. 失敗の文言（.swift:<行>: error:）{len(errors)} 行 ---")
++for item in errors:
++    print(item)
++print(f"--- b2. 落ちた Test Case {len(failed_cases)} 行 ---")
++for r, _, line in failed_cases:
++    print(f"[回{r}] {line.strip()}" if r else f"[回?] {line.strip()}")
++print(f"--- b3. 異常終了と終わりの行 {len(abnormal)} 行 ---")
++capped(abnormal, 50, "異常終了と終わりの行")
++
++print("--- c. Failing tests: の節 ---")
++if failing:
++    capped(failing, SECTION_CAP, "Failing tests: の節")
++else:
++    print("（Failing tests: の行はない）")
++
++print(f"--- d. [AT-DIAG] の行 {len(diags)} 行（上限 {diag_limit} 行）---")
++capped(diags, diag_limit, "[AT-DIAG] の行")
++
++names = [m.group(1) for m in (FAILING_NAME.match(l) for l in failing) if m]
++print(f"--- e. 落ちたテスト（Failing tests: から）{len(names)} 本 ---")
++for name in names:
++    print(f"  {name}")
++by_run = {}
++for r, name, _ in failed_cases:
++    by_run.setdefault(r, []).append(name)
++for r in sorted(by_run):
++    lang = "、".join(sorted(run_langs.get(r, []))) or "言語は不明"
++    print(f"回{r if r else '?'}（{lang}）：{len(by_run[r])} 本：{'、'.join(by_run[r])}")
++
++print("--- f. .xcresult の構成ごとの件数（xcresulttool get test-results summary）---")
++if not xcresult_json:
++    print("（読めなかった、または .xcresult がない）")
++else:
++    try:
++        with open(xcresult_json, encoding="utf-8") as f:
++            data = json.load(f)
++        for dc in data.get("devicesAndConfigurations", []) or []:
++            conf = (dc.get("testPlanConfiguration") or {}).get("configurationName", "?")
++            dev = dc.get("device") or {}
++            print(
++                f"構成 {conf}（{dev.get('deviceName', '?')} {dev.get('osVersion', '')}）："
++                f"通過 {dc.get('passedTests', '?')}、失敗 {dc.get('failedTests', '?')}、飛ばした {dc.get('skippedTests', '?')}"
++            )
++        failures = data.get("testFailures", []) or []
++        print(f"testFailures：{len(failures)} 件")
++        for item in failures[:50]:
++            text = str(item.get("failureText", "")).replace("\n", " ")[:400]
++            print(f"  {item.get('testIdentifierString') or item.get('testName', '?')}：{text}")
++        if "devicesAndConfigurations" not in data and "testFailures" not in data:
++            print(f"（想定のキーがない。キー：{', '.join(sorted(data))}）")
++    except (OSError, ValueError, AttributeError) as e:
++        print(f"（読めなかった：{e}）")
++PY
++SUMMARY_CODE=$?
++set -e
++if [ "$SUMMARY_CODE" -ne 0 ]; then
++  echo "（要約を作れなかった：python3 の終了コード $SUMMARY_CODE。代わりに失敗の文言と [AT-DIAG] をそのまま出す）"
++  grep -E '\.swift:[0-9]+: error: |\[AT-DIAG\]|^Failing tests:|^[[:space:]]+[A-Za-z0-9_]+\.[A-Za-z0-9_]+\(\)[[:space:]]*$' "$LOG" | head -n "$DIAG_LIMIT" || true
++fi
++echo "=== END ACCEPTANCE SUMMARY ==="
++
++if [ "$CODE" -eq 0 ] && ! grep -qE 'Executed [1-9][0-9]* tests?, with' "$LOG"; then
++  echo "run-acceptance: xcodebuild は 0 で終わったが、動いたテストが0本（「Executed <1以上> test」の行がない。$LOG）" >&2
++  exit 65
++fi
++exit "$CODE"
+diff --git a/ios/AcceptanceTests/target.yml b/ios/AcceptanceTests/target.yml
+index b4bb5d3..0a0636a 100644
+--- a/ios/AcceptanceTests/target.yml
++++ b/ios/AcceptanceTests/target.yml
+@@ -32,10 +32,10 @@ schemes:
+         YomutokiAcceptanceTests: [test]
+     test:
+       # 判定の実行で再試行しない（xctestplan に testRepetitionMode を書かない）。
+-      # Unit.xctestplan は ios-engineer が ios/YomutokiTests/ に置く。defaultPlan は project.yml の側で決める（ここでは付けない。
+-      # 両方に付けると既定が2つになるため）。どちらにも付けなければ、最初の計画（Unit）が既定になる（ProjectSpec の Test Plan）。
++      # ここには受け入れテストの2つの計画だけを書く。Unit.xctestplan は ios-engineer が project.yml の側に defaultPlan: true 付きで書く
++      # （設計メモ 11。tech-lead の G2 r1 の決定）。既定の計画は project.yml の defaultPlan で決まる（include は target.yml が先に合わさり、
++      # project.yml が上に重なる）。ここで defaultPlan を付けないのは、既定が2つになるのを避けるため。
+       testPlans:
+-        - path: ../YomutokiTests/Unit.xctestplan
+         - path: Acceptance.xctestplan
+         # AC-18 の2段（ac18-reboot.sh）だけで使う計画。Acceptance.xctestplan では skippedTests に入れてある。
+         - path: AC18Reboot.xctestplan

@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "D8C2EE79-105C-4D1F-A8E9-35F41FFF6336",
+      "name" : "Unit",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Yomutoki.xcodeproj",
+        "identifier" : "98117485E2CCBF36B7C54EF6",
+        "name" : "YomutokiTests"
+      }
+    }
+  ],
+  "version" : 1
+}

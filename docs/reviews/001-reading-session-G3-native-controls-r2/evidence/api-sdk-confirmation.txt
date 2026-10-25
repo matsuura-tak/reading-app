@@ -1,0 +1,73 @@
+5014-}
+5015-#if compiler(>=5.3) && $TildeSendable
+5016-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+5017:public struct LabeledContent<Label, Content> : ~Swift.Sendable {
+5018-}
+5019-#else
+5020-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+5021:public struct LabeledContent<Label, Content> {
+5022-}
+5023-#endif
+5024-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+5025-extension SwiftUI.LabeledContent : SwiftUICore.View where Label : SwiftUICore.View, Content : SwiftUICore.View {
+5026-  nonisolated public init(@SwiftUICore.ContentBuilder content: () -> Content, @SwiftUICore.ContentBuilder label: () -> Label)
+--
+16586-  @available(tvOS, unavailable)
+16587-  @available(watchOS, unavailable)
+16588-  @available(visionOS, unavailable)
+16589:  nonisolated public func onDeleteCommand(perform action: (() -> Swift.Void)?) -> some SwiftUICore.View
+16590-  
+16591-  @available(tvOS 14.3, *)
+16592-  @available(iOS, unavailable)
+16593-  @available(macOS, unavailable)
+16594-  @available(watchOS, unavailable)
+--
+21307-#endif
+21308-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+21309-extension SwiftUICore.DynamicViewContent {
+21310:  @inlinable nonisolated public func onDelete(perform action: Swift.Optional<(Foundation.IndexSet) -> Swift.Void>) -> some SwiftUICore.DynamicViewContent {
+21311-        return modifier(_TraitWritingModifier<OnDeleteTraitKey>(value: action))
+21312-    }
+21313-  
+21314-}
+21315-#if compiler(>=5.3) && $TildeSendable
+--
+27139-@available(macOS, unavailable)
+27140-@available(tvOS, unavailable)
+27141-@available(watchOS, unavailable)
+27142:nonisolated public struct EditButton : SwiftUICore.View, ~Swift.Sendable {
+27143-  nonisolated public init()
+27144-  nonisolated public var body: some SwiftUICore.View {
+27145-    get
+27146-  }
+27147-  @available(iOS 13.0, *)
+--
+27155-@available(macOS, unavailable)
+27156-@available(tvOS, unavailable)
+27157-@available(watchOS, unavailable)
+27158:nonisolated public struct EditButton : SwiftUICore.View {
+27159-  nonisolated public init()
+27160-  nonisolated public var body: some SwiftUICore.View {
+27161-    get
+27162-  }
+27163-  @available(iOS 13.0, *)
+--
+30504-}
+30505-#if compiler(>=5.3) && $TildeSendable
+30506-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+30507:public struct LabeledContentStyleConfiguration : ~Swift.Sendable {
+30508-  @_Concurrency.MainActor @preconcurrency public struct Label : SwiftUICore.View, ~Swift.Sendable {
+30509-    @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
+30510-    public typealias Body = Swift.Never
+30511-  }
+30512-  @_Concurrency.MainActor @preconcurrency public struct Content : SwiftUICore.View, ~Swift.Sendable {
+--
+30518-}
+30519-#else
+30520-@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+30521:public struct LabeledContentStyleConfiguration {
+30522-  @_Concurrency.MainActor @preconcurrency public struct Label : SwiftUICore.View {
+30523-    @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
+30524-    public typealias Body = Swift.Never
+30525-  }
+30526-  @_Concurrency.MainActor @preconcurrency public struct Content : SwiftUICore.View {

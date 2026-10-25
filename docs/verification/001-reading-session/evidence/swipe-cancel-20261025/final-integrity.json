@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-25T04:45:11.451494+00:00",
+  "head": "facb3240f839359e3a471503b0d802e8f5201ced",
+  "unchanged_tracked_ios_except_target": 61,
+  "all_unchanged": true,
+  "target_sha256": "c52f61b9b7198781fafd7f0c3e0f97150bd2f5a53025e947b098fab6bc244e84",
+  "recorded_red_target_sha256": "c52f61b9b7198781fafd7f0c3e0f97150bd2f5a53025e947b098fab6bc244e84",
+  "source_matches_executed_red_copy": true,
+  "existing_class_prefix_unchanged": true,
+  "simulator_udid": "B18DB71A-DB50-4F84-9DDD-7D63541CF3BB",
+  "simulator_state": "Shutdown",
+  "test_execution_count": 1,
+  "selected_test_count": 2
+}
