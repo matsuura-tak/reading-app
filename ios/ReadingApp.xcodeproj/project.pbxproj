@@ -18,6 +18,15 @@
 		A10000090000000000000001 /* UITestHookCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000090000000000000001 /* UITestHookCoordinator.swift */; };
 		A100000A0000000000000001 /* UITestHookReadoutBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000A0000000000000001 /* UITestHookReadoutBuilder.swift */; };
 		A100000B0000000000000001 /* UITestHookOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000B0000000000000001 /* UITestHookOverlayWindow.swift */; };
+		A10000140000000000000001 /* BannerNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000140000000000000001 /* BannerNoticeView.swift */; };
+		A10000150000000000000001 /* BookmarkHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000150000000000000001 /* BookmarkHomeView.swift */; };
+		A10000160000000000000001 /* ReadingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000160000000000000001 /* ReadingSessionView.swift */; };
+		A10000170000000000000001 /* BookmarkMarkFlowViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000170000000000000001 /* BookmarkMarkFlowViews.swift */; };
+		A10000180000000000000001 /* SessionResultAndGuideViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000180000000000000001 /* SessionResultAndGuideViews.swift */; };
+		A10000190000000000000001 /* ShelfAndBookDetailViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000190000000000000001 /* ShelfAndBookDetailViews.swift */; };
+		A100001A0000000000000001 /* BookRegistrationViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001A0000000000000001 /* BookRegistrationViews.swift */; };
+		A100001B0000000000000001 /* FinishNightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001B0000000000000001 /* FinishNightView.swift */; };
+		A100001C0000000000000001 /* SettingsAndStoreViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001C0000000000000001 /* SettingsAndStoreViews.swift */; };
 		A100000C0000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F100000C0000000000000001 /* Assets.xcassets */; };
 		A100000D0000000000000001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F100000D0000000000000001 /* Localizable.xcstrings */; };
 		A100000E0000000000000001 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F100000E0000000000000001 /* InfoPlist.xcstrings */; };
@@ -124,6 +133,15 @@
 		F100000F0000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ReadingApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F10000100000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ReadingApp/Info.plist; sourceTree = "<group>"; };
 		F10000110000000000000001 /* ReadingApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReadingApp/ReadingApp.entitlements; sourceTree = "<group>"; };
+		F10000140000000000000001 /* BannerNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/BannerNoticeView.swift; sourceTree = "<group>"; };
+		F10000150000000000000001 /* BookmarkHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/BookmarkHomeView.swift; sourceTree = "<group>"; };
+		F10000160000000000000001 /* ReadingSessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/ReadingSessionView.swift; sourceTree = "<group>"; };
+		F10000170000000000000001 /* BookmarkMarkFlowViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/BookmarkMarkFlowViews.swift; sourceTree = "<group>"; };
+		F10000180000000000000001 /* SessionResultAndGuideViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/SessionResultAndGuideViews.swift; sourceTree = "<group>"; };
+		F10000190000000000000001 /* ShelfAndBookDetailViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/ShelfAndBookDetailViews.swift; sourceTree = "<group>"; };
+		F100001A0000000000000001 /* BookRegistrationViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/BookRegistrationViews.swift; sourceTree = "<group>"; };
+		F100001B0000000000000001 /* FinishNightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/FinishNightView.swift; sourceTree = "<group>"; };
+		F100001C0000000000000001 /* SettingsAndStoreViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/SettingsAndStoreViews.swift; sourceTree = "<group>"; };
 
 		F20000010000000000000001 /* ReadingWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingWidgetExtension/ReadingWidgets.swift; sourceTree = "<group>"; };
 		F20000020000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ReadingWidgetExtension/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -203,6 +221,15 @@
 				F100000F0000000000000001 /* PrivacyInfo.xcprivacy */,
 				F10000100000000000000001 /* Info.plist */,
 				F10000110000000000000001 /* ReadingApp.entitlements */,
+				F10000140000000000000001 /* BannerNoticeView.swift */,
+				F10000150000000000000001 /* BookmarkHomeView.swift */,
+				F10000160000000000000001 /* ReadingSessionView.swift */,
+				F10000170000000000000001 /* BookmarkMarkFlowViews.swift */,
+				F10000180000000000000001 /* SessionResultAndGuideViews.swift */,
+				F10000190000000000000001 /* ShelfAndBookDetailViews.swift */,
+				F100001A0000000000000001 /* BookRegistrationViews.swift */,
+				F100001B0000000000000001 /* FinishNightView.swift */,
+				F100001C0000000000000001 /* SettingsAndStoreViews.swift */,
 				F20000010000000000000001 /* ReadingWidgets.swift */,
 				F20000020000000000000001 /* PrivacyInfo.xcprivacy */,
 				F20000030000000000000001 /* Info.plist */,
@@ -425,6 +452,15 @@
 				A10000090000000000000001 /* UITestHookCoordinator.swift in Sources */,
 				A100000A0000000000000001 /* UITestHookReadoutBuilder.swift in Sources */,
 				A100000B0000000000000001 /* UITestHookOverlayWindow.swift in Sources */,
+				A10000140000000000000001 /* BannerNoticeView.swift in Sources */,
+				A10000150000000000000001 /* BookmarkHomeView.swift in Sources */,
+				A10000160000000000000001 /* ReadingSessionView.swift in Sources */,
+				A10000170000000000000001 /* BookmarkMarkFlowViews.swift in Sources */,
+				A10000180000000000000001 /* SessionResultAndGuideViews.swift in Sources */,
+				A10000190000000000000001 /* ShelfAndBookDetailViews.swift in Sources */,
+				A100001A0000000000000001 /* BookRegistrationViews.swift in Sources */,
+				A100001B0000000000000001 /* FinishNightView.swift in Sources */,
+				A100001C0000000000000001 /* SettingsAndStoreViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

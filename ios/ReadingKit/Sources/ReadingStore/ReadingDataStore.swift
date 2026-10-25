@@ -430,6 +430,7 @@ public final class ReadingDataStore {
     public var isOffline: Bool = false
     public var cameraAuthorization: String = "authorized"
     public var ocrConfiguration: H23OCRStubConfig?
+    public var ocrHoldEnabled: Bool = false
     public var isOCRHoldReleased: Bool = false
 
     public static let uuidBookA = UUID(uuidString: "00000000-0000-4000-8000-000000000001") ?? UUID()
@@ -662,16 +663,28 @@ public final class ReadingDataStore {
                         skipped: (r["skipped"] as? Int) ?? 0
                     )
                 }
-                if let a = rawWeights["author"] as? [String: Any] {
+                if let nv = rawWeights["nextVolume"] as? [String: Any] {
+                    weights.nextVolume = RecommendationCategoryCounter(
+                        chosen: (nv["chosen"] as? Int) ?? 0,
+                        skipped: (nv["skipped"] as? Int) ?? 0
+                    )
+                }
+                if let a = (rawWeights["author"] as? [String: Any]) ?? (rawWeights["sameAuthor"] as? [String: Any]) {
                     weights.author = RecommendationCategoryCounter(
                         chosen: (a["chosen"] as? Int) ?? 0,
                         skipped: (a["skipped"] as? Int) ?? 0
                     )
                 }
-                if let aw = rawWeights["award"] as? [String: Any] {
+                if let aw = (rawWeights["award"] as? [String: Any]) ?? (rawWeights["sameAward"] as? [String: Any]) {
                     weights.award = RecommendationCategoryCounter(
                         chosen: (aw["chosen"] as? Int) ?? 0,
                         skipped: (aw["skipped"] as? Int) ?? 0
+                    )
+                }
+                if let sl = rawWeights["sameLabel"] as? [String: Any] {
+                    weights.sameLabel = RecommendationCategoryCounter(
+                        chosen: (sl["chosen"] as? Int) ?? 0,
+                        skipped: (sl["skipped"] as? Int) ?? 0
                     )
                 }
                 seededSettings.recommendationWeights = weights
@@ -1423,7 +1436,14 @@ public final class ReadingDataStore {
     // MARK: - Entry URL & App Lifecycle
 
     public func openEntryURL(_ entryRaw: String) {
-        let entry = SessionEntryPoint(rawValue: entryRaw) ?? .app
+        let extracted: String
+        if let comps = URLComponents(string: entryRaw),
+           let val = comps.queryItems?.first(where: { $0.name == "entry" })?.value {
+            extracted = val
+        } else {
+            extracted = entryRaw
+        }
+        let entry = SessionEntryPoint(rawValue: extracted) ?? .app
         pendingEntryURL = (entry: entry, openedAt: clock.now())
         lastEntryPoint = entry
     }
@@ -1471,7 +1491,10 @@ public final class ReadingDataStore {
 
         if needsRescheduleOnActivate || cleanedUpUnread {
             needsRescheduleOnActivate = false
-            scheduleNextEntryLiveActivityIfNeeded(source: "foreground")
+            scheduleEntryLiveActivityForTonightOrTomorrow(
+                forceTonightIfBeforeEntry: cleanedUpUnread,
+                source: "foreground"
+            )
         }
     }
 
@@ -2006,7 +2029,7 @@ public final class ReadingDataStore {
     }
 
     public func selectAppearance(_ appearance: AppearanceID) {
-        if appearance == .default || settings.isPlusPurchased {
+        if !appearance.isPlusTheme || settings.isPlusPurchased {
             settings.appearanceID = appearance
             previewAppearanceID = nil
             try? persistCurrentEnvelopeToDisk()
@@ -2151,8 +2174,10 @@ public final class ReadingDataStore {
             if liveActivities.isEmpty {
                 scheduleNextEntryLiveActivityIfNeeded(source: "transition")
             }
+            let staleNow = nextFourAMISO(from: clock.now())
             for idx in liveActivities.indices {
                 liveActivities[idx].state = "started"
+                liveActivities[idx].staleDate = staleNow
             }
         }
     }
@@ -2627,17 +2652,259 @@ public final class ReadingDataStore {
             case "readers":
                 if isChosen { settings.recommendationWeights.readers.chosen += 1 }
                 else { settings.recommendationWeights.readers.skipped += 1 }
-            case "author":
+            case "nextVolume":
+                if isChosen { settings.recommendationWeights.nextVolume.chosen += 1 }
+                else { settings.recommendationWeights.nextVolume.skipped += 1 }
+            case "author", "sameAuthor":
                 if isChosen { settings.recommendationWeights.author.chosen += 1 }
                 else { settings.recommendationWeights.author.skipped += 1 }
-            case "award":
+            case "award", "sameAward":
                 if isChosen { settings.recommendationWeights.award.chosen += 1 }
                 else { settings.recommendationWeights.award.skipped += 1 }
+            case "sameLabel":
+                if isChosen { settings.recommendationWeights.sameLabel.chosen += 1 }
+                else { settings.recommendationWeights.sameLabel.skipped += 1 }
             default:
                 break
             }
         }
         try? persistCurrentEnvelopeToDisk()
+    }
+
+    public func configureOCR(from jsonString: String?) {
+        isOCRHoldReleased = false
+        guard let jsonString, !jsonString.isEmpty,
+              let data = jsonString.data(using: .utf8),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            ocrHoldEnabled = false
+            ocrConfiguration = nil
+            return
+        }
+        ocrHoldEnabled = (obj["hold"] as? Bool) ?? false
+
+        if let decoded = try? JSONDecoder().decode(H23OCRStubConfig.self, from: data),
+           (decoded.columns != nil || decoded.colophon != nil || decoded.coverLines != nil || decoded.spineItems != nil) {
+            ocrConfiguration = decoded
+            return
+        }
+
+        var mode: H23OCRStubMode = .pageVertical
+        var columns: [H23OCRColumn]?
+        var detectedPage: Int?
+        if let rawPage = obj["page"] as? [String: Any] {
+            let statusRaw = (rawPage["status"] as? String) ?? "ok"
+            let orientRaw = (rawPage["orientation"] as? String) ?? "vertical"
+            if statusRaw != "ok" {
+                mode = .empty
+                columns = []
+            } else {
+                mode = (orientRaw == "horizontal") ? .pageHorizontal : .pageVertical
+                var parsedCols: [H23OCRColumn] = []
+                let linesRaw = (rawPage["lines"] as? [[String: Any]]) ?? (rawPage["columns"] as? [[String: Any]]) ?? []
+                for (idx, item) in linesRaw.enumerated() {
+                    let text = (item["text"] as? String) ?? ""
+                    let xVal: Double
+                    let yVal: Double?
+                    if let bbox = item["bbox"] as? [NSNumber], bbox.count >= 2 {
+                        xVal = bbox[0].doubleValue
+                        yVal = bbox[1].doubleValue
+                    } else if let xNum = (item["x"] as? NSNumber) ?? (item["normalizedX"] as? NSNumber) {
+                        xVal = xNum.doubleValue
+                        yVal = (item["y"] as? NSNumber)?.doubleValue ?? (item["normalizedY"] as? NSNumber)?.doubleValue
+                    } else {
+                        xVal = Double(linesRaw.count - idx) / Double(max(1, linesRaw.count + 1))
+                        yVal = 0.5
+                    }
+                    let isFolio = (item["isFolio"] as? Bool) ?? (item["isRunningHead"] as? Bool) ?? (item["isPageNumber"] as? Bool)
+                    parsedCols.append(
+                        H23OCRColumn(
+                            id: (item["id"] as? String) ?? "col-\(idx + 1)",
+                            text: text,
+                            normalizedX: xVal,
+                            normalizedY: yVal,
+                            isPageNumber: isFolio
+                        )
+                    )
+                }
+                columns = parsedCols
+                detectedPage = rawPage["detectedPageNumber"] as? Int
+            }
+        }
+
+        var colophon: H23OCRColophon?
+        if let rawCol = obj["colophon"] as? [String: Any] {
+            let text = (rawCol["rawText"] as? String) ?? (rawCol["text"] as? String) ?? ""
+            let rawLines = (rawCol["rawLines"] as? [String]) ?? text.components(separatedBy: .newlines)
+            colophon = H23OCRColophon(
+                rawLines: rawLines,
+                extractedTitle: rawCol["title"] as? String,
+                extractedAuthor: rawCol["author"] as? String,
+                extractedPublisher: rawCol["publisher"] as? String,
+                extractedLabel: rawCol["label"] as? String,
+                extractedPublishedYear: rawCol["publishedYear"] as? Int,
+                extractedISBN13: rawCol["isbn13"] as? String
+            )
+        }
+
+        var coverLines: [String]?
+        if let rawCov = obj["cover"] as? [String: Any] {
+            let statusRaw = (rawCov["status"] as? String) ?? "ok"
+            if statusRaw == "ok" {
+                let cands = (rawCov["candidates"] as? [String]) ?? (rawCov["lines"] as? [String]) ?? []
+                let authCands = (rawCov["authorCandidates"] as? [String]) ?? []
+                coverLines = cands + authCands
+            } else {
+                coverLines = []
+            }
+        }
+
+        var spineItems: [H23OCRSpineItem]?
+        if let rawShelf = obj["bookshelf"] as? [String: Any] {
+            let statusRaw = (rawShelf["status"] as? String) ?? "ok"
+            if statusRaw == "ok", let rawSpines = rawShelf["spines"] as? [[String: Any]] {
+                spineItems = rawSpines.enumerated().map { idx, sp in
+                    let title = (sp["title"] as? String) ?? (sp["rawText"] as? String) ?? ""
+                    return H23OCRSpineItem(
+                        id: (sp["id"] as? String) ?? "spine-\(idx + 1)",
+                        title: title,
+                        author: sp["author"] as? String,
+                        normalizedX: (sp["x"] as? NSNumber)?.doubleValue
+                    )
+                }
+            } else {
+                spineItems = []
+            }
+        }
+
+        ocrConfiguration = H23OCRStubConfig(
+            mode: mode,
+            columns: columns,
+            detectedPageNumber: detectedPage,
+            colophon: colophon,
+            coverLines: coverLines,
+            spineItems: spineItems
+        )
+    }
+
+    public func configureStoreKit(from jsonString: String?) {
+        guard let jsonString, !jsonString.isEmpty,
+              let data = jsonString.data(using: .utf8),
+              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return
+        }
+        if let canPay = obj["canMakePayments"] as? Bool {
+            storeCanMakePayments = canPay
+        }
+        if let prodAvail = obj["productLoadAvailable"] as? Bool {
+            storeProductLoadAvailable = prodAvail
+        }
+        if let purchOut = obj["purchaseOutcome"] as? String {
+            storePurchaseOutcome = purchOut
+        }
+        if let restOut = obj["restoreOutcome"] as? String {
+            storeRestoreOutcome = restOut
+        }
+        if let initPurch = obj["initialPurchased"] as? Bool {
+            settings.isPlusPurchased = initPurch
+            try? persistCurrentEnvelopeToDisk()
+        }
+    }
+
+    public func buildFinishReflection(for bookId: UUID) -> String? {
+        let bookRecords = records.filter { $0.bookId == bookId }
+        guard !bookRecords.isEmpty else { return nil }
+        let inputs: [NightRecordInput] = bookRecords.map { rec in
+            NightRecordInput(
+                startedAt: rec.startedAt,
+                durationSeconds: rec.durationMinutes * 60,
+                timeZoneID: clock.timeZoneID(),
+                precomputedNightDate: rec.nightDate
+            )
+        }
+        guard let summary = NightDateCalculator.buildFinishReflection(from: inputs),
+              summary.uniqueNights >= 2 else {
+            return nil
+        }
+        return summary.japaneseText
+    }
+
+    private func asRecommendableBook(_ b: BookSnapshot) -> RecommendableBook {
+        RecommendableBook(
+            id: b.id,
+            isbn13: b.isbn13,
+            ndc: b.ndc,
+            title: b.title,
+            author: b.author.isEmpty ? nil : b.author,
+            publisher: b.publisher,
+            label: b.label,
+            award: AwardsCatalog.matchAwardName(title: b.title, author: b.author, catalog: activeAwards),
+            seriesTitle: b.seriesTitle,
+            volumeNumber: b.volumeNumber,
+            status: b.status,
+            addedAt: b.tsundokuAt ?? b.createdAt,
+            finishedAt: b.finishedAt
+        )
+    }
+
+    private func asRecommendableFromBiblio(_ item: H20BiblioItem) -> RecommendableBook {
+        RecommendableBook(
+            id: nil,
+            isbn13: item.isbn13,
+            ndc: item.ndc,
+            title: item.title,
+            author: item.author,
+            publisher: item.publisher,
+            label: item.label,
+            award: AwardsCatalog.matchAwardName(title: item.title, author: item.author, catalog: activeAwards),
+            seriesTitle: item.seriesTitle,
+            volumeNumber: item.volumeNumber,
+            status: nil
+        )
+    }
+
+    public func buildNextBookCandidates(for finishedBookId: UUID) -> [RecommendationCandidate] {
+        guard let finished = books.first(where: { $0.id == finishedBookId }) else { return [] }
+        let recFinished = asRecommendableBook(finished)
+        let shelfPool = books.map(asRecommendableBook)
+        let extPool = catalogDB.allBooks().map(asRecommendableFromBiblio)
+        let cooc = finished.isbn13.map { catalogDB.cooccurrenceCandidates(forISBN13: $0) } ?? []
+        return RecommendationEngine.nextCandidates(
+            justFinishedBook: recFinished,
+            shelfBooks: shelfPool,
+            externalPool: extPool,
+            cooccurrence: cooc,
+            awardsCatalog: activeAwards,
+            weights: settings.recommendationWeights.asSeedWeights(),
+            maxCount: 3
+        )
+    }
+
+    public func buildAfterBookCandidates(for bookId: UUID) -> [RecommendationCandidate] {
+        let shelfPool = books.map(asRecommendableBook)
+        let extPool = catalogDB.allBooks().map(asRecommendableFromBiblio)
+        let targetISBN = books.first(where: { $0.id == bookId })?.isbn13
+        let cooc = targetISBN.map { catalogDB.cooccurrenceCandidates(forISBN13: $0) } ?? []
+        return RecommendationEngine.afterCandidates(
+            shelfBooks: shelfPool,
+            externalPool: extPool,
+            cooccurrence: cooc,
+            awardsCatalog: activeAwards,
+            weights: settings.recommendationWeights.asSeedWeights(),
+            maxCount: 5
+        )
+    }
+
+    public func buildNoCurrentCandidates() -> [BookSnapshot] {
+        let shelfPool = books.map(asRecommendableBook)
+        let recs = RecommendationEngine.noCurrentCandidates(
+            shelfBooks: shelfPool,
+            weights: settings.recommendationWeights.asSeedWeights(),
+            maxCount: 3
+        )
+        return recs.compactMap { cand in
+            guard let id = cand.bookId else { return nil }
+            return books.first { $0.id == id }
+        }
     }
 
     public func configureAwardsOverride(from jsonString: String?) {
@@ -2775,13 +3042,29 @@ public final class ReadingDataStore {
                     "chosen": settings.recommendationWeights.readers.chosen,
                     "skipped": settings.recommendationWeights.readers.skipped
                 ],
+                "nextVolume": [
+                    "chosen": settings.recommendationWeights.nextVolume.chosen,
+                    "skipped": settings.recommendationWeights.nextVolume.skipped
+                ],
                 "author": [
+                    "chosen": settings.recommendationWeights.author.chosen,
+                    "skipped": settings.recommendationWeights.author.skipped
+                ],
+                "sameAuthor": [
                     "chosen": settings.recommendationWeights.author.chosen,
                     "skipped": settings.recommendationWeights.author.skipped
                 ],
                 "award": [
                     "chosen": settings.recommendationWeights.award.chosen,
                     "skipped": settings.recommendationWeights.award.skipped
+                ],
+                "sameAward": [
+                    "chosen": settings.recommendationWeights.award.chosen,
+                    "skipped": settings.recommendationWeights.award.skipped
+                ],
+                "sameLabel": [
+                    "chosen": settings.recommendationWeights.sameLabel.chosen,
+                    "skipped": settings.recommendationWeights.sameLabel.skipped
                 ]
             ]
         ]

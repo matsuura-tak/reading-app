@@ -30,20 +30,7 @@ public struct UITestHookOverlayView: View {
         let mediaAuditStr = UITestHookReadoutBuilder.mediaAuditJSON(model: model)
         let a11yStr = UITestHookReadoutBuilder.a11yJSON(model: model, coordinator: coordinator)
 
-        VStack(alignment: .leading, spacing: 1) {
-            HStack(spacing: 2) {
-                TextField("hook.cmd", text: $coordinator.commandInputText)
-                    .font(.caption2)
-                    .accessibilityIdentifier("hook.command.input")
-                Button("Run") {
-                    let cmd = coordinator.commandInputText
-                    coordinator.commandInputText = ""
-                    coordinator.executeCommand(cmd, model: model)
-                }
-                .font(.caption2)
-                .accessibilityIdentifier("hook.command.submit")
-            }
-
+        VStack(alignment: .leading, spacing: 0) {
             Group {
                 readoutElement(id: "hook.state", value: stateStr)
                 readoutElement(id: "hook.state.json", value: stateStr)
@@ -81,7 +68,7 @@ public struct UITestHookOverlayView: View {
             }
         }
         .opacity(0.02)
-        .allowsHitTesting(true)
+        .allowsHitTesting(false)
     }
 
     private func readoutElement(id: String, value: String) -> some View {

@@ -152,17 +152,43 @@ public struct RecommendationCategoryCounter: Codable, Sendable, Equatable {
 
 public struct RecommendationWeights: Codable, Sendable, Equatable {
     public var readers: RecommendationCategoryCounter
+    public var nextVolume: RecommendationCategoryCounter
     public var author: RecommendationCategoryCounter
     public var award: RecommendationCategoryCounter
+    public var sameLabel: RecommendationCategoryCounter
 
     public init(
         readers: RecommendationCategoryCounter = RecommendationCategoryCounter(),
+        nextVolume: RecommendationCategoryCounter = RecommendationCategoryCounter(),
         author: RecommendationCategoryCounter = RecommendationCategoryCounter(),
-        award: RecommendationCategoryCounter = RecommendationCategoryCounter()
+        award: RecommendationCategoryCounter = RecommendationCategoryCounter(),
+        sameLabel: RecommendationCategoryCounter = RecommendationCategoryCounter()
     ) {
         self.readers = readers
+        self.nextVolume = nextVolume
         self.author = author
         self.award = award
+        self.sameLabel = sameLabel
+    }
+
+    public func asSeedWeights() -> [H02SeedRecommendationWeight] {
+        var result: [H02SeedRecommendationWeight] = []
+        if readers.chosen > 0 || readers.skipped > 0 {
+            result.append(H02SeedRecommendationWeight(axis: .readers, chosenCount: readers.chosen, skippedCount: readers.skipped))
+        }
+        if nextVolume.chosen > 0 || nextVolume.skipped > 0 {
+            result.append(H02SeedRecommendationWeight(axis: .nextVolume, chosenCount: nextVolume.chosen, skippedCount: nextVolume.skipped))
+        }
+        if author.chosen > 0 || author.skipped > 0 {
+            result.append(H02SeedRecommendationWeight(axis: .sameAuthor, chosenCount: author.chosen, skippedCount: author.skipped))
+        }
+        if award.chosen > 0 || award.skipped > 0 {
+            result.append(H02SeedRecommendationWeight(axis: .sameAward, chosenCount: award.chosen, skippedCount: award.skipped))
+        }
+        if sameLabel.chosen > 0 || sameLabel.skipped > 0 {
+            result.append(H02SeedRecommendationWeight(axis: .sameLabel, chosenCount: sameLabel.chosen, skippedCount: sameLabel.skipped))
+        }
+        return result
     }
 }
 
