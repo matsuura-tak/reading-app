@@ -409,7 +409,7 @@
             "string",
             "null"
           ],
-          "description": "liveActivity.end が動かすインテントの名前（\"EndReadingIntent\"。AC-114）。"
+          "description": "liveActivity.end が動かすインテントの名前（\"EndReadingFromActivityIntent\"。AC-114）。"
         }
       }
     },
@@ -864,11 +864,11 @@
               "intent": {
                 "enum": [
                   "StartReadingIntent",
-                  "EndReadingIntent",
+                  "EndReadingFromActivityIntent",
                   "WhereStoppedIntent",
                   "ContinueReadingIntent"
                 ],
-                "description": "「読み始める」（StartReadingIntent）、「終える」（EndReadingIntent）、「どこまで読んだ？」（WhereStoppedIntent）、「続きを読む」（ContinueReadingIntent）。"
+                "description": "「読み始める」（StartReadingIntent）、「終える」（EndReadingFromActivityIntent）、「どこまで読んだ？」（WhereStoppedIntent）、「続きを読む」（ContinueReadingIntent）。"
               },
               "authenticationPolicy": {
                 "enum": [
@@ -910,7 +910,7 @@
                 "items": {
                   "type": "string"
                 },
-                "description": "小窓（Snippet View）に出した文字列の一覧（hideOnWidgets がオンまたはエラー時は一行と書名を含まない。小窓を出さない場合は空配列 []。AC-121、AC-123、AC-133）。"
+                "description": "小窓（Snippet View）に出した文字列の一覧（WhereStoppedIntent は hideOnWidgets のオン・オフを問わず、常時、声にも小窓 intent.snippet にも書名と一行を一切出さず、進み具合（ページ・位置番号・％）の1文だけを出す。エラー時は小窓を出さない／空配列 []。AC-121、AC-123、AC-133）。"
               }
             }
           }
@@ -1054,8 +1054,15 @@
         "initialActivities": []
       },
       "awards": {
-        "mode": "bundled",
-        "items": []
+        "mode": "override",
+        "items": [
+          {
+            "award": "芥川龍之介賞",
+            "sessionOrYear": "第155回",
+            "title": "コンビニ人間",
+            "author": "村田沙耶香"
+          }
+        ]
       },
       "storeKit": {
         "canMakePayments": true,

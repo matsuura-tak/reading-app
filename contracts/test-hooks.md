@@ -53,7 +53,7 @@
 | `yomuma.uitest.barcode` | 読めたコード（13桁の数字を整数で。ISBN-13 または `192` で始まる2段目 Cコード） | H21 |
 | `yomuma.uitest.liveactivity.transition` | 1＝予約を始まった状態（`started`）にする、2＝システムが8時間で終えた状態（`dismissedBySystem`）にする | H23 |
 | `yomuma.uitest.storekit.refund` | 1＝購入を返金された状態にする | H30 |
-| `yomuma.uitest.intent.run` | 1＝`StartReadingIntent`、2＝`EndReadingIntent`、3＝`WhereStoppedIntent`、4＝`ContinueReadingIntent` | H32 |
+| `yomuma.uitest.intent.run` | 1＝`StartReadingIntent`、2＝`EndReadingFromActivityIntent`、3＝`WhereStoppedIntent`、4＝`ContinueReadingIntent` | H32 |
 
 ### 1-5 読み出しの要素
 - 置き場所：つなぎ口だけの窓（UIWindow）。
@@ -114,16 +114,16 @@
 
 ### H2 データの投入
 - 目的：決まった id と値で、本、記録、読書中の1件、設定、推薦の重みを本番と同じ保存先に入れる。
-  - 入れられる項目：本ごとの置き場所（`status`）、積読に加えた日時、読み終えた日時（`finishedAt`）、一行（`lastLine`）、進み具合の単位 `progressUnit`（`page` / `location` / `percent`）と値（`page` / `location` / `percent`）、電子書籍フラグ（`isEbook`）、書名未設定フラグ（`isTitlePending`）、ISBN、著者、出版社、レーベル、出版年、シリーズ名（`seriesTitle`）・巻数（`volumeNumber`）、NDC（`ndc`）、3つの設定（`flipToStartEnabled`、`hideOnWidgets`、`entryTime`）、見た目の id（`appearanceID`）、購入の状態（`isPlusPurchased`）、置き方の案内を見た印（`hasShownWidgetGuide`）、推薦の理由分類（`readers` / `nextVolume` / `sameAuthor` / `sameAward` / `sameLabel`）ごとの `chosen` / `skipped` カウント、記録ごとの読み始め・読み終わりの日時・晩の日付・入口の印・進み具合。
+  - 入れられる項目：本ごとの置き場所（`status`）、積読に加えた日時（`tsundokuAt`）、読み終えた日時（`finishedAt`）、一行（`lastLine`）、進み具合の単位 `progressUnit`（`page` / `location` / `percent`）と値（`page` / `location` / `percent`）、電子書籍フラグ（`isEbook`）、書名未設定フラグ（`isTitlePending`）、ISBN、著者、出版社、レーベル、出版年、シリーズ名（`seriesTitle`）・巻数（`volumeNumber`）、NDC（`ndc`）、3つの設定（`flipToStartEnabled`、`hideOnWidgets`、`entryTime`）、見た目の id（`appearanceID`）、購入の状態（`isPlusPurchased`）、置き方の案内を見た印（`widgetGuideShown`）、推薦の理由分類（`readers` / `nextVolume` / `sameAuthor` / `sameAward` / `sameLabel`）ごとの `chosen` / `skipped` カウント、記録ごとの読み始め・読み終わりの日時・晩の日付・入口の印・進み具合。
 - 使う AC：AC-3、AC-7、AC-13〜AC-35、AC-36〜AC-64、AC-75〜AC-82、AC-85〜AC-91、AC-93、AC-95〜AC-102、AC-104、AC-113〜AC-125、AC-127〜AC-136、AC-138、AC-140〜AC-148。
 - 動かし方
   - 小さい投入：環境変数 `UITEST_SEED` に JSON（UTF-8、200,000 バイトまで［推測。起動の環境変数の上限は確かめていない］）。
   - 大きい投入：起動の引数 `-uitest-seed-preset perf500`（下の表）。
   - どちらも H1 の初期化を含み、テストの起動のときだけ動く。
 - 入力：contracts/hooks/h02-seed.schema.json。
-  - 投入で `settings.hasShownWidgetGuide` は AC-96 のみ `false`、他は `true` にする（PRD 11 の H2）。
+  - 投入で `settings.widgetGuideShown` は AC-96 のみ `false`、他は `true` にする（PRD 11 の H2）。
   - 読み終えた日時は `books[].finishedAt`。status が `finished` のときだけ書け、H13 の同じ名前で読める。
-  - 名無しの今の本（`isTitlePending = true`）は AC-139、AC-140 で使う。
+  - 名無しの今の本（`title: "", isTitlePending: true`）は AC-139、AC-140 で使う。
 - 出力：主の保存先に入る。続けてアプリがふつうに起動し、写しを書く（widget-snapshot.schema.json の書く時）。
 - 失敗：スキーマに合わない、id が重なる、activeSession.bookId が今の本でない、字の数（書記素）が範囲の外。どれも `hook.error`（`H2:<JSON の場所>`）で、何も書かない。
 - 本番：Release に入らない。
@@ -251,8 +251,8 @@
 
 ### H13 保存を読む
 - 目的：本ごとの全項目、記録、読書中の1件、設定、推薦の重み、破損退避ファイル一覧を、画面を通さずに外から読む。
-  - 本の項目：置き場所（`status`）、`isEbook`、`isTitlePending`、進み具合の単位（`progressUnit`）と値（`page` / `location` / `percent`）、ISBN、書名、著者、出版社、レーベル、出版年、シリーズ名・巻数、NDC、一行（`lastLine`）、加えた日時、更新日時、読み終えた日時。
-  - 設定と重み：3つの設定、見た目の id（`appearanceID`）、購入の状態（`isPlusPurchased`）、推薦の理由ごとの `chosen` / `skipped` カウント。
+  - 本の項目：置き場所（`status`）、`isEbook`、`isTitlePending`、進み具合の単位（`progressUnit`）と値（`page` / `location` / `percent`）、ISBN、書名、著者、出版社、レーベル、出版年、シリーズ名・巻数、NDC、一行（`lastLine`）、加えた日時、更新日時、積読に加えた日時（`tsundokuAt`）、読み終えた日時（`finishedAt`）。
+  - 設定と重み：3つの設定（`flipToStartEnabled`、`hideOnWidgets`、`entryTime`）、置き方の案内を見た印（`widgetGuideShown`）、見た目の id（`appearanceID`）、購入の状態（`isPlusPurchased`）、推薦の理由ごとの `chosen` / `skipped` カウント。
 - 使う AC：AC-2〜AC-11、AC-13〜AC-16、AC-22、AC-24〜AC-26、AC-61、AC-64、AC-67〜AC-75、AC-77、AC-82、AC-83、AC-87、AC-89〜AC-92、AC-95、AC-96、AC-105〜AC-109、AC-111、AC-113〜AC-119、AC-121〜AC-123、AC-125、AC-130〜AC-135、AC-137〜AC-147。
 - 動かし方：要素 `hook.store` の値（JSON）を読む。全部の起動で効く。
   - 保存する AC は、強制終了して引数なしで開き直したあとも、これで同じ値を読む（PRD 11 の冒頭）。
@@ -401,7 +401,7 @@
 - 出力
   - `activities`：現在存在している Live Activity の一覧。
   - `requests`：このプロセスでアプリが出した要求の履歴。各要求の `source` により、起動時／前面復帰時の見直し（`launchReconcile` / `foregroundReconcile`）と、インテント（`intent`）や画面操作（`app`）による要求を時刻の区間に頼らず区別できる（AC-115、AC-119、AC-130）。
-  - `reading` 状態の項目には `endButtonIdentifier: "liveActivity.end"`、`endButtonLabel`（文言キー `liveActivity.end.label` の文）、`endIntentName: "EndReadingIntent"` が記録される（AC-114）。
+  - `reading` 状態の項目には `endButtonIdentifier: "liveActivity.end"`、`endButtonLabel`（文言キー `liveActivity.end.label` の文）、`endIntentName: "EndReadingFromActivityIntent"` が記録される（AC-114）。
 - 失敗：JSON がスキーマに合わなければ `hook.error`（`H23:<場所>`）。
 - 本番：Release に入らない。
 
@@ -419,8 +419,8 @@
 - 目的：テスト用の受賞作行への差し替えと、アプリに同梱された本番の受賞一覧（芥川龍之介賞・直木三十五賞・本屋大賞）の全行読み出し（AC-112）を行う。
 - 使う AC：AC-17〜AC-21、AC-77〜AC-83、AC-87、AC-112、AC-146、AC-147。
 - 動かし方：全部の起動で効く。
-  - 差し替え：環境変数 `UITEST_AWARDS` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h25AwardsConfig`）を入れる。省いたときは同梱の本番一覧（`mode: "bundled"`）を使う。
-  - 読み出し：要素 `hook.awards` の値（JSON、形は `$defs/h25AwardsReadout`）を読む（AC-112）。
+  - 差し替え：環境変数 `UITEST_AWARDS` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h25AwardsConfig`、各行は `{"award": "芥川龍之介賞", "sessionOrYear": "第155回", "title": "コンビニ人間", "author": "村田沙耶香"}` の4列「賞・回（年）・題名・著者」形式）を入れる。省いたときは同梱の本番一覧（`mode: "bundled"`）を使う。
+  - 読み出し：要素 `hook.awards` の値（JSON、形は `$defs/h25AwardsReadout`、`activeItems` の各要素も同じく `{"award": "芥川龍之介賞", "sessionOrYear": "第155回", "title": "コンビニ人間", "author": "村田沙耶香"}`）を読む（AC-112）。
 - 失敗：JSON がスキーマに合わなければ `hook.error`（`H25:<場所>`）。
 - 本番：Release に入らない。
 
@@ -491,15 +491,15 @@
 - 本番：Release に入らない。
 
 ### H32 アプリの外からのインテント（App Intents）を動かす
-- 目的：アプリの外からのインテント（「読み始める」`StartReadingIntent`、Live Activity の「終える」`EndReadingIntent`、「どこまで読んだ？」`WhereStoppedIntent`、「続きを読む」`ContinueReadingIntent`）をテストから駆動し、返り値（前に出すか、認証ポリシー、声の文言キーと全文、小窓の文字列）および登録された App Shortcuts 3種と Control 1種を外から読む。
+- 目的：アプリの外からのインテント（「読み始める」`StartReadingIntent`、Live Activity の「終える」`EndReadingFromActivityIntent`、「どこまで読んだ？」`WhereStoppedIntent`、「続きを読む」`ContinueReadingIntent`）をテストから駆動し、返り値（前に出すか、認証ポリシー、声の文言キーと全文、小窓の文字列）および登録された App Shortcuts 3種と Control 1種を外から読む。
 - 使う AC：AC-114〜AC-126、AC-131〜AC-135、AC-143、AC-144。
 - 動かし方：全部の起動で効く。
   - 設定：環境変数 `UITEST_INTENT` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h32IntentsConfig`、`canContinueInForeground` など）を入れる。
-  - 起動と同時にインテントを動かす（プロセスのない状態からの実行を検証するとき）：起動の引数 `-uitest-run-intent <StartReadingIntent|EndReadingIntent|WhereStoppedIntent|ContinueReadingIntent>`。
-  - 動いている途中でインテントを動かす：Darwin の通知 `yomuma.uitest.intent.run`（1-4。1＝`StartReadingIntent`、2＝`EndReadingIntent`、3＝`WhereStoppedIntent`、4＝`ContinueReadingIntent`）。
+  - 起動と同時にインテントを動かす（プロセスのない状態からの実行を検証するとき）：起動の引数 `-uitest-run-intent <StartReadingIntent|EndReadingFromActivityIntent|WhereStoppedIntent|ContinueReadingIntent>`。
+  - 動いている途中でインテントを動かす：Darwin の通知 `yomuma.uitest.intent.run`（1-4。1＝`StartReadingIntent`、2＝`EndReadingFromActivityIntent`、3＝`WhereStoppedIntent`、4＝`ContinueReadingIntent`）。
   - 読み出し：要素 `hook.intents` の値（JSON、形は `$defs/h32IntentsReadout`）を読む。
 - 出力
-  - `invocations`：実行したインテントごとの `intent`、`authenticationPolicy`（`WhereStoppedIntent` は `alwaysAllowed`）、`opensApp`、`requestedForeground`、`outcome`、`dialogKey`、`spokenText`（`WhereStoppedIntent` ではページ・位置番号・％に応じた文の型で、一行・書名・アプリ名を含まない。AC-121、AC-143）、`snippetTexts`（小窓の文字列。`hideOnWidgets` がオンまたはエラーのときは一行と書名を含まない。AC-123、AC-133）。
+  - `invocations`：実行したインテントごとの `intent`、`authenticationPolicy`（`WhereStoppedIntent` は `alwaysAllowed`）、`opensApp`、`requestedForeground`、`outcome`、`dialogKey`、`spokenText`（`WhereStoppedIntent` ではページ・位置番号・％に応じた文の型で、一行・書名・アプリ名を含まない。AC-121、AC-143）、`snippetTexts`（小窓の文字列。`WhereStoppedIntent` は `hideOnWidgets` のオン・オフを問わず、常時、声にも小窓（`intent.snippet`）にも書名と一行を一切出さず、進み具合（ページ・位置番号・％）の1文だけを出す。エラー時は小窓を出さない／空配列 `[]`。AC-121、AC-123、AC-133）。
   - `registeredShortcuts`：登録された3つの App Shortcuts の `intent`、`phrases`（`${applicationName}` を含み、直後に「で」が続かないこと）、`systemImageName`（AC-126）。
   - `registeredControls`：登録された1つの Control の `kind: "button"`、`intent: "StartReadingIntent"`、`labelKey: "control.startReading"`（AC-126）。
 - 失敗：知らないインテント名やスキーマ違反は `hook.error`（`H32:<値>`）。

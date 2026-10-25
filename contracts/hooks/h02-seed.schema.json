@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://readingapp.local/contracts/hooks/h02-seed.schema.json",
+  "$id": "urn:reading-app:contracts:hooks:h02-seed:1",
   "title": "H02SeedPayload",
-  "description": "テストフック H2（seed）で起動前に App Group の State/state.json に投入する初期データ契約（AC-1〜AC-149）。",
+  "description": "テストフック H2（seed）で起動時に主の保存先（SwiftData）へ投入する初期データ契約（AC-1〜AC-149）。",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -69,8 +69,8 @@
         },
         "title": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 200
+          "minLength": 0,
+          "maxLength": 100
         },
         "author": {
           "type": "string",
@@ -147,9 +147,38 @@
           "type": "string",
           "format": "date-time"
         },
+        "tsundokuAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "積読に追加した日時（AC-13）。"
+        },
         "finishedAt": {
           "type": ["string", "null"],
           "format": "date-time"
+        }
+      },
+      "if": {
+        "properties": {
+          "isTitlePending": {
+            "const": true
+          }
+        },
+        "required": [
+          "isTitlePending"
+        ]
+      },
+      "then": {
+        "properties": {
+          "title": {
+            "minLength": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "title": {
+            "minLength": 1
+          }
         }
       }
     },
@@ -198,8 +227,8 @@
           "type": "string",
           "enum": [
             "app",
-            "face_down",
-            "widget",
+            "lock_widget",
+            "small_widget",
             "live_activity",
             "intent_start",
             "intent_open"
@@ -268,8 +297,8 @@
           "type": "string",
           "enum": [
             "app",
-            "face_down",
-            "widget",
+            "lock_widget",
+            "small_widget",
             "live_activity",
             "intent_start",
             "intent_open"
@@ -301,7 +330,7 @@
       "required": [
         "flipToStartEnabled",
         "hideOnWidgets",
-        "hasShownWidgetGuide"
+        "widgetGuideShown"
       ],
       "properties": {
         "flipToStartEnabled": {
@@ -310,13 +339,14 @@
         "hideOnWidgets": {
           "type": "boolean"
         },
-        "hasShownWidgetGuide": {
-          "type": "boolean"
+        "widgetGuideShown": {
+          "type": "boolean",
+          "default": false
         },
         "entryTime": {
           "type": "string",
           "pattern": "^([01][0-9]|2[0-3]):(00|15|30|45)$",
-          "default": "22:00"
+          "default": "21:00"
         },
         "appearanceID": {
           "type": "string",
@@ -374,6 +404,7 @@
           "lastLine": "世界はまだ、音楽で満ちていた。",
           "createdAt": "2026-10-19T13:00:00Z",
           "updatedAt": "2026-10-20T13:18:00Z",
+          "tsundokuAt": null,
           "finishedAt": null
         }
       ],
@@ -385,7 +416,7 @@
           "endedAt": "2026-10-20T13:18:00Z",
           "minutes": 18,
           "nightDate": "2026-10-20",
-          "entry": "face_down",
+          "entry": "lock_widget",
           "progressUnit": "page",
           "startPage": 43,
           "endPage": 61,
@@ -400,8 +431,8 @@
       "settings": {
         "flipToStartEnabled": true,
         "hideOnWidgets": false,
-        "hasShownWidgetGuide": true,
-        "entryTime": "22:00",
+        "widgetGuideShown": true,
+        "entryTime": "21:00",
         "appearanceID": "default",
         "isPlusPurchased": false,
         "recommendationWeights": {
