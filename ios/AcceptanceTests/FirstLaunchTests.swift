@@ -15,10 +15,9 @@ final class FirstLaunchTests: AcceptanceTestBase {
         let stateStr = readHookString("hook.state")
         XCTAssertTrue(stateStr.contains("state=idle") || stateStr.contains("\"state\":\"idle\""))
 
-        let store = readHookJSON("hook.store")
-        let books = store["books"] as? [[String: Any]] ?? []
+        let books = readStoreBooks()
         XCTAssertEqual(books.count, 0)
 
-        attachScreenshot(name: "AC1_first_launch")
+        attachScreenshot(name: "AC-1_first_launch")
     }
 }

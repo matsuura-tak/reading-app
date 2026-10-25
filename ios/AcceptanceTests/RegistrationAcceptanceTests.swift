@@ -104,7 +104,7 @@ final class RegistrationAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(booksAfter.first?["status"] as? String, "current")
         XCTAssertEqual(booksAfter.first?["isbn13"] as? String, "9784101000015")
 
-        attachScreenshot(name: "AC2_barcode_first_book")
+        attachScreenshot(name: "AC-2_barcode_first_book")
     }
 
     func test_AC3_バーコード連続読取で重複と非図書を除きCコードで文庫を補う() {

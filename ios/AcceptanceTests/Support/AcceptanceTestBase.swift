@@ -213,6 +213,7 @@ class AcceptanceTestBase: XCTestCase {
     }
 
     func runExternalIntent(_ name: String, canContinueInForeground: Bool = true) {
+        _ = canContinueInForeground
         let baseCode: UInt64
         switch name {
         case "StartReadingIntent":
@@ -226,8 +227,7 @@ class AcceptanceTestBase: XCTestCase {
         default:
             baseCode = 1
         }
-        let code = baseCode + (canContinueInForeground ? 0 : 10)
-        postDarwinNotification("yomuma.uitest.intent.run", state: code)
+        postDarwinNotification("yomuma.uitest.intent.run", state: baseCode)
     }
 
     func makeIntentConfigJSON(canContinueInForeground: Bool = true) -> String {

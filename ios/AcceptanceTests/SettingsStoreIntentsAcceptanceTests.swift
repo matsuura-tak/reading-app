@@ -134,13 +134,20 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
             resClose.tap()
         }
 
-        // 設定画面でトグル変更
+        // 設定画面で3項目すべて変更（flipToStart、hideOnWidgets、entryTime=22:45）
         element("toolbar.settings").tap()
         let flipToggle = element("settings.flipToStart")
         XCTAssertTrue(flipToggle.waitForExistence(timeout: uiTimeout))
         flipToggle.tap()
         let hideToggle = element("settings.hideOnWidgets")
         hideToggle.tap()
+        let entryPicker = element("settings.entryTime")
+        XCTAssertTrue(entryPicker.waitForExistence(timeout: uiTimeout))
+        entryPicker.tap()
+        let opt2245 = element("settings.entryTime.22:45")
+        if opt2245.waitForExistence(timeout: uiTimeout) {
+            opt2245.tap()
+        }
         navigateBackToBookmark()
 
         // 再起動して永続化を検証
@@ -165,6 +172,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(bookE?["status"] as? String, "finished")
         XCTAssertEqual(settings["flipToStartEnabled"] as? Bool, false)
         XCTAssertEqual(settings["hideOnWidgets"] as? Bool, true)
+        XCTAssertEqual(settings["entryTime"] as? String, "22:45")
     }
 
     func test_AC90_起動時の保存先読込失敗でエラーを出し再起動で元のデータが戻る() {
@@ -468,7 +476,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         element("toolbar.settings").tap()
         element("settings.appearance").tap()
-        element("appearance.kinari").tap()
+        element("appearance.row.kinari").tap()
 
         XCTAssertEqual(readHookString("store.preview"), "kinari")
         XCTAssertEqual(matchingCount("store.buy"), 1)
@@ -489,7 +497,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         element("toolbar.settings").tap()
         element("settings.appearance").tap()
-        element("appearance.kinari").tap()
+        element("appearance.row.kinari").tap()
         element("store.buy").tap()
 
         let settings = readStoreSettings()
@@ -518,7 +526,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         element("toolbar.settings").tap()
         element("settings.appearance").tap()
-        element("appearance.kinari").tap()
+        element("appearance.row.kinari").tap()
         element("store.buy").tap()
 
         XCTAssertEqual(matchingCount("store.purchase.error"), 0)
@@ -533,7 +541,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         element("toolbar.settings").tap()
         element("settings.appearance").tap()
-        element("appearance.kinari").tap()
+        element("appearance.row.kinari").tap()
         element("store.buy").tap()
         XCTAssertEqual(matchingCount("store.purchase.error"), 1)
         let s2 = readStoreSettings()
@@ -573,7 +581,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         element("toolbar.settings").tap()
         element("settings.appearance").tap()
-        element("appearance.kinari").tap()
+        element("appearance.row.kinari").tap()
 
         XCTAssertEqual(matchingCount("store.buy"), 0)
         XCTAssertEqual(matchingCount("store.unavailable"), 1)
@@ -589,7 +597,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         element("toolbar.settings").tap()
         element("settings.appearance").tap()
-        element("appearance.kinari").tap()
+        element("appearance.row.kinari").tap()
 
         XCTAssertEqual(matchingCount("store.offline"), 1)
         XCTAssertEqual(matchingCount("store.buy"), 0)

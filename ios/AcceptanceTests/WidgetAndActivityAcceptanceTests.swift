@@ -22,7 +22,7 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(raw.contains("yomuma://open?entry=lock_widget"))
         XCTAssertTrue(raw.contains("下人の行方は"))
         XCTAssertTrue(raw.contains("誰も知らない"))
-        attachScreenshot(name: "AC27_lock_widget")
+        attachScreenshot(name: "AC-27_lock_widget")
     }
 
     func test_AC28_縦書きの字形置換と行頭禁則処理を検証する() {
@@ -46,16 +46,34 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC29_26字以上の一行の句読点位置による縮め方を検証する() {
-        let cases: [(String, Int)] = [
-            (String(repeating: "あ", count: 25), 25),
-            (String(repeating: "あ", count: 17) + "、" + String(repeating: "い", count: 13), 18),
-            (String(repeating: "あ", count: 9) + "、" + String(repeating: "い", count: 21), 25),
-            (String(repeating: "あ", count: 12) + "、" + String(repeating: "い", count: 18), 13),
-            (String(repeating: "あ", count: 11) + "、" + String(repeating: "い", count: 19), 25),
-            (String(repeating: "あ", count: 7) + "、" + String(repeating: "い", count: 11) + "。" + String(repeating: "う", count: 11), 20)
+        let cases: [(lineText: String, expected: String)] = [
+            (
+                String(repeating: "あ", count: 25),
+                String(repeating: "あ", count: 25)
+            ),
+            (
+                String(repeating: "あ", count: 17) + "、" + String(repeating: "い", count: 13),
+                String(repeating: "あ", count: 17) + "、"
+            ),
+            (
+                String(repeating: "あ", count: 9) + "、" + String(repeating: "い", count: 21),
+                String(repeating: "あ", count: 9) + "、" + String(repeating: "い", count: 14) + "…"
+            ),
+            (
+                String(repeating: "あ", count: 12) + "、" + String(repeating: "い", count: 18),
+                String(repeating: "あ", count: 12) + "、"
+            ),
+            (
+                String(repeating: "あ", count: 11) + "、" + String(repeating: "い", count: 19),
+                String(repeating: "あ", count: 11) + "、" + String(repeating: "い", count: 12) + "…"
+            ),
+            (
+                String(repeating: "あ", count: 7) + "、" + String(repeating: "い", count: 11) + "。" + String(repeating: "う", count: 11),
+                String(repeating: "あ", count: 7) + "、" + String(repeating: "い", count: 11) + "。"
+            )
         ]
 
-        for (lineText, _) in cases {
+        for c in cases {
             let seed = makeSeedJSON(books: [
                 makeSeedBook(
                     id: uuidBookA,
@@ -63,18 +81,26 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
                     status: "current",
                     progressUnit: "page",
                     page: 61,
-                    lastLine: lineText
+                    lastLine: c.lineText
                 )
             ])
             resetAndLaunch(
                 seedJSON: seed,
-                extraArgs: ["-uitest-widget", "accessoryRectangular:172x76"]
+                extraArgs: ["-uitest-widget", "accessoryRectangular:153x68,accessoryRectangular:172x76"]
             )
             let bmLine = element("bookmark.line")
             XCTAssertTrue(bmLine.waitForExistence(timeout: uiTimeout))
-            XCTAssertEqual(bmLine.label, lineText)
-            let widgetRaw = readHookString("hook.widget")
-            XCTAssertFalse(widgetRaw.isEmpty)
+            XCTAssertEqual(bmLine.label, c.lineText)
+
+            let widgetHook = readHookJSON("hook.widget")
+            let renders = widgetHook["renders"] as? [[String: Any]] ?? []
+            XCTAssertFalse(renders.isEmpty)
+            for render in renders {
+                let texts = render["texts"] as? [String: Any] ?? [:]
+                let comp = render["composition"] as? [String: Any] ?? [:]
+                let displayedLine = (texts["widget.line"] as? String) ?? (comp["displayedLine"] as? String) ?? ""
+                XCTAssertEqual(displayedLine, c.expected)
+            }
         }
     }
 
@@ -263,7 +289,7 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(raw.contains("p.61"))
         XCTAssertTrue(raw.contains("yomuma://open?entry=small_widget"))
         XCTAssertTrue(raw.contains("下人の行方は"))
-        attachScreenshot(name: "AC35_small_widget")
+        attachScreenshot(name: "AC-35_small_widget")
     }
 
     func test_AC36_しおり保存で翌晩21時のLiveActivityが1件予約される() {
