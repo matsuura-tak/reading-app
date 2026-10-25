@@ -356,7 +356,7 @@ struct ContractModelsTests {
           }
         }
         """
-        let hookConfig = try JSONDecoder().decode(UITestHookConfig.self, from: Data(hookConfigJSON.utf8))
+        let hookConfig = try JSONDecoder().decode(HookConfigEnvelope.self, from: Data(hookConfigJSON.utf8))
         #expect(hookConfig.schemaVersion == 1)
         #expect(hookConfig.permissionStates?.camera == .authorized)
     }

@@ -1340,7 +1340,7 @@ public struct H32PermissionStates: Codable, Sendable, Equatable {
     }
 }
 
-public struct UITestHookConfig: Codable, Sendable, Equatable {
+public struct HookConfigEnvelope: Codable, Sendable, Equatable {
     public var schemaVersion: Int
     public var seed: H02SeedPayload?
     public var nowISO8601: String?
