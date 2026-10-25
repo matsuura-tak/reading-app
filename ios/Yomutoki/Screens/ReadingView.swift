@@ -32,6 +32,8 @@ final class ReadingModel {
     var isFinishSheetPresented = false
     var failure: ReadingFailure?
     var finishFailure: FinishFailure?
+    /// 初回復元と編集中の下書きを区別する。sheetを閉じている途中のS4再表示では作り直さない。
+    private var hasFinishDraft = false
 
     init(store: LibraryStore, router: AppRouter, failure: ReadingFailure? = nil, finishFailure: FinishFailure? = nil) {
         self.store = store
@@ -42,7 +44,7 @@ final class ReadingModel {
 
     /// S4 が出たとき。finishing が残っていれば S5 を開く（起動して戻したとき。AC-34、D-25）。
     func appeared() {
-        guard store.active?.state == .finishing, !isFinishSheetPresented else { return }
+        guard store.active?.state == .finishing, !isFinishSheetPresented, !hasFinishDraft else { return }
         openFinishSheet()
     }
 
@@ -94,6 +96,7 @@ final class ReadingModel {
     private func openFinishSheet() {
         let minutes = store.active?.initialMinutes ?? 0
         draft = FinishDraft(pageText: "", minutesText: String(minutes), minutesInitial: minutes)
+        hasFinishDraft = true
         finishFailure = nil
         isFinishSheetPresented = true
     }
@@ -137,6 +140,7 @@ final class ReadingModel {
             try store.finishSession(endPage: endPage, minutes: minutes)
             finishFailure = nil
             draft = FinishDraft()
+            hasFinishDraft = false
             isFinishSheetPresented = false
             router.pendingAnnouncement = Loc.savedAnnouncement(minutes: minutes, locale: locale)
             router.leaveReading(toBook: bookID)
@@ -153,6 +157,7 @@ final class ReadingModel {
             try store.cancelFinish()
             finishFailure = nil
             draft = FinishDraft()
+            hasFinishDraft = false
             isFinishSheetPresented = false
         } catch {
             guard Self.isSaveFailure(error) else { return }
@@ -164,16 +169,11 @@ final class ReadingModel {
     /// シートが閉じた後（sheet の onDismiss。下へのスワイプを含む）。まだ finishing なら下へのスワイプなので、やめる保存を呼ぶ。
     /// 失敗したら下書きを残したまま開き直し、先頭に error.saveFailed.cancel の区画を出す（AC-48、AC-64、D-60）。
     func finishSheetDismissed() {
-        guard store.active?.state == .finishing else { return }
-        do {
-            try store.cancelFinish()
-            finishFailure = nil
-            draft = FinishDraft()
-        } catch {
-            guard Self.isSaveFailure(error) else { return }
-            finishFailure = .cancel
+        // 失敗で再提示したsheetに届く古い通知は、新しい取消操作として扱わない。
+        guard !isFinishSheetPresented, store.active?.state == .finishing else { return }
+        cancelFinish()
+        if store.active?.state == .finishing {
             isFinishSheetPresented = true
-            Announce.saveFailed()
         }
     }
 
