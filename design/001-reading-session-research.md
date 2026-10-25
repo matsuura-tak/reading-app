@@ -1,59 +1,57 @@
 # デザイン調査 001-reading-session：夜の入口、本の出口（v1）
 
-- 対象の PRD：docs/prd/001-reading-session.md（コミット 9f7c5d9。G0 は承認済み、docs/approvals/001-reading-session-G0.md）。アプリ全体は docs/prd/product.md（アプリ名「よむま」、サブタイトル「今夜も、本の続きの一行から」）
-- 書いた役：designer　日付：2026-10-19（R はすべて 2026-10-19 に開き直した。8 の確認日）
+- 対象の PRD：docs/prd/001-reading-session.md（2026-10-25 更新、AC-1〜AC-149、v1.1 先送り廃止。G0 は承認済み、docs/approvals/001-reading-session-G0.md。G1 の未決事項の決定は docs/approvals/001-reading-session-G1-decisions.md）。アプリ全体は docs/prd/product.md（アプリ名「よむま」、サブタイトル「今夜も、本の続きの一行から」）
+- 書いた役：designer　日付：2026-10-25（R-1〜R-35 は 2026-10-19、R-36〜R-87 は 2026-10-18〜2026-10-21 に確認。8 の確認日）
 - この文書は仕様（design/001-reading-session.md）より先に書く。仕様の決定は、8 の R 番号を根拠に引く。
 - 見られなかったもの、開けなかったページは「見ていない」と書く。推測で埋めない。推測には［推測］と書く。
-- 前の版（2026-10-16。製品の形が「夜の入口、本の出口」に決まる前の、伏せて読む読書タイマーのときの調査）は git に残る。この版で全部を書き直し、R の番号を振り直した。
+- 前の版（2026-10-16 の読書タイマー時の調査、および 2026-10-19 の R-1〜R-35 版）は git に残る。この版では R-1〜R-35 の番号と中身を保ったまま、書誌 DB の代替・本の入口の再考・電子書籍と3箇所のおすすめの拡張・Apple Intelligence / App Intents・国立国会図書館書誌データ（CC BY 4.0）などの調査（R-36〜R-87）を統合した。
 - 調べ方
   - App Store は、lookup と search の API（製品ページと同じ説明文、評価の数、画面写真の URL を返す）と、レビューの RSS で読んだ。apps.apple.com の HTML そのものは開いていない。
   - 画面写真は、lookup の screenshotUrls の画像をリポジトリの外（スクラッチパッド）で一覧の台紙にして見た。リポジトリには入れていない。
-  - HIG は、developer.apple.com/tutorials/data/design/human-interface-guidelines/<ページ>.json を curl で取り、本文を取り出して読んだ（16ページ、どれも HTTP 200）。
+  - HIG と Apple Developer Documentation は、developer.apple.com/tutorials/data/design/human-interface-guidelines/<ページ>.json および developer.apple.com/tutorials/data/documentation/<ページ>.json を curl で取り、本文を取り出して読んだ（どれも HTTP 200）。
+  - 日本の出版慣習（表紙・背表紙・帯・柱・ノンブル・奥付・本屋大賞・POP広告・レファレンスサービス）は Wikipedia の REST API と W3C JLREQ で読んだ。
   - どのアプリも、designer は入れて使っていない。
 
 ## 1. 問いと範囲
 - この調査で決めたいこと（仕様の段の土台にする問い）
   1. 毎晩の入口（ロック画面の長方形のウィジェット、StandBy、予約した Live Activity）に何を出し、何を出さないか。小さな枠（172×76 pt。PRD E-9）と、システムが色を抜く描き方（vibrant）の中で、縦書きの一行をどう読ませるか。
   2. しおりの画面（1画面、タブなし）で、主操作「読み始める」と伏せる道を、同じ重みのままどう見せるか。
-  3. 登録（バーコードを続けて読む、書名で探す、手で入れる）で、ほかのアプリの不満（見つからない、読み取れない、許可の項目が出ない）をどう避けるか。
-  4. 読み終えた夜（奥付、次の1冊、カード、ふりかえりの1行）を、祝う演出なしで、どう決定的な瞬間にするか。
-  5. アプリの外の入口（Control、Action ボタン、Siri、ショートカット）の名前、記号、声の調子（付記の G1-15 の下地）。
-  6. 「一行と書名を出さない」設定のときの見え方（ウィジェット、Live Activity、Siri の声と小窓）。
-  7. 「よむま」と「今夜も、本の続きの一行から」に合う性格語、文言の調子、見た目の方向。
-- 調べる深さ（PRD 冒頭の回す順に合わせた）
-  - 芯（毎晩の入口と本の出口の骨。回さないもの）を先に深く見た：ロック画面のウィジェット、しおりの画面と「読み始める」と伏せて読む、しおりを挟む（撮らない道）、登録、奥付、積読からの次の1冊、「一行と書名を出さない」設定。
-  - v1.1 に回しうるもの（読み終えのカードとふりかえりの1行、受賞、予約した Live Activity とアプリの外からの「読み始める」、ショートカット、撮る道、有料の見た目）は、仕様で形を決めるのに要る所までにした。
-- 関係する受け入れ条件（AC 番号）
-  - 芯
-    - 毎晩の入口：AC-27〜AC-35、AC-39、AC-40、AC-96、AC-99
-    - 読み始める、伏せて読む、数える：AC-42〜AC-62
-    - しおりを挟む（撮らない道）：AC-63、AC-64、AC-71〜AC-76、AC-95
-    - 登録と最初の本：AC-1〜AC-12、AC-92、AC-113
-    - 本棚と本の画面：AC-13〜AC-18、AC-22〜AC-26
-    - 読み終えた夜（骨）：AC-77〜AC-83、AC-86、AC-87（3b が届かなかったとき）
-    - 設定と保存、速さ：AC-88〜AC-91、AC-93、AC-103、AC-100〜AC-102
-  - 回しうるもの（仕様の判断に要る所まで）
-    - (5) 予約した Live Activity とアプリの外からの「読み始める」：AC-36〜AC-38、AC-41、AC-97、AC-98、AC-114〜AC-120、AC-130〜AC-132、AC-136
-    - (ショートカット)：AC-121〜AC-126、AC-133〜AC-135
-    - (3) 読み終えのカードとふりかえりの1行：AC-84、AC-85、AC-127〜AC-129
-    - (4) 受賞：AC-19〜AC-21、AC-112
-    - (6) 撮る道：AC-65〜AC-70、AC-94
-    - (課金) 有料の見た目：AC-104〜AC-111
-  - designer への申し送り：付記の G1-7（古くなった Live Activity の見え方）、G1-8（有料の見た目の id と見本）、G1-9（「しおりどき」を「よむま」に直す。識別子の対応表）、G1-13（ラテン文字の著者の並び）、G1-15（App Intents の名前、言い方、記号、声の文、小窓、「終える」の形とラベル、大きい文字のときの並び）
-- 結果待ち（Takuma の実機の確かめ。2026-10-19 の時点で届いていない）
-  - 伏せた向きの取れ方（縦の固定、仰向け。PRD 6 の Q-A、G4-7、G4-14）：伏せる案内の1行（仮の識別子 `bookmark.flipHint`）を出すか、文をどうするか。PRD では伏せる道と「読み始める」は同じ重みの道なので、しおりの画面の目に見える主操作が「読み始める」であることは、結果では変わらない。
-  - ロック中の Live Activity の「終える」（付記の G1-16 (b)）：「終える」の読み上げのラベルと案内の文を1つに絞れるか。
-  - ロック画面の vibrant の実際の色と字の太さ（G4-1）：縦書きの一行の太さ（探りの絵では W6）。
+  3. 登録と本の特定で、ほかのアプリの不満（見つからない、バーコードが読み取れない、自動振り分けが外れて手打ちになる、許可の項目が出ない）をどう避けるか。端末内の国立国会図書館書誌 DB（CC BY 4.0、Background Assets で配信）によるバーコード連続読み取り・書名/著者検索と、DB にない本やバーコードのない本でも必ず通る「表紙・背表紙・本棚・奥付の写真/スクショからの行タップ」「あとで（今の本）」、初期 DB 展開中の案内をどう組むか。
+  4. しおりを挟む道（撮らない道、紙のページを撮る道、電子書籍のスクショ `.screenshots` を選ぶ道）と、紙の本・文字の電子書籍（`isEbook`、ページ・位置・%）の両対応を、紙の版面の静けさを壊さずにどうまとめるか。
+  5. 読み終えた夜（奥付、ふりかえりの1行と型、読み終えのカード、次の1冊）を、祝う演出なしで、どう決定的な瞬間にするか。
+  6. 次の1冊のおすすめ（読み終えた画面の最大3冊、しおりの画面の「次の本を選ぶ」、本棚の「積読」「新しい本」の最大2冊）で、事実の理由6種類（著者一致、出版社・レーベル一致、NDC 分類一致、受賞、よく一緒に読まれている本 `readers`、書店員・司書の手書きリスト）と端末内の好みの重み付けを、「AI」「機械学習」の名乗りの裏切りや少人数の露出なしにどう見せるか。
+  7. 受賞（芥川賞・直木賞・本屋大賞の同梱 JSON 照合）を、本棚・本の画面・次の1冊の理由にどう静かに添えるか。
+  8. アプリの外の入口（Control、Action ボタン、Siri、App Shortcuts、ショートカットアプリの「App が開かれたとき」の案内、ロック中の Live Activity の「終える」）の名前、記号、声の調子、ディープリンクの挙動をどう揃えるか。
+  9. 「一行と書名を出さない」設定のときの見え方（ウィジェット、Live Activity、Siri の声と小窓）と、外の通信0件・カメラ/写真/モーションの権限・国立国会図書館書誌データの CC BY 4.0 表示3条件（出典・加工・API利用とライセンス URL）をどこに出すか。
+  10. 有料の見た目（「よむま＋」300円買い切り、生成り・墨・朱の3種）のプレビュー、購入を迫らない導線、復元、および「よむま」と「今夜も、本の続きの一行から」に合う性格語、文言の調子、見た目の方向。
+- 調べる深さ（PRD の v1.0 全範囲）
+  - `docs/approvals/001-reading-session-G1-decisions.md` と更新後の PRD（2026-10-25）により、v1.1 への先送りは廃止され、AC-1〜AC-149 のすべてを v1.0 で作り切る。そのため、毎晩の入口・しおりの画面・登録（端末内書誌 DB＋表紙/背表紙/本棚/奥付の行タップ＋「あとで」）・電子書籍対応・読み終えた夜（奥付・カード・ふりかえり）・3箇所のおすすめと好みの重み付け・受賞・予約した Live Activity と外の入口・有料の見た目・CC BY 4.0 表示のすべてを、そのまま実装と検証に使える深さまで調べた。
+- 関係する受け入れ条件（AC-1〜AC-149 の全件）
+  - 登録・端末内書誌 DB・表紙/背表紙/本棚・奥付・あとで（今の本）：AC-1〜AC-12、AC-92、AC-113、AC-137〜AC-142
+  - 本棚・本の画面・電子書籍の単位・受賞・次の1冊の棚：AC-13〜AC-26、AC-112、AC-143、AC-146〜AC-148
+  - 毎晩の入口（ロック画面のウィジェット・StandBy・予約した Live Activity）：AC-27〜AC-41、AC-96〜AC-99、AC-130〜AC-132
+  - 読み始める・伏せて読む・数える・電子書籍の並走：AC-42〜AC-62、AC-145
+  - しおりを挟む（撮らない道・紙のページを撮る道・スクショを選ぶ道）：AC-63〜AC-76、AC-94、AC-95、AC-144
+  - 読み終えた夜（奥付・次の1冊・ふりかえりの1行・読み終えのカード）：AC-77〜AC-87、AC-127〜AC-129、AC-147、AC-148
+  - 設定・保存・速さ・外の通信0件・CC BY 4.0 表示：AC-88〜AC-91、AC-93、AC-100〜AC-103、AC-149
+  - 有料の見た目（よむま＋）：AC-104〜AC-111
+  - アプリの外の入口・Siri・ショートカット・Control・Action ボタン：AC-114〜AC-126、AC-133〜AC-136
+- G1 の未決事項の決定（docs/approvals/001-reading-session-G1-decisions.md で解決済み）
+  - 伏せる案内の1行（`bookmark.flipHint`）：設定の「伏せて読み始める」トグル（既定オン）を新設し、オンの間はしおりの画面に出し、オフのときは消す（AC-50、AC-90）。
+  - ロック中の Live Activity の「終える」：`OpenURLIntent`（`yomuma://finish-Confirm`）でアプリをしおり挟みシート直行で開き、画面のラベルは「終える」、VoiceOver の読み上げラベルは「読書を終えてしおりを挟む」の1つに統一する（AC-37、AC-63、R-68、R-69）。
+  - ロック画面の vibrant の字の太さ：仕様の既定は W6（ヒラギノ明朝 ProN W6）に決め、G3 で W3 と W6 の両方のスクショを並べて確認する。
 
 ## 2. ターゲット（仮説）
 人に聞いた調査ではなく、PRD とレビューなどから立てた仮説として書く。
 - 誰が（仮説）
-  - 日本に住み、紙の本を読みたいのに、平日の夜はスマホに流れて読めずに終わる、働いている人（product.md の 1）。読書量が減った理由の1位はスマホなどの情報機器 43.6%、2位は「仕事や勉強が忙しくて読む時間がない」38.9%（PRD E-1。pdm が 10-18 に読んだ値で、designer は開き直していない）。
-  - 次の層：積読があり、1冊を読み終えたあと次の本が決まらない人（PRD E-7［推測を含む］）。
-  - 対象にしない：蔵書の管理、感想の公開、読書の SNS が目的の人。ブクログが機能の量で強く、その量への不満もある（R-8、R-9）。
+  - 日本に住み、紙の本や文字の電子書籍（文芸・実用書・新書など）を読みたいのに、平日の夜はスマホに流れて読めずに終わる、働いている人（product.md の 1、PRD 2）。読書量が減った理由の1位はスマホなどの情報機器 43.6%、2位は「仕事や勉強が忙しくて読む時間がない」38.9%（PRD E-1。pdm が 10-18 に読んだ値で、designer は開き直していない）。日本の電子書籍市場のうち文字もの等（文芸・実用書・写真集等）は615億円あり（R-75）、紙と電子を行き来する読者もいる［推測］。
+  - 次の層：家に積読や本棚があり、1冊を読み終えたあと次の本が決まらない人（PRD E-7、E-8、R-86［推測を含む］）。好きな作家の新刊（32.0%）、過去に読んだ本と同じ作者（24.0%）、家族や友人のオススメ（12.8%）、賞を獲得した本（11.8%）を手がかりに本を選ぶ人（R-86）。
+  - 対象にしない：蔵書の網羅的な管理、感想の公開、読書の SNS、漫画の巻数管理が目的の人。ブクログが機能の量で強く、その量や AI 要約への不満もある（R-8、R-9、R-86）。
 - 使う場面（片手か、移動中か、何秒か）
   - 家の夜、ソファかベッドで、手がスマホに伸びた瞬間。ロック画面を見るのは1〜2秒。手に取ってから読み始めまで約3.5〜4.5秒［推測。docs/reviews/001-reading-session-integrate-designer.md の 1-1］。
-  - 片手でスマホを取り、読み始めたら両手は本。スマホは机か布団に伏せるか、枕元で充電する（StandBy）［推測］。
+  - 紙の本を読む夜は、片手でスマホを取り、読み始めたら両手は本。スマホは机か布団に伏せるか、枕元で充電する（StandBy）［推測］。
+  - 同じ iPhone の電子書籍アプリ（Kindle や Apple Books）で読む夜は、Live Activity を Dynamic Island やロック画面に出したままアプリを切り替え、読み終えたら Dynamic Island かロック画面の「終える」、またはスクショ1枚からしおりを挟む（R-67〜R-74）［推測］。
+  - 本を登録する場面では、片手で本を持ちながらもう片方の手でスマホを構えるため、ライブカメラの枠の中で揺れる文字を狙い続けるのはつらい。静止画を1枚撮って本を置いてから落ち着いて行をタップするか、写真ライブラリの画像・スクショから選ぶか、今は「あとで（今の本）」で飛ばして読み終えた夜に奥付から入れる道が要る（R-38、R-55、R-56、R-62、R-65）［推測］。
   - 暗い部屋で、隣で人が寝ていることがある［推測］。音と光を足さず、声に一行を出さない（R-22 の「others nearby might hear the response」）。
   - 移動中は主な場面ではない。電車で立って読む人は伏せる場所がないので、ボタン1回の道が要る［推測］（R-29）。
   - 1晩にアプリを前に出している時間は、中央値で30秒以内にしたい（PRD の G-1［推測］）。
@@ -61,7 +59,7 @@
   - 「今夜も、続きから戻れた」という小さな安心と、スマホに流された後ろめたさから離れること（PRD 2 の気持ちの面［推測］）。HIG の言う「a meditation app might calm」の側（R-23）で、達成感、競争、ごほうびの側ではない。
   - 根拠：静かさを喜ぶ声「SNSに疲れる日々ですが、いいねやコメントなどもなく、とても落ち着くし集中できます。」と、入口が読書を増やした声「これを開きたくて、勝手に読書時間が増えました笑」（R-11）。ToRead は「点数はつかない」を打ち出している（R-2）。Bookmory の連続日数（ストリーク）には不満が出ている（R-5）。
 - 見た目の好み（色の量、情報の密度）と根拠（R 番号）
-  - 色は少なく（白、黒、灰。アクセント色なし）、密度は低く（1画面に今夜の本だけ）する［仮説］。
+  - 色は少なく（白、黒、灰。アクセント色なし。有料の見た目「よむま＋」でも生成り・墨・朱の紙と墨の系統に留める）、密度は低く（1画面に今夜の本だけ）する［仮説］。
   - 根拠1：飾りと手間を嫌う声。Forest「豪華なデザインとかアニメーションとか要らない」「作業終了時に余計なアニメーションやひと手間が増えており」（R-12）。
   - 根拠2：いちばん目に触れる面（ロック画面と暗い所の StandBy）は、システムが色を抜く（vibrant）か、赤の単色で描く（R-19）。色で個性を出しても、毎晩の入口には届かない。
   - 根拠3：近い競合の見た目は、生成りと濃紺と淡い橙（ToRead、R-2）、青と紙吹雪（Bookmory、R-4）、線画の猫と色とりどりの表紙（ネコノホンシツジ、R-6）、水色と表紙の棚とグラフ（ブクログ、R-8）。白黒灰と縦書きの明朝は、どれとも重ならない。
@@ -70,12 +68,13 @@
   - 大きい文字（AX5）。夜に、老眼の人も読む［推測］。縦書きの一行は自前の組みなので、大きい文字では並びを変える（R-24 の「consider using a stacked layout」）。
   - 暗い部屋でまぶしくないこと。ダークを先に決める（R-25 の「dimmer background colors and brighter foreground colors」）。
   - 伏せられない人（片手、手のふるえ、スタンドに置く人）：同じことがボタンでできて、伏せる道を切れること（R-29）。アプリの外の入口は、ボタン1回の道と声の道になる（PRD 12）。
+  - カメラを構え続けるのが難しい人・視覚に障害がある人：カメラの代わりに写真ライブラリ（`PhotosPicker`、スクショ絞り込み `.screenshots`）と手入力が同じ画面にあり、写真から読み取った行は AX1 以上または VoiceOver 時に画像上の枠ではなく縦並びのリストボタンとして選べること（R-24、R-47、R-62、R-71）。
   - VoiceOver：縦書きの一行を、1つのラベルとして読む（PRD 12、AC-99）。
   - 触覚だけに頼らない。触覚は短く、切れるようにする（R-28）。
   - 色だけで区別しない。動きを減らす設定で動きを止める（R-24、R-25）。
 
 ## 3. 競合
-直接の競合を4本選んだ。どれも PRD の 3 と product.md の 4 にあるアプリで、需要と不満の調べものはやり直さず、見た目と操作の比較を足した（不満の引用は 10-19 に RSS で原文を確かめ直した）。画面は lookup の画面写真から読み、アプリは使っていない。
+直接の競合を4本選んだ。どれも PRD の 3 と product.md の 4 にあるアプリで、需要と不満の調べものはやり直さず、見た目と操作の比較を足した（不満の引用は 10-19 に RSS で原文を確かめ直した）。画面は lookup の画面写真から読み、アプリは使っていない。さらに、書誌の読み取り（表紙・背表紙・名刺・レシート・ラベルの OCR）と電子書籍・おすすめの隣接アプリ（R-48〜R-54、R-73〜R-76）を調べた。
 
 | 項目 | 競合A ToRead: 読書タイマー | 競合B Bookmory | 競合C ネコノホンシツジ | 競合D 読書管理ブクログ |
 |---|---|---|---|---|
@@ -92,11 +91,15 @@
 | 悪い点（レビューの不満の上位3つ、R 番号） | 不満の記録なし（JP の RSS は本文0件。R-3） | 1）登録：「9月発売の本を検索しても見つからないのは少し困ります。そして、バーコードの読み取りに失敗した場合、フリーズする場合があります。」（2024-10-13 ★3）　2）割り込み：「The two seperate pop ups you have to close out of EVERY time you open this app are horrid.」（2026-09-07 ★1）　3）連続日数：「every time I go in to log finishing a book that I’ve always started a one day streak」（2026-10-12 ★1）（R-5） | 1）登録：「検索してもヒットしない本が多くてなかなか他の管理アプリから移行しきれない。」（2026-10-03 ★3）　2）直せない時間：「時間の編集機能もつけてほしい。すぐ忘れて読書時間10時間‼️とかになってしまう」（2025-12-26 ★3）　3）更新の多さ：「アップデートが多い。頻回すぎて面倒。」（2026-07-12 ★3）（R-7） | 1）おすすめ：「好きでもない表紙の絵をここ数年毎回見せられること。全く更新されることもない」（2026-08-29 ★1）　2）登録と許可：「バーコードで本登録できんくなった」（2026-05-19 ★1）、「カメラへのアクセスを許可する項目が出てこず利用できない。」（2025-12-22 ★1）　3）有料化：「有料化が進みすぎている。」（2026-06-13 ★3）（R-9） |
 
 - 上位3つの分け方：星3以下のレビューを designer が読んで種類で分けた。数は数えていない（登録の失敗の割合は PRD E-4 の数え方を使う）。ブクログは page=1〜2 の星3以下39件のうち先頭24件、Bookmory は JP 3件と US 5件、ネコノホンシツジは6件を読んだ。
-- 隣の競合：ロック画面とウィジェットに「言葉」を出すアプリ（R-13。説明文だけで、画面は Kotoba の3枚のほかは見ていない）
+- 隣の競合1：ロック画面とウィジェットに「言葉」を出すアプリ（R-13。説明文だけで、画面は Kotoba の3枚のほかは見ていない）
   - Kotoba「本の一文、映画や推しのセリフ、自分と決めた約束。」「ウィジェットに好きな一つを固定表示（ホーム画面の小・中・大、ロック画面の3種）」「書体（ゴシック／明朝／丸ゴシック）」。
   - 名言ウィジェット「iPhoneのホーム画面・ロック画面・スタンバイに表示できる名言アプリ」。ことばめくり「日本の文学と古典の言葉が毎朝ひとつ」「充電中に横置きしたスタンバイ画面にも出る」。
   - よみかえし（引用カード）「その一文を撮って残し、毎日1枚あなたのもとへ返す」「日本語の縦書きにも対応しています」「ホーム画面ウィジェット」。hanjul-note と WordDrop も、本の一文をホーム画面のウィジェットに出す。
   - わかったこと：「ロック画面に本の言葉を、明朝で出す」こと自体は、もう当たり前になりつつある。説明文の範囲では、どれも選んだ言葉を眺める形で、読書の記録や読み始めの入口にはつながっていない。だから違いは見た目ではなく、「自分が昨夜止めた一行とページ（＝続き）」という中身と、押すとその本の読書が始まる道にある（6 の D-1）。
+- 隣の競合2：表紙・背表紙・名刺・レシート・ラベルをカメラで読み取るアプリ（R-48〜R-54）
+  - 本の表紙・背表紙スキャン：Goodreads は「Add a book in seconds by scanning the cover」（R-48）を持つが、クラウドの表紙画像照合なので同じ書名・似た表紙で「Duplicates books occasionally」の不満が出る（R-48）。日本の Libri や Passim（「AIが背表紙を読み取って一括登録」R-49）は評価0〜3件にとどまる。
+  - 名刺・レシート・ワインラベルの自動認識：Eight や myBridge が評価されるのは裏で「人の手による正確なデータ化」をしているからであり（R-50）、端末の自動振り分けだけの名刺アプリは「たて名刺で、名前を横書きの郵便番号の下4桁部を認識する」「ほぼほぼ手打ちで打ち直すハメに」と星1をつけられている（R-51）。レシート OCR も「読み取れても文字化けが多いので、都度手動での修正が必要」（R-52）、Vivino も「スキャンしても毎回違うワインを提案してくる」（R-54）と不満が出ており、逆にレシート読取を捨てて手入力の速さに絞った「シンプル家計簿」が約46万件の評価を集めている（R-53）。一方で、iOS 標準のカメラ文字認識そのものには「同じiPhoneでレシートをカメラ撮影して文字認識したら、狂いなく読み取っています」と信頼がある（R-52）。
+  - わかったこと：端末内の書誌 DB（バーコード・検索）を第1の道にしつつ、DB にない本やバーコードのない本をカメラや写真から入れるときは、「アプリが勝手に書名と著者を決め打ちして外す」のではなく、iOS 標準のテキスト認識で見つけた行を人が1タップで「書名」「著者」に割り当てる半自動の道具にするのが最も手戻りが少ない（R-36〜R-45、R-51〜R-54）。
 - 伏せる道の先行：伏せると始まるタイマーは2018年からある（FLIP、ベアフォーカスタイマー。US には読書の Offshelf）。PRD E-13 の値で、designer は 10-19 に開き直していない。伏せる道は差をつける点にしない（6）。
 
 ## 4. 手本（別カテゴリー）
@@ -106,11 +109,12 @@
   - 声の入口も、アプリの名前を入れた言い方で持つ。「Hey Siri, ask Flighty, what's the status of my flight?」（R-14）。
 - 取り入れる考え方（R 番号）
   - T-1 いま要る事実1つを、要る場所に出す。Flighty はゲートまでの時間、こちらは続きの一行とページ（R-14、R-15）。HIG も「Provide useful information in your Lock Screen widget, and don’t treat it as an additional way for people to launch into your app.」と書く（R-18）。
-  - T-2 昔からの慣習の見た目を借りる。Flighty は空港の案内の慣習（R-15）、こちらは本の慣習（縦書き、しおり、奥付、明朝）。HIG の「Use concepts that people know.」（R-23）。借りるのは組みの決まり（行頭と行末の禁則、小さい仮名の位置。R-30）で、紙の質感の飾りではない。
-  - T-3 1つの Live Activity が、時間につれて状態を変える。Flighty は出発までの時間とゲートを出し続ける（R-14。出発前から到着までのすべての状態は見ていない）。こちらは「待つ → 読む → 結果」（R-20 の「Offer Live Activities for tasks and events that have a defined beginning and end.」）。
-  - T-4 声の入口は、アプリの名前を入れた短い言い方にし、答えは短くしてアプリの名前を入れない（R-14、R-22）。
+  - T-2 昔からの慣習の見た目を借りる。Flighty は空港の案内の慣習（R-15）、こちらは日本の本の慣習（縦書き、しおり、表紙・背表紙、柱、ノンブル、奥付、書店の POP・司書のレファレンス、明朝。R-55〜R-59、R-77〜R-79）。HIG の「Use concepts that people know.」（R-23）。借りるのは組みの決まり（行頭と行末の禁則、小さい仮名の位置。R-30）と情報の型で、紙の質感の飾りではない。
+  - T-3 1つの Live Activity が、時間につれて状態を変える。Flighty は出発までの時間とゲートを出し続ける（R-14。出発前から到着までのすべての状態は見ていない）。こちらは「待つ → 読む → 結果」（R-20 の「Offer Live Activities for tasks and events that have a defined beginning and end.」、R-67、R-87）。
+  - T-4 声の入口は、アプリの名前を入れた短い言い方にし、答えは短くしてアプリの名前を入れない（R-14、R-22、R-82）。
+  - T-5 先に中身（読書や一行）を始め、名前（書名・著者）はあとからでもつけられるようにする。Apple 純正「メモ」が最初の1行を自動で題にし（R-63）、純正「写真」が後から人物に名前をつけられる（R-64）ように、登録画面で「あとで（今の本）」を選べば0秒でしおりの画面へ進め、読み終えた夜の奥付スキャン（R-55）や本の画面からいつでも書誌を埋められるようにする（R-65、R-66）。
   - 取り入れないこと：Flighty の不満「the constant popups pushing the Pro subscription make it a chore to use」（2026-10-06 ★3）と「Broken. Flood of worthless notifications」（2026-10-13 ★1）（R-16）。購入の案内を割り込ませず、通知を出さない（product.md の守ること）。
-- もう1本（参考）：Moonlitt: Moon Phase Tracker（月の満ち欠け）。「Widgets, Apple Watch app, and Live Activity for moon phase, moonrise, and moonset.」「Refined widgets, Live Activities, and StandBy for the new displays.」（R-17）。自然の時間を扱う小さな道具を、ウィジェット、Live Activity、StandBy の面で作った例。ADA 2026 の Interaction の受賞は integrate-designer が 10-18 に読んだもので、designer は 10-19 に ADA 2026 のページを開き直していない。画面は見ていない。
+- もう1本（参考）：Moonlitt: Moon Phase Tracker（月の満ち欠け）。「Widgets, Apple Watch app, and Live Activity for moon phase, moonrise, and moonset.」「Refined widgets, Live Activities, and StandBy for the new displays.」（R-17）。自然の時間を扱う小さな道具を、ウィジェット、Live Activity、StandBy の面で作った例。また、ADA 2025・2026 の受賞・候補作（Tide Guide のホーム画面ウィジェット、Mela の Dynamic Island と Vision スキャン、Train Fitness の画面を見ない計測、Land of Livia の App Intents。R-84）も、iOS のシステム面（Widget、Live Activity、Vision、App Intents）をそのまま体験の芯に据えている。
 - 見ていないもの：Flighty を実機で使っていない。画面写真は10枚のうち4枚だけ見た。Live Activity の動き、Siri の実際の答え、出発前から到着までの状態の移り変わりは見ていない。
 
 ## 5. ブランドの性格語と文言の調子
@@ -119,10 +123,10 @@
 | 性格語 | 意味すること | 意味しないこと |
 |---|---|---|
 | 静か | 画面に出すのは今夜の本と続きだけ。音、通知、祝う絵、数のバッジを出さない。読書中に押せるのは「終える」1つ。色は意味のためだけに使う | 寂しい、暗い、何が起きたか分からない（状態は必ず文字で言う）、大事な情報を隠す |
-| 確か | 読んだ時間とページが消えない、ずれない。奥付はデータのある行だけ。次の1冊の理由は確かめられる事実1行。写真を残さないこと、外に送らないものを言い切る | 機械的、冷たい、秒まで見せる細かさ、責める数字、根拠のない「あなたへのおすすめ」 |
-| まっすぐ | 1画面に主操作1つ。ボタンは動詞。置く動作がそのまま始まりになる。説明の画面を挟まない | 素っ気ない、説明が足りない、命令口調 |
-| 急かさない | 読まなかった晩を責めない（連続日数、目標、未読の数を出さない）。次の本は読み終えた夜にだけ出す。読まなかった晩の Live Activity は翌朝に残さない | 放っておく、何も勧めない、使い方を教えない、読んだことに何も返さない |
-| 紙の側 | 紙の本の慣習（縦書き、しおり、奥付、明朝）を、組みの決まりとして借りる。伏せる、起こすという動作と触覚で伝える | 紙や革の質感の飾り、懐古趣味、体の動きしか道がないこと、本の文を外に出すこと |
+| 確か | 読んだ時間とページが消えない、ずれない。奥付はデータのある行だけ。次の1冊の理由は確かめられる事実1行（6種類）。外の通信が0件であること、写真を残さないこと、国立国会図書館の書誌データ（CC BY 4.0）の出典・加工・API利用の3条件を正直に言い切る | 機械的、冷たい、秒まで見せる細かさ、責める数字、根拠のない「あなたへのおすすめ」、「AI」「機械学習」といった言葉の飾り、少人数の共起の人数を見せること |
+| まっすぐ | 1画面に主操作1つ。ボタンは動詞。置く動作がそのまま始まりになる。説明の画面を挟まない。写真から文字を拾うときも、勝手に決め打ちせず人が1タップで割り当てる | 素っ気ない、説明が足りない、命令口調 |
+| 急かさない | 読まなかった晩を責めない（連続日数、目標、未読の数を出さない）。読まなかった晩の Live Activity は翌朝に残さない。手元にバーコードがなくても「あとで（今の本）」で今すぐ読み始められる | 放っておく、何も勧めない、使い方を教えない、読んだことに何も返さない |
+| 紙の側 | 紙の本の慣習（縦書き、しおり、表紙・背表紙、奥付、書店の POP・司書のレファレンス、明朝）を、組みの決まりと情報の型として借りる。伏せる、起こすという動作と触覚で伝える | 紙や革の質感の飾り、懐古趣味、体の動きしか道がないこと、本の文を外に出すこと、紙の本でないと使えないこと（文字の電子書籍も同じ紙の版面の慣習の上で扱う） |
 
 - 名前とサブタイトルとの結びつき
   - 「よむま」は「読む間」。「静か」と「急かさない」は、読むための間を守る言葉。
@@ -140,25 +144,26 @@
 ## 6. 合わせる当たり前と、差をつける点
 - 合わせる当たり前（利用者がほかのアプリで覚えた型）と R 番号
   1. 読み始めは1回の操作。ToRead「ワンタップで読書開始」（R-1）。しおりの画面の「読み始める」がそれに当たり、伏せる道はその近道にする（R-29）。
-  2. ロック中も、ほかのアプリの間も数える。mekuru への「画面閉じれるようにして欲しい」と、2時間で止まった不満（R-11）。Bookmory はロック画面でタイマーを見せる（R-4）。
+  2. ロック中も、ほかのアプリの間も数える。mekuru への「画面閉じれるようにして欲しい」と、2時間で止まった不満（R-11）。Bookmory はロック画面でタイマーを見せる（R-4）。同じ iPhone の電子書籍アプリで読む夜も、Live Activity を出したまま裏で数え、Dynamic Island かロック画面の「終える」から1タップでしおり挟みシートに戻れる（R-67〜R-70）。
   3. 間違いを直せる。ToRead の「間違えて始めたセッションは取り消せます」（R-1）、ネコノホンシツジへの「時間の編集機能もつけてほしい」（R-7）、HIG の「Help people recover from mistakes.」（R-23）。記録の分数を直す、消すを置く。
-  4. 登録はバーコードを続けて読む。ブクログ「連続スキャン対応でまとめて登録もOK」（R-8）、読書メーター「連続読み取り機能で手間いらず！」（R-10）。見つからない本と許可の不満（R-5、R-7、R-9）があるので、書名で探す道と手で入れる道を同じ所に並べ、カメラの許可はボタンを押したときに求める（R-27）。
-  5. 連続日数、目標、競争を置かない。ToRead「ゲーミフィケーション、連続記録、競争なしで」（R-1）と、Bookmory の連続日数への不満（R-5）。
-  6. ライトとダーク、大きい文字、コントラスト（R-24、R-25）。
-  7. ロック画面の言葉は、小さな枠に明朝で出す（Kotoba は書体に明朝を選べる。R-13）［推測：利用者が見慣れた型］。ロック画面のウィジェットを、アプリを開くだけのボタンにしない（R-18。ブクログのロック画面のウィジェットは「バーコードで本を登録」「本を検索」を開く形。R-8）。
-  8. Live Activity はボタン1つで、始まりと終わりがある（R-20）。Control、Action ボタン、Siri の入口は、読書アプリにも旅行のアプリにもある（ToRead「Siriとショートカットがお使いの言語に対応し」R-1、Flighty の Siri R-14）。
-  9. 購入の案内と通知を割り込ませない（Flighty と Bookmory のポップアップへの不満 R-16、R-5、ブクログの「課金誘導っぽいエラー表記」R-9）。
-  10. 空の画面は、何が起きているかと次の一手を出す（R-33、R-26 の「Provide clear next steps on any blank screens.」）。たとえば本が0冊のしおりの画面（AC-1 の `bookmark.empty.message` と `bookmark.addBook`）。エラーは問題の近くに、責めずに、直し方を書く（R-26）。
+  4. 登録はバーコードを続けて読む＋端末内検索＋写真/スクショからの行タップ＋「あとで」。ブクログ「連続スキャン対応でまとめて登録もOK」（R-8）、読書メーター「連続読み取り機能で手間いらず！」（R-10）。通信エラーや未収録の不満（R-5、R-7、R-9）を避けるため、国立国会図書館の書誌データ（CC BY 4.0、Background Assets で配信。R-85）を端末内に持って外の通信0件でバーコード連続読取と検索を行い、さらに DB にない本やバーコードのない本でも同じ画面のカメラ（バーコード＋文字の同時認識 `DataScannerViewController` と静止画撮影 `capturePhoto()`。R-36〜R-38、R-80）や写真ライブラリ（`PhotosPicker`、スクショ `.screenshots`。R-62、R-71）から表紙・背表紙・本棚の行をタップして登録でき、手入力と「あとで（今の本）」（R-63〜R-66）も同じ画面に並べる。カメラの許可はボタンを押したときに求める（R-27、R-46）。
+  5. 電子書籍の進み方の単位（ページ・位置・%）とスクショからのしおり挟み。Kindle 等では紙のページ番号、Location（位置）、% が使われ（R-74）、日本の Apple Books には引用カード共有がない（R-73）ため、本ごとに単位（ページ / 位置 / %）を切り替えられ、しおり挟みシートから `.screenshots` 絞り込みの `PhotosPicker` 1タップでスクショを選んで1行と位置を抜けるようにする（R-71）。
+  6. 連続日数、目標、競争を置かない。ToRead「ゲーミフィケーション、連続記録、競争なしで」（R-1）と、Bookmory の連続日数への不満（R-5）。
+  7. ライトとダーク、大きい文字、コントラスト（R-24、R-25）。
+  8. ロック画面の言葉は、小さな枠に明朝で出す（Kotoba は書体に明朝を選べる。R-13）［推測：利用者が見慣れた型］。ロック画面のウィジェットを、アプリを開くだけのボタンにしない（R-18。ブクログのロック画面のウィジェットは「バーコードで本を登録」「本を検索」を開く形。R-8）。
+  9. Live Activity はボタン1つで、始まりと終わりがある（R-20、R-67）。Control、Action ボタン、Siri の入口は、読書アプリにも旅行のアプリにもある（ToRead「Siriとショートカットがお使いの言語に対応し」R-1、Flighty の Siri R-14、HIG R-82、R-83）。
+  10. 購入の案内と通知を割り込ませない（Flighty と Bookmory のポップアップへの不満 R-16、R-5、ブクログの「課金誘導っぽいエラー表記」R-9）。有料の見た目「よむま＋」は設定の「見た目」の中だけに置き、復元ボタンを同じ画面に置く（R-87）。
+  11. 空の画面は、何が起きているかと次の一手を出す（R-33、R-26 の「Provide clear next steps on any blank screens.」）。たとえば本が0冊のしおりの画面（AC-1 の `bookmark.empty.message` と `bookmark.addBook`）。エラーは問題の近くに、責めずに、直し方を書く（R-26）。
 - 差をつける点（2個。どの画面のどの瞬間か）と R 番号
   - D-1 手に取った瞬間の「続き」
     - どこで：ロック画面の長方形のウィジェット。毎晩、iPhone を手に取った瞬間（操作0回）。同じ一行を、押して開いたしおりの画面と、充電中の StandBy で大きく出す。
-    - 何が違うか：読書アプリのロック画面は読書時間（ToRead、Bookmory。R-1、R-4）か猫の絵（ネコノホンシツジ。PRD E-12）。言葉を出すアプリは多いが、出すのは選んだ名言や引用で、読書の記録と入口につながらない（R-13）。こちらは自分の紙の本の、昨夜止めた一行とページで、言葉がそのまま続きの位置（しおり）になり、押すとその本の読書が始まる入口になる。
+    - 何が違うか：読書アプリのロック画面は読書時間（ToRead、Bookmory。R-1、R-4）か猫の絵（ネコノホンシツジ。PRD E-12）。言葉を出すアプリは多いが、出すのは選んだ名言や引用で、読書の記録と入口につながらない（R-13）。こちらは自分の本（紙でも文字の電子書籍でも）の、昨夜止めた一行とページ（または位置・%）で、言葉がそのまま続きの位置（しおり）になり、押すとその本の読書が始まる入口になる。
     - 根拠：HIG の「Provide useful information in your Lock Screen widget」（R-18）と「Create defining moments.」（R-23）、Flighty の「With key information where you need it most」（R-15）。
     - 弱い所：一行が古いか空の夜が続くと、書名とページだけになり、ほかと同じになる（PRD I-4）。見た目は名言のウィジェットに似る（R-13）ので、差は見た目でなく中身にある。ストアの画面写真は、実際の 172×76 pt の大きさで見せる（PRD 17）。
-  - D-2 読み終えた夜だけの「奥付と次の1冊」
-    - どこで：読み終えた画面（数週間に1回）。毎晩の道には出さない。
-    - 何が違うか：ブクログとネコノホンシツジは、おすすめをいつでも出す（ブクログへの不満「好きでもない表紙の絵をここ数年毎回見せられること」R-9、ネコノホンシツジ「猫がおすすめしてくれます」R-6）。Bookmory は読み終えを紙吹雪で祝う（R-4）。こちらは読み終えた夜にだけ、奥付（日本の本の最後のページの型）と、自分の積読からの次の1冊を事実の理由1行つきで出し、祝う演出を置かない。
-    - 根拠：HIG の「Use concepts that people know.」「Don’t mistake delight for decoration.」（R-23）、Rams の「Good design is honest」（R-35）。
+  - D-2 事実の理由1行つきの「奥付と次の1冊」
+    - どこで：読み終えた画面（奥付と、積読＋新しい本からの次の1冊最大3冊）、および本が決まっていないときのしおりの画面（「次の本を選ぶ」）と本棚の画面（「積読」「新しい本」の最大2冊）。読んでいる最中の毎晩の道には出さない。
+    - 何が違うか：ブクログとネコノホンシツジは、根拠の見えないおすすめや同じ表紙をいつでも出し、ブクログの AI 要約・おすすめには強い反発がある（「好きでもない表紙の絵をここ数年毎回見せられること」「何故ユーザーの感想を勝手にAIに読み込ませ要約しようなど思ったのですか？」R-9、ネコノホンシツジ「猫がおすすめしてくれます」R-6）。Bookmory は読み終えを紙吹雪で祝う（R-4）。こちらは祝う演出を置かず、読み終えた夜に日本の本の最後のページの型である「奥付」（R-55）を出した上で、自分の積読と端末内 DB の新しい本から、書店の POP や図書館のレファレンス（R-77〜R-79）のように確かめられる事実の理由1行（著者・出版社/レーベル・NDC 分類・受賞・共起 `readers`・書店員/司書リストの6種類。R-86）を添えて静かに勧める。端末内の好みの重み付けもすべて端末内で計算し、「AI」「機械学習」とは名乗らない（R-81）。
+    - 根拠：HIG の「Use concepts that people know.」「Don’t mistake delight for decoration.」（R-23）、HIG Generative AI の「Avoid requesting factual information unless you're confident the model has access to verified and up-to-date information」（R-81）、Rams の「Good design is honest」（R-35）。
 - 差にしないもの
   - 伏せて読む：2018年から先行がある（PRD E-13）。性格語「紙の側」の表れとして扱い、違いの芯にはしない（PRD 5 の S-5 と同じ扱い）。
   - 縦書きの見た目だけ：明朝の言葉のウィジェットはすでにある（R-13）。
@@ -173,7 +178,7 @@
 | ひとことで | 白、黒、灰と、縦書きの明朝の一行だけ。標準部品と、タブのない1画面。ライトとダークはシステムに従う。design/explore/integrated/ の探りの絵（Takuma が見たもの）の方向 | いつも暗い地に、灯りのような暖色をアクセントにし、時刻で地の色を変える。Live Activity と StandBy を主役にして、夜の雰囲気を作る |
 | 性格語との合い方 | 「静か」「確か」「まっすぐ」「紙の側」に強い。「急かさない」は、出す時と出さないもので表す | 「静か」「急かさない」には合う。色を意味なしに使う（B-5）ので、「確か」「まっすぐ」に弱い。時刻で見せ方を変えるのは、ウィジェットを時刻で切り替えない決まり（PRD 10）とぶつかる |
 | ターゲットとの合い方 | 暗い部屋はダークで受ける。ロック画面で色が抜けても、一行の形が残る（R-19）。4本の競合のどれとも見た目が重ならない（R-2、R-4、R-6、R-8） | 夜の場面には合う。ただ、いちばん目に触れるロック画面と暗い所の StandBy では、色が抜けるか赤の単色になり（R-19）、案の個性が入口に届かない。ToRead の生成りと濃紺と淡い橙（R-2）に近く、埋もれる |
-| 選んだか、その理由 | 選ぶ。入口の制約（R-19）の中で個性が残り、性格語の5語すべてに合う | 選ばない。理由は、入口で色が届かないこと（R-19）、色を意味なしに使うこと（B-5）、ToRead に近いこと（R-2）。夜らしさは、案A のダークの地と、Live Activity の「待つ → 読む → 結果」の3つの状態で出す |
+| 選んだか、その理由 | 選ぶ（2026-10-19 に Takuma 承認済み）。入口の制約（R-19）の中で個性が残り、性格語の5語すべてに合う。有料の見た目「よむま＋」（生成り・墨・朱）もこの「紙の版面」の延長として破綻なく載る | 選ばない。理由は、入口で色が届かないこと（R-19）、色を意味なしに使うこと（B-5）、ToRead に近いこと（R-2）。夜らしさは、案A のダークの地と、Live Activity の「待つ → 読む → 結果」の3つの状態で出す |
 
 ## 8. 発見の一覧
 | R | 発見（引用は「」で） | 出典 URL | 確認日 |
@@ -213,24 +218,74 @@
 | R-33 | NN/g の空の状態：「Empty states provide opportunities for designers to communicate system status, increase learnability of the system, and deliver direct pathways for key tasks.」 | https://www.nngroup.com/articles/empty-state-interface-design/ | 2026-10-19 |
 | R-34 | Reinecke と Gajos（CHI 2014）「Quantifying Visual Preferences Around the World」：「the level of colorfulness and visual complexity at which visual appeal is highest strongly varies: Females, for example, liked colorful websites more than males.」「A high education level generally lowers this preference for colorfulness.」 | https://eecs.harvard.edu/~kgajos/papers/2014/reinecke14visual.shtml | 2026-10-19 |
 | R-35 | Dieter Rams の10原則：「Good design is honest It does not make a product more innovative, powerful or valuable than it really is.」「Good design is unobtrusive Products fulfilling a purpose are like tools.」「Good design is as little design as possible Less, but better」 | https://vitsoe.com/gb/about/good-design （https://www.vitsoe.com/gb/about/good-design に移った） | 2026-10-19 |
+| R-36 | VisionKit `DataScannerViewController`：「An object that scans the camera live video for text, data in text, and machine-readable codes.」「The view controller provides a view that's similar to the Live Text interface in the Camera app.」「If you set the recognizesMultipleItems property to false, the view controller highlights only the item that's closest to the point of interest, which defaults to the center of the view. When the user taps an item, the view controller highlights it and invokes the dataScanner(_:didTapOn:) delegate method」「Appear in the reading order of the language when the recognizedDataTypes property contains only one text type.」 | https://developer.apple.com/documentation/visionkit/datascannerviewcontroller （JSON で読んだ） | 2026-10-20 |
+| R-37 | VisionKit `Scanning data with the camera`：「The DataScannerViewController offers legs up on implementing this behavior yourself, such as: A standard region of interest, highlights around recognized items, pinch-to-zoom, and guidance for the user (for example, "Move Closer" and "Slow Down")」「Pass the data types (text, barcode, or both) to the DataScannerViewController initializer.」 | https://developer.apple.com/documentation/visionkit/scanning-data-with-the-camera （JSON で読んだ） | 2026-10-20 |
+| R-38 | VisionKit `DataScannerViewController.capturePhoto()`：「Captures a still photo of the camera live video.」 | https://developer.apple.com/documentation/visionkit/datascannerviewcontroller/capturephoto() （JSON で読んだ） | 2026-10-20 |
+| R-39 | UIKit `UIResponder.captureTextFromCamera(_:)` / `UIAction.captureTextFromCamera`：「Starts capturing text from the camera to insert into the responder.」「Creates an action that captures text from the camera.」 | https://developer.apple.com/documentation/uikit/uiresponder/capturetextfromcamera(_:) 、https://developer.apple.com/documentation/uikit/uiaction/capturetextfromcamera(responder:identifier:) （JSON で読んだ） | 2026-10-20 |
+| R-40 | VisionKit `Enabling Live Text interactions with images` / `ImageAnalysisInteraction`：「Let users interact with text, QR codes, and barcodes in images using a system interface similar to the Photos app.」「Wait until the user finishes dragging the selection handles and interacts with the selection (such as copying, translating, or sharing it) before getting the selected text.」 | https://developer.apple.com/documentation/visionkit/enabling-live-text-interactions-with-images 、https://developer.apple.com/documentation/visionkit/imageanalysisinteraction （JSON で読んだ） | 2026-10-20 |
+| R-41 | VisionKit `VNDocumentCameraViewController`：「A view controller that shows the document camera and captures the scanned pages.」 | https://developer.apple.com/documentation/visionkit/vndocumentcameraviewcontroller （JSON で読んだ） | 2026-10-20 |
+| R-42 | Vision `RecognizeDocumentsRequest`：「An image-analysis request that scans an image for text and returns a rich structure containing the text and the layout of the document.」「Japanese supports vertical text lines with orientation topToBottom.」 | https://developer.apple.com/documentation/vision/recognizedocumentsrequest （JSON で読んだ） | 2026-10-20 |
+| R-43 | Apple サポート「iPhoneのカメラでテキスト認識表示を使用する」：「テキストやデータ（電話番号やメールアドレスなど）が認識されると、黄色い枠が表示され、右下に『テキスト認識表示』ボタンが表示されます。」「『テキスト認識表示』ボタンをタップします。」「操作したいテキストを長押ししてから、グラブポイントを使ってテキストを選択し、以下のいずれかを行います: コピー…」 | https://support.apple.com/ja-jp/guide/iphone/iphcf0b71b0e/ios 、https://support.apple.com/en-us/guide/iphone/iphcf0b71b0e/ios | 2026-10-20 |
+| R-44 | iOS Feature Availability：「Live Text」対応言語に「Japanese (Japan)」、また「Live Text: Translate text」および「Visual Look Up: Books」（US 等、日本は記載なし） | https://www.apple.com/ios/feature-availability/ | 2026-10-20 |
+| R-45 | HIG Entering data：「To the extent possible, prefill fields with reasonable default values, which can minimize decision making and speed data entry.」「When possible, get information from the system instead of asking people to provide it.」 | https://developer.apple.com/design/human-interface-guidelines/entering-data （JSON で読んだ） | 2026-10-20 |
+| R-46 | HIG Privacy（権限の文言）：「Explain clearly why your app needs the data, and how you use it. Aim for a brief, complete sentence that's straightforward, specific, and easy to understand; avoid passive voice, and include a period at the end.」 | https://developer.apple.com/design/human-interface-guidelines/privacy （JSON で読んだ） | 2026-10-20 |
+| R-47 | HIG Accessibility：「Offer alternatives to gestures. Make sure people can navigate and interact with your app using more than one type of physical interaction.」「Prefer system gestures and behaviors people are already familiar with.」「Minimize use of time-boxed interface elements.」 | https://developer.apple.com/design/human-interface-guidelines/accessibility （JSON で読んだ） | 2026-10-20 |
+| R-48 | Goodreads の説明文とレビュー：説明文「Add a book in seconds by scanning the cover or barcode」、US レビュー「Duplicates books occasionally」（2026-10-19 ★4） | https://itunes.apple.com/search?term=Goodreads&country=us&entity=software 、https://itunes.apple.com/us/rss/customerreviews/page=1/id=355833469/sortby=mostrecent/json | 2026-10-20 |
+| R-49 | 表紙や背表紙で登録する日本の読書アプリの説明文：Libri（JP 評価3件）「カメラで表紙をスキャン（OCR）するだけで、タイトルから書籍情報を自動で特定。バーコードがない古い本や、カバーを外した本でも簡単に登録できます。」、Passim（JP 評価0件）「本棚を撮影するだけで、AIが背表紙を読み取って一括登録。」 | https://itunes.apple.com/search?term=%E8%AA%AD%E6%9B%B8%E7%AE%A1%E7%90%86%20%E8%A1%A8%E7%B4%99&country=jp&entity=software | 2026-10-20 |
+| R-50 | 名刺管理アプリの説明文：Eight（JP 22,520件、平均4.63）「高度なOCR（光学的文字認識）と人の手による入力を組み合わせ、正確にデータ化します。」、myBridge（JP 18,415件、平均4.56）「文字認識と人の手による正確なデータ化」 | https://itunes.apple.com/search?term=%E5%90%8D%E5%88%BA%E7%AE%A1%E7%90%86%20Eight&country=jp&entity=software | 2026-10-20 |
+| R-51 | 機械の自動振り分けだけの名刺 OCR アプリ（名刺マネージャ、id1618387863）のレビュー：「たて名刺で、名前を横書きの郵便番号の下4桁部を認識する」（2026-08-29 ★1）、「スキャンしても項目も名前もバラバラ、修正しようとするとフリーズ、まったく使えません」（2024-07-02 ★1）、「ほぼほぼ手打ちで打ち直すハメになり、時間と労力を大量に奪われた。」（2024-03-04 ★1） | https://itunes.apple.com/jp/rss/customerreviews/page=1/id=1618387863/sortby=mostrecent/json | 2026-10-20 |
+| R-52 | レシート OCR 家計簿のレビュー：レシートスキャン（id1571273616）「読み取れても文字化けが多いので、都度手動での修正が必要。」（2026-06-14 ★1）、「ッュ等小書き文字や、プブ等濁音・半濁音はほぼエラーになります」（2025-11-05 ★1）、開発者の返答「読み取り内容はあとから編集・追加できますので、認識がうまくいかない場合は手動での修正もご活用ください」。レシマル（id1274359127）「同じiPhoneでレシートをカメラ撮影して文字認識したら、狂いなく読み取っています。」（2024-08-18 ★2） | https://itunes.apple.com/jp/rss/customerreviews/page=1/id=1571273616/sortby=mostrecent/json 、https://itunes.apple.com/jp/rss/customerreviews/page=1/id=1274359127/sortby=mostrecent/json | 2026-10-20 |
+| R-53 | シンプル家計簿 MoneyNote（JP 459,414件、平均4.66）の説明文：「レシート読み取り機能付きの家計簿アプリを使ってみたけれど、上手く読み込めなくて挫折した人」「すべてのデータは端末内に保存されます。」 | https://itunes.apple.com/search?term=%E3%83%AC%E3%82%B7%E3%83%BC%E3%83%88%20%E5%AE%B6%E8%A8%88%E7%B0%BF&country=jp&entity=software | 2026-10-20 |
+| R-54 | Vivino（JP 7,280件、平均4.73）の説明文とレビュー：説明文「ラベルを撮影するとすぐに、そのワインの評価やレビュー、価格、テイスティングノート、おすすめの料理などが表示されます。」、JP レビュー「スキャンしても毎回違うワインを提案してくる」（2026-07-12 ★1） | https://itunes.apple.com/search?term=Vivino&country=jp&entity=software 、https://itunes.apple.com/jp/rss/customerreviews/page=1/id=414461255/sortby=mostrecent/json | 2026-10-20 |
+| R-55 | Wikipedia「奥付」：「奥付（おくづけ）とは、本の本文が終わった後や巻末に設けられ、書名（タイトル）、著者、発行所（出版社）、発行年月日（出版年月日）、版数、刷数、印刷所などの書誌事項を記載した部分のことである。」（享保7年・1722年の触書に始まり、明治の出版法で定着した日本の本の型） | https://ja.wikipedia.org/wiki/%E5%A5%A5%E4%BB%98 （https://ja.wikipedia.org/api/rest_v1/page/summary/%E5%A5%A5%E4%BB%98 と mobile-html で読んだ） | 2026-10-20 |
+| R-56 | Wikipedia「表紙」：「表表紙には書名と、著者名など最低限の書誌事項が入っている。日本では、一般的に書名が一番上に配置され、目立つようにされている」「背表紙には書名、著者名、出版社名が簡潔に記載される。」「裏表紙にはISBNや定価などの追加的な書誌情報」 | https://ja.wikipedia.org/wiki/%E8%A1%A8%E7%B4%99 （mobile-html で読んだ） | 2026-10-20 |
+| R-57 | Wikipedia「帯 (出版)」：「読者の購買意欲をそそるため、練られた言葉や扇情的なキャッチコピーが使われる」 | https://ja.wikipedia.org/wiki/%E5%B8%AF_(%E5%87%BA%E7%89%88) （REST API summary で読んだ） | 2026-10-20 |
+| R-58 | W3C JLREQ「柱（running head）」：「各ページの版面外に記載された書名・章名・節名など．（JIS Z 8125）」「柱に何を掲げるかは，その書籍の内容による．たとえば，小説などでは，読者は書名をすでに承知している場合が多く，その点では書名を掲げるのはあまり意味があることではない．」 | https://www.w3.org/TR/jlreq/ | 2026-10-20 |
+| R-59 | Wikipedia「ノンブル」：「本のページを表す数字（ページ番号）のこと」（小説では通しノンブルが多いが、扉や写真ページは隠しノンブルになる） | https://ja.wikipedia.org/wiki/%E3%83%8E%E3%83%B3%E3%83%96%E3%83%AB （REST API summary で読んだ） | 2026-10-20 |
+| R-60 | HIG Camera Control：「The Camera Control provides direct access to your app's camera experience.」「Minimize distractions in the viewfinder.」（iPhone 16 以降のハードウェアボタンで、アプリ内でカメラ画面が開いている間の調整用） | https://developer.apple.com/design/human-interface-guidelines/camera-control （JSON で読んだ） | 2026-10-20 |
+| R-61 | Apple Developer Documentation `Integrating your app with visual intelligence`：「When someone uses visual intelligence, the system captures an image and classifies the main subject into a semantic label.」「Labels are general, high-level terms in the en_US locale」 | https://developer.apple.com/documentation/visualintelligence/integrating-your-app-with-visual-intelligence （JSON で読んだ） | 2026-10-20 |
+| R-62 | Apple Developer Documentation `PhotosPicker`：「A view that displays a Photos picker for choosing assets from the photo library.」 | https://developer.apple.com/documentation/photosui/photospicker （JSON で読んだ） | 2026-10-20 |
+| R-63 | Apple Support「Create and format notes on iPhone」：「The first line of the note becomes the note's title.」（タイトル入力欄を別に出さず、書いた1行目がそのまま名前になる） | https://support.apple.com/guide/iphone/create-and-format-notes-iph1ac0b3a2/ios | 2026-10-20 |
+| R-64 | Apple Support「Find and name people and pets in Photos on iPhone」：「When you name a person or pet in a photo or video, they're automatically added to the People & Pets collection and named in other photos and videos in your library.」（先に写真がたまり、名前はあとからつけられる） | https://support.apple.com/guide/iphone/find-and-name-people-and-pets-iph9c7ee918c/ios | 2026-10-20 |
+| R-65 | UI-Patterns「Lazy Registration」：「The user wants to immediately use you and try your website without conducting a formal registration beforehand」 | https://ui-patterns.com/patterns/LazyRegistration | 2026-10-20 |
+| R-66 | NN/g「Progressive Disclosure」：「Progressive disclosure defers advanced or rarely used features to a secondary screen, making applications easier to learn and less error-prone.」「Initially, show users only a few of the most important options.」 | https://www.nngroup.com/articles/progressive-disclosure/ | 2026-10-20 |
+| R-67 | HIG Live Activities（インタラクティブ要素・終了後の保持）：「If you offer interactivity, prefer limiting it to a single element」「Live Activities work best for tracking short to medium duration activities that don't exceed eight hours」「Once a Live Activity ends, it immediately disappears from the Dynamic Island, and remains on the Lock Screen briefly before disappearing or until the person removes it. In most cases, 15 to 30 minutes is adequate.」「Offer an App Shortcut that starts your Live Activity.」 | https://developer.apple.com/design/human-interface-guidelines/live-activities （JSON で読んだ） | 2026-10-20 |
+| R-68 | Apple Developer Documentation `LiveActivityIntent`：「When someone interacts with a Button or Toggle on a widget or Live Activity that uses a LiveActivityIntent, the system launches your app process without opening the app, performs the intent, and starts the Live Activity.」 | https://developer.apple.com/documentation/appintents/liveactivityintent （JSON で読んだ） | 2026-10-20 |
+| R-69 | Apple Developer Documentation `OpenURLIntent`：「This app intent uses your app's existing universal link support to open a URL in your app. You can also place the app intent on a button in an interactive widget or Live Activity.」 | https://developer.apple.com/documentation/appintents/openurlintent （JSON で読んだ） | 2026-10-20 |
+| R-70 | Apple Support「Setting triggers in Shortcuts on iPhone or iPad」：「Is Opened: Triggers your automation when you open or switch to the selected app.」「Is Closed: Triggers your automation when you close or switch from the selected app.」（サードパーティアプリが他アプリの起動を勝手に検知する API はないが、ユーザー自身のショートカットの個人用オートメーションで「Kindle が開かれたとき → よむまで読み始める」を組める） | https://support.apple.com/guide/shortcuts/setting-triggers-apde31e9638b/ios | 2026-10-20 |
+| R-71 | Apple Developer Documentation `PHPickerFilter.screenshots` と WWDC22 10023：「A filter that represents screenshots.」「The picker runs out of process, so your app doesn't need to request any library access to use it.」 | https://developer.apple.com/documentation/photosui/phpickerfilter-swift.struct （JSON で読んだ）、https://developer.apple.com/videos/play/wwdc2022/10023/ | 2026-10-20 |
+| R-72 | Apple Archive「App Extension Programming Guide」：「In Share extensions … you can give users access to web content by asking Safari to run a JavaScript file and return the results to the extension.」（Safari 以外の他社アプリからは共有を押したときしか拡張にデータが渡らない） | https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html | 2026-10-20 |
+| R-73 | Apple Support「Share book quotes in Books on Mac / iPhone」：「Sharing book quotes is only available in the United States.」「A quote can include up to 200 words.」（日本の Apple Books では引用カード共有が使えない） | https://support.apple.com/guide/books/ibks3b8c08a0/mac | 2026-10-20 |
+| R-74 | Macworld「Kindle apps get real page numbers」（検索結果の要約で読んだ）：「The Kindle apps will now display both page numbers, based on a certain print edition of the book, and the old standard Kindle "locations"」（電子書籍には紙のページ番号がある本と、位置番号 Location や % しかない本がある） | https://www.macworld.com/article/210714/kindle-app-real-pages.html | 2026-10-20 |
+| R-75 | インプレス総合研究所『電子書籍ビジネス調査報告書2026』プレスリリース：「2025年度の電子書籍市場規模は、前年度比2.1%増の6846億円と推計され、2030年度には7526億円規模になると予測されます。内訳をみると、市場の87.8%を占めるコミックが前年度比2.5%増の6010億円、文字もの等（文芸・実用書・写真集等）が同1.3%減の615億円、電子雑誌が同0.9%減の221億円となりました。」 | https://prtimes.jp/main/html/rd/p/000007525.000005875.html | 2026-10-20 |
+| R-76 | Apple Books 公式ページ：「Browse curated collections and get personalized recommendations.」「The For You collection is a curated list of audiobooks, ebooks, authors, and a Weekly Top 5 based on what's already in your library.」 | https://www.apple.com/apple-books/ | 2026-10-20 |
+| R-77 | Wikipedia「本屋大賞」：「『全国書店員が選んだ いちばん！ 売りたい本』をキャッチコピーに、書店員の投票だけで選ばれる賞である。」（新刊書の書店で働く書店員は本と読者を「最もよく知る立場」とされる） | https://ja.wikipedia.org/wiki/%E6%9C%AC%E5%B1%8B%E5%A4%A7%E8%B3%9E （REST API summary と mobile-html で読んだ） | 2026-10-20 |
+| R-78 | Wikipedia「POP広告」：「手書き風POPが重宝される業態は、雑貨店（ヴィレッジヴァンガードなど）、書店、CDショップなどが挙げられる。」 | https://ja.wikipedia.org/wiki/POP%E5%BA%83%E5%91%8A （mobile-html で読んだ） | 2026-10-20 |
+| R-79 | Wikipedia「レファレンスサービス」：「日本でも読書相談は館外貸出の一環かレファレンスかが議論される」（図書館司書が読者の求めや履歴から事実に基づいて本を案内する慣習） | https://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9 （mobile-html で読んだ） | 2026-10-20 |
+| R-80 | VisionKit `Scanning data with the camera`（複数データ種別の同時認識）：「pass the custom types as the recognizedDataTypes parameter when you initialize the DataScannerViewController. For example, the following code creates a data scanner that only recognizes URLs and QR codes.」 | https://developer.apple.com/documentation/visionkit/scanning-data-with-the-camera （JSON で読んだ） | 2026-10-20 |
+| R-81 | HIG Generative AI：「Avoid requesting factual information unless you're confident the model has access to verified and up-to-date information, and never present unverified information as fact.」「When people can modify or regenerate the output, consider surfacing controls like Edit, Undo, Retry, or Adjust near generated content」「Never trick someone into thinking that content generated by a model was authored by a human, or vice versa.」（書誌や推薦理由を LLM に生成させず、確かめられる事実のデータから出し、「AI」「機械学習」を名乗らない根拠） | https://developer.apple.com/design/human-interface-guidelines/generative-ai （JSON で読んだ） | 2026-10-18 |
+| R-82 | HIG App Shortcuts と Siri（上限と完全な対話文）：App Shortcuts は「an upper limit of 10 App Shortcuts per app」、Siri の返答は「Include all critical information in the full dialogue text, because people may not see the visual element, and only use the supporting dialogue text for optional context.」「In order for an app to work with Siri, the app has to make its features and content available to Apple Intelligence using the App Intents framework.」 | https://developer.apple.com/design/human-interface-guidelines/app-shortcuts 、https://developer.apple.com/design/human-interface-guidelines/siri （JSON で読んだ） | 2026-10-18 |
+| R-83 | HIG Action button と Controls（Live Activity との連携）：「Let people use your actions without leaving their current context ... Live Activities」「In particular, launching a Live Activity from a control creates an easy and seamless experience for people to perform an action and track its progress without having to open your app.」 | https://developer.apple.com/design/human-interface-guidelines/action-button 、https://developer.apple.com/design/human-interface-guidelines/controls （JSON で読んだ） | 2026-10-18 |
+| R-84 | Apple Design Awards 2025・2026 の受賞・候補作の紹介文：Tide Guide「its powerful widgets help swimmers and boat captains save a step right from the Home Screen」、Mela「Timers integrate with the Dynamic Island, recipe scanning is powered by the Vision framework」、Train Fitness「eliminating the need for interaction with a screen or UI」、Land of Livia「takes advantage of App Intents to let players carry out complex actions」 | https://developer.apple.com/design/awards/ 、https://developer.apple.com/design/awards/2025/ | 2026-10-18 |
+| R-85 | 国立国会図書館の書誌データの二次利用（CC BY 4.0）：「国立国会図書館が作成した書誌データ等（書誌データ・典拠データ・雑誌記事索引データ）は、営利・非営利の目的を問わず、どなたでも無償で利用することができます」「メタデータ利用条件欄にクリエイティブ・コモンズ・ライセンスの表示がある場合は、メタデータの二次利用について利用申請は不要です。」「データ提供機関があらかじめ利用目的を問わず利用を許諾しているデータについては、利用申請・許諾は不要です。」（表示の3条件：①出典の記載、②加工・改変した旨の記載、③国立国会図書館サーチの API を利用した旨の記載、および CC BY 4.0 URL `https://creativecommons.org/licenses/by/4.0/deed.ja` の併記。PRD E-5、17 で pdm と tech-lead が確認した引用） | https://www.ndl.go.jp/data/data_service/quickguide 、https://ndlsearch.ndl.go.jp/help/api/provider 、https://ndlsearch.ndl.go.jp/help/api 、https://creativecommons.org/licenses/by/4.0/deed.ja | 2026-10-21 |
+| R-86 | 本を選ぶ手がかりの調査（クロス・マーケティング 2025年10月、LINEリサーチ 2023年10月。PRD E-8 で pdm が確認した値）：本を選ぶきっかけの上位は「好きな作家の新刊」32.0%、「過去に読んだ本と同じ作者」24.0%、「家族や友人のオススメ」12.8%、「賞を獲得した本」11.8%。本屋大賞の認知は 65%（PRD E-8） | https://www.cross-m.co.jp/hubfs/Report/release_files/news_release_20251008.pdf 、https://www.line-research.jp/official/2023/10/26/001122/ | 2026-10-21 |
+| R-87 | ActivityKit の予約開始と App Store Review Guidelines（PRD E-9、E-14、16、17 で tech-lead と pdm が確認した引用）：`Activity.request(...start:)`「The system starts the Live Activity at the specified date, even if the app is in the background.」（iOS 18+）。App Store Review Guidelines 3.1.1「you should make sure you have a restore mechanism for any restorable in-app purchases」（買い切り課金の復元ボタン）、5.1.1(i)「You must also provide access to your privacy policy in an easily accessible manner within your app」 | https://developer.apple.com/documentation/activitykit/activity/request(attributes:content:pushtype:style:alertconfiguration:start:) 、https://developer.apple.com/app-store/review/guidelines/ | 2026-10-21 |
 
 見られなかったもの
 - どのアプリも入れて使っていない。タップ数、ナビゲーション、最初の価値までの画面数、空の状態、権限の求め方は、画面写真と説明文に出ているものしか見ていない（3 の表の「見ていない」）。
-- 画面写真のうち見たのは、ToRead 6枚、ネコノホンシツジ 7枚（8枚中）、Bookmory 7枚（10枚中）、ブクログ 7枚（10枚中）、Kotoba 3枚、Flighty 4枚（10枚中）。読書メーター、mekuru、Moonlitt、名言ウィジェット、ことばめくり、よみかえし、hanjul-note、WordDrop の画面は見ていない（説明文だけ）。
+- 画面写真のうち見たのは、ToRead 6枚、ネコノホンシツジ 7枚（8枚中）、Bookmory 7枚（10枚中）、ブクログ 7枚（10枚中）、Kotoba 3枚、Flighty 4枚（10枚中）。読書メーター、mekuru、Moonlitt、名言ウィジェット、ことばめくり、よみかえし、hanjul-note、WordDrop、Goodreads、Libri、Passim、Eight、myBridge、名刺マネージャ、レシートスキャン、レシマル、シンプル家計簿、Vivino の画面は見ていない（説明文とレビューだけ）。
 - ToRead のロック画面と Dynamic Island の表示（Plus）、ネコノホンシツジのロック画面の読書カード、Kotoba のロック画面のウィジェット、Flighty の Live Activity の動き。
 - ToRead の「背面タップ」の記載（PRD E-12 が 10-18 に製品ページで読んだもの）は、10-19 の lookup の説明文には見つからなかった。製品ページの HTML は開いていない。
-- HIG Widgets の大きさの表（172×76 pt、いちばん小さい機種で 153×68 pt）は、今回 JSON から取り出した文字には見つからなかった。PRD E-9 の値（verifier と tech-lead が読んだもの）を使う。
-- ADA 2026 のページ（Moonlitt の受賞）は、10-19 に開き直していない（integrate-designer が 10-18 に読んだもの）。
-- 伏せるタイマー（FLIP、ベアフォーカスタイマー、Offshelf ほか）は、10-19 に開き直していない（PRD E-13）。
-- 審査ガイドラインの本文（PRD 17 の引用だけ）。
+- HIG Widgets の大きさの表（172×76 pt、いちばん小さい機種で 153×68 pt）は、JSON から取り出した文字には見つからなかった。PRD E-9 の値（verifier と tech-lead が読んだもの）を使う。
+- Macworld の記事（R-74）は検索結果の要約だけを読み、本文は開いていない。
+- 国立国会図書館のページ（R-85）、本を選ぶ手がかりの調査（R-86）、ActivityKit の予約開始と審査ガイドラインの本文（R-87）、文化庁の調査（PRD E-1）、積読の調査（PRD E-7）、伏せるタイマー（PRD E-13）は、PRD で pdm と tech-lead が確認した引用を引き、designer は個別のページを再度開いていない。
 - NN/g のブランドの記事は、定義の文だけを読んだ。性格語の数の目安は見つけていない（3〜5語は手引きの決まり）。
-- 文化庁の調査（PRD E-1）と積読の調査（E-7）は、10-19 に開き直していない。
-- 実機。秒数はすべて見積もり。Takuma の実機の確かめ（伏せた向き、ロック中のボタン）の結果は、まだ届いていない（1 の「結果待ち」）。
+- 実機。秒数はすべて見積もり。ロック画面の vibrant における W3 と W6 の実機・シミュレータの見え方の比較は G3 で確かめる（`docs/approvals/001-reading-session-G1-decisions.md`）。
 
 ## 確かめ（提出前に designer が印を付ける。design-reviewer はこれを信じずに確かめる）
-- [x] R が5つ以上あり、どれにも出典 URL と確認日がある（R-1〜R-35。確認日はすべて 2026-10-19）
-- [x] 競合を2つ以上と、手本を1つ調べた。不満は引用と URL 付き（競合は ToRead、Bookmory、ネコノホンシツジ、ブクログ。手本は Flighty。ToRead はレビューの本文が0件で、不満の記録なし）
+- [x] R が5つ以上あり、どれにも出典 URL と確認日がある（R-1〜R-87。確認日は 2026-10-18〜2026-10-21）
+- [x] 競合を2つ以上と、手本を1つ調べた。不満は引用と URL 付き（競合は ToRead、Bookmory、ネコノホンシツジ、ブクログの4本＋隣接の言葉ウィジェット・OCR・電子書籍アプリ。手本は Flighty。ToRead はレビューの本文が0件で、不満の記録なし）
 - [x] ターゲットは「仮説」と書き、根拠に R 番号がある
 - [x] 性格語ごとに「意味しないこと」がある
-- [x] 差をつける点が1から2個ある（D-1 手に取った瞬間の「続き」、D-2 読み終えた夜だけの「奥付と次の1冊」）
+- [x] 差をつける点が1から2個ある（D-1 手に取った瞬間の「続き」、D-2 事実の理由1行つきの「奥付と次の1冊」）
 - [x] 方向性の2案と、選ばなかった理由がある
