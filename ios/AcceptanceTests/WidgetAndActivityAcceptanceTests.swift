@@ -1,24 +1,17 @@
 import XCTest
 
 final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
-    private let bookAId = "00000000-0000-4000-8000-000000000001"
-    private let bookBId = "00000000-0000-4000-8000-000000000002"
-
     func test_AC27_ロック画面ウィジェットに縦書きの一行とページが出る() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "下人の行方は、誰も知らない。",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 61,
+                lastLine: "下人の行方は、誰も知らない。"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             extraArgs: ["-uitest-widget", "accessoryRectangular:153x68,accessoryRectangular:172x76"]
@@ -33,20 +26,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC28_縦書きの字形置換と行頭禁則処理を検証する() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "「下人の行方は、誰も知らなーい。」",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 61,
+                lastLine: "「下人の行方は、誰も知らなーい。」"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             extraArgs: ["-uitest-widget", "accessoryRectangular:172x76"]
@@ -67,20 +56,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         ]
 
         for (lineText, _) in cases {
-            let seed = """
-            {
-              "books": [
-                {
-                  "id": "\(bookAId)",
-                  "title": "羅生門",
-                  "status": "current",
-                  "lastLine": "\(lineText)",
-                  "progressUnit": "page",
-                  "page": 61
-                }
-              ]
-            }
-            """
+            let seed = makeSeedJSON(books: [
+                makeSeedBook(
+                    id: uuidBookA,
+                    title: "羅生門",
+                    status: "current",
+                    progressUnit: "page",
+                    page: 61,
+                    lastLine: lineText
+                )
+            ])
             resetAndLaunch(
                 seedJSON: seed,
                 extraArgs: ["-uitest-widget", "accessoryRectangular:172x76"]
@@ -94,20 +79,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC30_欧文のみの一行は横書き1行で出る() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "Rain",
-              "status": "current",
-              "lastLine": "It was raining.",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "Rain",
+                status: "current",
+                progressUnit: "page",
+                page: 61,
+                lastLine: "It was raining."
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             extraArgs: ["-uitest-widget", "accessoryRectangular:172x76"]
@@ -119,19 +100,15 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC31_一行がないときは書名とページをウィジェットに出す() {
-        let seedWithPage = """
-        {
-          "books": [
-            {
-              "id": "\(bookBId)",
-              "title": "檸檬",
-              "status": "current",
-              "progressUnit": "page",
-              "page": 120
-            }
-          ]
-        }
-        """
+        let seedWithPage = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookB,
+                title: "檸檬",
+                status: "current",
+                progressUnit: "page",
+                page: 120
+            )
+        ])
         resetAndLaunch(
             seedJSON: seedWithPage,
             extraArgs: ["-uitest-widget", "accessoryRectangular:172x76,systemSmall:170x170"]
@@ -140,17 +117,13 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(raw1.contains("檸檬"))
         XCTAssertTrue(raw1.contains("p.120"))
 
-        let seedNoPage = """
-        {
-          "books": [
-            {
-              "id": "\(bookBId)",
-              "title": "檸檬",
-              "status": "current"
-            }
-          ]
-        }
-        """
+        let seedNoPage = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookB,
+                title: "檸檬",
+                status: "current"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seedNoPage,
             extraArgs: ["-uitest-widget", "accessoryRectangular:172x76,systemSmall:170x170"]
@@ -165,17 +138,13 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         let raw1 = readHookString("hook.widget")
         XCTAssertTrue(raw1.contains("empty") || raw1.contains("widget.empty"))
 
-        let seedTsundokuOnly = """
-        {
-          "books": [
-            {
-              "id": "\(bookBId)",
-              "title": "檸檬",
-              "status": "tsundoku"
-            }
-          ]
-        }
-        """
+        let seedTsundokuOnly = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookB,
+                title: "檸檬",
+                status: "tsundoku"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seedTsundokuOnly,
             extraArgs: ["-uitest-widget", "accessoryRectangular:172x76,systemSmall:170x170"]
@@ -185,20 +154,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC33_しおり保存でウィジェットが1回だけ再読み込みされる() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "旧の一行",
-              "progressUnit": "page",
-              "page": 43
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 43,
+                lastLine: "旧の一行"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             now: "2026-10-18T21:00:00+09:00",
@@ -225,34 +190,38 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
             closeBtn.tap()
         }
 
-        let stateRaw = readHookString("hook.state")
-        XCTAssertTrue(stateRaw.contains("1"))
+        let hookState = readHookState()
+        let reloadsRaw = hookState["widgetReloads"] ?? ""
+        XCTAssertTrue(reloadsRaw.contains("mark.save:1"), "Expected mark.save:1 in widgetReloads, got: \(reloadsRaw)")
+
+        let widgetJSON = readHookJSON("hook.widget")
+        let reloadRequests = widgetJSON["reloadRequests"] as? [String: Any] ?? [:]
+        let byCause = reloadRequests["byCause"] as? [String: Int] ?? [:]
+        XCTAssertEqual(byCause["mark.save"], 1)
 
         let widgetRaw = readHookString("hook.widget")
         XCTAssertTrue(widgetRaw.contains("p.61"))
     }
 
     func test_AC34_隠す設定オンでウィジェットとLiveActivityから書名と一行を隠す() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "下人の行方は、誰も知らない。",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ],
-          "settings": {
-            "hideOnWidgets": true,
-            "flipToStartEnabled": true,
-            "entryTime": "21:00",
-            "widgetGuideShown": true
-          }
-        }
-        """
+        let seed = makeSeedJSON(
+            books: [
+                makeSeedBook(
+                    id: uuidBookA,
+                    title: "羅生門",
+                    status: "current",
+                    progressUnit: "page",
+                    page: 61,
+                    lastLine: "下人の行方は、誰も知らない。"
+                )
+            ],
+            settings: makeSeedSettings(
+                flipToStartEnabled: true,
+                hideOnWidgets: true,
+                entryTime: "21:00",
+                widgetGuideShown: true
+            )
+        )
         resetAndLaunch(
             seedJSON: seed,
             now: "2026-10-18T20:00:00+09:00",
@@ -275,20 +244,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC35_StandBy用の小ウィジェットに縦書きの一行とページが出る() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "下人の行方は、誰も知らない。",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 61,
+                lastLine: "下人の行方は、誰も知らない。"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             extraArgs: ["-uitest-widget", "systemSmall:148x148,systemSmall:170x170"]
@@ -302,26 +267,24 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC36_しおり保存で翌晩21時のLiveActivityが1件予約される() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "旧の一行",
-              "progressUnit": "page",
-              "page": 43
-            }
-          ],
-          "settings": {
-            "entryTime": "21:00",
-            "flipToStartEnabled": true,
-            "hideOnWidgets": false,
-            "widgetGuideShown": true
-          }
-        }
-        """
+        let seed = makeSeedJSON(
+            books: [
+                makeSeedBook(
+                    id: uuidBookA,
+                    title: "羅生門",
+                    status: "current",
+                    progressUnit: "page",
+                    page: 43,
+                    lastLine: "旧の一行"
+                )
+            ],
+            settings: makeSeedSettings(
+                flipToStartEnabled: true,
+                hideOnWidgets: false,
+                entryTime: "21:00",
+                widgetGuideShown: true
+            )
+        )
         for startAt in ["2026-10-18T22:00:00+09:00", "2026-10-19T00:00:00+09:00"] {
             resetAndLaunch(seedJSON: seed, now: startAt, timezone: "Asia/Tokyo")
 
@@ -346,19 +309,15 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC37_LiveActivityオフ時は予約要求を出さず設定に案内を出す() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "progressUnit": "page",
-              "page": 43
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 43
+            )
+        ])
         let laConfig = """
         {
           "areActivitiesEnabled": false
@@ -399,19 +358,15 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC38_夜の入口の時刻を15分刻みで変えると予約時刻が変わる() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "progressUnit": "page",
-              "page": 43
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 43
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             now: "2026-10-18T22:00:00+09:00",
@@ -428,7 +383,10 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
             opt2245.tap()
         }
 
-        element("toolbar.bookmark").tap()
+        let settingsSnapshot = readStoreSettings()
+        XCTAssertEqual(settingsSnapshot["entryTime"] as? String, "22:45")
+
+        navigateBackToBookmark()
         element("bookmark.start").tap()
         advanceClock(seconds: 600)
         element("reading.end").tap()
@@ -439,20 +397,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC39_予約がない晩でもアイコン起動でしおり画面が開き伏せ監視がオンになる() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "下人の行方は、誰も知らない。",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 61,
+                lastLine: "下人の行方は、誰も知らない。"
+            )
+        ])
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T22:30:00+09:00", timezone: "Asia/Tokyo")
 
         XCTAssertTrue(element("bookmark.line").waitForExistence(timeout: uiTimeout))
@@ -463,22 +417,18 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(app.alerts.count, 0)
         XCTAssertEqual(app.sheets.count, 0)
 
-        let stateStr = readHookString("hook.state")
-        XCTAssertTrue(stateStr.contains("flipMonitoring=on") || stateStr.contains("\"flipMonitoring\":\"on\""))
+        let hookState = readHookState()
+        XCTAssertEqual(hookState["flipMonitoring"], "on")
     }
 
     func test_AC40_入口のURLと300秒境界で記録の入口の印が決まる() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current"
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current"
+            )
+        ])
 
         // (1) lock_widget, (2) small_widget, (3) live_activity
         for entry in ["lock_widget", "small_widget", "live_activity"] {
@@ -488,8 +438,8 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
             advanceClock(seconds: 120)
             element("reading.end").tap()
             element("mark.later").tap()
-            let stateStr = readHookString("hook.state")
-            XCTAssertTrue(stateStr.contains("entry=\(entry)") || stateStr.contains("\"entry\":\"\(entry)\""))
+            let hookState = readHookState()
+            XCTAssertEqual(hookState["entry"], entry)
         }
 
         // (4) アイコン起動 -> app
@@ -498,7 +448,7 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         advanceClock(seconds: 120)
         element("reading.end").tap()
         element("mark.later").tap()
-        XCTAssertTrue(readHookString("hook.state").contains("app"))
+        XCTAssertEqual(readHookState()["entry"], "app")
 
         // (5) URL起動後バックグラウンド経由 -> app
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T21:00:00+09:00", timezone: "Asia/Tokyo")
@@ -509,7 +459,7 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         advanceClock(seconds: 120)
         element("reading.end").tap()
         element("mark.later").tap()
-        XCTAssertTrue(readHookString("hook.state").contains("app"))
+        XCTAssertEqual(readHookState()["entry"], "app")
 
         // (6) 299秒後開始 -> lock_widget
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T21:00:00+09:00", timezone: "Asia/Tokyo")
@@ -519,7 +469,7 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         advanceClock(seconds: 120)
         element("reading.end").tap()
         element("mark.later").tap()
-        XCTAssertTrue(readHookString("hook.state").contains("lock_widget"))
+        XCTAssertEqual(readHookState()["entry"], "lock_widget")
 
         // (7) 301秒後開始 -> app
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T21:00:00+09:00", timezone: "Asia/Tokyo")
@@ -529,24 +479,20 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         advanceClock(seconds: 120)
         element("reading.end").tap()
         element("mark.later").tap()
-        XCTAssertTrue(readHookString("hook.state").contains("app"))
+        XCTAssertEqual(readHookState()["entry"], "app")
     }
 
     func test_AC41_表示中の予約LiveActivityが読書中から結果表示へ遷移する() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "下人の行方は、誰も知らない。",
-              "progressUnit": "page",
-              "page": 43
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 43,
+                lastLine: "下人の行方は、誰も知らない。"
+            )
+        ])
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T20:00:00+09:00", timezone: "Asia/Tokyo")
         transitionLiveActivity("started")
 
@@ -567,23 +513,21 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC96_ウィジェットの置き方案内は最初の1回だけ出る() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current"
-            }
-          ],
-          "settings": {
-            "widgetGuideShown": false,
-            "flipToStartEnabled": true,
-            "hideOnWidgets": false,
-            "entryTime": "21:00"
-          }
-        }
-        """
+        let seed = makeSeedJSON(
+            books: [
+                makeSeedBook(
+                    id: uuidBookA,
+                    title: "羅生門",
+                    status: "current"
+                )
+            ],
+            settings: makeSeedSettings(
+                flipToStartEnabled: true,
+                hideOnWidgets: false,
+                entryTime: "21:00",
+                widgetGuideShown: false
+            )
+        )
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T21:00:00+09:00", timezone: "Asia/Tokyo")
 
         element("bookmark.setMark").tap()
@@ -594,8 +538,8 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
 
         let guide = element("widgetGuide")
         XCTAssertTrue(guide.waitForExistence(timeout: uiTimeout))
-        let state1 = readHookString("hook.state")
-        XCTAssertTrue(state1.contains("widgetGuide:1"))
+        let hookState1 = readHookState()
+        XCTAssertTrue((hookState1["notice"] ?? "").contains("widgetGuide:1"))
 
         let closeGuide = element("widgetGuide.close")
         if closeGuide.waitForExistence(timeout: uiTimeout) {
@@ -621,21 +565,17 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC97_LiveActivity予約失敗時はアラートを出さず次回前面復帰時に予約し直す() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current"
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current"
+            )
+        ])
         let laConfig = """
         {
           "areActivitiesEnabled": true,
-          "failNextScheduleCount": 1
+          "failScheduleCount": 1
         }
         """
         resetAndLaunch(
@@ -665,17 +605,13 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC98_読まなかった晩のLiveActivityは翌朝前面復帰で終了し今夜分を予約する() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current"
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current"
+            )
+        ])
         resetAndLaunch(seedJSON: seed, now: "2026-10-19T20:00:00+09:00", timezone: "Asia/Tokyo")
 
         let laInitial = readHookString("hook.liveActivity")
@@ -692,20 +628,16 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current",
-              "lastLine": "「下人の行方は、誰も知らなーい。」",
-              "progressUnit": "page",
-              "page": 61
-            }
-          ]
-        }
-        """
+        let seed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                status: "current",
+                progressUnit: "page",
+                page: 61,
+                lastLine: "「下人の行方は、誰も知らなーい。」"
+            )
+        ])
         resetAndLaunch(
             seedJSON: seed,
             extraArgs: ["-uitest-widget", "accessoryRectangular:172x76"]
@@ -726,23 +658,21 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC130_入口時刻前の読書開始で今夜の予約を取り消し終了時に予約を見直す() {
-        let seed = """
-        {
-          "books": [
-            {
-              "id": "\(bookAId)",
-              "title": "羅生門",
-              "status": "current"
-            }
-          ],
-          "settings": {
-            "entryTime": "21:00",
-            "flipToStartEnabled": true,
-            "hideOnWidgets": false,
-            "widgetGuideShown": true
-          }
-        }
-        """
+        let seed = makeSeedJSON(
+            books: [
+                makeSeedBook(
+                    id: uuidBookA,
+                    title: "羅生門",
+                    status: "current"
+                )
+            ],
+            settings: makeSeedSettings(
+                flipToStartEnabled: true,
+                hideOnWidgets: false,
+                entryTime: "21:00",
+                widgetGuideShown: true
+            )
+        )
 
         // (1) 20:30 開始 -> 背面復帰を挟み 21:05 (35分) で終了 -> 翌晩 2026-10-19 21:00 予約
         resetAndLaunch(seedJSON: seed, now: "2026-10-18T20:30:00+09:00", timezone: "Asia/Tokyo")
@@ -755,8 +685,7 @@ final class WidgetAndActivityAcceptanceTests: AcceptanceTestBase {
         element("reading.end").tap()
         element("mark.later").tap()
 
-        let store1 = readHookJSON("hook.store")
-        let recs1 = store1["records"] as? [[String: Any]] ?? []
+        let recs1 = readStoreRecords()
         XCTAssertEqual(recs1.count, 1)
         XCTAssertEqual(recs1.first?["minutes"] as? Int, 35)
 

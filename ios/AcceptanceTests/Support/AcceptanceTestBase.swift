@@ -9,6 +9,34 @@ class AcceptanceTestBase: XCTestCase {
     private var accumulatedClockMs: UInt64 = 0
     private var notifyTokens: [String: Int32] = [:]
 
+    let uuidBookA = "00000000-0000-4000-8000-000000000001"
+    let uuidBookB = "00000000-0000-4000-8000-000000000002"
+    let uuidBookC = "00000000-0000-4000-8000-000000000003"
+    let uuidBookD = "00000000-0000-4000-8000-000000000004"
+    let uuidBookE = "00000000-0000-4000-8000-000000000005"
+    let uuidBookF = "00000000-0000-4000-8000-000000000006"
+    let uuidBookG = "00000000-0000-4000-8000-000000000007"
+    let uuidBookH = "00000000-0000-4000-8000-000000000008"
+    let uuidBookI = "00000000-0000-4000-8000-000000000009"
+    let uuidBookJ = "00000000-0000-4000-8000-00000000000a"
+    let uuidBookK = "00000000-0000-4000-8000-00000000000b"
+    let uuidBookK2 = "00000000-0000-4000-8000-00000000000c"
+    let uuidBookL = "00000000-0000-4000-8000-00000000000d"
+    let uuidBookM = "00000000-0000-4000-8000-00000000000e"
+    let uuidBookP = "00000000-0000-4000-8000-000000000010"
+    let uuidBookQ = "00000000-0000-4000-8000-000000000011"
+    let uuidBookR = "00000000-0000-4000-8000-000000000012"
+    let uuidBookS = "00000000-0000-4000-8000-000000000013"
+    let uuidBookT = "00000000-0000-4000-8000-000000000014"
+
+    func makeUUID(_ index: Int) -> String {
+        String(format: "00000000-0000-4000-8000-%012d", index)
+    }
+
+    func makeRecordUUID(_ index: Int) -> String {
+        String(format: "00000000-0000-4000-9000-%012d", index)
+    }
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
@@ -185,25 +213,209 @@ class AcceptanceTestBase: XCTestCase {
     }
 
     func runExternalIntent(_ name: String, canContinueInForeground: Bool = true) {
-        let code: UInt64
+        let baseCode: UInt64
         switch name {
         case "StartReadingIntent":
-            code = 1
+            baseCode = 1
         case "EndReadingFromActivityIntent":
-            code = 2
+            baseCode = 2
         case "WhereStoppedIntent":
-            code = 3
+            baseCode = 3
         case "ContinueReadingIntent":
-            code = 4
+            baseCode = 4
         default:
-            code = 1
+            baseCode = 1
         }
+        let code = baseCode + (canContinueInForeground ? 0 : 10)
         postDarwinNotification("yomuma.uitest.intent.run", state: code)
+    }
+
+    func makeIntentConfigJSON(canContinueInForeground: Bool = true) -> String {
+        return "{\"canContinueInForeground\":\(canContinueInForeground ? "true" : "false")}"
+    }
+
+    func makeSeedBook(
+        id: String,
+        isbn13: String? = nil,
+        title: String,
+        author: String = "",
+        publisher: String? = nil,
+        label: String? = nil,
+        publishedYear: Int? = nil,
+        seriesTitle: String? = nil,
+        volumeNumber: Int? = nil,
+        ndc: String? = nil,
+        status: String = "current",
+        isEbook: Bool = false,
+        isTitlePending: Bool = false,
+        progressUnit: String = "page",
+        page: Int? = nil,
+        location: Int? = nil,
+        percent: Int? = nil,
+        lastLine: String? = nil,
+        createdAt: String = "2026-10-10T21:00:00+09:00",
+        updatedAt: String = "2026-10-10T21:00:00+09:00",
+        tsundokuAt: String? = nil,
+        finishedAt: String? = nil
+    ) -> [String: Any] {
+        let resolvedTsundokuAt: Any
+        if let tsundokuAt = tsundokuAt {
+            resolvedTsundokuAt = tsundokuAt
+        } else if status == "tsundoku" {
+            resolvedTsundokuAt = createdAt
+        } else {
+            resolvedTsundokuAt = NSNull()
+        }
+
+        let resolvedFinishedAt: Any
+        if let finishedAt = finishedAt {
+            resolvedFinishedAt = finishedAt
+        } else if status == "finished" {
+            resolvedFinishedAt = updatedAt
+        } else {
+            resolvedFinishedAt = NSNull()
+        }
+
+        return [
+            "id": id,
+            "isbn13": isbn13 ?? NSNull(),
+            "title": title,
+            "author": author,
+            "publisher": publisher ?? NSNull(),
+            "label": label ?? NSNull(),
+            "publishedYear": publishedYear ?? NSNull(),
+            "seriesTitle": seriesTitle ?? NSNull(),
+            "volumeNumber": volumeNumber ?? NSNull(),
+            "ndc": ndc ?? NSNull(),
+            "status": status,
+            "isEbook": isEbook,
+            "isTitlePending": isTitlePending,
+            "progressUnit": progressUnit,
+            "page": page ?? NSNull(),
+            "location": location ?? NSNull(),
+            "percent": percent ?? NSNull(),
+            "lastLine": lastLine ?? NSNull(),
+            "createdAt": createdAt,
+            "updatedAt": updatedAt,
+            "tsundokuAt": resolvedTsundokuAt,
+            "finishedAt": resolvedFinishedAt
+        ]
+    }
+
+    func makeSeedRecord(
+        id: String,
+        bookId: String,
+        startedAt: String = "2026-10-15T21:00:00+09:00",
+        endedAt: String = "2026-10-15T21:20:00+09:00",
+        minutes: Int? = nil,
+        durationMinutes: Int? = nil,
+        nightDate: String = "2026-10-15",
+        entry: String = "app",
+        progressUnit: String = "page",
+        startPage: Int? = nil,
+        endPage: Int? = nil,
+        startLocation: Int? = nil,
+        endLocation: Int? = nil,
+        startPercent: Int? = nil,
+        endPercent: Int? = nil,
+        savedLine: String? = nil
+    ) -> [String: Any] {
+        let resolvedMinutes = minutes ?? durationMinutes ?? 20
+        return [
+            "id": id,
+            "bookId": bookId,
+            "startedAt": startedAt,
+            "endedAt": endedAt,
+            "minutes": resolvedMinutes,
+            "nightDate": nightDate,
+            "entry": entry,
+            "progressUnit": progressUnit,
+            "startPage": startPage ?? NSNull(),
+            "endPage": endPage ?? NSNull(),
+            "startLocation": startLocation ?? NSNull(),
+            "endLocation": endLocation ?? NSNull(),
+            "startPercent": startPercent ?? NSNull(),
+            "endPercent": endPercent ?? NSNull(),
+            "savedLine": savedLine ?? NSNull()
+        ]
+    }
+
+    func makeSeedActiveSession(
+        bookId: String,
+        startedAt: String,
+        entry: String = "app",
+        liveActivityId: String? = nil
+    ) -> [String: Any] {
+        return [
+            "bookId": bookId,
+            "startedAt": startedAt,
+            "entry": entry,
+            "liveActivityId": liveActivityId ?? NSNull()
+        ]
+    }
+
+    func makeSeedSettings(
+        flipToStartEnabled: Bool = true,
+        hideOnWidgets: Bool = false,
+        entryTime: String = "21:00",
+        appearanceID: String? = nil,
+        appearanceMode: String? = nil,
+        isPlusPurchased: Bool? = nil,
+        plusPurchased: Bool? = nil,
+        widgetGuideShown: Bool = true,
+        onboardingCompleted: Bool = true,
+        recommendationWeights: [String: [String: Int]]? = nil,
+        firstNightCompletedAt: String? = nil,
+        seventhNightReachedAt: String? = nil
+    ) -> [String: Any] {
+        _ = onboardingCompleted
+        var dict: [String: Any] = [
+            "flipToStartEnabled": flipToStartEnabled,
+            "hideOnWidgets": hideOnWidgets,
+            "widgetGuideShown": widgetGuideShown,
+            "entryTime": entryTime,
+            "appearanceID": appearanceID ?? appearanceMode ?? "default",
+            "isPlusPurchased": isPlusPurchased ?? plusPurchased ?? false,
+            "firstNightCompletedAt": firstNightCompletedAt ?? NSNull(),
+            "seventhNightReachedAt": seventhNightReachedAt ?? NSNull()
+        ]
+        if let recommendationWeights = recommendationWeights {
+            dict["recommendationWeights"] = recommendationWeights
+        }
+        return dict
+    }
+
+    func makeSeedJSON(
+        books: [[String: Any]] = [],
+        records: [[String: Any]] = [],
+        activeSession: [String: Any]? = nil,
+        settings: [String: Any]? = nil
+    ) -> String {
+        let payload: [String: Any] = [
+            "schemaVersion": 1,
+            "books": books,
+            "records": records,
+            "activeSession": activeSession ?? NSNull(),
+            "settings": settings ?? makeSeedSettings()
+        ]
+        guard let data = try? JSONSerialization.data(withJSONObject: payload),
+              let str = String(data: data, encoding: .utf8) else {
+            XCTFail("Failed to serialize seed JSON")
+            return "{}"
+        }
+        return str
     }
 
     func openEntryURL(_ entry: String) {
         if let url = URL(string: "yomuma://open?entry=\(entry)") {
             app.open(url)
+        }
+    }
+
+    func navigateBackToBookmark() {
+        let navBack = app.navigationBars.buttons.firstMatch
+        if navBack.exists {
+            navBack.tap()
         }
     }
 
@@ -221,6 +433,18 @@ class AcceptanceTestBase: XCTestCase {
         return (el.value as? String) ?? el.label
     }
 
+    func readHookState() -> [String: String] {
+        let raw = readHookString("hook.state")
+        var result: [String: String] = [:]
+        for pair in raw.split(separator: ";", omittingEmptySubsequences: false) {
+            let parts = pair.split(separator: "=", maxSplits: 1, omittingEmptySubsequences: false)
+            if parts.count == 2 {
+                result[String(parts[0])] = String(parts[1])
+            }
+        }
+        return result
+    }
+
     func readHookJSON(_ id: String) -> [String: Any] {
         let raw = readHookString(id)
         guard let data = raw.data(using: .utf8),
@@ -229,6 +453,22 @@ class AcceptanceTestBase: XCTestCase {
             return [:]
         }
         return obj
+    }
+
+    func readStoreState() -> [String: Any] {
+        return readHookJSON("hook.store")["state"] as? [String: Any] ?? [:]
+    }
+
+    func readStoreBooks() -> [[String: Any]] {
+        return readStoreState()["books"] as? [[String: Any]] ?? []
+    }
+
+    func readStoreRecords() -> [[String: Any]] {
+        return readStoreState()["records"] as? [[String: Any]] ?? []
+    }
+
+    func readStoreSettings() -> [String: Any] {
+        return readStoreState()["settings"] as? [String: Any] ?? [:]
     }
 
     func attachScreenshot(name: String) {

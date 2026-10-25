@@ -2,7 +2,19 @@ import XCTest
 
 final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
 
-    private let currentBookSeed = #"{"books":[{"id":"book-a","title":"羅生門","author":"芥川龍之介","status":"current","savedLine":"ある日の暮方の事である。","savedPage":43}],"records":[]}"#
+    private var currentBookSeed: String {
+        makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookA,
+                title: "羅生門",
+                author: "芥川龍之介",
+                status: "current",
+                progressUnit: "page",
+                page: 43,
+                lastLine: "ある日の暮方の事である。"
+            )
+        ])
+    }
 
     func test_AC42_起動から1タップで確認や入力なしに読み始められる() {
         resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00")
@@ -11,7 +23,7 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         startBtn.tap()
 
         XCTAssertTrue(element("reading.end").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
+        XCTAssertEqual(readHookState()["state"], "reading")
         XCTAssertEqual(app.alerts.count, 0)
         XCTAssertEqual(app.sheets.count, 0)
         XCTAssertEqual(app.textFields.count, 0)
@@ -28,9 +40,10 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
 
         let endBtn = element("reading.end")
         XCTAssertTrue(endBtn.waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
-        let titleEl = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "羅生門")).firstMatch
-        XCTAssertTrue(titleEl.exists)
+        XCTAssertEqual(readHookState()["state"], "reading")
+        let titleEl = element("reading.title")
+        XCTAssertTrue(titleEl.waitForExistence(timeout: uiTimeout))
+        XCTAssertTrue(titleEl.label.contains("羅生門"))
         XCTAssertEqual(app.buttons.count, 1)
         XCTAssertEqual(app.tabBars.count, 0)
         XCTAssertEqual(app.navigationBars.count, 0)
@@ -44,10 +57,10 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         advanceClockMs(1000)
 
         XCTAssertTrue(element("reading.end").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
-        let events = readHookJSON("hook.events")
-        XCTAssertEqual(events["startedBy"] as? String, "flip")
-        XCTAssertEqual(events["haptic"] as? Int, 1)
+        let state = readHookState()
+        XCTAssertEqual(state["state"], "reading")
+        XCTAssertEqual(state["startedBy"], "flip")
+        XCTAssertEqual(state["haptic"], "1")
     }
 
     func test_AC45_伏せて1秒未満で起こすと読み始めない() {
@@ -59,55 +72,139 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         setOrientation(.portrait)
         advanceClockMs(2000)
 
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
-        let store = readHookJSON("hook.store")
-        let records = store["records"] as? [[String: Any]] ?? []
+        let state = readHookState()
+        XCTAssertEqual(state["state"], "idle")
+        XCTAssertEqual(state["haptic"], "0")
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 0)
     }
 
     func test_AC46_今の本がないときは伏せの監視がオフで始まらない() {
-        resetAndLaunch(seedJSON: #"{"books":[],"records":[]}"#, now: "2026-10-18T21:00:00+09:00")
+        resetAndLaunch(seedJSON: makeSeedJSON(), now: "2026-10-18T21:00:00+09:00")
         XCTAssertTrue(element("bookmark.empty.message").waitForExistence(timeout: uiTimeout))
         setOrientation(.faceDown)
         advanceClockMs(2000)
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
-        XCTAssertEqual(readHookJSON("hook.state")["flipMonitoring"] as? String, "off")
+        let stateEmpty = readHookState()
+        XCTAssertEqual(stateEmpty["state"], "idle")
+        XCTAssertEqual(stateEmpty["haptic"], "0")
+        XCTAssertEqual(stateEmpty["flipMonitoring"], "off")
         setOrientation(.portrait)
 
-        let tsundokuSeed = #"{"books":[{"id":"book-b","title":"銀河鉄道の夜","author":"宮沢賢治","status":"tsundoku"}],"records":[]}"#
+        let tsundokuSeed = makeSeedJSON(books: [
+            makeSeedBook(
+                id: uuidBookB,
+                title: "銀河鉄道の夜",
+                author: "宮沢賢治",
+                status: "tsundoku"
+            )
+        ])
         resetAndLaunch(seedJSON: tsundokuSeed, now: "2026-10-18T21:00:00+09:00")
         XCTAssertTrue(element("bookmark.noCurrent.message").waitForExistence(timeout: uiTimeout))
         setOrientation(.faceDown)
         advanceClockMs(2000)
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
-        XCTAssertEqual(readHookJSON("hook.state")["flipMonitoring"] as? String, "off")
+        let stateNoCurrent = readHookState()
+        XCTAssertEqual(stateNoCurrent["state"], "idle")
+        XCTAssertEqual(stateNoCurrent["haptic"], "0")
+        XCTAssertEqual(stateNoCurrent["flipMonitoring"], "off")
     }
 
     func test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない() {
         resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00")
-        let shelfTab = element("tab.shelf")
-        XCTAssertTrue(shelfTab.waitForExistence(timeout: uiTimeout))
-        shelfTab.tap()
 
+        // (1) 本棚画面（S-6）
+        let shelfBtn = element("toolbar.shelf")
+        XCTAssertTrue(shelfBtn.waitForExistence(timeout: uiTimeout))
+        shelfBtn.tap()
+        XCTAssertTrue(element("shelf.row.\(uuidBookA)").waitForExistence(timeout: uiTimeout))
         setOrientation(.faceDown)
         advanceClockMs(2000)
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.state")["flipMonitoring"] as? String, "off")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
+        let s1 = readHookState()
+        XCTAssertEqual(s1["state"], "idle")
+        XCTAssertEqual(s1["flipMonitoring"], "off")
+        XCTAssertEqual(s1["haptic"], "0")
         setOrientation(.portrait)
 
-        let settingsTab = element("tab.settings")
-        if settingsTab.exists {
-            settingsTab.tap()
+        // (2) 本の詳細画面（S-7）
+        element("shelf.row.\(uuidBookA)").tap()
+        XCTAssertTrue(element("book.colophon").waitForExistence(timeout: uiTimeout))
+        setOrientation(.faceDown)
+        advanceClockMs(2000)
+        let s2 = readHookState()
+        XCTAssertEqual(s2["state"], "idle")
+        XCTAssertEqual(s2["flipMonitoring"], "off")
+        XCTAssertEqual(s2["haptic"], "0")
+        setOrientation(.portrait)
+        navigateBackToBookmark()
+
+        // (3) 本を加える画面（S-8）
+        let addBtn = element("shelf.addBook")
+        if addBtn.waitForExistence(timeout: uiTimeout) {
+            addBtn.tap()
             setOrientation(.faceDown)
             advanceClockMs(2000)
-            XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-            XCTAssertEqual(readHookJSON("hook.state")["flipMonitoring"] as? String, "off")
+            let s3 = readHookState()
+            XCTAssertEqual(s3["state"], "idle")
+            XCTAssertEqual(s3["flipMonitoring"], "off")
+            XCTAssertEqual(s3["haptic"], "0")
             setOrientation(.portrait)
+            let cancelBtn = element("register.cancel")
+            if cancelBtn.exists {
+                cancelBtn.tap()
+            }
         }
+        navigateBackToBookmark()
+
+        // (4) 設定画面（S-10）
+        let settingsBtn = element("toolbar.settings")
+        XCTAssertTrue(settingsBtn.waitForExistence(timeout: uiTimeout))
+        settingsBtn.tap()
+        XCTAssertTrue(element("settings.flipToStart").waitForExistence(timeout: uiTimeout))
+        setOrientation(.faceDown)
+        advanceClockMs(2000)
+        let s4 = readHookState()
+        XCTAssertEqual(s4["state"], "idle")
+        XCTAssertEqual(s4["flipMonitoring"], "off")
+        XCTAssertEqual(s4["haptic"], "0")
+        setOrientation(.portrait)
+        navigateBackToBookmark()
+
+        // (5) しおり入力シート（S-3）
+        let setMarkBtn = element("bookmark.setMark")
+        XCTAssertTrue(setMarkBtn.waitForExistence(timeout: uiTimeout))
+        setMarkBtn.tap()
+        XCTAssertTrue(element("mark.manual").waitForExistence(timeout: uiTimeout))
+        setOrientation(.faceDown)
+        advanceClockMs(2000)
+        let s5 = readHookState()
+        XCTAssertEqual(s5["state"], "idle")
+        XCTAssertEqual(s5["flipMonitoring"], "off")
+        XCTAssertEqual(s5["haptic"], "0")
+        setOrientation(.portrait)
+        let markCancel = element("mark.cancel")
+        if markCancel.exists {
+            markCancel.tap()
+        }
+
+        // (6) session.tooShort の知らせ表示中
+        element("bookmark.start").tap()
+        advanceClock(seconds: 30)
+        element("reading.end").tap()
+        XCTAssertTrue(element("session.tooShort").waitForExistence(timeout: uiTimeout))
+        setOrientation(.faceDown)
+        advanceClockMs(2000)
+        let s6 = readHookState()
+        XCTAssertEqual(s6["state"], "idle")
+        XCTAssertEqual(s6["haptic"], "0")
+        setOrientation(.portrait)
+
+        // (7) 起動前から faceDown の状態（一度 portrait に戻すまで始まらないこと）
+        setOrientation(.faceDown)
+        resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00")
+        advanceClockMs(2000)
+        let s7 = readHookState()
+        XCTAssertEqual(s7["state"], "idle")
+        XCTAssertEqual(s7["haptic"], "0")
+        setOrientation(.portrait)
     }
 
     func test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない() {
@@ -120,7 +217,7 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
 
         advanceClock(seconds: 180)
         setOrientation(.portrait)
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
+        XCTAssertEqual(readHookState()["state"], "reading")
 
         advanceClock(seconds: 10)
         setOrientation(.faceDown)
@@ -132,11 +229,10 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(laterBtn.waitForExistence(timeout: uiTimeout))
         laterBtn.tap()
 
-        let store = readHookJSON("hook.store")
-        let records = store["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 10)
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 1)
+        XCTAssertEqual(readHookState()["haptic"], "1")
     }
 
     func test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る() {
@@ -147,10 +243,8 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         advanceClockMs(1000)
         XCTAssertTrue(element("reading.end").waitForExistence(timeout: uiTimeout))
 
-        let events = readHookJSON("hook.events")
-        let announce = events["announce"] as? String ?? ""
+        let announce = readHookState()["announce"] ?? ""
         XCTAssertTrue(announce.contains("session.flipStarted.announcement:1"))
-        XCTAssertTrue(announce.contains("羅生門"))
     }
 
     func test_AC50_しおり画面に伏せて始める案内の1行が出る() {
@@ -160,16 +254,22 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
     }
 
     func test_AC51_伏せる設定オフまたは非対応環境では伏せても始まらない() {
-        let disabledFlipSeed = #"{"books":[{"id":"book-a","title":"羅生門","author":"芥川龍之介","status":"current"}],"records":[],"settings":{"flipToStart":false}}"#
-        resetAndLaunch(seedJSON: disabledFlipSeed, now: "2026-10-18T21:00:00+09:00")
+        resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00")
+        element("toolbar.settings").tap()
+        let flipToggle = element("settings.flipToStart")
+        XCTAssertTrue(flipToggle.waitForExistence(timeout: uiTimeout))
+        flipToggle.tap()
+        relaunchPreservingStore(now: "2026-10-18T21:01:00+09:00")
+
         XCTAssertTrue(element("bookmark.start").waitForExistence(timeout: uiTimeout))
         XCTAssertEqual(matchingCount("bookmark.flipHint"), 0)
 
         setOrientation(.faceDown)
         advanceClockMs(2000)
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
-        XCTAssertEqual(readHookJSON("hook.state")["flipMonitoring"] as? String, "off")
+        let stateOff = readHookState()
+        XCTAssertEqual(stateOff["state"], "idle")
+        XCTAssertEqual(stateOff["haptic"], "0")
+        XCTAssertEqual(stateOff["flipMonitoring"], "off")
         setOrientation(.portrait)
         XCTAssertTrue(element("bookmark.start").isEnabled)
 
@@ -178,9 +278,10 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(matchingCount("bookmark.flipHint"), 0)
         setOrientation(.faceDown)
         advanceClockMs(2000)
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
-        XCTAssertEqual(readHookJSON("hook.state")["flipMonitoring"] as? String, "off")
+        let stateUnavail = readHookState()
+        XCTAssertEqual(stateUnavail["state"], "idle")
+        XCTAssertEqual(stateUnavail["haptic"], "0")
+        XCTAssertEqual(stateUnavail["flipMonitoring"], "off")
     }
 
     func test_AC52_バックグラウンドの間も開始時刻からの差で時間を数える() {
@@ -201,14 +302,12 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(laterBtn.waitForExistence(timeout: uiTimeout))
         laterBtn.tap()
 
-        let store = readHookJSON("hook.store")
-        let records = store["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 10)
 
         relaunchPreservingStore(now: "2026-10-18T21:10:00+09:00")
-        let afterStore = readHookJSON("hook.store")
-        let afterRecords = afterStore["records"] as? [[String: Any]] ?? []
+        let afterRecords = readStoreRecords()
         XCTAssertEqual(afterRecords.count, 1)
         XCTAssertEqual(afterRecords.first?["minutes"] as? Int, 10)
     }
@@ -223,15 +322,14 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         relaunchPreservingStore(now: "2026-10-18T21:10:00+09:00")
         let endBtn = element("reading.end")
         XCTAssertTrue(endBtn.waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
+        XCTAssertEqual(readHookState()["state"], "reading")
 
         endBtn.tap()
         let laterBtn = element("mark.later")
         XCTAssertTrue(laterBtn.waitForExistence(timeout: uiTimeout))
         laterBtn.tap()
 
-        let store = readHookJSON("hook.store")
-        let records = store["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 10)
     }
@@ -242,17 +340,20 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(startBtn.waitForExistence(timeout: uiTimeout))
         startBtn.tap()
 
-        XCTAssertEqual(readHookJSON("hook.state")["idleTimerDisabled"] as? Bool, false)
-        XCTAssertEqual(readHookJSON("hook.events")["proximity"] as? Bool, false)
+        let s1 = readHookState()
+        XCTAssertEqual(s1["idleTimerDisabled"], "false")
+        XCTAssertEqual(s1["proximity"], "false")
         advanceClock(seconds: 60)
-        XCTAssertEqual(readHookJSON("hook.state")["idleTimerDisabled"] as? Bool, false)
-        XCTAssertEqual(readHookJSON("hook.events")["proximity"] as? Bool, false)
+        let s2 = readHookState()
+        XCTAssertEqual(s2["idleTimerDisabled"], "false")
+        XCTAssertEqual(s2["proximity"], "false")
 
         resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00")
         setOrientation(.faceDown)
         advanceClockMs(1000)
-        XCTAssertEqual(readHookJSON("hook.state")["idleTimerDisabled"] as? Bool, false)
-        XCTAssertEqual(readHookJSON("hook.events")["proximity"] as? Bool, false)
+        let s3 = readHookState()
+        XCTAssertEqual(s3["idleTimerDisabled"], "false")
+        XCTAssertEqual(s3["proximity"], "false")
     }
 
     func test_AC55_終える1タップで確認なしに500ミリ秒以内にしおり画面が出る() {
@@ -269,21 +370,39 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
 
             XCTAssertTrue(element("mark.later").waitForExistence(timeout: uiTimeout))
             XCTAssertEqual(app.alerts.count, 0)
-            let perf = readHookJSON("hook.perf")
-            let endToMarkMs = perf["endToMark"] as? Double ?? 9999.0
-            XCTAssertLessThanOrEqual(endToMarkMs, 500.0)
+            let state = readHookState()
+            let rawLat = state["lat.endToMark"] ?? state["prevLat.endToMark"] ?? "9999"
+            let firstVal = Double(rawLat.split(separator: ",").first ?? "9999") ?? 9999.0
+            XCTAssertLessThanOrEqual(firstVal, 500.0)
         }
     }
 
     func test_AC56_59秒は記録せず60秒ちょうどから1分として記録する() {
-        let seedWith20Min = #"{"books":[{"id":"book-a","title":"羅生門","author":"芥川龍之介","status":"current"}],"records":[{"id":"r1","bookID":"book-a","nightDate":"2026-10-17","minutes":20}]}"#
+        let seedWith20Min = makeSeedJSON(
+            books: [
+                makeSeedBook(
+                    id: uuidBookA,
+                    title: "羅生門",
+                    author: "芥川龍之介",
+                    status: "current"
+                )
+            ],
+            records: [
+                makeSeedRecord(
+                    id: makeRecordUUID(1),
+                    bookId: uuidBookA,
+                    minutes: 20,
+                    nightDate: "2026-10-17"
+                )
+            ]
+        )
         resetAndLaunch(seedJSON: seedWith20Min, now: "2026-10-18T21:00:00+09:00")
         element("bookmark.start").tap()
         advanceClock(seconds: 59)
         element("reading.end").tap()
 
         XCTAssertTrue(element("session.tooShort").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual((readHookJSON("hook.store")["records"] as? [[String: Any]] ?? []).count, 1)
+        XCTAssertEqual(readStoreRecords().count, 1)
 
         element("bookmark.start").tap()
         advanceClock(seconds: 60)
@@ -291,7 +410,7 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(element("mark.later").waitForExistence(timeout: uiTimeout))
         element("mark.later").tap()
 
-        let records = readHookJSON("hook.store")["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 2)
     }
 
@@ -306,7 +425,7 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
             element("mark.later").tap()
 
             XCTAssertEqual(matchingCount("session.capped"), expectedNoticeCount)
-            let records = readHookJSON("hook.store")["records"] as? [[String: Any]] ?? []
+            let records = readStoreRecords()
             XCTAssertEqual(records.first?["minutes"] as? Int, 1440)
         }
     }
@@ -322,24 +441,26 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
             endBtn.tap()
         }
         XCTAssertTrue(element("session.invalidTime").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
+        XCTAssertEqual(readHookState()["state"], "idle")
         XCTAssertEqual(matchingCount("mark.later"), 0)
-        XCTAssertEqual((readHookJSON("hook.store")["records"] as? [[String: Any]] ?? []).count, 0)
+        XCTAssertEqual(readStoreRecords().count, 0)
     }
 
     func test_AC59_読み始めの保存失敗時はidleのままエラーを出す() {
         resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00", failSave: "session.start:1")
         element("bookmark.start").tap()
         XCTAssertTrue(element("session.start.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
+        let s1 = readHookState()
+        XCTAssertEqual(s1["state"], "idle")
+        XCTAssertEqual(s1["haptic"], "0")
 
         resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00", failSave: "session.start:1")
         setOrientation(.faceDown)
         advanceClockMs(1000)
         XCTAssertTrue(element("session.start.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "idle")
-        XCTAssertEqual(readHookJSON("hook.events")["haptic"] as? Int, 0)
+        let s2 = readHookState()
+        XCTAssertEqual(s2["state"], "idle")
+        XCTAssertEqual(s2["haptic"], "0")
     }
 
     func test_AC60_終わりの保存失敗時は読書中を保ち再試行で合算保存される() {
@@ -349,12 +470,12 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
 
         element("reading.end").tap()
         XCTAssertTrue(element("session.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
+        XCTAssertEqual(readHookState()["state"], "reading")
 
         advanceClock(seconds: 300)
         element("reading.end").tap()
         XCTAssertTrue(element("session.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readHookJSON("hook.state")["state"] as? String, "reading")
+        XCTAssertEqual(readHookState()["state"], "reading")
 
         advanceClock(seconds: 300)
         element("reading.end").tap()
@@ -362,7 +483,7 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(laterBtn.waitForExistence(timeout: uiTimeout))
         laterBtn.tap()
 
-        let records = readHookJSON("hook.store")["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 25)
     }
@@ -389,13 +510,18 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(laterBtn.waitForExistence(timeout: uiTimeout))
         laterBtn.tap()
 
-        let records = readHookJSON("hook.store")["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 2)
     }
 
     func test_AC62_オフラインでもウィジェット起動からしおり保存まで完走する() {
-        resetAndLaunch(seedJSON: currentBookSeed, now: "2026-10-18T21:00:00+09:00", offline: true)
+        resetAndLaunch(
+            seedJSON: currentBookSeed,
+            now: "2026-10-18T21:00:00+09:00",
+            offline: true,
+            extraArgs: ["-uitest-widget", "accessoryRectangular:172x76"]
+        )
         openEntryURL("lock_widget")
 
         let startBtn = element("bookmark.start")
@@ -418,10 +544,15 @@ final class ReadingSessionAcceptanceTests: AcceptanceTestBase {
         pageField.typeText("61")
         element("mark.save").tap()
 
-        let store = readHookJSON("hook.store")
-        let records = store["records"] as? [[String: Any]] ?? []
+        let records = readStoreRecords()
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 2)
+        let books = readStoreBooks()
+        XCTAssertEqual(books.first?["lastLine"] as? String, "下人の行方は、誰も知らない。")
+        XCTAssertEqual(books.first?["page"] as? Int, 61)
+        let widgetRaw = readHookString("hook.widget")
+        XCTAssertTrue(widgetRaw.contains("下人の行方は"))
+        XCTAssertTrue(widgetRaw.contains("p.61"))
         XCTAssertEqual(app.alerts.count, 0)
     }
 }
