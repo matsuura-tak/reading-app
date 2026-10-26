@@ -52,9 +52,17 @@ public struct ReadingSessionView: View {
                     .font(.footnote)
                     .foregroundStyle(.red)
                     .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("error.\(model.store.activeErrorKey ?? "session.save.error")")
+                    .accessibilityIdentifier(model.store.activeErrorKey ?? "session.save.error")
                     .accessibilityLabel(errorText)
                     .accessibilityValue(errorText)
+            }
+
+            if model.store.currentBook?.isEbook == true {
+                Text("電子書籍で読んでいる間も時間を記録しています")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("reading.ebookNote")
             }
 
             Spacer()

@@ -48,9 +48,9 @@ public struct ShelfListView: View {
                             Text("いま読んでいる")
                                 .font(.subheadline.bold())
                                 .foregroundStyle(.secondary)
-                                .accessibilityIdentifier("shelf.section.current")
+                                .accessibilityIdentifier("shelf.current")
 
-                            shelfBookButton(book: current, identifier: "shelf.current.0")
+                            shelfBookButton(book: current)
                         }
                     }
 
@@ -58,10 +58,10 @@ public struct ShelfListView: View {
                         Text("積読（\(tsundoku.count)）")
                             .font(.subheadline.bold())
                             .foregroundStyle(.secondary)
-                            .accessibilityIdentifier("shelf.section.tsundoku")
+                            .accessibilityIdentifier("shelf.tsundoku")
 
-                        ForEach(Array(tsundoku.enumerated()), id: \.element.id) { idx, book in
-                            shelfBookButton(book: book, identifier: "shelf.tsundoku.\(idx)")
+                        ForEach(tsundoku) { book in
+                            shelfBookButton(book: book)
                         }
                     }
 
@@ -69,10 +69,10 @@ public struct ShelfListView: View {
                         Text("読み終えた（\(finished.count)）")
                             .font(.subheadline.bold())
                             .foregroundStyle(.secondary)
-                            .accessibilityIdentifier("shelf.section.finished")
+                            .accessibilityIdentifier("shelf.finished")
 
-                        ForEach(Array(finished.enumerated()), id: \.element.id) { idx, book in
-                            shelfBookButton(book: book, identifier: "shelf.finished.\(idx)")
+                        ForEach(finished) { book in
+                            shelfBookButton(book: book)
                         }
                     }
                 }
@@ -102,8 +102,9 @@ public struct ShelfListView: View {
         }
     }
 
-    private func shelfBookButton(book: BookSnapshot, identifier: String) -> some View {
+    private func shelfBookButton(book: BookSnapshot) -> some View {
         let displayTitle = book.isTitlePending ? "あとで書名を入れる本" : book.title
+        let rowId = "shelf.row.\(book.id.uuidString.lowercased())"
         return Button {
             model.store.clock.beginInterval(.bookOpen)
             model.currentScreen = .bookDetail
@@ -131,7 +132,7 @@ public struct ShelfListView: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityIdentifier(identifier)
+        .accessibilityIdentifier(rowId)
         .accessibilityLabel(displayTitle)
         .accessibilityValue(displayTitle)
     }
@@ -158,7 +159,7 @@ public struct BookDetailView: View {
     public let bookId: UUID
     @State private var detailSheet: BookDetailSheetKind?
     @State private var showDeleteBookConfirm = false
-    @State private var recordIdPendingDelete: UUID?
+    @State private var addedAfterCandidateIDs: Set<String> = []
 
     public init(model: ReadingAppModel, bookId: UUID) {
         self.model = model
@@ -231,38 +232,107 @@ public struct BookDetailView: View {
         let displayTitle = book.isTitlePending ? "あとで書名を入れる本" : book.title
         let nights = model.store.distinctNightCount(for: book.id)
         let mins = model.store.totalMinutes(for: book.id)
-        let summaryText = "\(nights)晩・\(mins)分"
+        let nightsText = "\(nights)晩"
+        let totalText = "\(mins)分"
         let reflection = (book.status == .finished) ? model.store.buildFinishReflection(for: book.id) : nil
 
-        return VStack(alignment: .leading, spacing: 8) {
-            Text(displayTitle)
-                .font(.title2.bold())
-                .accessibilityIdentifier("book.detail.title")
-                .accessibilityLabel(displayTitle)
-                .accessibilityValue(displayTitle)
-
-            if !book.author.isEmpty {
-                Text(book.author)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .accessibilityIdentifier("book.detail.author")
-                    .accessibilityLabel(book.author)
-                    .accessibilityValue(book.author)
+        let formattedPublisher: String? = {
+            let pub = (book.publisher ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let lbl = (book.label ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            if !pub.isEmpty && !lbl.isEmpty {
+                return "\(pub)（\(lbl)）"
+            } else if !pub.isEmpty {
+                return pub
+            } else if !lbl.isEmpty {
+                return lbl
+            } else {
+                return nil
             }
+        }()
 
-            if let publisher = book.publisher, !publisher.isEmpty {
-                Text(publisher)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .accessibilityIdentifier("book.detail.publisher")
+        let matchedAwards = AwardsCatalog.matchAwards(
+            title: book.title,
+            author: book.author,
+            catalog: model.store.activeAwards
+        )
+        let awardDisplay: String? = {
+            guard !matchedAwards.isEmpty else { return nil }
+            return matchedAwards.map { "\($0.sessionOrYear) \($0.award)" }.joined(separator: " / ")
+        }()
+
+        let combinedColophonLabel: String = {
+            var parts: [String] = [displayTitle]
+            if !book.author.isEmpty { parts.append(book.author) }
+            if let formattedPublisher { parts.append(formattedPublisher) }
+            if let yr = book.publishedYear { parts.append("\(yr)年") }
+            if let awardDisplay { parts.append(awardDisplay) }
+            return parts.joined(separator: " ")
+        }()
+
+        return VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(displayTitle)
+                    .font(.title2.bold())
+                    .accessibilityIdentifier("colophon.title")
+                    .accessibilityLabel(displayTitle)
+                    .accessibilityValue(displayTitle)
+
+                if !book.author.isEmpty {
+                    Text(book.author)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("colophon.author")
+                        .accessibilityLabel(book.author)
+                        .accessibilityValue(book.author)
+                }
+
+                if let formattedPublisher {
+                    Text(formattedPublisher)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("colophon.publisher")
+                        .accessibilityLabel(formattedPublisher)
+                        .accessibilityValue(formattedPublisher)
+                }
+
+                if let yr = book.publishedYear {
+                    let yrText = "\(yr)年"
+                    Text(yrText)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("colophon.year")
+                        .accessibilityLabel(yrText)
+                        .accessibilityValue(yrText)
+                }
+
+                if let awardDisplay {
+                    Text(awardDisplay)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("colophon.award")
+                        .accessibilityLabel(awardDisplay)
+                        .accessibilityValue(awardDisplay)
+                }
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("book.colophon")
+            .accessibilityLabel(combinedColophonLabel)
 
-            Text(summaryText)
-                .font(.subheadline.monospacedDigit())
-                .foregroundStyle(.secondary)
-                .accessibilityIdentifier("book.detail.summary")
-                .accessibilityLabel(summaryText)
-                .accessibilityValue(summaryText)
+            HStack(spacing: 12) {
+                Text(nightsText)
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("book.nights")
+                    .accessibilityLabel(nightsText)
+                    .accessibilityValue(nightsText)
+
+                Text(totalText)
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("book.total")
+                    .accessibilityLabel(totalText)
+                    .accessibilityValue(totalText)
+            }
 
             if let reflection {
                 Text(reflection)
@@ -329,7 +399,10 @@ public struct BookDetailView: View {
     }
 
     private func bookActionsSection(book: BookSnapshot) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let bookRecordCount = model.store.records(for: book.id).count
+        let confirmMessage = "この本と\(bookRecordCount)件の記録を削除しますか？"
+
+        return VStack(alignment: .leading, spacing: 10) {
             if !book.status.isCurrentReading {
                 Button {
                     if model.store.switchToCurrentBook(bookId: book.id) {
@@ -343,7 +416,7 @@ public struct BookDetailView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .accessibilityIdentifier("book.switchToCurrent")
+                .accessibilityIdentifier("book.readThis")
             }
 
             if book.status != .finished {
@@ -399,7 +472,7 @@ public struct BookDetailView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
-                .accessibilityIdentifier("book.scanColophon")
+                .accessibilityIdentifier("colophon.capture")
             }
 
             Button(role: .destructive) {
@@ -413,32 +486,45 @@ public struct BookDetailView: View {
             .accessibilityIdentifier("book.delete")
 
             if showDeleteBookConfirm {
-                HStack(spacing: 12) {
-                    Button(role: .destructive) {
-                        if model.store.deleteBook(bookId: book.id) {
-                            showDeleteBookConfirm = false
-                            model.navigationPath.removeLast()
-                            model.currentScreen = .shelfList
-                        }
-                        model.notifyHookChanged()
-                    } label: {
-                        Text("削除する")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
-                    .accessibilityIdentifier("book.delete.confirm")
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(confirmMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .accessibilityIdentifier("book.delete.confirm")
+                        .accessibilityLabel(confirmMessage)
+                        .accessibilityValue(confirmMessage)
 
-                    Button {
-                        showDeleteBookConfirm = false
-                        model.notifyHookChanged()
-                    } label: {
-                        Text("キャンセル")
-                            .frame(maxWidth: .infinity)
+                    HStack(spacing: 12) {
+                        Button(role: .destructive) {
+                            if model.store.deleteBook(bookId: book.id) {
+                                showDeleteBookConfirm = false
+                                if !model.navigationPath.isEmpty {
+                                    model.navigationPath.removeLast()
+                                }
+                                model.currentScreen = .shelfList
+                            }
+                            model.notifyHookChanged()
+                        } label: {
+                            Text("削除する")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.red)
+                        .accessibilityIdentifier("book.delete.confirmButton")
+
+                        Button {
+                            showDeleteBookConfirm = false
+                            model.notifyHookChanged()
+                        } label: {
+                            Text("キャンセル")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                        .accessibilityIdentifier("book.delete.cancel")
                     }
-                    .buttonStyle(.bordered)
-                    .accessibilityIdentifier("book.delete.cancel")
                 }
+                .padding(12)
+                .background(Color(uiColor: .tertiarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
             }
         }
     }
@@ -451,22 +537,26 @@ public struct BookDetailView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("この本のあとに")
                         .font(.headline)
-                        .accessibilityIdentifier("book.after.header")
+                        .accessibilityIdentifier("after.header")
 
                     ForEach(Array(candidates.enumerated()), id: \.element.id) { idx, cand in
+                        let candIdentifierSuffix = cand.isbn13 ?? cand.bookId?.uuidString.lowercased() ?? "\(idx + 1)"
+                        let isAlreadyInShelf = addedAfterCandidateIDs.contains(candIdentifierSuffix) ||
+                            (cand.isbn13 != nil && model.store.books.contains { $0.isbn13 == cand.isbn13 })
+                        let combinedText = [cand.title, cand.author, cand.reason]
+                            .compactMap { item -> String? in
+                                guard let item, !item.isEmpty else { return nil }
+                                return item
+                            }
+                            .joined(separator: " ")
+
                         VStack(alignment: .leading, spacing: 6) {
                             Text(cand.reason)
                                 .font(.caption.bold())
                                 .foregroundStyle(.secondary)
-                                .accessibilityIdentifier("book.after.candidate.\(idx + 1).reason")
-                                .accessibilityLabel(cand.reason)
-                                .accessibilityValue(cand.reason)
 
                             Text(cand.title)
                                 .font(.subheadline.bold())
-                                .accessibilityIdentifier("book.after.candidate.\(idx + 1).title")
-                                .accessibilityLabel(cand.title)
-                                .accessibilityValue(cand.title)
 
                             if let author = cand.author, !author.isEmpty {
                                 Text(author)
@@ -492,7 +582,12 @@ public struct BookDetailView: View {
                                         .font(.caption.bold())
                                 }
                                 .buttonStyle(.borderedProminent)
-                                .accessibilityIdentifier("book.after.candidate.\(idx + 1).action")
+                                .accessibilityIdentifier("after.readThis")
+                            } else if isAlreadyInShelf {
+                                Text("本棚に追加済み")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.secondary)
+                                    .accessibilityIdentifier("after.added")
                             } else {
                                 Button {
                                     let allCats = candidates.map { $0.axis.rawValue }
@@ -500,7 +595,7 @@ public struct BookDetailView: View {
                                         chosenCategory: cand.axis.rawValue,
                                         allShownCategories: allCats
                                     )
-                                    _ = model.store.addBook(
+                                    let res = model.store.addBook(
                                         isbn13: cand.isbn13,
                                         title: cand.title,
                                         author: cand.author ?? "",
@@ -509,20 +604,24 @@ public struct BookDetailView: View {
                                         ndc: cand.ndc,
                                         forceTsundoku: true
                                     )
+                                    if case .success = res {
+                                        addedAfterCandidateIDs.insert(candIdentifierSuffix)
+                                    }
                                     model.notifyHookChanged()
                                 } label: {
                                     Text("積読に置く")
                                         .font(.caption.bold())
                                 }
                                 .buttonStyle(.bordered)
-                                .accessibilityIdentifier("book.after.candidate.\(idx + 1).action")
+                                .accessibilityIdentifier("after.addToShelf")
                             }
                         }
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
                         .accessibilityElement(children: .contain)
-                        .accessibilityIdentifier("book.after.candidate.\(idx + 1)")
+                        .accessibilityIdentifier("after.candidate.\(candIdentifierSuffix)")
+                        .accessibilityLabel(combinedText)
                     }
                 }
             }
@@ -539,77 +638,49 @@ public struct BookDetailView: View {
                 Text("まだ記録はありません")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("book.records.empty")
             } else {
-                ForEach(Array(bookRecords.enumerated()), id: \.element.id) { idx, rec in
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Text(rec.nightDate)
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Text("\(rec.durationMinutes)分")
-                                .font(.subheadline.bold())
-                        }
+                ForEach(bookRecords) { rec in
+                    let rowId = "book.record.row.\(rec.id.uuidString.lowercased())"
+                    let rowLabel: String = {
+                        var parts = [rec.nightDate, "\(rec.durationMinutes)分"]
                         if let line = rec.savedLine, !line.isEmpty {
-                            Text(line)
-                                .font(.footnote)
-                                .foregroundStyle(.primary)
+                            parts.append(line)
                         }
-                        HStack(spacing: 12) {
-                            Button {
-                                model.store.activeErrorKey = nil
-                                model.currentScreen = .recordEdit
-                                detailSheet = .editRecord(rec.id)
-                                model.notifyHookChanged()
-                            } label: {
-                                Text("時間を直す")
-                                    .font(.caption)
+                        return parts.joined(separator: " ")
+                    }()
+
+                    Button {
+                        model.store.activeErrorKey = nil
+                        model.currentScreen = .recordEdit
+                        detailSheet = .editRecord(rec.id)
+                        model.notifyHookChanged()
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text(rec.nightDate)
+                                    .font(.caption.monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Text("\(rec.durationMinutes)分")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(.primary)
                             }
-                            .buttonStyle(.bordered)
-                            .accessibilityIdentifier("record.edit.\(idx)")
-
-                            Button(role: .destructive) {
-                                recordIdPendingDelete = rec.id
-                                model.notifyHookChanged()
-                            } label: {
-                                Text("削除")
-                                    .font(.caption)
-                            }
-                            .buttonStyle(.bordered)
-                            .accessibilityIdentifier("record.delete.\(idx)")
-                        }
-
-                        if recordIdPendingDelete == rec.id {
-                            HStack(spacing: 8) {
-                                Button(role: .destructive) {
-                                    if model.store.deleteRecord(recordId: rec.id) {
-                                        recordIdPendingDelete = nil
-                                    }
-                                    model.notifyHookChanged()
-                                } label: {
-                                    Text("削除する")
-                                        .font(.caption.bold())
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.red)
-                                .accessibilityIdentifier("record.delete.confirm")
-
-                                Button {
-                                    recordIdPendingDelete = nil
-                                    model.notifyHookChanged()
-                                } label: {
-                                    Text("キャンセル")
-                                        .font(.caption)
-                                }
-                                .buttonStyle(.bordered)
-                                .accessibilityIdentifier("record.delete.cancel")
+                            if let line = rec.savedLine, !line.isEmpty {
+                                Text(line)
+                                    .font(.footnote)
+                                    .foregroundStyle(.primary)
                             }
                         }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
                     }
-                    .padding(12)
-                    .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
-                    .accessibilityElement(children: .contain)
-                    .accessibilityIdentifier("record.row.\(idx)")
+                    .buttonStyle(.plain)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityIdentifier(rowId)
+                    .accessibilityLabel(rowLabel)
+                    .accessibilityValue(rowLabel)
                 }
             }
         }
@@ -625,7 +696,6 @@ public struct BookEditSheetView: View {
 
     @State private var editedTitle: String = ""
     @State private var editedAuthor: String = ""
-    @State private var editedPublisher: String = ""
     @State private var didTouchTitle = false
     @State private var didTouchAuthor = false
 
@@ -704,6 +774,7 @@ public struct RecordEditSheetView: View {
     public let onClose: () -> Void
 
     @State private var editedMinutes: String = ""
+    @State private var showDeleteConfirm = false
 
     public init(model: ReadingAppModel, record: ReadingRecordSnapshot, onClose: @escaping () -> Void) {
         self.model = model
@@ -721,7 +792,6 @@ public struct RecordEditSheetView: View {
                     .foregroundStyle(.secondary)
 
                 TextField("\(record.durationMinutes)", text: $editedMinutes)
-                    .keyboardType(.numberPad)
                     .textFieldStyle(.roundedBorder)
                     .accessibilityIdentifier("record.minutesField")
                     .accessibilityValue(editedMinutes)
@@ -739,6 +809,52 @@ public struct RecordEditSheetView: View {
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .accessibilityIdentifier("record.save")
+
+                Button(role: .destructive) {
+                    showDeleteConfirm = true
+                    model.notifyHookChanged()
+                } label: {
+                    Text("この記録を削除")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("record.delete")
+
+                if showDeleteConfirm {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("この記録を削除しますか？")
+                            .font(.subheadline)
+                            .accessibilityIdentifier("record.delete.confirm")
+
+                        HStack(spacing: 12) {
+                            Button(role: .destructive) {
+                                if model.store.deleteRecord(recordId: record.id) {
+                                    showDeleteConfirm = false
+                                    onClose()
+                                }
+                                model.notifyHookChanged()
+                            } label: {
+                                Text("削除する")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.red)
+                            .accessibilityIdentifier("record.delete.confirmButton")
+
+                            Button {
+                                showDeleteConfirm = false
+                                model.notifyHookChanged()
+                            } label: {
+                                Text("キャンセル")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            .accessibilityIdentifier("record.delete.cancel")
+                        }
+                    }
+                    .padding(12)
+                    .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
+                }
 
                 Spacer()
             }
@@ -843,68 +959,40 @@ public struct ColophonOCRSheetView: View {
             VStack(alignment: .leading, spacing: 16) {
                 BannerNoticeView(model: model)
 
-                if extracted == nil {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(uiColor: .secondarySystemBackground))
-                        .frame(minHeight: 160)
-                        .overlay {
-                            Text("奥付ページを枠内に合わせてください")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
+                TextField("著者名", text: $authorText)
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("colophon.ocr.author")
+                TextField("出版社", text: $publisherText)
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("colophon.ocr.publisher")
+                TextField("出版年", text: $yearText)
+                    .keyboardType(.numberPad)
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("colophon.ocr.year")
+                TextField("ISBN-13", text: $isbnText)
+                    .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("colophon.ocr.isbn")
 
-                    Button {
-                        let colCfg = model.store.ocrConfiguration?.colophon ?? H23OCRColophon(rawLines: [])
-                        let res = OCRPipeline.parseColophon(colCfg)
-                        extracted = res
-                        authorText = res.author ?? ""
-                        publisherText = res.publisher ?? ""
-                        yearText = res.publishedYear.map(String.init) ?? ""
-                        isbnText = res.isbn13 ?? ""
-                        model.notifyHookChanged()
-                    } label: {
-                        Text("撮影する")
-                            .frame(maxWidth: .infinity)
+                Button {
+                    let info = ColophonExtractionResult(
+                        title: extracted?.title,
+                        author: authorText.isEmpty ? nil : authorText,
+                        publisher: publisherText.isEmpty ? nil : publisherText,
+                        label: extracted?.label,
+                        publishedYear: Int(yearText),
+                        isbn13: isbnText.isEmpty ? nil : isbnText
+                    )
+                    if model.store.applyColophonOCR(bookId: bookId, info: info) {
+                        onClose()
                     }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .accessibilityIdentifier("colophon.shutter")
-                } else {
-                    TextField("著者名", text: $authorText)
-                        .textFieldStyle(.roundedBorder)
-                        .accessibilityIdentifier("colophon.author")
-                    TextField("出版社", text: $publisherText)
-                        .textFieldStyle(.roundedBorder)
-                        .accessibilityIdentifier("colophon.publisher")
-                    TextField("出版年", text: $yearText)
-                        .keyboardType(.numberPad)
-                        .textFieldStyle(.roundedBorder)
-                        .accessibilityIdentifier("colophon.year")
-                    TextField("ISBN-13", text: $isbnText)
-                        .textFieldStyle(.roundedBorder)
-                        .accessibilityIdentifier("colophon.isbn")
-
-                    Button {
-                        let info = ColophonExtractionResult(
-                            title: extracted?.title,
-                            author: authorText.isEmpty ? nil : authorText,
-                            publisher: publisherText.isEmpty ? nil : publisherText,
-                            label: extracted?.label,
-                            publishedYear: Int(yearText),
-                            isbn13: isbnText.isEmpty ? nil : isbnText
-                        )
-                        if model.store.applyColophonOCR(bookId: bookId, info: info) {
-                            onClose()
-                        }
-                        model.notifyHookChanged()
-                    } label: {
-                        Text("書誌を反映する")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .accessibilityIdentifier("colophon.apply")
+                    model.notifyHookChanged()
+                } label: {
+                    Text("書誌を反映する")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .accessibilityIdentifier("colophon.save")
 
                 Spacer()
             }
@@ -917,6 +1005,16 @@ public struct ColophonOCRSheetView: View {
                         onClose()
                     }
                 }
+            }
+            .onAppear {
+                let colCfg = model.store.ocrConfiguration?.colophon ?? H23OCRColophon(rawLines: [])
+                let res = OCRPipeline.parseColophon(colCfg)
+                extracted = res
+                authorText = res.author ?? ""
+                publisherText = res.publisher ?? ""
+                yearText = res.publishedYear.map(String.init) ?? ""
+                isbnText = res.isbn13 ?? ""
+                model.notifyHookChanged()
             }
         }
     }

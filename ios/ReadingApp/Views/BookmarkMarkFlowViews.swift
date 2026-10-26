@@ -53,6 +53,17 @@ public struct BookmarkMarkFlowSheet: View {
             }
             .navigationTitle("しおりを挟む")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("閉じる") {
+                        model.store.activeErrorKey = nil
+                        model.activeSheet = nil
+                        model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+                        model.notifyHookChanged()
+                    }
+                    .accessibilityIdentifier("mark.cancel")
+                }
+            }
         }
         .onChange(of: model.store.isOCRHoldReleased) { _, released in
             if released, case .ocrProcessing = step {
@@ -71,8 +82,7 @@ public struct BookmarkMarkFlowSheet: View {
                     step = .ocrCameraDenied
                     model.currentScreen = .bookmarkMarkCamera
                 } else {
-                    step = .ocrCamera
-                    model.currentScreen = .bookmarkMarkCamera
+                    triggerPageOCR()
                 }
                 model.notifyHookChanged()
             } label: {
@@ -81,7 +91,19 @@ public struct BookmarkMarkFlowSheet: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .accessibilityIdentifier("mark.option.photo")
+            .accessibilityIdentifier("mark.photo")
+
+            Button {
+                model.store.activeErrorKey = nil
+                triggerPageOCR()
+                model.notifyHookChanged()
+            } label: {
+                Text("スクリーンショットから選ぶ")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .accessibilityIdentifier("mark.screenshot")
 
             Button {
                 model.store.activeErrorKey = nil
@@ -96,7 +118,7 @@ public struct BookmarkMarkFlowSheet: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.large)
-            .accessibilityIdentifier("mark.option.line")
+            .accessibilityIdentifier("mark.manual")
 
             Button {
                 model.store.activeErrorKey = nil
@@ -111,7 +133,7 @@ public struct BookmarkMarkFlowSheet: View {
             }
             .buttonStyle(.bordered)
             .controlSize(.large)
-            .accessibilityIdentifier("mark.option.pageOnly")
+            .accessibilityIdentifier("mark.pageOnly")
 
             Button {
                 model.store.activeErrorKey = nil
@@ -131,7 +153,7 @@ public struct BookmarkMarkFlowSheet: View {
             }
             .buttonStyle(.plain)
             .padding(.top, 8)
-            .accessibilityIdentifier("mark.option.later")
+            .accessibilityIdentifier("mark.later")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.mark")
@@ -221,7 +243,7 @@ public struct BookmarkMarkFlowSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("カメラへのアクセスが許可されていません")
                 .font(.headline)
-                .accessibilityIdentifier("camera.denied.guide")
+                .accessibilityIdentifier("camera.denied")
 
             Button {
                 model.store.openExternalURL("app-settings:")
@@ -234,6 +256,16 @@ public struct BookmarkMarkFlowSheet: View {
             .accessibilityIdentifier("camera.openSettings")
 
             Button {
+                triggerPageOCR()
+                model.notifyHookChanged()
+            } label: {
+                Text("スクリーンショットから選ぶ")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .accessibilityIdentifier("mark.screenshot")
+
+            Button {
                 lineText = ""
                 pageText = ""
                 step = .lineInput
@@ -243,8 +275,21 @@ public struct BookmarkMarkFlowSheet: View {
                 Text("一行を手で書く")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent)
-            .accessibilityIdentifier("camera.fallback.manual")
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("mark.manual")
+
+            Button {
+                lineText = ""
+                pageText = ""
+                step = .pageOnlyInput
+                model.currentScreen = .bookmarkMarkPageInput
+                model.notifyHookChanged()
+            } label: {
+                Text("ページ数だけ残す")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("mark.pageOnly")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.mark.camera")
@@ -257,9 +302,37 @@ public struct BookmarkMarkFlowSheet: View {
             Text("文字を読み取っています…")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+
+            Button {
+                _ = model.store.clock.endInterval(.markWait)
+                lineText = ""
+                pageText = ""
+                step = .lineInput
+                model.currentScreen = .bookmarkMarkLineInput
+                model.notifyHookChanged()
+            } label: {
+                Text("一行を手で書く")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("mark.manual")
+
+            Button {
+                _ = model.store.clock.endInterval(.markWait)
+                lineText = ""
+                pageText = ""
+                step = .pageOnlyInput
+                model.currentScreen = .bookmarkMarkPageInput
+                model.notifyHookChanged()
+            } label: {
+                Text("ページ数だけ残す")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("mark.pageOnly")
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
+        .padding(.vertical, 24)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("mark.ocr.processing")
     }
@@ -268,7 +341,7 @@ public struct BookmarkMarkFlowSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("文字を読み取れませんでした")
                 .font(.headline)
-                .accessibilityIdentifier("mark.ocr.emptyGuide")
+                .accessibilityIdentifier("mark.ocr.none")
 
             Button {
                 step = .ocrCamera
@@ -279,7 +352,7 @@ public struct BookmarkMarkFlowSheet: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
-            .accessibilityIdentifier("mark.ocr.retake")
+            .accessibilityIdentifier("mark.retake")
 
             Button {
                 lineText = ""
@@ -292,7 +365,7 @@ public struct BookmarkMarkFlowSheet: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .accessibilityIdentifier("mark.ocr.toManual")
+            .accessibilityIdentifier("mark.manual")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.mark.ocr")
@@ -316,7 +389,7 @@ public struct BookmarkMarkFlowSheet: View {
                         if selectedIndices == [columns.last?.index ?? 1] && col.index != (columns.last?.index ?? 1) {
                             newIndices = [col.index]
                         } else if selectedIndices.contains(col.index) {
-                            newIndices = selectedIndices.count > 1 ? selectedIndices.filter { $0 != col.index } : [col.index]
+                            newIndices = selectedIndices.count > 1 ? selectedIndices.compactMap { $0 != col.index ? $0 : nil } : [col.index]
                         } else {
                             newIndices = selectedIndices + [col.index]
                         }
@@ -368,6 +441,25 @@ public struct BookmarkMarkFlowSheet: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .accessibilityIdentifier("mark.save")
+
+            Button {
+                model.store.activeErrorKey = nil
+                let isAfterSession = (model.store.pendingMarkRecordId != nil)
+                model.store.completeMarkLater()
+                if isAfterSession {
+                    model.currentScreen = .sessionResult
+                    model.activeSheet = .resultSheet
+                } else {
+                    model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+                    model.activeSheet = nil
+                }
+                model.notifyHookChanged()
+            } label: {
+                Text("あとで")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("mark.later")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.mark.ocr")
@@ -387,7 +479,7 @@ public struct BookmarkMarkFlowSheet: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             TextField(labelText, text: $pageText)
-                .keyboardType(.numberPad)
+                .keyboardType(.numbersAndPunctuation)
                 .textFieldStyle(.roundedBorder)
                 .accessibilityIdentifier("mark.pageField")
                 .accessibilityValue(pageText)
@@ -395,6 +487,7 @@ public struct BookmarkMarkFlowSheet: View {
     }
 
     private func triggerPageOCR() {
+        model.store.clock.beginInterval(.markWait)
         if model.store.ocrHoldEnabled && !model.store.isOCRHoldReleased {
             step = .ocrProcessing
             model.currentScreen = .bookmarkMarkCamera

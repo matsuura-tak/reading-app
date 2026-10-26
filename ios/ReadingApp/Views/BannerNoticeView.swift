@@ -45,7 +45,7 @@ public struct BannerNoticeView: View {
                 Text(text)
                     .font(.footnote)
                     .foregroundStyle(.primary)
-                    .accessibilityIdentifier("notice.\(key)")
+                    .accessibilityIdentifier(key)
                     .accessibilityLabel(text)
                     .accessibilityValue(text)
                 Spacer(minLength: 4)
@@ -60,7 +60,7 @@ public struct BannerNoticeView: View {
                 Text(text)
                     .font(.footnote)
                     .foregroundStyle(.red)
-                    .accessibilityIdentifier("error.\(key)")
+                    .accessibilityIdentifier(key)
                     .accessibilityLabel(text)
                     .accessibilityValue(text)
                 Spacer(minLength: 4)
@@ -147,12 +147,12 @@ public struct VerticalBookmarkTextView: View {
         case .content(let line, let isVertical):
             let cells = VerticalLineLayout.layoutVerticalCells(text: line, maxColumns: 2, rowsPerColumn: 18)
             let groupedCols = Dictionary(grouping: cells, by: \.column)
-            let sortedColNumbers = groupedCols.keys.sorted(by: >)
+            let colNumbers = [1, 0].compactMap { groupedCols[$0] != nil ? $0 : nil }
             VStack(spacing: 8) {
-                if isVertical && !sortedColNumbers.isEmpty {
+                if isVertical && !colNumbers.isEmpty {
                     HStack(alignment: .top, spacing: 14) {
-                        ForEach(sortedColNumbers, id: \.self) { colNum in
-                            let colCells = (groupedCols[colNum] ?? []).sorted { $0.row < $1.row }
+                        ForEach(colNumbers, id: \.self) { colNum in
+                            let colCells = groupedCols[colNum] ?? []
                             VStack(spacing: 2) {
                                 ForEach(Array(colCells.enumerated()), id: \.offset) { _, cell in
                                     Text(cell.display)

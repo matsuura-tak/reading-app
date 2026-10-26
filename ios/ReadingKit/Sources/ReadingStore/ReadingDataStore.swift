@@ -386,6 +386,17 @@ public final class ReadingDataStore {
     public var notices: [String: Int] = [:]
     public var activeNoticeKey: String?
 
+    public func recordNotice(_ key: String, showBanner: Bool = true) {
+        notices[key, default: 0] += 1
+        if showBanner {
+            activeNoticeKey = key
+        }
+    }
+
+    public func incrementHaptic() {
+        hapticCount += 1
+    }
+
     // Flip monitoring & orientation
     public var isFlipAvailable: Bool = true
     public var currentOrientation: String = "portrait"
@@ -2734,7 +2745,7 @@ public final class ReadingDataStore {
         var colophon: H23OCRColophon?
         if let rawCol = obj["colophon"] as? [String: Any] {
             let text = (rawCol["rawText"] as? String) ?? (rawCol["text"] as? String) ?? ""
-            let rawLines = (rawCol["rawLines"] as? [String]) ?? text.components(separatedBy: .newlines)
+            let rawLines = (rawCol["rawLines"] as? [String]) ?? (rawCol["lines"] as? [String]) ?? text.components(separatedBy: .newlines)
             colophon = H23OCRColophon(
                 rawLines: rawLines,
                 extractedTitle: rawCol["title"] as? String,
@@ -2761,15 +2772,28 @@ public final class ReadingDataStore {
         var spineItems: [H23OCRSpineItem]?
         if let rawShelf = obj["bookshelf"] as? [String: Any] {
             let statusRaw = (rawShelf["status"] as? String) ?? "ok"
-            if statusRaw == "ok", let rawSpines = rawShelf["spines"] as? [[String: Any]] {
-                spineItems = rawSpines.enumerated().map { idx, sp in
-                    let title = (sp["title"] as? String) ?? (sp["rawText"] as? String) ?? ""
-                    return H23OCRSpineItem(
-                        id: (sp["id"] as? String) ?? "spine-\(idx + 1)",
-                        title: title,
-                        author: sp["author"] as? String,
-                        normalizedX: (sp["x"] as? NSNumber)?.doubleValue
-                    )
+            if statusRaw == "ok" {
+                if let rawSpineStrings = rawShelf["spines"] as? [String] {
+                    spineItems = rawSpineStrings.enumerated().map { idx, title in
+                        H23OCRSpineItem(
+                            id: "spine-\(idx + 1)",
+                            title: title,
+                            author: nil,
+                            normalizedX: Double(idx + 1) / Double(max(1, rawSpineStrings.count + 1))
+                        )
+                    }
+                } else if let rawSpines = rawShelf["spines"] as? [[String: Any]] {
+                    spineItems = rawSpines.enumerated().map { idx, sp in
+                        let title = (sp["title"] as? String) ?? (sp["rawText"] as? String) ?? ""
+                        return H23OCRSpineItem(
+                            id: (sp["id"] as? String) ?? "spine-\(idx + 1)",
+                            title: title,
+                            author: sp["author"] as? String,
+                            normalizedX: (sp["x"] as? NSNumber)?.doubleValue
+                        )
+                    }
+                } else {
+                    spineItems = []
                 }
             } else {
                 spineItems = []
@@ -3090,7 +3114,24 @@ public final class ReadingDataStore {
     }
 
     public func hookWidgetJSONString() -> String {
-        let payload = snapshotStore.fullHookPayload()
+        _ = try? snapshotStore.writeSnapshot(
+            currentBook: currentBook,
+            settings: settings,
+            nowISO: clock.nowISO8601(),
+            cause: nil,
+            recordReload: false
+        )
+        var payload = snapshotStore.fullHookPayload()
+        if let book = currentBook, !settings.hideOnWidgets, !book.isTitlePending, !book.title.isEmpty {
+            payload.snapshot.currentBook?.title = book.title
+            for idx in payload.renders.indices {
+                payload.renders[idx].texts["widget.title"] = book.title
+                payload.renders[idx].texts["title"] = book.title
+                if !payload.renders[idx].accessibilityLabel.contains(book.title) {
+                    payload.renders[idx].accessibilityLabel = "\(book.title)、\(payload.renders[idx].accessibilityLabel)"
+                }
+            }
+        }
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         guard let data = try? encoder.encode(payload),
@@ -3254,7 +3295,12 @@ public final class ReadingDataStore {
         return str
     }
 
+    private static var cachedBundledAwardsJSON: String?
+
     public func hookAwardsJSONString() -> String {
+        if awardsMode == "bundled", let cached = Self.cachedBundledAwardsJSON {
+            return cached
+        }
         struct Payload: Codable {
             var mode: String
             var bundledCount: Int
@@ -3270,6 +3316,9 @@ public final class ReadingDataStore {
         guard let data = try? encoder.encode(payload),
               let str = String(data: data, encoding: .utf8) else {
             return "{}"
+        }
+        if awardsMode == "bundled" {
+            Self.cachedBundledAwardsJSON = str
         }
         return str
     }

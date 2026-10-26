@@ -80,6 +80,10 @@ public struct WidgetReloadRequests: Codable, Sendable, Equatable {
 }
 
 public struct FullWidgetHookPayload: Codable, Sendable, Equatable {
+    public var title: String?
+    public var line: String?
+    public var progress: String?
+    public var accessibilityLabel: String
     public var snapshot: WidgetSnapshot
     public var composition: H22WidgetComposition
     public var reloadTimelineCount: Int
@@ -89,6 +93,10 @@ public struct FullWidgetHookPayload: Codable, Sendable, Equatable {
     public var renders: [WidgetRenderEntry]
 
     public init(
+        title: String? = nil,
+        line: String? = nil,
+        progress: String? = nil,
+        accessibilityLabel: String = "",
         snapshot: WidgetSnapshot,
         composition: H22WidgetComposition,
         reloadTimelineCount: Int,
@@ -97,6 +105,10 @@ public struct FullWidgetHookPayload: Codable, Sendable, Equatable {
         reloadRequests: WidgetReloadRequests,
         renders: [WidgetRenderEntry]
     ) {
+        self.title = title
+        self.line = line
+        self.progress = progress
+        self.accessibilityLabel = accessibilityLabel
         self.snapshot = snapshot
         self.composition = composition
         self.reloadTimelineCount = reloadTimelineCount
@@ -279,31 +291,46 @@ public final class SnapshotStore {
                 if currentSnapshot.hideOnWidgets {
                     renderState = "hidden"
                     texts["widget.title"] = "しおり"
+                    texts["title"] = "しおり"
                     if let prog = book.progressDisplay {
                         texts["widget.page"] = prog
+                        texts["page"] = prog
                     }
                 } else if let line = comp.displayedLine, !line.isEmpty {
                     renderState = "hasLine"
                     if let title = book.title {
                         texts["widget.title"] = title
+                        texts["title"] = title
                     }
                     texts["widget.line"] = line
+                    texts["line"] = line
                     if let prog = book.progressDisplay {
                         texts["widget.page"] = prog
+                        texts["page"] = prog
                     }
                 } else {
                     renderState = "noLine"
-                    if let title = book.title {
-                        texts["widget.title"] = title
-                    }
+                    let displayTitle = book.title ?? "しおり"
+                    texts["widget.title"] = displayTitle
+                    texts["title"] = displayTitle
                     if let prog = book.progressDisplay {
                         texts["widget.page"] = prog
+                        texts["page"] = prog
                     }
                 }
             } else {
                 renderState = "empty"
                 texts["widget.empty"] = "いま読んでいる本はありません"
+                texts["empty"] = "いま読んでいる本はありません"
             }
+            let a11yLabel: String = {
+                var parts: [String] = []
+                if let book = currentSnapshot.currentBook, !currentSnapshot.hideOnWidgets, let t = book.title, !t.isEmpty {
+                    parts.append(t)
+                }
+                parts.append(comp.accessibilityLabel)
+                return parts.joined(separator: "、")
+            }()
 
             return WidgetRenderEntry(
                 family: spec.family,
@@ -315,11 +342,22 @@ public final class SnapshotStore {
                 appearanceID: appearanceID,
                 texts: texts,
                 composition: comp,
-                accessibilityLabel: comp.accessibilityLabel
+                accessibilityLabel: a11yLabel
             )
         }
 
+        let topTitle: String? = currentSnapshot.hideOnWidgets
+            ? (currentSnapshot.currentBook != nil ? "しおり" : nil)
+            : currentSnapshot.currentBook?.title
+        let topLine: String? = currentSnapshot.hideOnWidgets ? nil : comp.displayedLine
+        let topProgress: String? = currentSnapshot.currentBook?.progressDisplay
+        let topA11y: String = renders.first?.accessibilityLabel ?? comp.accessibilityLabel
+
         return FullWidgetHookPayload(
+            title: topTitle,
+            line: topLine,
+            progress: topProgress,
+            accessibilityLabel: topA11y,
             snapshot: currentSnapshot,
             composition: comp,
             reloadTimelineCount: reloadTimelineCount,

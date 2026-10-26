@@ -55,7 +55,7 @@ public struct ContentView: View {
                         BookAddFlowSheetView(
                             model: model,
                             titlePendingMode: pending,
-                            initialStep: .coverCamera(isbn13: isbn)
+                            initialStep: .coverCandidates(isbn13: isbn, candidates: model.store.ocrConfiguration?.coverLines ?? [])
                         )
                     case .colophonCapture(let bookId):
                         ColophonOCRSheetView(model: model, bookId: bookId) {

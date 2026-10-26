@@ -126,7 +126,7 @@ public struct WidgetGuideSheetView: View {
             }
             .padding(24)
             .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("sheet.widgetGuide")
+            .accessibilityIdentifier("widgetGuide")
             .navigationTitle("ウィジェットの案内")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {

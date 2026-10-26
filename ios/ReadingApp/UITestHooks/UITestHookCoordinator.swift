@@ -45,6 +45,7 @@ public final class UITestHookCoordinator {
         env: [String: String] = ProcessInfo.processInfo.environment,
         args: [String] = ProcessInfo.processInfo.arguments
     ) {
+        UIView.setAnimationsEnabled(false)
         self.activeModel = model
         let store = model.store
 
@@ -236,21 +237,25 @@ public final class UITestHookCoordinator {
 
         let thread = Thread {
             while true {
+                var didWork = false
                 for (i, t) in tokens.enumerated() {
                     var check: Int32 = 0
-                    if c_notify_check(t, &check) == 0, check != 0 {
+                    if c_notify_check(t, &check) == 0 && check != 0 {
                         var state64: UInt64 = 0
                         _ = c_notify_get_state(t, &state64)
+                        didWork = true
                         let notifName = names[i]
                         Task { @MainActor in
                             UITestHookCoordinator.shared.handleDarwinNotification(name: notifName, state: state64)
                         }
                     }
                 }
-                usleep(5)
+                if !didWork {
+                    usleep(5000)
+                }
             }
         }
-        thread.qualityOfService = QualityOfService.userInteractive
+        thread.qualityOfService = QualityOfService.userInitiated
         thread.start()
     }
 
@@ -271,6 +276,12 @@ public final class UITestHookCoordinator {
             } else if mode == 2 {
                 let epochSec = TimeInterval(state & ((1 << 62) - 1))
                 store.clock.setNow(Date(timeIntervalSince1970: epochSec))
+            } else {
+                let targetMs = Int64(state)
+                let delta = targetMs - store.clock.currentOffsetMilliseconds
+                handleUIDeviceOrientationChange()
+                store.clock.advance(milliseconds: Int(delta))
+                store.evaluateFlipOnClockAdvance()
             }
         case "yomuma.uitest.offline":
             store.isOffline = (state == 1)
@@ -278,7 +289,12 @@ public final class UITestHookCoordinator {
             store.isOCRHoldReleased = true
         case "yomuma.uitest.barcode":
             barcodePostCount += 1
-            let decoded = Self.decodePackedDecimal(state)
+            let decoded: String
+            if state >= 100_000_000_000 && state <= 999_999_999_999_999 {
+                decoded = String(state)
+            } else {
+                decoded = Self.decodePackedDecimal(state)
+            }
             let code = decoded.isEmpty ? (barcodeStubString ?? "") : decoded
             if !code.isEmpty {
                 barcodeStubString = code
@@ -286,28 +302,46 @@ public final class UITestHookCoordinator {
                 model.barcodeEventCounter += 1
             }
         case "yomuma.uitest.liveactivity.transition":
-            let code = Self.decodeFourCC(state)
             let target: String
-            switch code {
-            case "strt": target = "started"
-            case "read": target = "reading"
-            case "endd": target = "ended"
-            case "dsms": target = "dismissedBySystem"
-            default: target = code
+            if state == 1 {
+                target = "started"
+            } else if state == 2 {
+                target = "dismissedBySystem"
+            } else {
+                let code = Self.decodeFourCC(state)
+                switch code {
+                case "strt": target = "started"
+                case "read": target = "reading"
+                case "endd": target = "ended"
+                case "dsms": target = "dismissedBySystem"
+                default: target = code
+                }
             }
             store.transitionLiveActivity(target)
         case "yomuma.uitest.storekit.refund":
             store.triggerStoreRefund()
         case "yomuma.uitest.intent.run":
-            let canFG = ((state >> 32) & 1) == 1
-            let code = Self.decodeFourCC(state & 0xFFFF_FFFF)
             let intentName: String
-            switch code {
-            case "strt": intentName = "StartReadingIntent"
-            case "enda": intentName = "EndReadingFromActivityIntent"
-            case "wher": intentName = "WhereStoppedIntent"
-            case "cont": intentName = "ContinueReadingIntent"
-            default: intentName = code
+            let canFG: Bool
+            if state >= 1 && state <= 4 {
+                canFG = store.intentDefaultCanContinueInForeground
+                switch state {
+                case 1: intentName = "StartReadingIntent"
+                case 2: intentName = "EndReadingFromActivityIntent"
+                case 3: intentName = "WhereStoppedIntent"
+                case 4: intentName = "ContinueReadingIntent"
+                default: intentName = "StartReadingIntent"
+                }
+            } else {
+                canFG = ((state >> 32) & 1) == 1
+                let code = Self.decodeFourCC(state & 0xFFFF_FFFF)
+                switch code {
+                case "strt": intentName = "StartReadingIntent"
+                case "enda": intentName = "EndReadingFromActivityIntent"
+                case "wher": intentName = "WhereStoppedIntent"
+                case "cont": intentName = "ContinueReadingIntent"
+                default: intentName = code
+                }
             }
             let log = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
             if intentName == "EndReadingFromActivityIntent" && store.shouldPresentMarkInputAfterIntentEnd {
@@ -338,7 +372,9 @@ public final class UITestHookCoordinator {
         var acc = packed & 0x00FF_FFFF_FFFF_FFFF
         for idx in stride(from: len - 1, through: 0, by: -1) {
             let nibble = Int(acc & 0xF)
-            digits[idx] = Character(UnicodeScalar(48 + min(9, max(0, nibble)))!)
+            if let scalar = UnicodeScalar(48 + min(9, max(0, nibble))) {
+                digits[idx] = Character(scalar)
+            }
             acc >>= 4
         }
         return String(digits)

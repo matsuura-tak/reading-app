@@ -68,15 +68,16 @@ public struct BookmarkHomeView: View {
                 .accessibilityIdentifier("toolbar.shelf")
             }
             ToolbarItemGroup(placement: .topBarTrailing) {
-                Button {
-                    model.currentScreen = .bookAddActionSheet
-                    model.activeSheet = .addBook(titlePendingMode: false)
-                    model.notifyHookChanged()
-                } label: {
-                    Label("本を登録", systemImage: "plus")
+                if !model.store.isStoreLoadFailed {
+                    Button {
+                        model.currentScreen = .bookAddActionSheet
+                        model.activeSheet = .addBook(titlePendingMode: false)
+                        model.notifyHookChanged()
+                    } label: {
+                        Label("本を登録", systemImage: "plus")
+                    }
+                    .accessibilityIdentifier("bookmark.addBook")
                 }
-                .accessibilityIdentifier("bookmark.addBook")
-                .disabled(model.store.isStoreLoadFailed)
 
                 Button {
                     model.activeTab = .settings
@@ -102,14 +103,9 @@ public struct BookmarkHomeView: View {
             Text("データを読み込めませんでした。")
                 .font(.headline)
                 .multilineTextAlignment(.center)
-                .accessibilityIdentifier("error.store.load.error")
+                .accessibilityIdentifier("store.load.error")
                 .accessibilityLabel("データを読み込めませんでした。")
                 .accessibilityValue("データを読み込めませんでした。")
-
-            Button("読み始める") {}
-                .buttonStyle(.borderedProminent)
-                .disabled(true)
-                .accessibilityIdentifier("bookmark.startReading")
         }
         .padding(.vertical, 32)
     }
@@ -119,7 +115,7 @@ public struct BookmarkHomeView: View {
             Text("いま読んでいる本はまだありません")
                 .font(.headline)
                 .foregroundStyle(.secondary)
-                .accessibilityIdentifier("bookmark.emptyTitle")
+                .accessibilityIdentifier("bookmark.empty.message")
 
             Button {
                 model.currentScreen = .bookAddActionSheet
@@ -140,13 +136,13 @@ public struct BookmarkHomeView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("次に読む本を選ぶ")
                 .font(.headline)
-                .accessibilityIdentifier("bookmark.noCurrent.header")
+                .accessibilityIdentifier("bookmark.noCurrent.message")
 
-            ForEach(Array(candidates.prefix(3).enumerated()), id: \.element.id) { idx, book in
+            ForEach(Array(candidates.prefix(3).enumerated()), id: \.element.id) { _, book in
                 VStack(alignment: .leading, spacing: 8) {
                     Text(book.title)
                         .font(.headline)
-                        .accessibilityIdentifier("bookmark.noCurrent.candidate.\(idx + 1).title")
+                        .accessibilityIdentifier("bookmark.noCurrent.title.\(book.id.uuidString.lowercased())")
                         .accessibilityLabel(book.title)
                         .accessibilityValue(book.title)
 
@@ -166,12 +162,12 @@ public struct BookmarkHomeView: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
-                    .accessibilityIdentifier("bookmark.noCurrent.candidate.\(idx + 1).start")
+                    .accessibilityIdentifier("bookmark.noCurrent.choose")
                 }
                 .padding(14)
                 .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
                 .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("bookmark.noCurrent.candidate.\(idx + 1)")
+                .accessibilityIdentifier("bookmark.noCurrent.next.\(book.id.uuidString.lowercased())")
             }
 
             Button {
@@ -218,7 +214,7 @@ public struct BookmarkHomeView: View {
                     Text(progressStr)
                         .font(.subheadline.monospacedDigit())
                         .foregroundStyle(.secondary)
-                        .accessibilityIdentifier("bookmark.progress")
+                        .accessibilityIdentifier("bookmark.page")
                         .accessibilityLabel(progressStr)
                         .accessibilityValue(progressStr)
                 }
@@ -234,13 +230,28 @@ public struct BookmarkHomeView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
-                .accessibilityIdentifier("bookmark.setTitle")
+                .accessibilityIdentifier("bookmark.setBookTitle")
             }
 
             VerticalBookmarkTextView(line: book.lastSavedLine)
                 .frame(maxWidth: .infinity)
                 .padding(20)
                 .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+
+            if model.store.isFlipAvailable && model.store.settings.flipToStartEnabled {
+                Text("画面を伏せても読み始められます")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("bookmark.flipHint")
+            }
+
+            if book.isEbook {
+                Text("電子書籍で読むときは、読み終えたらロック画面のライブアクティビティから終えられます。")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("bookmark.flipHint.ebook")
+            }
 
             Button {
                 if model.store.startReadingSession(startedBy: "tap", explicitEntry: nil) {
@@ -255,7 +266,7 @@ public struct BookmarkHomeView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .accessibilityIdentifier("bookmark.startReading")
+            .accessibilityIdentifier("bookmark.start")
 
             HStack(spacing: 12) {
                 Button {
@@ -268,7 +279,7 @@ public struct BookmarkHomeView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
-                .accessibilityIdentifier("bookmark.updateMark")
+                .accessibilityIdentifier("bookmark.setMark")
 
                 Button {
                     if model.store.markBookFinished(bookId: book.id) {
@@ -281,7 +292,7 @@ public struct BookmarkHomeView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
-                .accessibilityIdentifier("bookmark.finishBook")
+                .accessibilityIdentifier("bookmark.finish")
             }
         }
     }
