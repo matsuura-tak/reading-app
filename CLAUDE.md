@@ -7,20 +7,20 @@
 ## 概要
 - 何のアプリか：夜、ロック画面のウィジェットや Live Activity に出る「自分の本の続きの一行」から読み始め、伏せて読み（電子書籍は同じ iPhone でも数え）、しおり（一行とページ・位置No.・%）を挟んで閉じ、読み終えた夜に奥付・カード・推薦（積読＋端末内書誌 DB 約295万冊＋受賞＋共起の器）で次の1冊へ渡す iPhone の読書アプリ（「よむま」）。データは端末の中だけで、アプリの外部 HTTP 通信は0件（AC-103）。
 - 使う人：平日の夜にスマホへ流れて、本を開けずにいる人（PRD の 13）。iOS 26 以上の iPhone を使う人。
-- いまの段階：001-reading-session の G1（設計）。全149 AC（AC-1〜AC-149）を v1.0 対象とし、設計メモ、契約、ADR 0001〜0005、Makefile を整え、reviewer の判定に出す。ios/ はまだない。
+- いまの段階：001-reading-session の G2/G3。全149 AC（AC-1〜AC-149）を v1.0 対象とし、`ios/`（アプリ、拡張、ローカル Swift パッケージ `ReadingKit`、単体テスト）と `ios/AcceptanceTests/`（全149 AC の受け入れテスト）が実装され、`make ios-build`・`make ios-test`・`make ios-test-first-launch`・`make ios-test-perf`・`make check-contracts` が実動確認済み。
 
 ## ビルド/テストのコマンド
 .claude/org/app.json の commands（`ios_build`: `"make ios-build"`, `ios_test`: `"make ios-test"`, `backend_test`: `""`）と同じものを書きます。CI は app.json の方を使います。
 コマンドを変えたら、app.json の更新を Takuma に頼みます（.claude/ は Takuma だけが直せます）。
 受け入れテストは、受け入れテストのフォルダの中の設定だけで動く形にします。
 
-### iOS（ios/ がまだないため、`make ios-build` と `make ios-test` は現時点で未作成エラーを出し exit 1 で止まることを確かめた。Xcode ビルド自体は ios/ 作成まで未確認）
+### iOS（すべて動かして確かめた）
 - ビルド（`app.json` の `ios_build`）：`make ios-build`
-  - 中身（ios/ 作成後）：`xcodebuild -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'generic/platform=iOS Simulator' SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build`
+  - 中身：`xcodebuild -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'generic/platform=iOS Simulator' SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build`（`** BUILD SUCCEEDED **` を確認済み）
 - テスト（`app.json` の `ios_test`）：`make ios-test`
-  - 中身（ios/ 作成後）：`swift test --package-path ios/ReadingKit` と `xcodebuild test -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.5' -skip-testing:AcceptanceTests/FirstLaunchTests`
-- 初回起動端末テスト（H14、AC-1。未確認）：専用シミュレーターを `xcrun simctl erase <端末>` で消してから `make ios-test-first-launch`（`-only-testing:AcceptanceTests/FirstLaunchTests`）を単独で動かす。
-- 速さの AC（AC-55、AC-100〜102、AC-114、AC-115、AC-149。未確認）：`make ios-test-perf`（`-configuration Perf`、Release と同じ `-O` に `UITEST_HOOKS` のみ付与）。
+  - 中身：`swift test --package-path ios/ReadingKit` と `xcodebuild test -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17,OS=26.0' -skip-testing:ReadingAcceptanceTests/FirstLaunchTests -skip-testing:ReadingAcceptanceTests/PerformanceTests`（実動確認済み）
+- 初回起動端末テスト（H14、AC-1）：専用シミュレーターを `xcrun simctl erase <端末>` で消してから `make ios-test-first-launch`（`-only-testing:ReadingAcceptanceTests/FirstLaunchTests`）を単独で動かす（実動確認済み）。
+- 速さの AC（AC-55、AC-100〜102、AC-114、AC-115、AC-149）：`make ios-test-perf`（`-configuration Perf`、Release と同じ `-O` に `UITEST_HOOKS` のみ付与、`-only-testing:ReadingAcceptanceTests/PerformanceTests`、実動確認済み）。
 
 ### バックエンド
 - なし（自前のサーバーも外部 API 通信も持たない。PRD 10、AC-103）。

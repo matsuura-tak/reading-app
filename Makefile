@@ -4,7 +4,7 @@
 SHELL := /bin/zsh
 XCODEPROJ := ios/ReadingApp.xcodeproj
 SCHEME := ReadingApp
-SIM_DESTINATION ?= platform=iOS Simulator,name=iPhone 17,OS=26.5
+SIM_DESTINATION ?= platform=iOS Simulator,name=iPhone 17,OS=26.0
 SCHEMA_PYTHON ?= /tmp/reading-app-schema-venv/bin/python
 
 .PHONY: ios-build ios-test ios-test-first-launch ios-test-perf check-contracts
@@ -31,7 +31,8 @@ ios-test:
 		-scheme "$(SCHEME)" \
 		-configuration Debug \
 		-destination "$(SIM_DESTINATION)" \
-		-skip-testing:AcceptanceTests/FirstLaunchTests
+		-skip-testing:ReadingAcceptanceTests/FirstLaunchTests \
+		-skip-testing:ReadingAcceptanceTests/PerformanceTests
 
 ios-test-first-launch:
 	@if [ ! -d "$(XCODEPROJ)" ]; then \
@@ -42,7 +43,7 @@ ios-test-first-launch:
 		-scheme "$(SCHEME)" \
 		-configuration Debug \
 		-destination "$(SIM_DESTINATION)" \
-		-only-testing:AcceptanceTests/FirstLaunchTests
+		-only-testing:ReadingAcceptanceTests/FirstLaunchTests
 
 ios-test-perf:
 	@if [ ! -d "$(XCODEPROJ)" ]; then \
@@ -53,7 +54,7 @@ ios-test-perf:
 		-scheme "$(SCHEME)" \
 		-configuration Perf \
 		-destination "$(SIM_DESTINATION)" \
-		-only-testing:AcceptanceTests/PerformanceTests
+		-only-testing:ReadingAcceptanceTests/PerformanceTests
 
 # check-contracts: Python jsonschema.Draft202012Validator ワンライナーによる全8スキーマ＋全25 examples の自動検証（外部スクリプト不使用）
 check-contracts:
