@@ -17,7 +17,7 @@ public struct SettingsView: View {
 
     public var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 14) {
                 BannerNoticeView(model: model)
 
                 readingSettingsSection
@@ -26,7 +26,7 @@ public struct SettingsView: View {
                 storeStatusAndRestoreSection
                 aboutAndLicensesSection
             }
-            .padding(20)
+            .padding(16)
         }
         .accessibilityIdentifier("screen.settings")
         .navigationTitle("設定")
@@ -54,7 +54,7 @@ public struct SettingsView: View {
     }
 
     private var readingSettingsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("読書とプライバシー")
                 .font(.headline)
 
@@ -95,12 +95,12 @@ public struct SettingsView: View {
                 .accessibilityIdentifier("settings.hideOnWidgets")
             }
         }
-        .padding(16)
+        .padding(12)
         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var liveActivitySection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("夜の入口（ライブアクティビティ）")
                 .font(.headline)
 
@@ -156,63 +156,98 @@ public struct SettingsView: View {
                 }
             }
         }
-        .padding(16)
+        .padding(12)
         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var appearanceSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("しおりの佇まい")
-                .font(.headline)
+        let allIDs = AppearanceID.allCases
+        return VStack(alignment: .leading, spacing: 8) {
+            Button {
+                model.notifyHookChanged()
+            } label: {
+                HStack {
+                    Text("しおりの佇まい")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Text(Self.appearanceDisplayName(model.store.settings.appearanceID))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("settings.appearance")
 
-            ForEach(AppearanceID.allCases, id: \.self) { appID in
-                let isSelected = (model.store.settings.appearanceID == appID)
-                let isLocked = (appID.isPlusTheme && !model.store.settings.isPlusPurchased)
-                Button {
-                    model.store.selectAppearance(appID)
-                    if model.store.previewAppearanceID != nil {
-                        model.currentScreen = .storePurchasePreview
-                    }
-                    model.notifyHookChanged()
-                } label: {
-                    HStack {
-                        Text(Self.appearanceDisplayName(appID))
-                            .font(.body.weight(isSelected ? .semibold : .regular))
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        if isSelected {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(.tint)
-                        } else if isLocked {
-                            Text("よむま プラス")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
+            ForEach(0..<3, id: \.self) { rowIdx in
+                HStack(spacing: 8) {
+                    ForEach(0..<2, id: \.self) { colIdx in
+                        let idx = rowIdx * 2 + colIdx
+                        if idx < allIDs.count {
+                            let appID = allIDs[idx]
+                            let isSelected = (model.store.settings.appearanceID == appID)
+                            let isLocked = (appID.isPlusTheme && !model.store.settings.isPlusPurchased)
+                            Button {
+                                model.store.selectAppearance(appID)
+                                if model.store.previewAppearanceID != nil {
+                                    model.currentScreen = .storePurchasePreview
+                                }
+                                model.notifyHookChanged()
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text(Self.appearanceDisplayName(appID))
+                                        .font(.subheadline.weight(isSelected ? .semibold : .regular))
+                                        .foregroundStyle(.primary)
+                                        .lineLimit(1)
+                                    Spacer(minLength: 2)
+                                    if isSelected {
+                                        Image(systemName: "checkmark")
+                                            .font(.caption)
+                                            .foregroundStyle(.tint)
+                                    } else if isLocked {
+                                        Image(systemName: "lock.fill")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 8)
+                                .background(
+                                    isSelected ? Color.accentColor.opacity(0.12) : Color(uiColor: .tertiarySystemBackground),
+                                    in: RoundedRectangle(cornerRadius: 8)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityIdentifier("appearance.row.\(appID.rawValue)")
+                            .accessibilityLabel(Self.appearanceDisplayName(appID))
+                            .accessibilityValue(isSelected ? "selected" : (isLocked ? "locked" : "unlocked"))
+                            .accessibilityAddTraits(isSelected ? [.isSelected] : [])
                         }
                     }
-                    .padding(12)
-                    .background(
-                        isSelected ? Color.accentColor.opacity(0.12) : Color(uiColor: .tertiarySystemBackground),
-                        in: RoundedRectangle(cornerRadius: 8)
-                    )
                 }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("settings.appearance.\(appID.rawValue)")
-                .accessibilityLabel(Self.appearanceDisplayName(appID))
-                .accessibilityValue(isSelected ? "selected" : (isLocked ? "locked" : "unlocked"))
-                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
         }
-        .padding(16)
+        .padding(12)
         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var storeStatusAndRestoreSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             if model.store.settings.isPlusPurchased {
                 Text("購入済み")
                     .font(.subheadline.bold())
                     .foregroundStyle(.secondary)
                     .accessibilityIdentifier("store.purchasedBadge")
+            }
+
+            if let msgKey = model.store.storeStatusMessageKey, model.store.previewAppearanceID == nil {
+                let msgText = BannerNoticeView.message(forKey: msgKey)
+                Text(msgText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier(msgKey)
+                    .accessibilityLabel(msgText)
+                    .accessibilityValue(msgText)
             }
 
             Button {
@@ -224,31 +259,47 @@ public struct SettingsView: View {
             }
             .buttonStyle(.bordered)
             .accessibilityIdentifier("settings.restorePurchases")
-
-            if let msgKey = model.store.storeStatusMessageKey {
-                let msgText = BannerNoticeView.message(forKey: msgKey)
-                Text(msgText)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .accessibilityIdentifier(msgKey)
-                    .accessibilityLabel(msgText)
-                    .accessibilityValue(msgText)
-            }
         }
-        .padding(16)
+        .padding(12)
         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var aboutAndLicensesSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let attributionText = "国立国会図書館サーチの書誌データ（CC BY 4.0）を加工して内蔵しています。オンラインAPIには接続せず、国立国会図書館とは無関係です。"
+        return VStack(alignment: .leading, spacing: 10) {
             Text("書誌データ・謝辞")
                 .font(.headline)
-            Text("国立国会図書館サーチの書誌データ（CC BY 4.0）を加工して内蔵しています。")
+
+            Text(attributionText)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .accessibilityIdentifier("settings.ndlAttribution")
+                .accessibilityIdentifier("settings.dataSources")
+                .accessibilityLabel(attributionText)
+                .accessibilityValue(attributionText)
+
+            Button {
+                model.store.openExternalURL("https://creativecommons.org/licenses/by/4.0/deed.ja")
+                model.notifyHookChanged()
+            } label: {
+                Text("ライセンス（CC BY 4.0）を見る")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("settings.dataSources.license")
+
+            Button {
+                model.store.openExternalURL("https://yomuma.example.com/privacy")
+                model.notifyHookChanged()
+            } label: {
+                Text("プライバシーポリシー")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.bordered)
+            .accessibilityIdentifier("settings.privacyPolicy")
         }
-        .padding(16)
+        .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
@@ -275,7 +326,7 @@ public struct StorePurchasePreviewSheetView: View {
     }
 
     public var body: some View {
-        let canBuy = model.store.storeCanMakePayments && model.store.storeProductLoadAvailable
+        let canBuy = model.store.storeCanMakePayments && model.store.storeProductLoadAvailable && !model.store.isOffline
         let name = SettingsView.appearanceDisplayName(previewAppearanceID)
 
         return NavigationStack {
@@ -290,8 +341,10 @@ public struct StorePurchasePreviewSheetView: View {
                 .padding(24)
                 .frame(maxWidth: .infinity)
                 .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("store.preview.card")
+                .accessibilityElement(children: .ignore)
+                .accessibilityIdentifier("store.preview")
+                .accessibilityLabel(previewAppearanceID.rawValue)
+                .accessibilityValue(previewAppearanceID.rawValue)
 
                 Text("よむま プラス（買い切り・¥600）")
                     .font(.headline)
@@ -310,21 +363,22 @@ public struct StorePurchasePreviewSheetView: View {
 
                 Spacer()
 
-                Button {
-                    let res = model.store.purchasePlus()
-                    if res == .success {
-                        model.currentScreen = .settingsMain
+                if canBuy {
+                    Button {
+                        let res = model.store.purchasePlus()
+                        if res == .success {
+                            model.currentScreen = .settingsMain
+                        }
+                        model.notifyHookChanged()
+                    } label: {
+                        Text("購入する（¥600）")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
                     }
-                    model.notifyHookChanged()
-                } label: {
-                    Text("購入する（¥600）")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("store.buy")
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(!canBuy)
-                .accessibilityIdentifier("store.purchase")
 
                 Button {
                     let res = model.store.restorePurchases()
@@ -348,7 +402,7 @@ public struct StorePurchasePreviewSheetView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("store.preview.close")
+                .accessibilityIdentifier("store.close")
             }
             .padding(24)
             .accessibilityElement(children: .contain)

@@ -444,4 +444,37 @@ struct ReadingStoreTests {
         #expect(relaunchedStore.hookAwardsJSONString().contains("\"bundledCount\":76"))
         #expect(relaunchedStore.hookMediaAuditJSONString().contains("\"savedImageFileCount\":0"))
     }
+
+    @Test("ReadingDataStore and subcomponents deallocate cleanly with no retain cycles (weak reference becomes nil)")
+    func storeWeakReferenceDeallocation() throws {
+        let dir = try makeTempDir()
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        weak var weakStore: ReadingDataStore?
+        weak var weakClock: ReadingClock?
+        weak var weakSnapshotStore: SnapshotStore?
+        weak var weakCatalogDB: CatalogDatabase?
+
+        do {
+            let clock = ReadingClock(nowISO8601: "2026-10-18T21:00:00+09:00", timeZoneID: "Asia/Tokyo")
+            let store = ReadingDataStore(containerDirectory: dir, clock: clock)
+            weakStore = store
+            weakClock = clock
+            weakSnapshotStore = store.snapshotStore
+            weakCatalogDB = store.catalogDB
+
+            store.resetAllData()
+            _ = store.addBook(id: ReadingDataStore.uuidBookA, title: "羅生門", author: "芥川龍之介")
+            _ = store.startReadingSession(startedBy: "tap")
+            clock.advance(seconds: 600)
+            _ = store.endReadingSession()
+            _ = store.saveBookmark(mode: "manual", rawLine: "テストの一行", rawProgress: "12")
+            #expect(weakStore != nil)
+        }
+
+        #expect(weakStore == nil)
+        #expect(weakClock == nil)
+        #expect(weakSnapshotStore == nil)
+        #expect(weakCatalogDB == nil)
+    }
 }

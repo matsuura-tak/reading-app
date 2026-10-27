@@ -339,7 +339,9 @@ public struct BookAddFlowSheetView: View {
 
             Button {
                 if scannedItems.isEmpty {
-                    closeSheet()
+                    step = .menu
+                    model.currentScreen = .bookAddActionSheet
+                    model.notifyHookChanged()
                 } else {
                     showDiscardScanConfirm = true
                     model.notifyHookChanged()
@@ -355,7 +357,9 @@ public struct BookAddFlowSheetView: View {
                 Button(role: .destructive) {
                     scannedItems.removeAll()
                     showDiscardScanConfirm = false
-                    closeSheet()
+                    step = .menu
+                    model.currentScreen = .bookAddActionSheet
+                    model.notifyHookChanged()
                 } label: {
                     Text("破棄して閉じる")
                         .frame(maxWidth: .infinity)
@@ -863,7 +867,9 @@ public struct BookAddFlowSheetView: View {
             .accessibilityIdentifier("manual.save")
 
             Button {
-                closeSheet()
+                step = .menu
+                model.currentScreen = .bookAddActionSheet
+                model.notifyHookChanged()
             } label: {
                 Text("キャンセル")
                     .frame(maxWidth: .infinity)

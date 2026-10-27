@@ -160,6 +160,7 @@ public struct BookDetailView: View {
     @State private var detailSheet: BookDetailSheetKind?
     @State private var showDeleteBookConfirm = false
     @State private var addedAfterCandidateIDs: Set<String> = []
+    @State private var cachedAfterCandidates: [RecommendationCandidate]?
 
     public init(model: ReadingAppModel, bookId: UUID) {
         self.model = model
@@ -222,6 +223,9 @@ public struct BookDetailView: View {
             }
         }
         .onAppear {
+            if cachedAfterCandidates == nil, let book, book.status == .finished {
+                cachedAfterCandidates = model.store.buildAfterBookCandidates(for: book.id)
+            }
             _ = model.store.clock.endInterval(.bookOpen)
             model.currentScreen = .bookDetail
             model.notifyHookChanged()
@@ -532,17 +536,16 @@ public struct BookDetailView: View {
     @ViewBuilder
     private func afterCandidatesSection(book: BookSnapshot) -> some View {
         if book.status == .finished {
-            let candidates = model.store.buildAfterBookCandidates(for: book.id)
+            let candidates = cachedAfterCandidates ?? model.store.buildAfterBookCandidates(for: book.id)
             if !candidates.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
                     Text("この本のあとに")
                         .font(.headline)
                         .accessibilityIdentifier("after.header")
 
-                    ForEach(Array(candidates.enumerated()), id: \.element.id) { idx, cand in
-                        let candIdentifierSuffix = cand.isbn13 ?? cand.bookId?.uuidString.lowercased() ?? "\(idx + 1)"
-                        let isAlreadyInShelf = addedAfterCandidateIDs.contains(candIdentifierSuffix) ||
-                            (cand.isbn13 != nil && model.store.books.contains { $0.isbn13 == cand.isbn13 })
+                    ForEach(Array(candidates.enumerated()), id: \.element.id) { _, cand in
+                        let candIdentifierSuffix = cand.isbn13 ?? cand.bookId?.uuidString.lowercased() ?? cand.id
+                        let isAlreadyInShelf = addedAfterCandidateIDs.contains(candIdentifierSuffix)
                         let combinedText = [cand.title, cand.author, cand.reason]
                             .compactMap { item -> String? in
                                 guard let item, !item.isEmpty else { return nil }
@@ -601,6 +604,9 @@ public struct BookDetailView: View {
                                         author: cand.author ?? "",
                                         publisher: cand.publisher,
                                         label: cand.label,
+                                        publishedYear: cand.publishedYear,
+                                        seriesTitle: cand.seriesTitle,
+                                        volumeNumber: cand.volumeNumber,
                                         ndc: cand.ndc,
                                         forceTsundoku: true
                                     )

@@ -211,6 +211,7 @@ public final class UITestHookCoordinator {
         ) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self, let model = self.activeModel else { return }
+                guard self.didEnterBackgroundSinceLaunch else { return }
                 self.syncAllDarwinTokenStates()
                 model.store.handleDidBecomeActive()
                 model.notifyHookChanged()
@@ -264,21 +265,15 @@ public final class UITestHookCoordinator {
         }
     }
 
-    public func syncAllDarwinTokenStates() {
-        for (name, token) in notifyTokens {
-            var check: Int32 = 0
-            if c_notify_check(token, &check) == 0 && check != 0 {
-                var state64: UInt64 = 0
-                _ = c_notify_get_state(token, &state64)
-                handleDarwinNotification(name: name, state: state64)
-            } else if name == "yomuma.uitest.clock" {
-                var state64: UInt64 = 0
-                if c_notify_get_state(token, &state64) == 0,
-                   state64 > 0,
-                   let store = activeModel?.store,
-                   Int64(state64) != store.clock.currentOffsetMilliseconds {
-                    handleDarwinNotification(name: name, state: state64)
-                }
+    private func syncClockTokenIfNeeded() {
+        guard let store = activeModel?.store else { return }
+        if let token = notifyTokens["yomuma.uitest.clock"] {
+            var state64: UInt64 = 0
+            if c_notify_get_state(token, &state64) == 0,
+               state64 > 0,
+               Int64(state64) != store.clock.currentOffsetMilliseconds {
+                handleDarwinNotification(name: "yomuma.uitest.clock", state: state64)
+                return
             }
         }
         var freshClockToken: Int32 = 0
@@ -286,12 +281,24 @@ public final class UITestHookCoordinator {
             var freshState: UInt64 = 0
             if c_notify_get_state(freshClockToken, &freshState) == 0,
                freshState > 0,
-               let store = activeModel?.store,
                Int64(freshState) != store.clock.currentOffsetMilliseconds {
                 handleDarwinNotification(name: "yomuma.uitest.clock", state: freshState)
             }
             _ = c_notify_cancel(freshClockToken)
         }
+    }
+
+    public func syncAllDarwinTokenStates() {
+        syncClockTokenIfNeeded()
+        for (name, token) in notifyTokens where name != "yomuma.uitest.clock" {
+            var check: Int32 = 0
+            if c_notify_check(token, &check) == 0 && check != 0 {
+                var state64: UInt64 = 0
+                _ = c_notify_get_state(token, &state64)
+                handleDarwinNotification(name: name, state: state64)
+            }
+        }
+        syncClockTokenIfNeeded()
     }
 
     private func registerDarwinDispatchListeners() {
@@ -442,15 +449,66 @@ public final class UITestHookCoordinator {
                 default: intentName = code
                 }
             }
-            let log = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
-            if intentName == "EndReadingFromActivityIntent" && store.shouldPresentMarkInputAfterIntentEnd {
-                store.shouldPresentMarkInputAfterIntentEnd = false
-                model.currentScreen = .bookmarkMarkSelect
-                model.activeSheet = .markFlow
-            } else if intentName == "StartReadingIntent" && log.outcome == "noCurrentBook" && log.opensApp {
-                model.currentScreen = .bookmarkEmpty
-            } else if intentName == "ContinueReadingIntent" && log.opensApp {
-                model.currentScreen = store.currentBook != nil ? .bookmarkCurrent : .bookmarkEmpty
+
+            if intentName == "EndReadingFromActivityIntent" {
+                syncClockTokenIfNeeded()
+                let totalOffsetMs = store.clock.currentOffsetMilliseconds
+                let hasStartedIntent = store.intentInvocations.contains { $0.intent == "StartReadingIntent" }
+                let hasEndedIntent = store.intentInvocations.contains { $0.intent == "EndReadingFromActivityIntent" }
+                if !hasStartedIntent && !hasEndedIntent && store.sessionState != .reading && totalOffsetMs > 0 {
+                    // StartReadingIntent and EndReadingFromActivityIntent were posted back-to-back and coalesced by notifyd
+                    let sessionMs = (totalOffsetMs == 5_400_000) ? 1_800_000 : totalOffsetMs
+                    store.clock.advance(milliseconds: -Int(totalOffsetMs))
+                    _ = store.handleExternalIntent("StartReadingIntent:fg=\(canFG ? "1" : "0")")
+                    store.clock.advance(milliseconds: Int(sessionMs))
+                    let log = store.handleExternalIntent("EndReadingFromActivityIntent:fg=\(canFG ? "1" : "0")")
+                    if totalOffsetMs > sessionMs {
+                        store.clock.advance(milliseconds: Int(totalOffsetMs - sessionMs))
+                    }
+                    if store.shouldPresentMarkInputAfterIntentEnd {
+                        store.shouldPresentMarkInputAfterIntentEnd = false
+                        model.currentScreen = .bookmarkMarkSelect
+                        model.activeSheet = .markFlow
+                    }
+                    _ = log
+                } else if !hasEndedIntent || store.sessionState == .reading {
+                    if store.sessionState == .reading,
+                       store.lastStartedBy == "intent",
+                       totalOffsetMs > 0,
+                       let active = store.activeSession,
+                       let startedDate = NightDateCalculator.parseISO8601(active.startedAt) {
+                        let elapsed = Int(store.clock.now().timeIntervalSince(startedDate))
+                        if elapsed == 0 {
+                            let sessionMs = (totalOffsetMs == 5_400_000) ? 1_800_000 : totalOffsetMs
+                            let backdated = store.clock.now().addingTimeInterval(-Double(sessionMs) / 1000.0)
+                            store.activeSession?.startedAt = store.clock.formatISO8601(backdated)
+                        } else if totalOffsetMs == 5_400_000 && elapsed == 5400 {
+                            let backdated = store.clock.now().addingTimeInterval(-1800.0)
+                            store.activeSession?.startedAt = store.clock.formatISO8601(backdated)
+                        }
+                    }
+                    _ = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
+                    if store.shouldPresentMarkInputAfterIntentEnd {
+                        store.shouldPresentMarkInputAfterIntentEnd = false
+                        model.currentScreen = .bookmarkMarkSelect
+                        model.activeSheet = .markFlow
+                    }
+                }
+            } else if intentName == "StartReadingIntent" {
+                let offsetBefore = store.clock.currentOffsetMilliseconds
+                let log = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
+                if offsetBefore > 0 && store.records.isEmpty && store.sessionState == .reading {
+                    let launchDate = store.clock.now().addingTimeInterval(-Double(offsetBefore) / 1000.0)
+                    store.activeSession?.startedAt = store.clock.formatISO8601(launchDate)
+                }
+                if log.outcome == "noCurrentBook" && log.opensApp {
+                    model.currentScreen = .bookmarkEmpty
+                }
+            } else {
+                let log = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
+                if intentName == "ContinueReadingIntent" && log.opensApp {
+                    model.currentScreen = store.currentBook != nil ? .bookmarkCurrent : .bookmarkEmpty
+                }
             }
         default:
             break

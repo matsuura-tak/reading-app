@@ -53,13 +53,9 @@ public struct SessionResultSheetView: View {
 
                 Button {
                     model.store.activeNoticeKey = nil
-                    if model.store.showWidgetGuide {
-                        model.currentScreen = .widgetGuide
-                        model.activeSheet = .widgetGuide
-                    } else {
-                        model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
-                        model.activeSheet = nil
-                    }
+                    model.store.showWidgetGuide = false
+                    model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+                    model.activeSheet = nil
                     model.notifyHookChanged()
                 } label: {
                     Text("おやすみ")

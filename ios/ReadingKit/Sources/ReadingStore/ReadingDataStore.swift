@@ -2061,7 +2061,7 @@ public final class ReadingDataStore {
             previewAppearanceID = appearance
             if !storeCanMakePayments {
                 storeStatusMessageKey = "store.unavailable"
-            } else if !storeProductLoadAvailable {
+            } else if !storeProductLoadAvailable || isOffline {
                 storeStatusMessageKey = "store.offline"
             } else {
                 storeStatusMessageKey = nil
@@ -2080,7 +2080,7 @@ public final class ReadingDataStore {
             storeStatusMessageKey = "store.unavailable"
             return .unavailable
         }
-        guard storeProductLoadAvailable else {
+        guard storeProductLoadAvailable && !isOffline else {
             storeStatusMessageKey = "store.offline"
             return .offline
         }
@@ -2867,7 +2867,7 @@ public final class ReadingDataStore {
             )
         }
         guard let summary = NightDateCalculator.buildFinishReflection(from: inputs),
-              summary.uniqueNights >= 2 else {
+              summary.uniqueNights >= 1 else {
             return nil
         }
         return summary.japaneseText
@@ -2882,6 +2882,7 @@ public final class ReadingDataStore {
             author: b.author.isEmpty ? nil : b.author,
             publisher: b.publisher,
             label: b.label,
+            publishedYear: b.publishedYear,
             award: AwardsCatalog.matchAwardName(title: b.title, author: b.author, catalog: activeAwards),
             seriesTitle: b.seriesTitle,
             volumeNumber: b.volumeNumber,
@@ -2900,6 +2901,7 @@ public final class ReadingDataStore {
             author: item.author,
             publisher: item.publisher,
             label: item.label,
+            publishedYear: item.publishedYear,
             award: AwardsCatalog.matchAwardName(title: item.title, author: item.author, catalog: activeAwards),
             seriesTitle: item.seriesTitle,
             volumeNumber: item.volumeNumber,

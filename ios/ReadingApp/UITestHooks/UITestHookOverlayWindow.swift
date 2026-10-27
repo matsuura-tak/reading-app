@@ -24,6 +24,12 @@ public struct UITestHookOverlayView: View {
         let _ = model.store.hapticCount
         let _ = model.store.activeErrorKey
         let _ = model.store.activeNoticeKey
+        let _ = model.store.storeStatusMessageKey
+        let _ = model.store.settings.isPlusPurchased
+        let _ = model.store.settings.appearanceID
+        let _ = model.store.openedURLs.count
+        let _ = model.store.shareCards.count
+        let _ = model.store.intentInvocations.count
         let stateStr = UITestHookReadoutBuilder.stateJSON(model: model)
         let storeStr = UITestHookReadoutBuilder.storeJSON(model: model)
         let widgetStr = UITestHookReadoutBuilder.widgetJSON(model: model)
@@ -54,6 +60,7 @@ public struct UITestHookOverlayView: View {
     private func readoutElement(id: String, value: String) -> some View {
         Text(id)
             .font(.caption2)
+            .frame(width: 1, height: 1)
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier(id)
             .accessibilityLabel(id)
