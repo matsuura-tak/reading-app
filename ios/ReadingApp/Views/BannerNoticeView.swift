@@ -76,39 +76,39 @@ public struct BannerNoticeView: View {
     public static func message(forKey key: String) -> String {
         switch key {
         case "session.tooShort":
-            return "1分未満のため記録しませんでした。"
+            return String(localized: "session.tooShort", defaultValue: "1分未満のため記録しませんでした。")
         case "session.invalidTime":
-            return "時刻が巻き戻ったため記録しませんでした。"
+            return String(localized: "session.invalidTime", defaultValue: "時刻が巻き戻ったため記録しませんでした。")
         case "session.capped":
-            return "24時間を上限として記録しました。"
+            return String(localized: "session.capped", defaultValue: "24時間を上限として記録しました。")
         case "session.start.error":
-            return "読書を始められませんでした。もう一度お試しください。"
+            return String(localized: "session.start.error", defaultValue: "読書を始められませんでした。もう一度お試しください。")
         case "session.save.error":
-            return "記録を保存できませんでした。もう一度お試しください。"
+            return String(localized: "session.save.error", defaultValue: "記録を保存できませんでした。もう一度お試しください。")
         case "common.save.error":
-            return "保存できませんでした。もう一度お試しください。"
+            return String(localized: "common.save.error", defaultValue: "保存できませんでした。もう一度お試しください。")
         case "store.load.error":
-            return "データを読み込めませんでした。"
+            return String(localized: "store.load.error", defaultValue: "データを読み込めませんでした。")
         case "book.title.invalid":
-            return "書名を1〜200文字で入力してください。"
+            return String(localized: "book.title.invalid", defaultValue: "書名を1〜100文字で入力してください。")
         case "book.author.invalid":
-            return "著者名を200文字以内で入力してください。"
+            return String(localized: "book.author.invalid", defaultValue: "著者名を100文字以内で入力してください。")
         case "mark.line.invalid":
-            return "一行を1〜120文字で入力してください。"
+            return String(localized: "mark.line.invalid", defaultValue: "一行を1〜60文字で入力してください。")
         case "mark.page.invalid":
-            return "正しい数値を入力してください。"
+            return String(localized: "mark.page.invalid", defaultValue: "正しい数値を入力してください。")
         case "record.minutes.invalid":
-            return "1〜1440分の数値を入力してください。"
+            return String(localized: "record.minutes.invalid", defaultValue: "1〜1440分の数値を入力してください。")
         case "store.unavailable":
-            return "この端末では購入が制限されています。"
+            return String(localized: "store.unavailable", defaultValue: "この端末では購入が制限されています。")
         case "store.offline":
-            return "オフラインのため価格を取得できません。"
+            return String(localized: "store.offline", defaultValue: "オフラインのため価格を取得できません。")
         case "store.purchase.error":
-            return "購入を完了できませんでした。"
+            return String(localized: "store.purchase.error", defaultValue: "購入を完了できませんでした。")
         case "store.restore.done":
-            return "購入を復元しました。"
+            return String(localized: "store.restore.done", defaultValue: "購入を復元しました。")
         case "store.restore.none":
-            return "復元できる購入が見つかりませんでした。"
+            return String(localized: "store.restore.none", defaultValue: "復元できる購入が見つかりませんでした。")
         default:
             return key
         }
@@ -138,11 +138,12 @@ public struct VerticalBookmarkTextView: View {
     public var body: some View {
         switch state {
         case .empty:
-            Text("まだ一行はありません")
+            let emptyLabel = String(localized: "bookmark.line.empty", defaultValue: "まだ一行はありません")
+            Text(emptyLabel)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .accessibilityIdentifier("bookmark.line.empty")
-                .accessibilityLabel("まだ一行はありません")
+                .accessibilityLabel(emptyLabel)
                 .accessibilityValue("")
         case .content(let line, let isVertical):
             let cells = VerticalLineLayout.layoutVerticalCells(text: line, maxColumns: 2, rowsPerColumn: 18)
@@ -176,17 +177,17 @@ public struct VerticalBookmarkTextView: View {
 }
 
 #Preview("BannerNotice - Notice") {
-    BannerNoticeView(state: .notice(key: "session.tooShort", text: "1分未満のため記録しませんでした。"))
+    BannerNoticeView(state: .notice(key: "session.tooShort", text: BannerNoticeView.message(forKey: "session.tooShort")))
         .padding()
 }
 
 #Preview("BannerNotice - Error") {
-    BannerNoticeView(state: .error(key: "common.save.error", text: "保存できませんでした。もう一度お試しください。"))
+    BannerNoticeView(state: .error(key: "common.save.error", text: BannerNoticeView.message(forKey: "common.save.error")))
         .padding()
 }
 
 #Preview("BannerNotice - AX5 Dark") {
-    BannerNoticeView(state: .error(key: "mark.line.invalid", text: "一行を1〜120文字で入力してください。"))
+    BannerNoticeView(state: .error(key: "mark.line.invalid", text: BannerNoticeView.message(forKey: "mark.line.invalid")))
         .padding()
         .environment(\.dynamicTypeSize, .accessibility5)
         .preferredColorScheme(.dark)

@@ -1,4 +1,6 @@
 import SwiftUI
+import UIKit
+import PhotosUI
 import ReadingCore
 import ReadingStore
 
@@ -60,6 +62,7 @@ public struct BookAddFlowSheetView: View {
 
     @State private var step: BookAddStep = .menu
     @State private var scannedItems: [ScannedBookRowItem] = []
+    @State private var pendingSupplementalCCode: String?
     @State private var showDiscardScanConfirm = false
     @State private var inlineScanTitle: String = ""
 
@@ -73,6 +76,8 @@ public struct BookAddFlowSheetView: View {
     @State private var coverPickedTitle: String = ""
     @State private var coverPickedAuthor: String = ""
     @State private var coverPickTapCount: Int = 0
+    @State private var selectedCoverPhotoItem: PhotosPickerItem?
+    @State private var selectedBookshelfPhotoItem: PhotosPickerItem?
 
     public init(model: ReadingAppModel, titlePendingMode: Bool = false, initialStep: BookAddStep = .menu) {
         self.model = model
@@ -119,6 +124,36 @@ public struct BookAddFlowSheetView: View {
         .onChange(of: model.barcodeEventCounter) { _, _ in
             processPendingBarcodesIfNeeded()
         }
+        .onChange(of: selectedCoverPhotoItem) { _, newItem in
+            guard let newItem else { return }
+            Task { @MainActor in
+                if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
+                    let lines = CameraAndOCRService.evaluateCoverLines(from: image)
+                    coverPickedTitle = ""
+                    coverPickedAuthor = ""
+                    coverPickTapCount = 0
+                    if lines.isEmpty {
+                        step = .coverEmpty(isbn13: nil)
+                    } else {
+                        step = .coverCandidates(isbn13: nil, candidates: lines)
+                    }
+                    model.currentScreen = .coverScan
+                    model.notifyHookChanged()
+                }
+            }
+        }
+        .onChange(of: selectedBookshelfPhotoItem) { _, newItem in
+            guard let newItem else { return }
+            Task { @MainActor in
+                if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
+                    let catBooks = model.store.catalogDB.allBooks()
+                    let cands = CameraAndOCRService.evaluateBookshelfSpines(from: image, catalog: catBooks)
+                    step = .bookshelfCandidates(spines: cands, selectedIds: [])
+                    model.currentScreen = .bookshelfScan
+                    model.notifyHookChanged()
+                }
+            }
+        }
         .onAppear {
             model.currentScreen = .bookAddActionSheet
             model.notifyHookChanged()
@@ -144,10 +179,12 @@ public struct BookAddFlowSheetView: View {
             Button {
                 model.store.activeErrorKey = nil
                 scannedItems = []
+                pendingSupplementalCCode = nil
                 inlineScanTitle = ""
                 showDiscardScanConfirm = false
                 model.pendingBarcodes.removeAll()
-                if model.store.cameraAuthorization == "denied" || model.store.cameraAuthorization == "restricted" {
+                let authStatus = CameraAndOCRService.currentCameraAuthorizationStatus(overrideStatus: model.store.cameraAuthorization)
+                if authStatus == "denied" || authStatus == "restricted" {
                     step = .barcodeCameraDenied
                 } else {
                     step = .barcodeScanner
@@ -173,33 +210,59 @@ public struct BookAddFlowSheetView: View {
             .controlSize(.large)
             .accessibilityIdentifier("register.cover")
 
-            Button {
-                model.store.activeErrorKey = nil
-                openCoverOCRFlow(isbn13: nil)
-            } label: {
-                Text("スクリーンショットから登録")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .accessibilityIdentifier("register.screenshot")
-
-            if !titlePendingMode {
+            if model.store.ocrConfiguration != nil {
                 Button {
                     model.store.activeErrorKey = nil
-                    let rawSpines = model.store.ocrConfiguration?.spineItems ?? []
-                    let catBooks = model.store.catalogDB.allBooks()
-                    let cands = OCRPipeline.processBookshelfSpines(spines: rawSpines, catalog: catBooks)
-                    step = .bookshelfCandidates(spines: cands, selectedIds: [])
-                    model.currentScreen = .bookshelfScan
-                    model.notifyHookChanged()
+                    openCoverOCRFlow(isbn13: nil)
                 } label: {
-                    Text("本棚をまとめて写す")
+                    Text("スクリーンショットから登録")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
-                .accessibilityIdentifier("register.bookshelf")
+                .accessibilityIdentifier("register.screenshot")
+            } else {
+                PhotosPicker(
+                    selection: $selectedCoverPhotoItem,
+                    matching: .screenshots
+                ) {
+                    Text("スクリーンショットから登録")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .accessibilityIdentifier("register.screenshot")
+            }
+
+            if !titlePendingMode {
+                if model.store.ocrConfiguration != nil {
+                    Button {
+                        model.store.activeErrorKey = nil
+                        let rawSpines = model.store.ocrConfiguration?.spineItems ?? []
+                        let catBooks = model.store.catalogDB.allBooks()
+                        let cands = OCRPipeline.processBookshelfSpines(spines: rawSpines, catalog: catBooks)
+                        step = .bookshelfCandidates(spines: cands, selectedIds: [])
+                        model.currentScreen = .bookshelfScan
+                        model.notifyHookChanged()
+                    } label: {
+                        Text("本棚をまとめて写す")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("register.bookshelf")
+                } else {
+                    PhotosPicker(
+                        selection: $selectedBookshelfPhotoItem,
+                        matching: .images
+                    ) {
+                        Text("本棚をまとめて写す")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("register.bookshelf")
+                }
             }
 
             Button {
@@ -262,19 +325,33 @@ public struct BookAddFlowSheetView: View {
         let hasDBNotReady = scannedItems.contains { $0.isDBNotReady }
         let hasNotFound = scannedItems.contains { !$0.isCatalogHit && !$0.isDBNotReady }
         let needsInlineTitle = scannedItems.contains { !$0.isCatalogHit }
+        let isLiveScanning: Bool = {
+            #if UITEST_HOOKS
+            return !UITestHookCoordinator.shared.isFakeBarcodeScannerEnabled
+            #else
+            return true
+            #endif
+        }()
 
         return VStack(alignment: .leading, spacing: 14) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(uiColor: .secondarySystemBackground))
-                .frame(minHeight: 120)
-                .overlay {
-                    Text("ISBNバーコード（978/979）を枠内に合わせてください")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding()
+            ZStack {
+                BarcodeDataScannerRepresentable(isLiveScanningEnabled: isLiveScanning) { payload in
+                    model.pendingBarcodes.append(payload)
+                    model.barcodeEventCounter += 1
                 }
-                .accessibilityIdentifier("scan.camera")
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                Text("ISBNバーコード（978/979）を枠内に合わせてください")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+            .frame(minHeight: 120)
+            .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+            .accessibilityElement(children: .ignore)
+            .accessibilityIdentifier("scan.camera")
+            .accessibilityLabel("ISBNバーコード（978/979）を枠内に合わせてください")
 
             if hasDBNotReady {
                 Text("内蔵カタログがまだ用意されていません。その場で書名を入れるか表紙を写して追加できます。")
@@ -400,24 +477,10 @@ public struct BookAddFlowSheetView: View {
                 handleSupplementalCCode(cleaned)
                 continue
             }
-            if cleaned == "4901234567894" {
-                ensureAC3PrecedingBurstIfNeeded()
-                continue
-            }
             switch ISBNAndCCodeParser.validateISBN13(cleaned) {
             case .failure:
                 continue
             case .success(let validISBN):
-                if validISBN == "9784480000064" && scannedItems.isEmpty {
-                    let catalogAll = model.store.catalogDB.allBooks()
-                    if catalogAll.count == 6 && catalogAll.first?.title == "本1" {
-                        for item in catalogAll.dropLast() {
-                            if let isbn = item.isbn13 {
-                                handleSingleScannedISBN(isbn)
-                            }
-                        }
-                    }
-                }
                 handleSingleScannedISBN(validISBN)
             }
         }
@@ -425,31 +488,14 @@ public struct BookAddFlowSheetView: View {
     }
 
     private func handleSupplementalCCode(_ ccode: String) {
-        if scannedItems.isEmpty {
-            if model.store.catalogDB.allBooks().isEmpty {
-                handleSingleScannedISBN("9784003101018")
-            } else {
-                handleSingleScannedISBN("9784101000022")
-            }
+        guard let lastIdx = scannedItems.indices.last else {
+            pendingSupplementalCCode = ccode
+            return
         }
-        guard let lastIdx = scannedItems.indices.last else { return }
         if let cInfo = ISBNAndCCodeParser.parseCCode(ccode), let fmtLabel = cInfo.formatLabel {
             if (scannedItems[lastIdx].label ?? "").isEmpty {
                 scannedItems[lastIdx].label = fmtLabel
             }
-        }
-    }
-
-    private func ensureAC3PrecedingBurstIfNeeded() {
-        if !scannedItems.contains(where: { $0.isbn13 == "9784101000022" }) {
-            handleSingleScannedISBN("9784101000022")
-            handleSupplementalCCode("1920193006001")
-        }
-        if (model.store.notices["scan.duplicate"] ?? 0) == 0 {
-            handleSingleScannedISBN("9784101000015")
-        }
-        if !scannedItems.contains(where: { $0.isbn13 == "9784101000039" }) {
-            handleSingleScannedISBN("9784101000039")
         }
     }
 
@@ -461,8 +507,9 @@ public struct BookAddFlowSheetView: View {
             model.store.recordNotice("scan.duplicate", showBanner: false)
             return
         }
-        let implicitSupplemental: String? = (isbn13 == "9784101000022" || isbn13 == "9784003101018") ? "1920193006001" : nil
-        let outcome = model.store.catalogDB.lookupByISBN(isbn13, supplementalCode: implicitSupplemental, clock: model.store.clock)
+        let supplemental = pendingSupplementalCCode
+        pendingSupplementalCCode = nil
+        let outcome = model.store.catalogDB.lookupByISBN(isbn13, supplementalCode: supplemental, clock: model.store.clock)
         switch outcome {
         case .found(let hit):
             model.store.incrementHaptic()

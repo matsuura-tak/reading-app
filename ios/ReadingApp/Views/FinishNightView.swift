@@ -207,7 +207,24 @@ public struct FinishNightView: View {
 
     private var shareCardButtonSection: some View {
         Button {
-            model.store.recordShareCard(for: bookId)
+            if let book {
+                let nights = model.store.distinctNightCount(for: bookId)
+                let mins = model.store.totalMinutes(for: bookId)
+                let rendered = FinishCardRenderer.renderCard(
+                    title: book.title,
+                    author: book.author,
+                    nightsCount: nights,
+                    totalMinutes: mins
+                )
+                model.store.recordShareCard(
+                    for: bookId,
+                    renderedTexts: rendered.renderedTexts,
+                    widthPx: rendered.widthPx,
+                    heightPx: rendered.heightPx
+                )
+            } else {
+                model.store.recordShareCard(for: bookId)
+            }
             model.currentScreen = .shareCardPreview
             showShareCardSheet = true
             model.notifyHookChanged()

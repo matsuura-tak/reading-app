@@ -3511,6 +3511,330 @@
           }
         }
       }
+    },
+    "session.tooShort": {
+      "comment": "読書時間が1分未満のため記録しなかったときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1分未満のため記録しませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not recorded because the session was under 1 minute."
+          }
+        }
+      }
+    },
+    "session.invalidTime": {
+      "comment": "端末の時刻が巻き戻ったため記録しなかったときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "時刻が巻き戻ったため記録しませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not recorded because the system clock moved backward."
+          }
+        }
+      }
+    },
+    "session.capped": {
+      "comment": "読書時間が24時間を超えたため上限で記録したときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24時間を上限として記録しました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorded up to the 24-hour maximum."
+          }
+        }
+      }
+    },
+    "session.start.error": {
+      "comment": "読書セッションの開始に失敗したときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を始められませんでした。もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not start reading. Please try again."
+          }
+        }
+      }
+    },
+    "session.save.error": {
+      "comment": "読書記録の保存に失敗したときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save the reading record. Please try again."
+          }
+        }
+      }
+    },
+    "common.save.error": {
+      "comment": "データの保存に失敗したときの汎用エラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save. Please try again."
+          }
+        }
+      }
+    },
+    "store.load.error": {
+      "comment": "起動時や画面表示時にデータを読み込めなかったときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "データを読み込めませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load your data."
+          }
+        }
+      }
+    },
+    "book.title.invalid": {
+      "comment": "書名が空または100文字を超えているときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名を1〜100文字で入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a book title between 1 and 100 characters."
+          }
+        }
+      }
+    },
+    "book.author.invalid": {
+      "comment": "著者名が100文字を超えているときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者名を100文字以内で入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the author name within 100 characters."
+          }
+        }
+      }
+    },
+    "mark.line.invalid": {
+      "comment": "しおりの一行が空または60文字を超えているときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一行を1〜60文字で入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a line between 1 and 60 characters."
+          }
+        }
+      }
+    },
+    "mark.page.invalid": {
+      "comment": "ページ数や進捗の数値が範囲外のときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正しい数値を入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a valid number."
+          }
+        }
+      }
+    },
+    "record.minutes.invalid": {
+      "comment": "読書時間の編集で1〜1440分の範囲外のときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1〜1440分の数値を入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a duration between 1 and 1440 minutes."
+          }
+        }
+      }
+    },
+    "store.unavailable": {
+      "comment": "端末でApp内課金が制限されているときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この端末では購入が制限されています。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases are restricted on this device."
+          }
+        }
+      }
+    },
+    "store.offline": {
+      "comment": "オフラインのためStoreKitの価格を取得できないときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフラインのため価格を取得できません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot fetch price while offline."
+          }
+        }
+      }
+    },
+    "store.purchase.error": {
+      "comment": "よむま Plusの購入処理に失敗したときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を完了できませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not complete the purchase."
+          }
+        }
+      }
+    },
+    "store.restore.done": {
+      "comment": "購入の復元に成功したときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元しました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases restored."
+          }
+        }
+      }
+    },
+    "store.restore.none": {
+      "comment": "復元できる購入履歴が見つからなかったときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復元できる購入が見つかりませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No purchases found to restore."
+          }
+        }
+      }
+    },
+    "bookmark.line.empty": {
+      "comment": "しおりの一行がまだ登録されていないときの縦書き領域ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ一行はありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved line yet"
+          }
+        }
+      }
     }
   }
 }

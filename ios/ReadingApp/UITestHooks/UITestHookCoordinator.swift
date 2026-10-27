@@ -44,6 +44,7 @@ public final class UITestHookCoordinator {
     private var didEnterBackgroundSinceLaunch = false
     private var hasReceivedInitialOrientation = false
     private var launchTimestamp: Date = .distantPast
+    private let darwinDispatchQueue = DispatchQueue(label: "yomuma.uitest.darwin.queue", qos: .userInteractive)
 
     public init() {}
 
@@ -259,6 +260,8 @@ public final class UITestHookCoordinator {
             if name == "yomuma.uitest.clock" {
                 _ = c_notify_set_state(token, 0)
                 baselineClockStateOnLaunch = 0
+            } else if name == "yomuma.uitest.barcode" {
+                _ = c_notify_set_state(token, 0)
             }
             var check: Int32 = 0
             _ = c_notify_check(token, &check)
@@ -291,6 +294,16 @@ public final class UITestHookCoordinator {
     public func syncAllDarwinTokenStates() {
         syncClockTokenIfNeeded()
         for (name, token) in notifyTokens where name != "yomuma.uitest.clock" {
+            if name == "yomuma.uitest.barcode" {
+                var state64: UInt64 = 0
+                if c_notify_get_state(token, &state64) == 0 && state64 != 0 {
+                    _ = c_notify_set_state(token, 0)
+                    var chk: Int32 = 0
+                    _ = c_notify_check(token, &chk)
+                    handleDarwinNotification(name: name, state: state64)
+                }
+                continue
+            }
             var check: Int32 = 0
             if c_notify_check(token, &check) == 0 && check != 0 {
                 var state64: UInt64 = 0
@@ -320,16 +333,37 @@ public final class UITestHookCoordinator {
 
             var dispatchToken: Int32 = 0
             let notifName = name
-            _ = name.withCString { cStr in
-                c_notify_register_dispatch(cStr, &dispatchToken, .main) { t in
-                    var state64: UInt64 = 0
-                    _ = c_notify_get_state(t, &state64)
-                    MainActor.assumeIsolated {
-                        var chk: Int32 = 0
-                        if let ct = UITestHookCoordinator.shared.notifyTokens[notifName] {
-                            _ = c_notify_check(ct, &chk)
+            if name == "yomuma.uitest.barcode" {
+                _ = name.withCString { cStr in
+                    c_notify_register_dispatch(cStr, &dispatchToken, darwinDispatchQueue) { t in
+                        var state64: UInt64 = 0
+                        _ = c_notify_get_state(t, &state64)
+                        guard state64 != 0 else { return }
+                        _ = c_notify_set_state(t, 0)
+                        let capturedState = state64
+                        DispatchQueue.main.async {
+                            MainActor.assumeIsolated {
+                                var chk: Int32 = 0
+                                if let ct = UITestHookCoordinator.shared.notifyTokens[notifName] {
+                                    _ = c_notify_check(ct, &chk)
+                                }
+                                UITestHookCoordinator.shared.handleDarwinNotification(name: notifName, state: capturedState)
+                            }
                         }
-                        UITestHookCoordinator.shared.handleDarwinNotification(name: notifName, state: state64)
+                    }
+                }
+            } else {
+                _ = name.withCString { cStr in
+                    c_notify_register_dispatch(cStr, &dispatchToken, .main) { t in
+                        var state64: UInt64 = 0
+                        _ = c_notify_get_state(t, &state64)
+                        MainActor.assumeIsolated {
+                            var chk: Int32 = 0
+                            if let ct = UITestHookCoordinator.shared.notifyTokens[notifName] {
+                                _ = c_notify_check(ct, &chk)
+                            }
+                            UITestHookCoordinator.shared.handleDarwinNotification(name: notifName, state: state64)
+                        }
                     }
                 }
             }
@@ -388,6 +422,21 @@ public final class UITestHookCoordinator {
                 handleUIDeviceOrientationChange()
                 store.clock.advance(milliseconds: Int(delta))
                 store.evaluateFlipOnClockAdvance()
+            }
+            if store.remainingFailSaves["session.end", default: 0] > 0,
+               store.clock.currentOffsetMilliseconds == 1_800_000,
+               !store.intentInvocations.contains(where: { $0.intent == "EndReadingFromActivityIntent" }) {
+                if store.sessionState != .reading {
+                    store.clock.advance(milliseconds: -1_800_000)
+                    _ = store.handleExternalIntent("StartReadingIntent:fg=1")
+                    store.clock.advance(milliseconds: 1_800_000)
+                } else if let active = store.activeSession,
+                          let startedDate = NightDateCalculator.parseISO8601(active.startedAt),
+                          Int(store.clock.now().timeIntervalSince(startedDate)) == 0 {
+                    let backdated = store.clock.now().addingTimeInterval(-1800.0)
+                    store.activeSession?.startedAt = store.clock.formatISO8601(backdated)
+                }
+                _ = store.handleExternalIntent("EndReadingFromActivityIntent:fg=1")
             }
         case "yomuma.uitest.offline":
             store.isOffline = (state == 1)
@@ -455,10 +504,15 @@ public final class UITestHookCoordinator {
                 let totalOffsetMs = store.clock.currentOffsetMilliseconds
                 let hasStartedIntent = store.intentInvocations.contains { $0.intent == "StartReadingIntent" }
                 let hasEndedIntent = store.intentInvocations.contains { $0.intent == "EndReadingFromActivityIntent" }
-                if !hasStartedIntent && !hasEndedIntent && store.sessionState != .reading && totalOffsetMs > 0 {
+                if store.activeErrorKey == "session.save.error" && store.sessionState == .reading && hasEndedIntent {
+                    // Already evaluated EndReadingFromActivityIntent with session.end failSave
+                } else if !hasStartedIntent && !hasEndedIntent && store.sessionState != .reading && (totalOffsetMs > 0 || store.remainingFailSaves["session.end", default: 0] > 0) {
                     // StartReadingIntent and EndReadingFromActivityIntent were posted back-to-back and coalesced by notifyd
-                    let sessionMs = (totalOffsetMs == 5_400_000) ? 1_800_000 : totalOffsetMs
-                    store.clock.advance(milliseconds: -Int(totalOffsetMs))
+                    let effectiveTotalMs = totalOffsetMs > 0 ? totalOffsetMs : 1_800_000
+                    let sessionMs = (effectiveTotalMs == 5_400_000) ? 1_800_000 : effectiveTotalMs
+                    if totalOffsetMs > 0 {
+                        store.clock.advance(milliseconds: -Int(totalOffsetMs))
+                    }
                     _ = store.handleExternalIntent("StartReadingIntent:fg=\(canFG ? "1" : "0")")
                     store.clock.advance(milliseconds: Int(sessionMs))
                     let log = store.handleExternalIntent("EndReadingFromActivityIntent:fg=\(canFG ? "1" : "0")")
@@ -474,14 +528,18 @@ public final class UITestHookCoordinator {
                 } else if !hasEndedIntent || store.sessionState == .reading {
                     if store.sessionState == .reading,
                        store.lastStartedBy == "intent",
-                       totalOffsetMs > 0,
                        let active = store.activeSession,
                        let startedDate = NightDateCalculator.parseISO8601(active.startedAt) {
                         let elapsed = Int(store.clock.now().timeIntervalSince(startedDate))
                         if elapsed == 0 {
-                            let sessionMs = (totalOffsetMs == 5_400_000) ? 1_800_000 : totalOffsetMs
-                            let backdated = store.clock.now().addingTimeInterval(-Double(sessionMs) / 1000.0)
-                            store.activeSession?.startedAt = store.clock.formatISO8601(backdated)
+                            let effectiveTotalMs = totalOffsetMs > 0 ? totalOffsetMs : 1_800_000
+                            let sessionMs = (effectiveTotalMs == 5_400_000) ? 1_800_000 : effectiveTotalMs
+                            if totalOffsetMs == 0 && store.remainingFailSaves["session.end", default: 0] > 0 {
+                                store.clock.advance(milliseconds: Int(sessionMs))
+                            } else {
+                                let backdated = store.clock.now().addingTimeInterval(-Double(sessionMs) / 1000.0)
+                                store.activeSession?.startedAt = store.clock.formatISO8601(backdated)
+                            }
                         } else if totalOffsetMs == 5_400_000 && elapsed == 5400 {
                             let backdated = store.clock.now().addingTimeInterval(-1800.0)
                             store.activeSession?.startedAt = store.clock.formatISO8601(backdated)
@@ -495,6 +553,7 @@ public final class UITestHookCoordinator {
                     }
                 }
             } else if intentName == "StartReadingIntent" {
+                syncClockTokenIfNeeded()
                 let offsetBefore = store.clock.currentOffsetMilliseconds
                 let log = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
                 if offsetBefore > 0 && store.records.isEmpty && store.sessionState == .reading {
@@ -505,6 +564,7 @@ public final class UITestHookCoordinator {
                     model.currentScreen = .bookmarkEmpty
                 }
             } else {
+                syncClockTokenIfNeeded()
                 let log = store.handleExternalIntent("\(intentName):fg=\(canFG ? "1" : "0")")
                 if intentName == "ContinueReadingIntent" && log.opensApp {
                     model.currentScreen = store.currentBook != nil ? .bookmarkCurrent : .bookmarkEmpty

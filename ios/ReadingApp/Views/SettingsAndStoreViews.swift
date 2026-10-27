@@ -289,7 +289,8 @@ public struct SettingsView: View {
             .accessibilityIdentifier("settings.dataSources.license")
 
             Button {
-                model.store.openExternalURL("https://yomuma.example.com/privacy")
+                let urlString = (Bundle.main.object(forInfoDictionaryKey: "PrivacyPolicyURL") as? String) ?? "https://yomuma.jp/privacy"
+                model.store.openExternalURL(urlString)
                 model.notifyHookChanged()
             } label: {
                 Text("プライバシーポリシー")

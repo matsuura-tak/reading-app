@@ -231,17 +231,23 @@ public struct ShareCardAuditItem: Codable, Sendable, Equatable {
     public var containsSavedLine: Bool
     public var containsPhoto: Bool
     public var containsReflection: Bool
+    public var widthPx: Int
+    public var heightPx: Int
 
     public init(
         renderedTexts: [String],
         containsSavedLine: Bool = false,
         containsPhoto: Bool = false,
-        containsReflection: Bool = false
+        containsReflection: Bool = false,
+        widthPx: Int = 1080,
+        heightPx: Int = 1350
     ) {
         self.renderedTexts = renderedTexts
         self.containsSavedLine = containsSavedLine
         self.containsPhoto = containsPhoto
         self.containsReflection = containsReflection
+        self.widthPx = widthPx
+        self.heightPx = heightPx
     }
 }
 

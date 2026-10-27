@@ -3275,22 +3275,35 @@ public final class ReadingDataStore {
 
     // MARK: - Share Card, Recommendations, Awards, Outbound
 
-    public func recordShareCard(for bookId: UUID) {
+    public func recordShareCard(
+        for bookId: UUID,
+        renderedTexts: [String]? = nil,
+        widthPx: Int = 1080,
+        heightPx: Int = 1350
+    ) {
         guard let book = books.first(where: { $0.id == bookId }) else { return }
         let nights = distinctNightCount(for: bookId)
         let mins = totalMinutes(for: bookId)
-        var texts = [book.title]
-        if !book.author.isEmpty {
-            texts.append(book.author)
+        let texts: [String]
+        if let renderedTexts, !renderedTexts.isEmpty {
+            texts = renderedTexts
+        } else {
+            var defaultTexts = [book.title]
+            if !book.author.isEmpty {
+                defaultTexts.append(book.author)
+            }
+            defaultTexts.append("\(nights)晩")
+            defaultTexts.append("\(mins)分")
+            texts = defaultTexts
         }
-        texts.append("\(nights)晩")
-        texts.append("\(mins)分")
         shareCards.append(
             ShareCardAuditItem(
                 renderedTexts: texts,
                 containsSavedLine: false,
                 containsPhoto: false,
-                containsReflection: false
+                containsReflection: false,
+                widthPx: widthPx,
+                heightPx: heightPx
             )
         )
     }

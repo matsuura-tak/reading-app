@@ -27,6 +27,7 @@
 		A100001A0000000000000001 /* BookRegistrationViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001A0000000000000001 /* BookRegistrationViews.swift */; };
 		A100001B0000000000000001 /* FinishNightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001B0000000000000001 /* FinishNightView.swift */; };
 		A100001C0000000000000001 /* SettingsAndStoreViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001C0000000000000001 /* SettingsAndStoreViews.swift */; };
+		A100001D0000000000000001 /* CameraAndOCRService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100001D0000000000000001 /* CameraAndOCRService.swift */; };
 		A100000C0000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F100000C0000000000000001 /* Assets.xcassets */; };
 		A100000D0000000000000001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F100000D0000000000000001 /* Localizable.xcstrings */; };
 		A100000E0000000000000001 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F100000E0000000000000001 /* InfoPlist.xcstrings */; };
@@ -142,6 +143,7 @@
 		F100001A0000000000000001 /* BookRegistrationViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/BookRegistrationViews.swift; sourceTree = "<group>"; };
 		F100001B0000000000000001 /* FinishNightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/FinishNightView.swift; sourceTree = "<group>"; };
 		F100001C0000000000000001 /* SettingsAndStoreViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/SettingsAndStoreViews.swift; sourceTree = "<group>"; };
+		F100001D0000000000000001 /* CameraAndOCRService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Model/CameraAndOCRService.swift; sourceTree = "<group>"; };
 
 		F20000010000000000000001 /* ReadingWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingWidgetExtension/ReadingWidgets.swift; sourceTree = "<group>"; };
 		F20000020000000000000001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ReadingWidgetExtension/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -230,6 +232,7 @@
 				F100001A0000000000000001 /* BookRegistrationViews.swift */,
 				F100001B0000000000000001 /* FinishNightView.swift */,
 				F100001C0000000000000001 /* SettingsAndStoreViews.swift */,
+				F100001D0000000000000001 /* CameraAndOCRService.swift */,
 				F20000010000000000000001 /* ReadingWidgets.swift */,
 				F20000020000000000000001 /* PrivacyInfo.xcprivacy */,
 				F20000030000000000000001 /* Info.plist */,
@@ -461,6 +464,7 @@
 				A100001A0000000000000001 /* BookRegistrationViews.swift in Sources */,
 				A100001B0000000000000001 /* FinishNightView.swift in Sources */,
 				A100001C0000000000000001 /* SettingsAndStoreViews.swift in Sources */,
+				A100001D0000000000000001 /* CameraAndOCRService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

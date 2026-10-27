@@ -1,4 +1,6 @@
 import SwiftUI
+import UIKit
+import PhotosUI
 import ReadingCore
 import ReadingStore
 
@@ -18,6 +20,7 @@ public struct BookmarkMarkFlowSheet: View {
     @State private var step: BookmarkMarkFlowStep = .select
     @State private var lineText: String = ""
     @State private var pageText: String = ""
+    @State private var selectedScreenshotItem: PhotosPickerItem?
 
     public init(model: ReadingAppModel, initialStep: BookmarkMarkFlowStep = .select) {
         self.model = model
@@ -70,6 +73,14 @@ public struct BookmarkMarkFlowSheet: View {
                 completePageOCREvaluation()
             }
         }
+        .onChange(of: selectedScreenshotItem) { _, newItem in
+            guard let newItem else { return }
+            Task { @MainActor in
+                if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
+                    applyVisionPageOCRResult(CameraAndOCRService.evaluatePageOCR(from: image))
+                }
+            }
+        }
     }
 
     // MARK: - S-3 Selection
@@ -93,17 +104,30 @@ public struct BookmarkMarkFlowSheet: View {
             .controlSize(.large)
             .accessibilityIdentifier("mark.photo")
 
-            Button {
-                model.store.activeErrorKey = nil
-                triggerPageOCR()
-                model.notifyHookChanged()
-            } label: {
-                Text("スクリーンショットから選ぶ")
-                    .frame(maxWidth: .infinity)
+            if model.store.ocrConfiguration != nil {
+                Button {
+                    model.store.activeErrorKey = nil
+                    triggerPageOCR()
+                    model.notifyHookChanged()
+                } label: {
+                    Text("スクリーンショットから選ぶ")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .accessibilityIdentifier("mark.screenshot")
+            } else {
+                PhotosPicker(
+                    selection: $selectedScreenshotItem,
+                    matching: .screenshots
+                ) {
+                    Text("スクリーンショットから選ぶ")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .accessibilityIdentifier("mark.screenshot")
             }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .accessibilityIdentifier("mark.screenshot")
 
             Button {
                 model.store.activeErrorKey = nil
@@ -513,6 +537,17 @@ public struct BookmarkMarkFlowSheet: View {
         _ = model.store.clock.endInterval(.markWait)
 
         if mode == .empty || result.columns.isEmpty {
+            step = .ocrEmpty
+            model.currentScreen = .bookmarkMarkCamera
+        } else {
+            applyVisionPageOCRResult(result)
+            return
+        }
+        model.notifyHookChanged()
+    }
+
+    private func applyVisionPageOCRResult(_ result: OCRPageResult) {
+        if result.columns.isEmpty {
             step = .ocrEmpty
             model.currentScreen = .bookmarkMarkCamera
         } else {

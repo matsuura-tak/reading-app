@@ -618,10 +618,10 @@ public final class CatalogDatabase {
 
     public nonisolated static func defaultBundledSeedBooks() -> [H20BiblioItem] {
         [
-            H20BiblioItem(isbn13: "9784101000015", title: "こころ", author: "夏目漱石", publisher: "新潮社", label: "新潮文庫", publishedYear: 2004, ndc: "913.6"),
-            H20BiblioItem(isbn13: "9784101000022", title: "坊っちゃん", author: "夏目漱石", publisher: "新潮社", label: nil, publishedYear: 2003, ndc: "913.6"),
-            H20BiblioItem(isbn13: "9784101000039", title: "羅生門", author: "芥川龍之介", publisher: "新潮社", label: "新潮文庫", publishedYear: 2005, ndc: "913.6"),
-            H20BiblioItem(isbn13: "9784101000046", title: "人間失格", author: "太宰治", publisher: "新潮社", label: "新潮文庫", publishedYear: 1952, ndc: "913.6"),
+            H20BiblioItem(isbn13: "9784101010014", title: "こころ", author: "夏目漱石", publisher: "新潮社", label: "新潮文庫", publishedYear: 2004, ndc: "913.6"),
+            H20BiblioItem(isbn13: "9784101010038", title: "坊っちゃん", author: "夏目漱石", publisher: "新潮社", label: nil, publishedYear: 2003, ndc: "913.6"),
+            H20BiblioItem(isbn13: "9784101033013", title: "羅生門・鼻", author: "芥川龍之介", publisher: "新潮社", label: "新潮文庫", publishedYear: 2005, ndc: "913.6"),
+            H20BiblioItem(isbn13: "9784101006055", title: "人間失格", author: "太宰治", publisher: "新潮社", label: "新潮文庫", publishedYear: 1952, ndc: "913.6"),
             H20BiblioItem(isbn13: "9784167911300", title: "コンビニ人間", author: "村田沙耶香", publisher: "文藝春秋", label: "文春文庫", publishedYear: 2018, ndc: "913.6")
         ]
     }

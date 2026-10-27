@@ -1,4 +1,6 @@
 import SwiftUI
+import UIKit
+import PhotosUI
 import ReadingCore
 import ReadingStore
 
@@ -442,7 +444,20 @@ public struct BookDetailView: View {
 
             if book.status == .finished {
                 Button {
-                    model.store.recordShareCard(for: book.id)
+                    let nights = model.store.distinctNightCount(for: book.id)
+                    let mins = model.store.totalMinutes(for: book.id)
+                    let rendered = FinishCardRenderer.renderCard(
+                        title: book.title,
+                        author: book.author,
+                        nightsCount: nights,
+                        totalMinutes: mins
+                    )
+                    model.store.recordShareCard(
+                        for: book.id,
+                        renderedTexts: rendered.renderedTexts,
+                        widthPx: rendered.widthPx,
+                        heightPx: rendered.heightPx
+                    )
                     model.currentScreen = .shareCardPreview
                     detailSheet = .shareCard
                     model.notifyHookChanged()
@@ -885,6 +900,8 @@ public struct ShareCardPreviewSheetView: View {
     public let book: BookSnapshot
     public let onClose: () -> Void
 
+    @State private var renderedOutput: FinishCardRenderOutput?
+
     public init(model: ReadingAppModel, book: BookSnapshot, onClose: @escaping () -> Void) {
         self.model = model
         self.book = book
@@ -897,28 +914,31 @@ public struct ShareCardPreviewSheetView: View {
 
         return NavigationStack {
             VStack(spacing: 24) {
-                VStack(spacing: 12) {
-                    Text(book.title)
-                        .font(.title2.bold())
-                        .multilineTextAlignment(.center)
-                    if !book.author.isEmpty {
-                        Text(book.author)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    Divider()
-                    HStack(spacing: 16) {
-                        Text("\(nights)晩")
-                            .font(.headline)
-                        Text("\(mins)分")
-                            .font(.headline)
-                    }
-                }
-                .padding(28)
+                FinishCardCanvasView(
+                    title: book.title,
+                    author: book.author,
+                    nightsCount: nights,
+                    totalMinutes: mins
+                )
                 .frame(maxWidth: .infinity)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("shareCard.canvas")
+
+                if let renderedOutput,
+                   !renderedOutput.pngData.isEmpty,
+                   let uiImage = UIImage(data: renderedOutput.pngData) {
+                    let previewImage = Image(uiImage: uiImage)
+                    ShareLink(
+                        item: previewImage,
+                        preview: SharePreview(book.title, image: previewImage)
+                    ) {
+                        Text("画像を共有")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .accessibilityIdentifier("shareCard.share")
+                }
 
                 Spacer()
 
@@ -937,6 +957,14 @@ public struct ShareCardPreviewSheetView: View {
             .accessibilityIdentifier("sheet.shareCard")
             .navigationTitle("読了カード")
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                renderedOutput = FinishCardRenderer.renderCard(
+                    title: book.title,
+                    author: book.author,
+                    nightsCount: nights,
+                    totalMinutes: mins
+                )
+            }
         }
     }
 }
@@ -953,6 +981,7 @@ public struct ColophonOCRSheetView: View {
     @State private var publisherText: String = ""
     @State private var yearText: String = ""
     @State private var isbnText: String = ""
+    @State private var selectedPhotoItem: PhotosPickerItem?
 
     public init(model: ReadingAppModel, bookId: UUID, onClose: @escaping () -> Void) {
         self.model = model
@@ -964,6 +993,30 @@ public struct ColophonOCRSheetView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 16) {
                 BannerNoticeView(model: model)
+
+                PhotosPicker(
+                    selection: $selectedPhotoItem,
+                    matching: .images
+                ) {
+                    Text("奥付の画像から読み取る")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("colophon.ocr.pickPhoto")
+                .onChange(of: selectedPhotoItem) { _, newItem in
+                    guard let newItem else { return }
+                    Task { @MainActor in
+                        if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
+                            let res = CameraAndOCRService.evaluateColophon(from: image)
+                            extracted = res
+                            if let a = res.author, !a.isEmpty { authorText = a }
+                            if let p = res.publisher, !p.isEmpty { publisherText = p }
+                            if let y = res.publishedYear { yearText = String(y) }
+                            if let i = res.isbn13, !i.isEmpty { isbnText = i }
+                            model.notifyHookChanged()
+                        }
+                    }
+                }
 
                 TextField("著者名", text: $authorText)
                     .textFieldStyle(.roundedBorder)
