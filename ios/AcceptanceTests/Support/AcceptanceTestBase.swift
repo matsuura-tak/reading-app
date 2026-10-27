@@ -74,9 +74,28 @@ class AcceptanceTestBase: XCTestCase {
 
     func postDarwinNotification(_ name: String, state: UInt64? = nil) {
         if let state = state, let token = notifyTokens[name] {
+            if name == "yomuma.uitest.barcode" && state != 0 {
+                let preDeadline = CFAbsoluteTimeGetCurrent() + 0.05
+                var current: UInt64 = 0
+                notify_get_state(token, &current)
+                while current != 0 && CFAbsoluteTimeGetCurrent() < preDeadline {
+                    sched_yield()
+                    notify_get_state(token, &current)
+                }
+            }
             notify_set_state(token, state)
+            notify_post(name)
+            if name == "yomuma.uitest.barcode" && state != 0 {
+                let ackDeadline = CFAbsoluteTimeGetCurrent() + 0.08
+                var ack: UInt64 = state
+                while ack != 0 && CFAbsoluteTimeGetCurrent() < ackDeadline {
+                    sched_yield()
+                    notify_get_state(token, &ack)
+                }
+            }
+        } else {
+            notify_post(name)
         }
-        notify_post(name)
     }
 
     func resetAndLaunch(
