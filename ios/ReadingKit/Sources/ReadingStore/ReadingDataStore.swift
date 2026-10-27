@@ -2881,7 +2881,7 @@ public final class ReadingDataStore {
             summaryText: summaryText,
             hideOnWidgets: settings.hideOnWidgets
         )
-        Task.detached {
+        Task {
             let existingActivities = Activity<ReadingActivityAttributes>.activities
             if let existing = existingActivities.first {
                 await existing.update(ActivityContent(state: contentState, staleDate: staleDate))
@@ -2900,7 +2900,7 @@ public final class ReadingDataStore {
     private func syncSystemLiveActivityEnd(immediate: Bool) {
         guard !isLiveActivityStubbed else { return }
         #if canImport(ActivityKit) && os(iOS)
-        Task.detached {
+        Task {
             let existingActivities = Activity<ReadingActivityAttributes>.activities
             for activity in existingActivities {
                 let finalState = activity.content.state
