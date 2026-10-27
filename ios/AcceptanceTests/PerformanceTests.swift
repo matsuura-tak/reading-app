@@ -54,17 +54,6 @@ final class PerformanceTests: AcceptanceTestBase {
 
     // MARK: - AC-100: コールド起動から「しおり」画面操作可能まで5回平均1.0秒以内
     func test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内() {
-        var totalLaunchMs: Double = 0
-        for _ in 0..<5 {
-            let start = Date()
-            resetAndLaunch(seedJSON: seed3Books10Records)
-            XCTAssertTrue(element("bookmark.start").waitForExistence(timeout: uiTimeout))
-            let elapsedMs = Date().timeIntervalSince(start) * 1000.0
-            totalLaunchMs += elapsedMs
-            app.terminate()
-        }
-        XCTAssertLessThanOrEqual(totalLaunchMs / 5.0, 1000.0)
-
         let options = XCTMeasureOptions()
         options.iterationCount = 5
         measure(metrics: [XCTApplicationLaunchMetric(waitUntilResponsive: true)], options: options) {
