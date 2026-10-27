@@ -1,0 +1,811 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:h22-widget:1",
+  "title": "H22 ウィジェットの中身（要素 hook.widget の accessibilityValue の JSON）大きな版 1",
+  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0003、ADR 0005、PRD 11 の冒頭のつなぎ口（AC-14、AC-16、AC-27〜AC-35、AC-40、AC-62、AC-64、AC-73、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139〜AC-141）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：電子書籍の進み具合表示と名無しの今の本を反映）。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[進み具合と名無しの今の本（AC-139〜AC-141）] 進み具合の短い表示文字列（texts[\"widget.page\"] および composition.page.text）は、紙の本のページなら「p.61」、電子書籍の位置番号（location）なら「位置1450」（英語は \"Loc 1450\"）、パーセント（percent）なら「52%」が入る。名無しの今の本（isTitlePending が真。register.later）で一行がないときは texts[\"widget.title\"] に文言キー widget.currentBookAsTitle の文（「今の本」／英語 \"Reading Now\"）が入り、accessibility.label の書名の位置も同じ文になる。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
+  "type": "object",
+  "required": [
+    "outputVersion",
+    "renders",
+    "reloadRequests"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "outputVersion": {
+      "const": 1
+    },
+    "renders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/render"
+      },
+      "description": "-uitest-widget で頼んだ順。"
+    },
+    "reloadRequests": {
+      "type": "object",
+      "required": [
+        "total",
+        "byCause"
+      ],
+      "additionalProperties": false,
+      "description": "このプロセスでのウィジェットの再読み込みの要求の回数（hook.state の widgetReloads と同じ数）。",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "byCause": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "launch",
+              "book.add",
+              "book.update",
+              "book.status",
+              "book.delete",
+              "mark.save",
+              "settings.save"
+            ]
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "render": {
+      "type": "object",
+      "required": [
+        "request",
+        "seq",
+        "producedAt",
+        "snapshotSource",
+        "state",
+        "url",
+        "appearanceID",
+        "accessibility",
+        "texts",
+        "timeline"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "request": {
+          "type": "object",
+          "required": [
+            "family",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "enum": [
+                "accessoryRectangular",
+                "systemSmall"
+              ],
+              "description": "W-1 は accessoryRectangular、W-2 は systemSmall。"
+            },
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "このプロセスで組んだ順の番号。"
+        },
+        "producedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "組んだ時のアプリの時計。"
+        },
+        "snapshotSource": {
+          "enum": [
+            "file",
+            "override"
+          ],
+          "description": "file は App Group の写し、override は UITEST_WIDGET_SNAPSHOT。"
+        },
+        "state": {
+          "enum": [
+            "normal",
+            "noLine",
+            "noLineNoPage",
+            "hidden",
+            "empty",
+            "unavailable"
+          ],
+          "description": "ADR 0003 の状態。"
+        },
+        "unavailableReason": {
+          "enum": [
+            "missing",
+            "unopenable",
+            "malformed",
+            "version",
+            "range",
+            "hiddenConflict"
+          ],
+          "description": "unavailable のときだけ。widget-snapshot.schema.json の読む側の決まり (1)〜(6) の順。"
+        },
+        "url": {
+          "enum": [
+            "yomuma://open?entry=lock_widget",
+            "yomuma://open?entry=small_widget"
+          ],
+          "description": "押したときの URL（contracts/entry-urls.md）。描いた元のデータから返す。"
+        },
+        "appearanceID": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+        },
+        "accessibility": {
+          "type": "object",
+          "required": [
+            "identifier",
+            "label",
+            "groupCount"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "identifier": {
+              "enum": [
+                "widget.rectangular",
+                "widget.small"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "description": "根の要素の読み上げのラベル（AC-99）。"
+            },
+            "groupCount": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "VoiceOver と同じたどり方（要素になったところで止まる）で数えたまとまりの数（AC-99）。XCUITest の要素は数えない。"
+            }
+          }
+        },
+        "texts": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "画面に出した文字（読み上げから隠した要素を含む）。出していないものはキーを書かない。",
+          "properties": {
+            "widget.title": {
+              "type": "string",
+              "description": "一行がないときに出す書名。名無しの今の本（isTitlePending が真。AC-139）のときは文言キー widget.currentBookAsTitle の文（「今の本」／\"Reading Now\"）。"
+            },
+            "widget.line": {
+              "type": "string",
+              "description": "出した一行の文字列（縮め方のあと）。"
+            },
+            "widget.page": {
+              "type": "string",
+              "description": "進み具合の短い表示文字列。単位が page なら「p.61」、location なら「位置1450」（または \"Loc 1450\"）、percent なら「52%」（AC-141）。"
+            },
+            "messageKey": {
+              "enum": [
+                "widget.empty",
+                "widget.hidden",
+                "widget.unavailable"
+              ]
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "timeline": {
+          "type": "object",
+          "required": [
+            "entries",
+            "policy",
+            "elapsedMs"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "entries": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "date",
+                  "state"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+                  },
+                  "state": {
+                    "enum": [
+                      "normal",
+                      "noLine",
+                      "noLineNoPage",
+                      "hidden",
+                      "empty",
+                      "unavailable"
+                    ]
+                  }
+                }
+              }
+            },
+            "policy": {
+              "oneOf": [
+                {
+                  "enum": [
+                    "never",
+                    "atEnd"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "after"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "after": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+                    }
+                  }
+                }
+              ]
+            },
+            "elapsedMs": {
+              "type": "number",
+              "minimum": 0,
+              "description": "タイムラインの項目を作る関数（拡張と同じ関数）に入ってから返るまでの実時間（AC-102）。"
+            }
+          }
+        },
+        "composition": {
+          "type": "object",
+          "required": [
+            "frame",
+            "fontSize",
+            "L",
+            "referenceL",
+            "columnCount",
+            "feedCount",
+            "kinsokuRelaxed",
+            "slack",
+            "orientation",
+            "displayedLine",
+            "shortened",
+            "cells"
+          ],
+          "additionalProperties": false,
+          "description": "ADR 0003 の組みの結果（記号は ADR 0003 の「記号の値」）。座標は枠の左上を原点とする pt。",
+          "properties": {
+            "frame": {
+              "type": "object",
+              "required": [
+                "W",
+                "H",
+                "i",
+                "B",
+                "g",
+                "R"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "W": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "H": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "i": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "B": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "g": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "R": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            },
+            "fontSize": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "description": "字の大きさ s（pt）。"
+            },
+            "L": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "この一行の1列の字数。"
+            },
+            "referenceL": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "禁則の字のない25字の一行での L（AC-28 の L）。"
+            },
+            "columnCount": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "feedCount": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "送りの回数。"
+            },
+            "kinsokuRelaxed": {
+              "type": "boolean"
+            },
+            "slack": {
+              "type": "object",
+              "required": [
+                "horizontal",
+                "vertical"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "horizontal": {
+                  "type": "number"
+                },
+                "vertical": {
+                  "type": "number"
+                }
+              }
+            },
+            "orientation": {
+              "enum": [
+                "vertical",
+                "horizontal"
+              ]
+            },
+            "displayedLine": {
+              "type": "string",
+              "description": "出した字の並び（縮め方のあと。AC-29）。"
+            },
+            "shortened": {
+              "type": "boolean"
+            },
+            "cells": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "display",
+                  "rotation",
+                  "dx",
+                  "dy",
+                  "column",
+                  "row",
+                  "x",
+                  "y"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "元の字（書記素1つ）。"
+                  },
+                  "display": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "出す字（縦書き用に置き換えたあと）。"
+                  },
+                  "rotation": {
+                    "enum": [
+                      0,
+                      90
+                    ],
+                    "description": "回す角度（度）。"
+                  },
+                  "dx": {
+                    "type": "number"
+                  },
+                  "dy": {
+                    "type": "number"
+                  },
+                  "column": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "列。右から 1、2、…"
+                  },
+                  "row": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "列の中の位置。上から 1、2、…"
+                  },
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                }
+              }
+            },
+            "page": {
+              "type": "object",
+              "required": [
+                "text",
+                "x",
+                "y"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "枠内に描いた進み具合の文字列（例：「p.61」「位置1450」「52%」。AC-141）。"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "normal"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "composition"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "composition"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "unavailable"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "unavailableReason"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "unavailableReason"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "outputVersion": 1,
+      "renders": [
+        {
+          "request": {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          },
+          "seq": 2,
+          "producedAt": "2026-10-15T14:50:00.000Z",
+          "snapshotSource": "file",
+          "state": "normal",
+          "url": "yomuma://open?entry=lock_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.rectangular",
+            "label": "羅生門、61ページ。下人は、雨やみを待っていた。",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.line": "下人は、雨やみを待っていた。",
+            "widget.page": "p.61"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-15T14:50:00.000Z",
+                "state": "normal"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 3.2
+          },
+          "composition": {
+            "frame": {
+              "W": 172,
+              "H": 76,
+              "i": 0,
+              "B": 43,
+              "g": 4,
+              "R": 0
+            },
+            "fontSize": 15,
+            "L": 5,
+            "referenceL": 5,
+            "columnCount": 3,
+            "feedCount": 0,
+            "kinsokuRelaxed": false,
+            "slack": {
+              "horizontal": 80.0,
+              "vertical": 1.0
+            },
+            "orientation": "vertical",
+            "displayedLine": "下人は、雨やみを待っていた。",
+            "shortened": false,
+            "cells": [
+              {
+                "source": "下",
+                "display": "下",
+                "rotation": 0,
+                "dx": 0,
+                "dy": 0,
+                "column": 1,
+                "row": 1,
+                "x": 110,
+                "y": 0
+              },
+              {
+                "source": "、",
+                "display": "︑",
+                "rotation": 0,
+                "dx": 0,
+                "dy": 0,
+                "column": 1,
+                "row": 4,
+                "x": 110,
+                "y": 45
+              }
+            ],
+            "page": {
+              "text": "p.61",
+              "x": 129,
+              "y": 30
+            }
+          }
+        },
+        {
+          "request": {
+            "family": "systemSmall",
+            "width": 170,
+            "height": 170
+          },
+          "seq": 3,
+          "producedAt": "2026-10-15T14:50:00.000Z",
+          "snapshotSource": "override",
+          "state": "unavailable",
+          "unavailableReason": "malformed",
+          "url": "yomuma://open?entry=small_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.small",
+            "label": "よむまを開くと、ここに続きの一行が出ます。",
+            "groupCount": 1
+          },
+          "texts": {
+            "messageKey": "widget.unavailable",
+            "message": "よむまを開くと、ここに続きの一行が出ます。"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-15T14:50:00.000Z",
+                "state": "unavailable"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 0.4
+          }
+        }
+      ],
+      "reloadRequests": {
+        "total": 2,
+        "byCause": {
+          "launch": 1,
+          "mark.save": 1
+        }
+      }
+    },
+    {
+      "outputVersion": 1,
+      "renders": [
+        {
+          "request": {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          },
+          "seq": 1,
+          "producedAt": "2026-10-15T14:50:00.000Z",
+          "snapshotSource": "file",
+          "state": "noLine",
+          "url": "yomuma://open?entry=lock_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.rectangular",
+            "label": "今の本、120ページ",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.title": "今の本",
+            "widget.page": "p.120"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-15T14:50:00.000Z",
+                "state": "noLine"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 0.9
+          }
+        }
+      ],
+      "reloadRequests": {
+        "total": 1,
+        "byCause": {
+          "launch": 1
+        }
+      }
+    },
+    {
+      "outputVersion": 1,
+      "renders": [
+        {
+          "request": {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          },
+          "seq": 1,
+          "producedAt": "2026-10-18T13:20:00.000Z",
+          "snapshotSource": "file",
+          "state": "normal",
+          "url": "yomuma://open?entry=lock_widget",
+          "appearanceID": "kinari",
+          "accessibility": {
+            "identifier": "widget.rectangular",
+            "label": "夜のピクニック、位置1450。歩行祭は、いつも同じ道を歩く。",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.line": "歩行祭は、いつも同じ道を歩く。",
+            "widget.page": "位置1450"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-18T13:20:00.000Z",
+                "state": "normal"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 2.8
+          },
+          "composition": {
+            "frame": {
+              "W": 172,
+              "H": 76,
+              "i": 0,
+              "B": 43,
+              "g": 4,
+              "R": 0
+            },
+            "fontSize": 15,
+            "L": 5,
+            "referenceL": 5,
+            "columnCount": 3,
+            "feedCount": 0,
+            "kinsokuRelaxed": false,
+            "slack": {
+              "horizontal": 80.0,
+              "vertical": 1.0
+            },
+            "orientation": "vertical",
+            "displayedLine": "歩行祭は、いつも同じ道を歩く。",
+            "shortened": false,
+            "cells": [
+              {
+                "source": "歩",
+                "display": "歩",
+                "rotation": 0,
+                "dx": 0,
+                "dy": 0,
+                "column": 1,
+                "row": 1,
+                "x": 110,
+                "y": 0
+              }
+            ],
+            "page": {
+              "text": "位置1450",
+              "x": 129,
+              "y": 30
+            }
+          }
+        },
+        {
+          "request": {
+            "family": "systemSmall",
+            "width": 170,
+            "height": 170
+          },
+          "seq": 2,
+          "producedAt": "2026-10-18T13:20:00.000Z",
+          "snapshotSource": "file",
+          "state": "noLine",
+          "url": "yomuma://open?entry=small_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.small",
+            "label": "今の本、52パーセント",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.title": "今の本",
+            "widget.page": "52%"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-18T13:20:00.000Z",
+                "state": "noLine"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 1.1
+          }
+        }
+      ],
+      "reloadRequests": {
+        "total": 2,
+        "byCause": {
+          "launch": 1,
+          "mark.save": 1
+        }
+      }
+    }
+  ]
+}

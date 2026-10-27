@@ -1,0 +1,1090 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:hook-config:1",
+  "title": "つなぎ口の設定のファイル（App Group の入れ物の UITestHooks/config.json）大きな版 1",
+  "description": "テストの起動（-uitest- の引数か UITEST_ の環境変数があるとき）で、アプリが引数から作って書くファイル。引数のない起動（開き直し）と、システムが起こしたプロセス（入口の URL、App Intents の実行など）は、このファイルを読んで同じ差し替えを効かせる（G0 の intents の verifier の要修正3）。テストはこのファイルを書かない。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口（H1〜H32、欠番 H3・H11 を除く30個）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：H19、H23、H24、H25、H27、H30、H32 をすべて v1.0 標準仕様に昇格）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
+  "type": "object",
+  "required": [
+    "configVersion",
+    "writtenAt"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "configVersion": {
+      "const": 1
+    },
+    "writtenAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+      "description": "書いた時の実時間。"
+    },
+    "clockBase": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,3})?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "H4。ない時は本物の時計。"
+    },
+    "timeZoneID": {
+      "type": "string",
+      "pattern": "^(UTC|GMT|[A-Za-z]+(/[A-Za-z0-9_+-]+){1,2})$",
+      "description": "H6。ない時は端末のタイムゾーン。"
+    },
+    "saveFailures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "target",
+          "remaining",
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "enum": [
+              "session.start",
+              "session.end",
+              "book.add",
+              "book.update",
+              "book.status",
+              "book.delete",
+              "record.update",
+              "record.delete",
+              "mark.save",
+              "settings.save",
+              "store.load"
+            ]
+          },
+          "remaining": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "あと何回失敗させるか。失敗させるたびに減らして書き直す。"
+          },
+          "kind": {
+            "enum": [
+              "disk_full",
+              "unknown"
+            ]
+          }
+        }
+      },
+      "description": "H7。"
+    },
+    "flipUnavailable": {
+      "type": "boolean",
+      "description": "H18。"
+    },
+    "ocr": {
+      "$ref": "#/$defs/h19OcrConfig",
+      "description": "H19（環境変数 UITEST_OCR）。ページ・表紙・本棚・奥付の OCR 結果差し替えと PhotosPicker 自動応答の設定。"
+    },
+    "camera": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "notDetermined",
+            "authorized",
+            "denied",
+            "restricted",
+            "unsupported"
+          ]
+        },
+        "requestResult": {
+          "enum": [
+            "granted",
+            "denied"
+          ]
+        }
+      },
+      "description": "H26。"
+    },
+    "barcodeFake": {
+      "type": "boolean",
+      "description": "H21。"
+    },
+    "ndlStub": {
+      "$ref": "urn:reading-app:contracts:hooks:h20-ndl-stub:1",
+      "description": "H20（環境変数 UITEST_NDL_STUB）。端末内の書誌 SQLite DB および共起テーブルの差し替え。"
+    },
+    "liveActivity": {
+      "$ref": "#/$defs/h23LiveActivityConfig",
+      "description": "H23（環境変数 UITEST_LIVE_ACTIVITY）。Live Activity の初期状態・利用可否・要求失敗の差し替え設定。"
+    },
+    "awards": {
+      "$ref": "#/$defs/h25AwardsConfig",
+      "description": "H25（環境変数 UITEST_AWARDS）。受賞の一覧の差し替え。"
+    },
+    "storeKit": {
+      "$ref": "#/$defs/h30StoreKitConfig",
+      "description": "H30（環境変数 UITEST_STOREKIT）。StoreKit 2 の購入・復元・返金・決済可否の差し替え。"
+    },
+    "intents": {
+      "$ref": "#/$defs/h32IntentsConfig",
+      "description": "H32（環境変数 UITEST_INTENT）。App Intents 駆動時の前面遷移可否（canContinueInForeground）などの設定。"
+    },
+    "openURL": {
+      "enum": [
+        "record",
+        "passthrough"
+      ],
+      "description": "H31。"
+    },
+    "readouts": {
+      "enum": [
+        "on",
+        "off"
+      ],
+      "description": "hook.* の読み出しの要素を出すか（速さの測定では off）。"
+    },
+    "widget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "render": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "family",
+              "width",
+              "height"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "family": {
+                "enum": [
+                  "accessoryRectangular",
+                  "systemSmall"
+                ],
+                "description": "W-1 は accessoryRectangular、W-2 は systemSmall。"
+              },
+              "width": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "height": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              }
+            }
+          }
+        },
+        "show": {
+          "type": "object",
+          "required": [
+            "family",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "enum": [
+                "accessoryRectangular",
+                "systemSmall"
+              ],
+              "description": "W-1 は accessoryRectangular、W-2 は systemSmall。"
+            },
+            "width": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          }
+        },
+        "snapshotOverride": {
+          "type": "string",
+          "description": "@missing はファイルなしとして組む。"
+        }
+      },
+      "description": "H22。"
+    }
+  },
+  "$defs": {
+    "h19OcrConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "H19 写真・スクリーンショット（ページ本文、表紙・背表紙、本棚、奥付）の読み取り結果差し替え（AC-65〜AC-69、AC-94、AC-113、AC-137、AC-138、AC-142）。",
+      "properties": {
+        "hold": {
+          "type": "boolean",
+          "default": false,
+          "description": "真なら Darwin 通知 yomuma.uitest.ocr.release を受けるまで結果の返却を保留する（AC-94）。"
+        },
+        "page": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "columns"
+          ],
+          "description": "しおり撮影（mark.photo）またはスクリーンショット選択（mark.screenshot）で返す縦書き列（右から c1, c2, ...。AC-65〜AC-69、AC-142）。",
+          "properties": {
+            "columns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "右から順の列テキスト（空配列なら認識0件で mark.ocr.none。AC-68）。"
+            },
+            "detectedPage": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1,
+              "maximum": 9999,
+              "description": "ノンブル・柱から検出されたページ番号（なければ null）。"
+            }
+          }
+        },
+        "cover": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lines"
+          ],
+          "description": "表紙・背表紙撮影（register.cover）またはスクリーンショット選択（register.screenshot）で返す認識行リスト（cover.ocr.line.1, 2, ...。AC-137）。",
+          "properties": {
+            "lines": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "bookshelf": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "spines"
+          ],
+          "description": "本棚・平積み撮影（register.bookshelf）で返す背表紙の行リスト（AC-138）。",
+          "properties": {
+            "spines": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "colophon": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lines"
+          ],
+          "description": "奥付撮影（colophon.capture）で返す認識行リスト。アプリは奥付規則から書名・著者・出版年・出版社・レーベル・ISBN を抽出する（AC-113、AC-140）。",
+          "properties": {
+            "lines": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "h23LiveActivityItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "state",
+        "staleDate",
+        "url",
+        "title",
+        "line",
+        "progressText",
+        "startedAt",
+        "endButtonIdentifier",
+        "endButtonLabel",
+        "endIntentName"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "scheduled",
+            "immediate"
+          ],
+          "description": "scheduled：入口の時刻の予約。immediate：「読み始める」等でその場で出したもの。"
+        },
+        "state": {
+          "enum": [
+            "scheduled",
+            "started",
+            "reading",
+            "ended",
+            "cancelled",
+            "dismissedBySystem"
+          ],
+          "description": "予約中（scheduled）、予約時刻になって表示中（started）、読書中（reading）、アプリが終えた（ended）、取り消した（cancelled）、システムが8時間等で終えた（dismissedBySystem）。"
+        },
+        "scheduledFor": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "予約の始まり時刻（immediate なら null）。"
+        },
+        "staleDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "古くなる時刻（始まる晩の次の 04:00。AC-98、AC-114）。"
+        },
+        "url": {
+          "const": "yomuma://open?entry=live_activity",
+          "description": "「終える」ボタンの外を押したときの URL（AC-40）。"
+        },
+        "title": {
+          "type": "string",
+          "description": "表示中の書名（名無しの本なら「今の本」、hideOnWidgets がオンなら widget.hidden の文。AC-34、AC-120、AC-139）。"
+        },
+        "line": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "表示中の一行（reading 状態または hideOnWidgets オンまたは一行なしなら null。AC-34、AC-41、AC-114）。"
+        },
+        "progressText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "表示中の進み具合（例：「p.61」「位置1450」「52%」。reading 状態では null、ended では最終の進み具合。AC-41、AC-114）。"
+        },
+        "startedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "reading 状態の読み始めの時刻（AC-41、AC-114）。"
+        },
+        "finalMinutesText": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "ended 状態の最後の中身に入る分数の表示（例：「30分」「10分」。AC-41、AC-114）。"
+        },
+        "endButtonIdentifier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "reading 状態で出る唯一の押せる要素の識別子（\"liveActivity.end\"。AC-41、AC-114）。"
+        },
+        "endButtonLabel": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "liveActivity.end の読み上げラベル（文言キー liveActivity.end.label の文。AC-114）。"
+        },
+        "endIntentName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "liveActivity.end が動かすインテントの名前（\"EndReadingFromActivityIntent\"。AC-114）。"
+        }
+      }
+    },
+    "h23LiveActivityConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "H23 Live Activity の初期設定（AC-34、AC-36〜AC-41、AC-97、AC-98、AC-114〜AC-120、AC-130〜AC-132、AC-136、AC-139、AC-144）。",
+      "properties": {
+        "areActivitiesEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "ActivityAuthorizationInfo.areActivitiesEnabled の差し替え値（AC-37、AC-118）。"
+        },
+        "failScheduleCount": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "予約の要求を失敗させる残り回数（AC-97）。"
+        },
+        "failStartImmediateCount": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "すぐ始める要求を失敗させる残り回数（AC-131）。"
+        },
+        "initialActivities": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/h23LiveActivityItem"
+          },
+          "description": "起動時点で存在している予約または始まっている Live Activity（AC-36、AC-41、AC-115、AC-130）。"
+        }
+      }
+    },
+    "h23LiveActivityReadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "areActivitiesEnabled",
+        "activities",
+        "requests"
+      ],
+      "description": "要素 hook.liveActivity の JSON 出力スキーマ（H23）。",
+      "properties": {
+        "areActivitiesEnabled": {
+          "type": "boolean"
+        },
+        "activities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/h23LiveActivityItem"
+          },
+          "description": "現在存在している（scheduled / started / reading）Live Activity の一覧。"
+        },
+        "requests": {
+          "type": "array",
+          "description": "このプロセスでアプリが出した Live Activity 要求の履歴（出どころ source で起動時の見直しとインテント・画面操作を区別できる。AC-115、AC-119、AC-130）。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "seq",
+              "at",
+              "kind",
+              "source",
+              "succeeded",
+              "activity"
+            ],
+            "properties": {
+              "seq": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "kind": {
+                "enum": [
+                  "schedule",
+                  "cancel",
+                  "startImmediate",
+                  "updateToReading",
+                  "end"
+                ],
+                "description": "要求の種類：予約（schedule）、予約の取り消し（cancel）、すぐ始める（startImmediate）、予約から始まったものを reading に更新（updateToReading）、終わり（end）。"
+              },
+              "source": {
+                "enum": [
+                  "launchReconcile",
+                  "foregroundReconcile",
+                  "intent",
+                  "app"
+                ],
+                "description": "要求の出どころ：起動時の見直し（launchReconcile）、前面復帰時の見直し（foregroundReconcile）、App Intents（intent）、アプリ内の画面操作（app）（AC-115、AC-119、AC-130）。"
+              },
+              "succeeded": {
+                "type": "boolean"
+              },
+              "activity": {
+                "$ref": "#/$defs/h23LiveActivityItem"
+              }
+            }
+          }
+        }
+      }
+    },
+    "h24ShareCardReadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cards"
+      ],
+      "description": "要素 hook.shareCard の JSON 出力スキーマ（H24。AC-84、AC-85、AC-103、AC-127）。",
+      "properties": {
+        "cards": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "seq",
+              "at",
+              "format",
+              "widthPx",
+              "heightPx",
+              "renderedTexts",
+              "containsSavedLine",
+              "containsPhoto",
+              "containsReflection"
+            ],
+            "properties": {
+              "seq": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "format": {
+                "const": "png"
+              },
+              "widthPx": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "heightPx": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "renderedTexts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "カード画像に描かれた文字列一覧（書名、著者、何晩、合計分など。AC-84、AC-85）。"
+              },
+              "containsSavedLine": {
+                "type": "boolean",
+                "const": false,
+                "description": "しおりの一行が含まれていないこと（常に false。AC-84）。"
+              },
+              "containsPhoto": {
+                "type": "boolean",
+                "const": false,
+                "description": "写真が含まれていないこと（常に false。AC-84）。"
+              },
+              "containsReflection": {
+                "type": "boolean",
+                "const": false,
+                "description": "ふりかえりの1行（日付や最長晩の分数）がカードに含まれていないこと（常に false。AC-127）。"
+              }
+            }
+          }
+        }
+      }
+    },
+    "h25AwardItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "award",
+        "sessionOrYear",
+        "title",
+        "author"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "award": {
+          "enum": [
+            "芥川龍之介賞",
+            "直木三十五賞",
+            "本屋大賞"
+          ]
+        },
+        "sessionOrYear": {
+          "type": "string",
+          "minLength": 1,
+          "description": "回または年（例：「第156回」「2017年」）。"
+        },
+        "order": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "同じ賞の中の順番（すぐ後の回・すぐ前の回を引くための通し番号）。"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "author": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "h25AwardsConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "items"
+      ],
+      "description": "H25 受賞の一覧の差し替え設定（AC-17〜AC-21、AC-77〜AC-83、AC-87、AC-112、AC-146、AC-147）。",
+      "properties": {
+        "mode": {
+          "enum": [
+            "bundled",
+            "override"
+          ],
+          "description": "bundled：アプリ同梱の本番一覧を使う（AC-112）。override：items のテスト用一覧に差し替える。"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/h25AwardItem"
+          }
+        }
+      }
+    },
+    "h25AwardsReadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "bundledCount",
+        "activeItems"
+      ],
+      "description": "要素 hook.awards の JSON 出力スキーマ（H25。AC-112）。",
+      "properties": {
+        "mode": {
+          "enum": [
+            "bundled",
+            "override"
+          ]
+        },
+        "bundledCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "同梱の受賞一覧の総行数（AC-112）。"
+        },
+        "activeItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/h25AwardItem"
+          },
+          "description": "現在有効な受賞一覧のすべての行（AC-112 では同梱の全行を検証する）。"
+        }
+      }
+    },
+    "h27MediaAuditReadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "savedImageFileCount",
+        "savedImagePaths",
+        "photoLibraryWriteCount"
+      ],
+      "description": "要素 hook.mediaAudit の JSON 出力スキーマ（H27。AC-69、AC-113、AC-137、AC-138、AC-142）。",
+      "properties": {
+        "savedImageFileCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "アプリの保存領域（Documents、Library、tmp）および App Group 内の画像ファイル（jpg、jpeg、heic、png）の合計数（常に 0 であること）。"
+        },
+        "savedImagePaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "残存していた画像ファイルの相対パス一覧（常に空配列 [] であること）。"
+        },
+        "photoLibraryWriteCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "写真ライブラリへの書き込み回数（常に 0 であること）。"
+        }
+      }
+    },
+    "h30StoreKitConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "H30 StoreKit 2 の差し替え設定（AC-104〜AC-111）。",
+      "properties": {
+        "canMakePayments": {
+          "type": "boolean",
+          "default": true,
+          "description": "AppStore.canMakePayments の値（偽なら AC-109 の払えない端末）。"
+        },
+        "productLoadAvailable": {
+          "type": "boolean",
+          "default": true,
+          "description": "商品の情報を取得できるか（偽または H8 オフラインなら AC-110 の store.offline）。"
+        },
+        "product": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "displayName",
+            "description",
+            "displayPrice"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "default": "plus.lifetime"
+            },
+            "displayName": {
+              "type": "string",
+              "default": "よむま＋"
+            },
+            "description": {
+              "type": "string"
+            },
+            "displayPrice": {
+              "type": "string",
+              "default": "¥980"
+            }
+          }
+        },
+        "purchaseOutcome": {
+          "enum": [
+            "success",
+            "userCancelled",
+            "error"
+          ],
+          "default": "success",
+          "description": "store.buy を押したときの結果（AC-106、AC-107）。"
+        },
+        "restoreOutcome": {
+          "enum": [
+            "hasEntitlement",
+            "none",
+            "error"
+          ],
+          "default": "none",
+          "description": "settings.restorePurchases または store.restore を押したときの結果（AC-108）。"
+        },
+        "initialPurchased": {
+          "type": "boolean",
+          "default": false,
+          "description": "起動時点ですでに購入済み（entitlement あり）か（AC-111）。"
+        }
+      }
+    },
+    "h30StoreKitReadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "isPlusPurchased",
+        "canMakePayments",
+        "purchaseAttempts",
+        "restoreAttempts",
+        "refundCount"
+      ],
+      "description": "要素 hook.storekit の JSON 出力スキーマ（H30）。",
+      "properties": {
+        "isPlusPurchased": {
+          "type": "boolean"
+        },
+        "canMakePayments": {
+          "type": "boolean"
+        },
+        "purchaseAttempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "restoreAttempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "refundCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "h32IntentsConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "H32 App Intents の実行設定（AC-114〜AC-126、AC-131〜AC-135、AC-143）。",
+      "properties": {
+        "canContinueInForeground": {
+          "type": "boolean",
+          "default": true,
+          "description": "インテントからアプリを前面に出せる状態か（偽なら AC-116(2)、AC-118(2) のロック中・前面遷移不可を模擬）。"
+        }
+      }
+    },
+    "h32IntentsReadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invocations",
+        "registeredShortcuts",
+        "registeredControls"
+      ],
+      "description": "要素 hook.intents の JSON 出力スキーマ（H32。AC-114〜AC-126、AC-131〜AC-135、AC-143）。",
+      "properties": {
+        "invocations": {
+          "type": "array",
+          "description": "動かしたインテントの実行結果の履歴。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "seq",
+              "at",
+              "intent",
+              "authenticationPolicy",
+              "opensApp",
+              "requestedForeground",
+              "outcome",
+              "dialogKey",
+              "spokenText",
+              "snippetTexts"
+            ],
+            "properties": {
+              "seq": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "intent": {
+                "enum": [
+                  "StartReadingIntent",
+                  "EndReadingFromActivityIntent",
+                  "WhereStoppedIntent",
+                  "ContinueReadingIntent"
+                ],
+                "description": "「読み始める」（StartReadingIntent）、「終える」（EndReadingFromActivityIntent）、「どこまで読んだ？」（WhereStoppedIntent）、「続きを読む」（ContinueReadingIntent）。"
+              },
+              "authenticationPolicy": {
+                "enum": [
+                  "alwaysAllowed",
+                  "requiresAuthentication"
+                ],
+                "description": "インテントの認証ポリシー（「どこまで読んだ？」は alwaysAllowed。AC-121、AC-123）。"
+              },
+              "opensApp": {
+                "type": "boolean",
+                "description": "インテントの結果が「アプリを前に出す」かどうか（AC-114、AC-116〜AC-118、AC-121、AC-124、AC-131、AC-134、AC-135）。"
+              },
+              "requestedForeground": {
+                "type": "boolean",
+                "description": "実際に前面に出す要求（requestToContinueInForeground / openAppWhenRun）を行ったか（canContinueInForeground が偽のときは false。AC-116(2)、AC-118(2)）。"
+              },
+              "outcome": {
+                "enum": [
+                  "succeeded",
+                  "error"
+                ]
+              },
+              "dialogKey": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "返した声の文言キー（例：intent.start.started、intent.start.alreadyReading、session.start.error、intent.whereStopped.page、intent.whereStopped.location、intent.whereStopped.percent、intent.whereStopped.noPage、intent.whereStopped.noCurrent、intent.whereStopped.error）。"
+              },
+              "spokenText": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "声の全文（「どこまで読んだ？」では一行、書名、アプリ名を含まない。AC-121〜AC-123、AC-133、AC-143）。"
+              },
+              "snippetTexts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "小窓（Snippet View）に出した文字列の一覧（WhereStoppedIntent は hideOnWidgets のオン・オフを問わず、常時、声にも小窓 intent.snippet にも書名と一行を一切出さず、進み具合（ページ・位置番号・％）の1文だけを出す。エラー時は小窓を出さない／空配列 []。AC-121、AC-123、AC-133）。"
+              }
+            }
+          }
+        },
+        "registeredShortcuts": {
+          "type": "array",
+          "description": "AppShortcutsProvider に登録された App Shortcuts の一覧（ちょうど3つ：読み始める、どこまで読んだ？、続きを読む。AC-126）。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "intent",
+              "phrases",
+              "systemImageName"
+            ],
+            "properties": {
+              "intent": {
+                "enum": [
+                  "StartReadingIntent",
+                  "WhereStoppedIntent",
+                  "ContinueReadingIntent"
+                ]
+              },
+              "phrases": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "登録された言い方（すべてに ${applicationName} を含み、直後に「で」が続かないこと。AC-126）。"
+              },
+              "systemImageName": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "registeredControls": {
+          "type": "array",
+          "description": "ControlWidget として登録された Control の一覧（ちょうど1つ：ボタン、StartReadingIntent、control.startReading。AC-126）。",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "intent",
+              "labelKey"
+            ],
+            "properties": {
+              "kind": {
+                "const": "button"
+              },
+              "intent": {
+                "const": "StartReadingIntent"
+              },
+              "labelKey": {
+                "const": "control.startReading"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "configVersion": 1,
+      "writtenAt": "2026-10-20T03:00:00.000Z",
+      "clockBase": "2026-10-15T23:50:00+09:00",
+      "timeZoneID": "Asia/Tokyo",
+      "saveFailures": [
+        {
+          "target": "session.end",
+          "remaining": 1,
+          "kind": "disk_full"
+        }
+      ],
+      "flipUnavailable": false,
+      "ocr": {
+        "hold": false,
+        "page": {
+          "columns": [
+            "下人は、雨やみを待っていた。",
+            "ほかには誰もいない。"
+          ],
+          "detectedPage": 61
+        },
+        "cover": {
+          "lines": [
+            "新潮文庫",
+            "こころ",
+            "夏目漱石"
+          ]
+        },
+        "bookshelf": {
+          "spines": [
+            "こころ",
+            "人間失格",
+            "羅生門",
+            "新潮文庫"
+          ]
+        },
+        "colophon": {
+          "lines": [
+            "青を売る",
+            "著者 坂崎かおる",
+            "2024年10月15日 第1刷発行",
+            "発行所 株式会社祥伝社",
+            "祥伝社文庫",
+            "ISBN978-4-396-35001-7"
+          ]
+        }
+      },
+      "camera": {
+        "status": "notDetermined",
+        "requestResult": "granted"
+      },
+      "barcodeFake": true,
+      "ndlStub": {
+        "stubVersion": 1,
+        "status": "ready",
+        "books": [
+          {
+            "isbn": "9784101000015",
+            "title": "こころ",
+            "author": "夏目漱石",
+            "publisher": "新潮社",
+            "label": "新潮文庫",
+            "publishedYear": 2004,
+            "ndc": "913.6"
+          }
+        ],
+        "cooccurrences": []
+      },
+      "liveActivity": {
+        "areActivitiesEnabled": true,
+        "failScheduleCount": 0,
+        "failStartImmediateCount": 0,
+        "initialActivities": []
+      },
+      "awards": {
+        "mode": "override",
+        "items": [
+          {
+            "award": "芥川龍之介賞",
+            "sessionOrYear": "第155回",
+            "title": "コンビニ人間",
+            "author": "村田沙耶香"
+          }
+        ]
+      },
+      "storeKit": {
+        "canMakePayments": true,
+        "productLoadAvailable": true,
+        "purchaseOutcome": "success",
+        "restoreOutcome": "hasEntitlement",
+        "initialPurchased": false
+      },
+      "intents": {
+        "canContinueInForeground": true
+      },
+      "openURL": "record",
+      "readouts": "on",
+      "widget": {
+        "render": [
+          {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          }
+        ]
+      }
+    }
+  ]
+}

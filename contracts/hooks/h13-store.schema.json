@@ -1,0 +1,503 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:h13-store:1",
+  "title": "H13StoreReadout",
+  "description": "テストフック H13（store）が要素 hook.store の JSON に書き出す永続化状態と破損退避ファイル一覧の契約（AC-15〜23、AC-53〜90、AC-139〜148）。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dumpedAt",
+    "corruptBackupFiles",
+    "state"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "dumpedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "corruptBackupFiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^state\\.corrupt-[0-9]+\\.json$"
+      },
+      "description": "AC-90 で破損した state.json を退避したファイル名の一覧。"
+    },
+    "state": {
+      "$ref": "#/$defs/PersistedState"
+    }
+  },
+  "$defs": {
+    "PersistedState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "books",
+        "records",
+        "activeSession",
+        "settings"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "type": "integer",
+          "const": 1
+        },
+        "books": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StoredBook"
+          }
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/StoredRecord"
+          }
+        },
+        "activeSession": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/StoredActiveSession" }
+          ]
+        },
+        "settings": {
+          "$ref": "#/$defs/StoredSettings"
+        }
+      }
+    },
+    "StoredBook": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "isbn13",
+        "title",
+        "author",
+        "publisher",
+        "label",
+        "publishedYear",
+        "seriesTitle",
+        "volumeNumber",
+        "ndc",
+        "status",
+        "isEbook",
+        "isTitlePending",
+        "progressUnit",
+        "page",
+        "location",
+        "percent",
+        "lastLine",
+        "createdAt",
+        "updatedAt",
+        "tsundokuAt",
+        "finishedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "isbn13": {
+          "type": ["string", "null"],
+          "pattern": "^97[89][0-9]{10}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 100
+        },
+        "author": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "publisher": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "label": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "publishedYear": {
+          "type": ["integer", "null"],
+          "minimum": 1800,
+          "maximum": 2100
+        },
+        "seriesTitle": {
+          "type": ["string", "null"],
+          "maxLength": 200
+        },
+        "volumeNumber": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999
+        },
+        "ndc": {
+          "type": ["string", "null"],
+          "maxLength": 20
+        },
+        "status": {
+          "type": "string",
+          "enum": ["current", "tsundoku", "finished"]
+        },
+        "isEbook": {
+          "type": "boolean"
+        },
+        "isTitlePending": {
+          "type": "boolean"
+        },
+        "progressUnit": {
+          "type": "string",
+          "enum": ["page", "location", "percent"]
+        },
+        "page": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "location": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "percent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "lastLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tsundokuAt": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "積読に追加した日時（AC-13）。"
+        },
+        "finishedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      },
+      "if": {
+        "properties": {
+          "isTitlePending": {
+            "const": false
+          }
+        },
+        "required": [
+          "isTitlePending"
+        ]
+      },
+      "then": {
+        "properties": {
+          "title": {
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "StoredRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "bookId",
+        "startedAt",
+        "endedAt",
+        "minutes",
+        "nightDate",
+        "entry",
+        "progressUnit",
+        "startPage",
+        "endPage",
+        "startLocation",
+        "endLocation",
+        "startPercent",
+        "endPercent",
+        "savedLine"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "bookId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1440
+        },
+        "nightDate": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "entry": {
+          "type": "string",
+          "enum": [
+            "app",
+            "lock_widget",
+            "small_widget",
+            "live_activity",
+            "intent_start",
+            "intent_open"
+          ]
+        },
+        "progressUnit": {
+          "type": "string",
+          "enum": ["page", "location", "percent"]
+        },
+        "startPage": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "endPage": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 9999
+        },
+        "startLocation": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "endLocation": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 999999
+        },
+        "startPercent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "endPercent": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "savedLine": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 60
+        }
+      }
+    },
+    "StoredActiveSession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bookId",
+        "startedAt",
+        "entry",
+        "liveActivityId"
+      ],
+      "properties": {
+        "bookId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "entry": {
+          "type": "string",
+          "enum": [
+            "app",
+            "lock_widget",
+            "small_widget",
+            "live_activity",
+            "intent_start",
+            "intent_open"
+          ]
+        },
+        "liveActivityId": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "RecommendationWeightCounter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chosen", "skipped"],
+      "properties": {
+        "chosen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "StoredSettings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flipToStartEnabled",
+        "hideOnWidgets",
+        "widgetGuideShown",
+        "entryTime",
+        "appearanceID",
+        "isPlusPurchased",
+        "recommendationWeights",
+        "firstNightCompletedAt",
+        "seventhNightReachedAt"
+      ],
+      "properties": {
+        "flipToStartEnabled": {
+          "type": "boolean"
+        },
+        "hideOnWidgets": {
+          "type": "boolean"
+        },
+        "widgetGuideShown": {
+          "type": "boolean",
+          "default": false
+        },
+        "entryTime": {
+          "type": "string",
+          "pattern": "^([01][0-9]|2[0-3]):(00|15|30|45)$",
+          "default": "21:00"
+        },
+        "appearanceID": {
+          "type": "string",
+          "enum": ["default", "kinari", "sumi", "shu"],
+          "default": "default"
+        },
+        "isPlusPurchased": {
+          "type": "boolean",
+          "default": false
+        },
+        "recommendationWeights": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "readers",
+            "nextVolume",
+            "sameAuthor",
+            "sameAward",
+            "sameLabel"
+          ],
+          "properties": {
+            "readers": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "nextVolume": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameAuthor": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameAward": { "$ref": "#/$defs/RecommendationWeightCounter" },
+            "sameLabel": { "$ref": "#/$defs/RecommendationWeightCounter" }
+          }
+        },
+        "firstNightCompletedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "seventhNightReachedAt": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "schemaVersion": 1,
+      "dumpedAt": "2026-10-20T13:18:05Z",
+      "corruptBackupFiles": [],
+      "state": {
+        "schemaVersion": 1,
+        "books": [
+          {
+            "id": "11111111-2222-4333-8444-555555555555",
+            "isbn13": "9784167911300",
+            "title": "蜜蜂と遠雷",
+            "author": "恩田 陸",
+            "publisher": "文藝春秋",
+            "label": "文春文庫",
+            "publishedYear": 2019,
+            "seriesTitle": null,
+            "volumeNumber": null,
+            "ndc": "913.6",
+            "status": "current",
+            "isEbook": false,
+            "isTitlePending": false,
+            "progressUnit": "page",
+            "page": 61,
+            "location": null,
+            "percent": null,
+            "lastLine": "世界はまだ、音楽で満ちていた。",
+            "createdAt": "2026-10-19T13:00:00Z",
+            "updatedAt": "2026-10-20T13:18:00Z",
+            "tsundokuAt": null,
+            "finishedAt": null
+          }
+        ],
+        "records": [
+          {
+            "id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+            "bookId": "11111111-2222-4333-8444-555555555555",
+            "startedAt": "2026-10-20T13:00:00Z",
+            "endedAt": "2026-10-20T13:18:00Z",
+            "minutes": 18,
+            "nightDate": "2026-10-20",
+            "entry": "lock_widget",
+            "progressUnit": "page",
+            "startPage": 43,
+            "endPage": 61,
+            "startLocation": null,
+            "endLocation": null,
+            "startPercent": null,
+            "endPercent": null,
+            "savedLine": "世界はまだ、音楽で満ちていた。"
+          }
+        ],
+        "activeSession": null,
+        "settings": {
+          "flipToStartEnabled": true,
+          "hideOnWidgets": false,
+          "widgetGuideShown": true,
+          "entryTime": "21:00",
+          "appearanceID": "default",
+          "isPlusPurchased": false,
+          "recommendationWeights": {
+            "readers": { "chosen": 0, "skipped": 0 },
+            "nextVolume": { "chosen": 0, "skipped": 0 },
+            "sameAuthor": { "chosen": 0, "skipped": 0 },
+            "sameAward": { "chosen": 0, "skipped": 0 },
+            "sameLabel": { "chosen": 0, "skipped": 0 }
+          },
+          "firstNightCompletedAt": "2026-10-20T13:18:00Z",
+          "seventhNightReachedAt": null
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,3840 @@
+{
+  "sourceLanguage": "ja",
+  "version": "1.0",
+  "strings": {
+    "common.cancel": {
+      "comment": "シートや操作を閉じて元の画面に戻すボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やめる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "common.done": {
+      "comment": "シートやキーボードを閉じるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "common.close": {
+      "comment": "案内シートを閉じるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "common.save": {
+      "comment": "しおりや編集内容を保存するボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "残す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "common.edit": {
+      "comment": "項目を編集するボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        }
+      }
+    },
+    "common.delete": {
+      "comment": "項目を削除する破壊的操作のボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "common.back": {
+      "comment": "前の段階に戻るボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "戻る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        }
+      }
+    },
+    "bookmark.current.header": {
+      "comment": "しおり画面の今の本セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Book"
+          }
+        }
+      }
+    },
+    "bookmark.position.page": {
+      "comment": "しおり画面の今のページ表示（%lld はページ番号）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p. %lld"
+          }
+        }
+      }
+    },
+    "bookmark.position.percent": {
+      "comment": "しおり画面の今の％表示（%lld は0〜100の整数）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
+    "bookmark.position.unset": {
+      "comment": "しおりが一度も挟まれていないときの補助表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだしおりはありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No bookmark yet"
+          }
+        }
+      }
+    },
+    "bookmark.line.unset": {
+      "comment": "一行がまだ保存されていないときの補助表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "残した一行はまだありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved line yet"
+          }
+        }
+      }
+    },
+    "bookmark.titlePending.placeholder": {
+      "comment": "書名をあとから入れる仮の今の本の表示名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "（書名未設定）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(Untitled Book)"
+          }
+        }
+      }
+    },
+    "bookmark.setBookTitle": {
+      "comment": "書名未設定の今の本に後から書名・書誌を入れるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名を入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set Book Title"
+          }
+        }
+      }
+    },
+    "bookmark.start": {
+      "comment": "読書セッションを始める主ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Reading"
+          }
+        }
+      }
+    },
+    "bookmark.finish": {
+      "comment": "今の本を読了にして次の1冊シートを開くボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えた"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished Reading"
+          }
+        }
+      }
+    },
+    "bookmark.addBook": {
+      "comment": "新しい本を登録するシートを開くボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本を加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Book"
+          }
+        }
+      }
+    },
+    "bookmark.editMark": {
+      "comment": "読書を始めずに今のしおり（ページ・一行）を編集するボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりを直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Bookmark"
+          }
+        }
+      }
+    },
+    "bookmark.noCurrent.title": {
+      "comment": "今の本が未設定のときの案内見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次に読む本を選びましょう"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose Your Next Book"
+          }
+        }
+      }
+    },
+    "bookmark.noCurrent.body": {
+      "comment": "今の本が未設定のときの案内本文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚から選ぶか、新しい本を加えられます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick a book from your shelf or add a new one"
+          }
+        }
+      }
+    },
+    "bookmark.noCurrent.openShelf": {
+      "comment": "今の本が未設定のときに本棚を開くボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚から選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose from Shelf"
+          }
+        }
+      }
+    },
+    "bookmark.noCurrent.nextHeader": {
+      "comment": "今の本が未設定で積読があるときに出す候補の見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読からすぐ読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read Next from Stack"
+          }
+        }
+      }
+    },
+    "bookmark.noCurrent.choose": {
+      "comment": "しおり画面の積読候補を1タップで今の本にするボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これを読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read This"
+          }
+        }
+      }
+    },
+    "bookmark.empty.title": {
+      "comment": "本が1冊もない初回起動時の案内見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読んでいる本を1冊、しおりに挟みましょう"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuck Your First Book into the Bookmark"
+          }
+        }
+      }
+    },
+    "bookmark.empty.body": {
+      "comment": "初回起動時の案内本文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バーコードや表紙、書名からすぐ始められます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start right away with a barcode, cover, or title"
+          }
+        }
+      }
+    },
+    "bookmark.empty.startRightAway": {
+      "comment": "本を登録せずに仮の今の本を作ってすぐ読書画面へ入る副ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すぐ読み始める（書名はあとで）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Reading Now (Add Title Later)"
+          }
+        }
+      }
+    },
+    "toolbar.shelf": {
+      "comment": "上部ツールバーの本棚画面への遷移ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf"
+          }
+        }
+      }
+    },
+    "toolbar.settings": {
+      "comment": "上部ツールバーの設定シートを開くボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "reading.status": {
+      "comment": "読書中画面の中央ラベル（秒数を出さない静かな状態表示）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading"
+          }
+        }
+      }
+    },
+    "reading.flipHint": {
+      "comment": "読書中画面の初回のみ表示する伏せ置き案内",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "伏せると読み始め、起こすと読み終えます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place face down to read, pick up to finish"
+          }
+        }
+      }
+    },
+    "reading.end": {
+      "comment": "今夜の読書セッションを終えてしおり挟み画面へ進むボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish for Tonight"
+          }
+        }
+      }
+    },
+    "mark.title": {
+      "comment": "読書終了後のしおり入力シート見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりを挟む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place Bookmark"
+          }
+        }
+      }
+    },
+    "mark.capturePage": {
+      "comment": "カメラを起動してページ番号と一行をOCRで読み取る主ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページを撮って一行を残す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snap Page to Save a Line"
+          }
+        }
+      }
+    },
+    "mark.pageOnly": {
+      "comment": "カメラを使わず数字入力だけで進捗を入れる副ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページだけ入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter Page Only"
+          }
+        }
+      }
+    },
+    "mark.skip": {
+      "comment": "しおりを更新せず読書時間だけ記録して閉じるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "そのまま閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close Without Saving"
+          }
+        }
+      }
+    },
+    "mark.unit.label": {
+      "comment": "ページと％を切り替えるセグメントのラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "進み方の単位"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress Unit"
+          }
+        }
+      }
+    },
+    "mark.unit.page": {
+      "comment": "ページ番号で記録する単位",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page"
+          }
+        }
+      }
+    },
+    "mark.unit.percent": {
+      "comment": "パーセント（0〜100）で記録する単位",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "％"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%"
+          }
+        }
+      }
+    },
+    "mark.page.placeholder": {
+      "comment": "ページ番号入力欄のプレースホルダ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページ番号（1〜9999）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page number (1–9999)"
+          }
+        }
+      }
+    },
+    "mark.percent.placeholder": {
+      "comment": "％入力欄のプレースホルダ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "進み具合（0〜100％）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progress (0–100%)"
+          }
+        }
+      }
+    },
+    "mark.line.label": {
+      "comment": "引用一行の入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "残す一行（140字まで）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Line to Keep (up to 140 chars)"
+          }
+        }
+      }
+    },
+    "mark.line.placeholder": {
+      "comment": "引用一行の入力欄プレースホルダ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "心に残った一行を、自分の言葉や引用で残せます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Write or capture a line to remember"
+          }
+        }
+      }
+    },
+    "mark.line.count": {
+      "comment": "一行の文字数カウンタ（%lld は現在の文字数）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / 140"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld / 140"
+          }
+        }
+      }
+    },
+    "mark.ocr.guide": {
+      "comment": "OCR結果の枠選択画面の案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "残したい一行を1つタップしてください（ページ番号は自動で拾います）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap one line to keep (page number is detected automatically)"
+          }
+        }
+      }
+    },
+    "mark.ocr.retake": {
+      "comment": "写真を撮り直すボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撮り直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retake"
+          }
+        }
+      }
+    },
+    "mark.ocr.empty": {
+      "comment": "OCRで1行も検出できなかったときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字が読み取れませんでした。明るい場所で撮り直すか、手で入力してください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't read text. Retake in brighter light or enter manually"
+          }
+        }
+      }
+    },
+    "mark.camera.denied.title": {
+      "comment": "カメラ権限が拒否されているときの見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラが使えません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera Unavailable"
+          }
+        }
+      }
+    },
+    "mark.camera.denied.body": {
+      "comment": "カメラ権限拒否時の案内と手入力への誘導",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定アプリでカメラを許可するか、下の欄からページ番号と一行を手で入力してください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow camera access in Settings, or type the page and line below"
+          }
+        }
+      }
+    },
+    "mark.camera.openSettings": {
+      "comment": "OSの設定アプリを開く補助ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定を開く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        }
+      }
+    },
+    "mark.validation.pageRange": {
+      "comment": "ページ番号の範囲外エラー文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページ番号は1から9999の間で入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a page number between 1 and 9999"
+          }
+        }
+      }
+    },
+    "mark.validation.percentRange": {
+      "comment": "％の範囲外エラー文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "進み具合は0から100の間で入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a percentage between 0 and 100"
+          }
+        }
+      }
+    },
+    "mark.validation.lineLength": {
+      "comment": "一行の文字数超過エラー文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一行は140字以内で入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the line within 140 characters"
+          }
+        }
+      }
+    },
+    "mark.saveError": {
+      "comment": "保存失敗時のインラインエラー文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存できませんでした。もう一度お試しください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't save. Please try again"
+          }
+        }
+      }
+    },
+    "finish.title": {
+      "comment": "読了シートの見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book Finished"
+          }
+        }
+      }
+    },
+    "finish.colophon.header": {
+      "comment": "読了シート内の奥付カード見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colophon"
+          }
+        }
+      }
+    },
+    "finish.colophon.capture": {
+      "comment": "欠けている奥付情報をカメラOCRで補うボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付を撮って補完する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snap Colophon to Fill Details"
+          }
+        }
+      }
+    },
+    "finish.reflection.singleNight": {
+      "comment": "1晩で読み終えた本のふりかえり1行（%lld は合計分）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1晩・計%lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 night · %lld min total"
+          }
+        }
+      }
+    },
+    "finish.reflection.multiNights": {
+      "comment": "2晩以上で読み終えた本のふりかえり1行（晩数・合計分・最長晩の日付と分）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld晩・計%lld分・いちばん長い晩：%@（%lld分）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nights · %lld min total · Longest night: %@ (%lld min)"
+          }
+        }
+      }
+    },
+    "finish.reflection.multiNightsHours": {
+      "comment": "合計60分以上のときのふりかえり1行",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld晩・計%lld分（%lld時間%lld分）・いちばん長い晩：%@（%lld分）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nights · %lld min (%lld hr %lld min) · Longest night: %@ (%lld min)"
+          }
+        }
+      }
+    },
+    "finish.card.share": {
+      "comment": "読了記念のカード画像を生成して共有シートを開くボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一枚のカードにする"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share as a Card"
+          }
+        }
+      }
+    },
+    "finish.card.stats": {
+      "comment": "共有カード画像内に描画する晩数と合計分（%1$lld は晩数、%2$lld は合計分）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld晩・%lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nights · %lld min"
+          }
+        }
+      }
+    },
+    "finish.next.header": {
+      "comment": "読了直後の推薦3冊セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の1冊"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Next Book"
+          }
+        }
+      }
+    },
+    "finish.next.subcopy": {
+      "comment": "次の1冊セクションの補足文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読と関連する本から3冊選びました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three picks from your stack and related books"
+          }
+        }
+      }
+    },
+    "finish.next.reason.tsundokuSameAuthor": {
+      "comment": "積読内の同じ著者の本につける理由",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・同じ著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your stack · Same author"
+          }
+        }
+      }
+    },
+    "finish.next.reason.tsundokuSameAward": {
+      "comment": "積読内の同じ賞の受賞作につける理由（%@ は賞名）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・同じ賞（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your stack · Same award (%@)"
+          }
+        }
+      }
+    },
+    "finish.next.reason.tsundokuSameLabel": {
+      "comment": "積読内の同じレーベルの本につける理由（%@ はレーベル名）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・同じレーベル（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your stack · Same imprint (%@)"
+          }
+        }
+      }
+    },
+    "finish.next.reason.tsundokuRecent": {
+      "comment": "積読内の新しい本につける理由",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your stack"
+          }
+        }
+      }
+    },
+    "finish.next.reason.readersNext": {
+      "comment": "みんなが次に読んだ本の共起統計から出た候補につける理由（人数は出さない）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を読み終えた人が、次に読んだ本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read next by people who finished this book"
+          }
+        }
+      }
+    },
+    "finish.next.reason.nextVolume": {
+      "comment": "端末内書誌DBから出た続刊につける理由",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シリーズの次の巻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next volume in the series"
+          }
+        }
+      }
+    },
+    "finish.next.reason.sameAuthor": {
+      "comment": "端末内書誌DBまたは受賞一覧から出た同著者の未所有本につける理由",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ著者の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By the same author"
+          }
+        }
+      }
+    },
+    "finish.next.reason.sameAward": {
+      "comment": "同梱の受賞一覧から出た未所有の受賞作につける理由（%1$@ は回次/年、%2$@ は賞名）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ賞（%@ %@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same award (%@ %@)"
+          }
+        }
+      }
+    },
+    "finish.next.reason.sameLabel": {
+      "comment": "端末内書誌DBから出た同じレーベルの未所有本につける理由（%@ はレーベル名）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じレーベル（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same imprint (%@)"
+          }
+        }
+      }
+    },
+    "finish.next.choose": {
+      "comment": "積読の候補を次の今の本に据えるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これを読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read This"
+          }
+        }
+      }
+    },
+    "finish.next.addToShelf": {
+      "comment": "未所有の受賞作候補を積読として本棚に加えるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Stack"
+          }
+        }
+      }
+    },
+    "finish.next.addedToShelf": {
+      "comment": "未所有の候補を積読に加えた後の表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加えました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to Stack"
+          }
+        }
+      }
+    },
+    "finish.next.empty": {
+      "comment": "積読も未所有候補も0件のときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ積読や関連する候補がありません。新しい本を加えましょう"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No books in your stack or related picks yet. Add a new book to continue"
+          }
+        }
+      }
+    },
+    "finish.next.addBook": {
+      "comment": "読了シートから本登録シートを開くボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しい本を加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a New Book"
+          }
+        }
+      }
+    },
+    "register.title": {
+      "comment": "本登録シートの見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本を加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Book"
+          }
+        }
+      }
+    },
+    "register.target.label": {
+      "comment": "今の本にするか積読にするか選ぶセグメントラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加える場所"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add To"
+          }
+        }
+      }
+    },
+    "register.target.current": {
+      "comment": "登録した本を今の本に据える選択肢",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本にする"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set as Current Book"
+          }
+        }
+      }
+    },
+    "register.target.tsundoku": {
+      "comment": "登録した本を積読に入れる選択肢",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Stack"
+          }
+        }
+      }
+    },
+    "register.barcode": {
+      "comment": "ISBNバーコード読み取りを始める主ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バーコードを読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Barcode"
+          }
+        }
+      }
+    },
+    "register.cover": {
+      "comment": "表紙・背表紙のOCRで書名を拾うボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "表紙や背表紙を撮る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snap Cover or Spine"
+          }
+        }
+      }
+    },
+    "register.manual": {
+      "comment": "手入力フォームに切り替えるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手で入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter Manually"
+          }
+        }
+      }
+    },
+    "register.later": {
+      "comment": "書名を決めずに仮の今の本を作って読書を始めるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あとで入れる（すぐ読み始める）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Later (Start Reading Now)"
+          }
+        }
+      }
+    },
+    "register.scan.guide": {
+      "comment": "バーコード連続スキャン画面の案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "裏表紙の上側のバーコード（978…）を枠に合わせます。続けて何冊でも読めます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Align the top barcode (978…) on the back cover. Scan as many books as you like"
+          }
+        }
+      }
+    },
+    "register.scan.cCodeSkipped": {
+      "comment": "2段バーコードの下段を読んだときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "値段のコード（192…）は飛ばしました。上側の 978 から始まるバーコードを映してください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skipped the price code (192…). Point at the top barcode starting with 978"
+          }
+        }
+      }
+    },
+    "register.scan.nonBook": {
+      "comment": "書籍以外のJANコードを読んだときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本のバーコード（978 / 979）ではありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not a book barcode (978 / 979)"
+          }
+        }
+      }
+    },
+    "register.scan.duplicate": {
+      "comment": "既登録のISBNを読んだときの行ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すでに本棚にあります"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Already on your shelf"
+          }
+        }
+      }
+    },
+    "register.scan.notFound": {
+      "comment": "書誌検索で0件だったときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌が見つかりませんでした。書名を手で入れるか、表紙を撮ってください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book details not found. Enter the title or snap the cover"
+          }
+        }
+      }
+    },
+    "register.scan.offline": {
+      "comment": "オフラインで端末内DBにもないときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通信できないため、ISBNだけ残しました。書名を入れるか、あとで取得できます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline—saved ISBN only. Enter a title now or fetch details later"
+          }
+        }
+      }
+    },
+    "register.scan.addCount": {
+      "comment": "スキャンした本をまとめて登録する確定ボタン（%lld は冊数）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld冊を本棚に加える"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld Book to Shelf"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld Books to Shelf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "register.cover.guide": {
+      "comment": "表紙OCRの行選択案内",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名と著者名にしたい行をタップしてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the lines for the title and author"
+          }
+        }
+      }
+    },
+    "register.cover.selectAsTitle": {
+      "comment": "選んだOCR行を書名に割り当てるチップ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名にする"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use as Title"
+          }
+        }
+      }
+    },
+    "register.cover.selectAsAuthor": {
+      "comment": "選んだOCR行を著者に割り当てるチップ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者にする"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use as Author"
+          }
+        }
+      }
+    },
+    "register.field.title": {
+      "comment": "書名入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名（必須）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title (Required)"
+          }
+        }
+      }
+    },
+    "register.field.title.placeholder": {
+      "comment": "書名入力欄プレースホルダ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "例：こころ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g., Kokoro"
+          }
+        }
+      }
+    },
+    "register.field.author": {
+      "comment": "著者入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author"
+          }
+        }
+      }
+    },
+    "register.field.author.placeholder": {
+      "comment": "著者入力欄プレースホルダ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "例：夏目漱石"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g., Natsume Soseki"
+          }
+        }
+      }
+    },
+    "register.field.publisher": {
+      "comment": "出版社入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版社"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Publisher"
+          }
+        }
+      }
+    },
+    "register.field.label": {
+      "comment": "レーベル入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レーベル・叢書"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imprint / Series"
+          }
+        }
+      }
+    },
+    "register.field.publishedYear": {
+      "comment": "出版年入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版年"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Published Year"
+          }
+        }
+      }
+    },
+    "register.field.isbn": {
+      "comment": "ISBN入力欄ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISBN（13桁）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISBN (13 digits)"
+          }
+        }
+      }
+    },
+    "register.search.button": {
+      "comment": "入力した書名・著者で書誌を検索する補助ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名・著者で書誌を探す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search Catalog by Title / Author"
+          }
+        }
+      }
+    },
+    "register.search.noResults": {
+      "comment": "書誌検索0件時の案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一致する書誌が見つかりませんでした。このまま登録できます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matching catalog entry found. You can still save as entered"
+          }
+        }
+      }
+    },
+    "register.validation.titleRequired": {
+      "comment": "書名空欄時のバリデーション文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名を入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a book title"
+          }
+        }
+      }
+    },
+    "register.validation.isbnInvalid": {
+      "comment": "ISBN不正時のバリデーション文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISBNは978または979から始まる13桁の数字で入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a 13-digit ISBN starting with 978 or 979"
+          }
+        }
+      }
+    },
+    "register.validation.yearInvalid": {
+      "comment": "出版年不正時のバリデーション文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版年は4桁の西暦で入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a 4-digit year"
+          }
+        }
+      }
+    },
+    "register.submit": {
+      "comment": "手入力・表紙OCRから本を登録する確定ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Shelf"
+          }
+        }
+      }
+    },
+    "shelf.title": {
+      "comment": "本棚画面のタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shelf"
+          }
+        }
+      }
+    },
+    "shelf.section.current": {
+      "comment": "本棚の今の本セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Book"
+          }
+        }
+      }
+    },
+    "shelf.section.tsundoku": {
+      "comment": "本棚の積読セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading Stack"
+          }
+        }
+      }
+    },
+    "shelf.section.finished": {
+      "comment": "本棚の読了セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えた本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished"
+          }
+        }
+      }
+    },
+    "shelf.empty.current": {
+      "comment": "今の本が0冊のときの行表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本はまだありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No current book"
+          }
+        }
+      }
+    },
+    "shelf.empty.tsundoku": {
+      "comment": "積読が0冊のときの行表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読はありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No books in your stack"
+          }
+        }
+      }
+    },
+    "shelf.empty.finished": {
+      "comment": "読了が0冊のときの行表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えた本はまだありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No finished books yet"
+          }
+        }
+      }
+    },
+    "book.status.current": {
+      "comment": "本詳細の状態表示：今の本",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Book"
+          }
+        }
+      }
+    },
+    "book.status.tsundoku": {
+      "comment": "本詳細の状態表示：積読",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Stack"
+          }
+        }
+      }
+    },
+    "book.status.finished": {
+      "comment": "本詳細の状態表示：読了",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読了"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished"
+          }
+        }
+      }
+    },
+    "book.readThis": {
+      "comment": "積読や読了の本を今の本に切り替えるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read This Book"
+          }
+        }
+      }
+    },
+    "book.markFinished": {
+      "comment": "今の本や積読を読了にするボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えたにする"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark as Finished"
+          }
+        }
+      }
+    },
+    "book.colophon.header": {
+      "comment": "本詳細の奥付セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colophon"
+          }
+        }
+      }
+    },
+    "book.colophon.title": {
+      "comment": "奥付の書名ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "book.colophon.author": {
+      "comment": "奥付の著者ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author"
+          }
+        }
+      }
+    },
+    "book.colophon.publisher": {
+      "comment": "奥付の出版社ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版社"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Publisher"
+          }
+        }
+      }
+    },
+    "book.colophon.publishedYear": {
+      "comment": "奥付の出版年ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版年"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Published"
+          }
+        }
+      }
+    },
+    "book.colophon.yearValue": {
+      "comment": "奥付の出版年表示（%lld は西暦4桁）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld年"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "book.colophon.award": {
+      "comment": "奥付の受賞ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受賞"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Awards"
+          }
+        }
+      }
+    },
+    "book.colophon.capture": {
+      "comment": "本詳細から奥付OCRを起動するボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付を撮って補完する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snap Colophon to Fill Details"
+          }
+        }
+      }
+    },
+    "book.colophon.retryLookup": {
+      "comment": "オフライン登録したISBNから書誌を再取得するボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌を再取得する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fetch Book Details"
+          }
+        }
+      }
+    },
+    "book.colophon.ocrGuide": {
+      "comment": "奥付OCR確認シートの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み取った奥付を確認してください。必要な項目だけ直せます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review the detected colophon details and edit as needed"
+          }
+        }
+      }
+    },
+    "book.after.header": {
+      "comment": "読了した本の詳細画面に出す関連本最大5冊の見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本のあとに"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After This Book"
+          }
+        }
+      }
+    },
+    "book.after.addToShelf": {
+      "comment": "この本のあとにの一覧から未所有本を積読に加えるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Stack"
+          }
+        }
+      }
+    },
+    "book.after.added": {
+      "comment": "すでに積読に加わった候補の表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読にあります"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Stack"
+          }
+        }
+      }
+    },
+    "book.summary.nights": {
+      "comment": "その本を読んだユニークな晩数（%lld は晩数）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld晩"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 night"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nights"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "book.summary.totalMinutes": {
+      "comment": "60分未満のときの合計読書時間（%lld は分）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "計 %lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min total"
+          }
+        }
+      }
+    },
+    "book.summary.totalHoursMinutes": {
+      "comment": "60分以上のときの合計読書時間（%1$lld は時間、%2$lld は分）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "計 %lld時間%lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld hr %lld min total"
+          }
+        }
+      }
+    },
+    "book.records.header": {
+      "comment": "読書セッション履歴のセクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読んだ晩の記録"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading Nights"
+          }
+        }
+      }
+    },
+    "book.records.empty": {
+      "comment": "履歴が0件のときの案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ読んだ記録はありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No reading sessions recorded yet"
+          }
+        }
+      }
+    },
+    "book.records.row": {
+      "comment": "履歴行の表示（%1$@ は4時境目の日付、%2$lld は分数）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ・ %lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %lld min"
+          }
+        }
+      }
+    },
+    "book.record.edit.title": {
+      "comment": "履歴編集シートの見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Session"
+          }
+        }
+      }
+    },
+    "book.record.edit.minutes": {
+      "comment": "分数入力欄のラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読んだ時間（分）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutes Read"
+          }
+        }
+      }
+    },
+    "book.record.edit.validation": {
+      "comment": "分数範囲外のエラー文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読んだ時間は1から1440分の間で入れてください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter minutes between 1 and 1440"
+          }
+        }
+      }
+    },
+    "book.record.delete.confirm": {
+      "comment": "履歴1件の削除確認メッセージ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この晩の記録（%lld分）を消しますか？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this reading session (%lld min)?"
+          }
+        }
+      }
+    },
+    "book.delete.confirm.withRecords": {
+      "comment": "記録がある本の削除確認メッセージ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "「%@」と、この本の記録（%lld件）を本棚から消しますか？"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Delete “%1$@” and its %2$lld reading session from your shelf?"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Delete “%1$@” and its %2$lld reading sessions from your shelf?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "book.delete.confirm.noRecords": {
+      "comment": "記録が0件の本の削除確認メッセージ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「%@」を本棚から消しますか？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete “%@” from your shelf?"
+          }
+        }
+      }
+    },
+    "settings.title": {
+      "comment": "設定シートのタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "settings.section.reading": {
+      "comment": "読書動作とテーマ設定のセクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書と外観"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading & Appearance"
+          }
+        }
+      }
+    },
+    "settings.flip.toggle": {
+      "comment": "近接＋加速度による伏せ置き検知のON/OFFトグル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "伏せ置きで読み始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flip Face Down to Read"
+          }
+        }
+      }
+    },
+    "settings.flip.description": {
+      "comment": "伏せ置き設定の補足説明",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書画面でiPhoneを伏せると始まり、持ち上げるとしおり画面に進みます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the reading view, place iPhone face down to start and pick it up to place your bookmark"
+          }
+        }
+      }
+    },
+    "settings.appearance.label": {
+      "comment": "テーマ選択のラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりの色"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmark Theme"
+          }
+        }
+      }
+    },
+    "settings.appearance.default": {
+      "comment": "端末のライト/ダークに従う既定の紙と墨テーマ",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default"
+          }
+        }
+      }
+    },
+    "settings.appearance.kinari": {
+      "comment": "生成り紙のテーマ名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成り"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kinari (Warm Paper)"
+          }
+        }
+      }
+    },
+    "settings.appearance.sumi": {
+      "comment": "墨色の夜向けテーマ名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "墨"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sumi (Ink Dark)"
+          }
+        }
+      }
+    },
+    "settings.appearance.shu": {
+      "comment": "朱色の差し色テーマ名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "朱"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shu (Vermilion)"
+          }
+        }
+      }
+    },
+    "settings.appearance.locked": {
+      "comment": "未購入のテーマにつける小さなラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サポーター特典"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter Perk"
+          }
+        }
+      }
+    },
+    "settings.section.catalog": {
+      "comment": "端末内書誌DBの状態セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌データベース"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book Catalog"
+          }
+        }
+      }
+    },
+    "settings.catalog.ready": {
+      "comment": "端末内書誌DBが配置済みのときの表示（%@ は版や件数）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末内の書誌データ：利用できます（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device catalog: Ready (%@)"
+          }
+        }
+      }
+    },
+    "settings.catalog.downloading": {
+      "comment": "Background Assetsが未完了のときの表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末内の書誌データを準備しています（通信が使えるときはオンライン検索で補います）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing on-device catalog (online lookup is used while connected)"
+          }
+        }
+      }
+    },
+    "settings.section.supporter": {
+      "comment": "買い切り課金セクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サポーター"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter"
+          }
+        }
+      }
+    },
+    "settings.supporter.title": {
+      "comment": "買い切り商品のタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま サポーター（買い切り）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yomuma Supporter (One-Time)"
+          }
+        }
+      }
+    },
+    "settings.supporter.body": {
+      "comment": "買い切りの説明（基本機能がすべて無料であることを明記）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録・しおり・本棚・推薦はすべて無料で使えます。サポーターになると、生成り・墨・朱のしおり色と一枚のカードの意匠が増えます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All reading, bookmark, shelf, and recommendation features are free. Supporters unlock Kinari, Sumi, and Shu themes and additional card styles"
+          }
+        }
+      }
+    },
+    "settings.supporter.buy": {
+      "comment": "購入ボタン（%@ はStoreKit 2のローカライズ価格）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サポーターになる（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Become a Supporter (%@)"
+          }
+        }
+      }
+    },
+    "settings.supporter.purchased": {
+      "comment": "購入済み状態の表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サポーター特典をご利用中です。応援ありがとうございます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter perks active. Thank you for your support"
+          }
+        }
+      }
+    },
+    "settings.supporter.restore": {
+      "comment": "App Storeの購入履歴を同期するボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Purchases"
+          }
+        }
+      }
+    },
+    "settings.supporter.unavailable": {
+      "comment": "StoreKit商品取得失敗時の案内文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在App Storeに接続できません。通信環境を確認してもう一度お試しください"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot connect to the App Store right now. Check your connection and try again"
+          }
+        }
+      }
+    },
+    "settings.section.data": {
+      "comment": "書き出しと規約リンクのセクション見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "データと規約"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data & Privacy"
+          }
+        }
+      }
+    },
+    "settings.export.json": {
+      "comment": "全データをJSONで書き出すボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を書き出す（JSON）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Data (JSON)"
+          }
+        }
+      }
+    },
+    "settings.export.csv": {
+      "comment": "読書履歴と本一覧をCSVで書き出すボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を書き出す（CSV）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Data (CSV)"
+          }
+        }
+      }
+    },
+    "settings.privacy": {
+      "comment": "プライバシーポリシーを開くリンク",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プライバシーポリシー"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy Policy"
+          }
+        }
+      }
+    },
+    "settings.terms": {
+      "comment": "利用規約を開くリンク",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "利用規約"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use"
+          }
+        }
+      }
+    },
+    "widget.configuration.title": {
+      "comment": "ウィジェットギャラリーに出るウィジェット名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本としおり"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Book & Bookmark"
+          }
+        }
+      }
+    },
+    "widget.configuration.description": {
+      "comment": "ウィジェットギャラリーの説明文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今読んでいる本の書名、しおりの位置、残した一行を表示します"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows your current book, bookmark position, and saved line"
+          }
+        }
+      }
+    },
+    "widget.empty": {
+      "comment": "今の本が未設定のときのウィジェット表示",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむまで本を選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a book in Yomuma"
+          }
+        }
+      }
+    },
+    "liveActivity.reading": {
+      "comment": "ライブアクティビティの状態ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading"
+          }
+        }
+      }
+    },
+    "liveActivity.end": {
+      "comment": "ロック画面・Dynamic Islandの終了ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish"
+          }
+        }
+      }
+    },
+    "control.startReading.title": {
+      "comment": "コントロールセンターのボタン表示名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Reading"
+          }
+        }
+      }
+    },
+    "intent.startReading.title": {
+      "comment": "StartReadingIntentのタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Reading"
+          }
+        }
+      }
+    },
+    "intent.endReading.title": {
+      "comment": "EndReadingIntentのタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を終える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish Reading"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.title": {
+      "comment": "WhereStoppedIntentのタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "どこまで読んだか聞く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask Where I Left Off"
+          }
+        }
+      }
+    },
+    "intent.continueReading.title": {
+      "comment": "ContinueReadingIntentのタイトル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前回の続きから読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue Reading"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.dialog.withLine": {
+      "comment": "Siriがページと一行を読み上げる応答文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "『%@』の%lldページ、「%@」まで読みました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You read “%@” up to page %lld: “%@”"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.dialog.pageOnly": {
+      "comment": "Siriがページ番号だけを読み上げる応答文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "『%@』の%lldページまで読みました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You read “%@” up to page %lld"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.dialog.percentOnly": {
+      "comment": "Siriが％だけを読み上げる応答文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "『%@』の%lldパーセントまで読みました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You read %lld percent of “%@”"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.dialog.noMark": {
+      "comment": "今の本はあるがしおり未設定のときのSiri応答文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "『%@』を読んでいますが、まだしおりは挟まれていません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are reading “%@”, but haven't placed a bookmark yet"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.dialog.noBook": {
+      "comment": "今の本が未設定のときのSiri応答文",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いま読んでいる本はまだ選ばれていません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You haven't chosen a current book yet"
+          }
+        }
+      }
+    },
+    "shortcut.startReading.1": {
+      "comment": "Siriショートカット：読書を始める（1）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(.applicationName) 読書を始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start reading in \\(.applicationName)"
+          }
+        }
+      }
+    },
+    "shortcut.startReading.2": {
+      "comment": "Siriショートカット：読書を始める（2）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(.applicationName) 読み始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Begin reading in \\(.applicationName)"
+          }
+        }
+      }
+    },
+    "shortcut.whereStopped.1": {
+      "comment": "Siriショートカット：どこまで読んだか聞く（1）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(.applicationName) どこまで読んだ？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where did I stop in \\(.applicationName)?"
+          }
+        }
+      }
+    },
+    "shortcut.whereStopped.2": {
+      "comment": "Siriショートカット：どこまで読んだか聞く（2）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(.applicationName) しおりはどこ？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where is my bookmark in \\(.applicationName)?"
+          }
+        }
+      }
+    },
+    "shortcut.continueReading.1": {
+      "comment": "Siriショートカット：前回の続きから読む（1）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(.applicationName) 続きから読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue reading in \\(.applicationName)"
+          }
+        }
+      }
+    },
+    "shortcut.continueReading.2": {
+      "comment": "Siriショートカット：前回の続きから読む（2）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\\(.applicationName) 今の本を開く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open my current book in \\(.applicationName)"
+          }
+        }
+      }
+    },
+    "session.tooShort": {
+      "comment": "読書時間が1分未満のため記録しなかったときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1分未満のため記録しませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not recorded because the session was under 1 minute."
+          }
+        }
+      }
+    },
+    "session.invalidTime": {
+      "comment": "端末の時刻が巻き戻ったため記録しなかったときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "時刻が巻き戻ったため記録しませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not recorded because the system clock moved backward."
+          }
+        }
+      }
+    },
+    "session.capped": {
+      "comment": "読書時間が24時間を超えたため上限で記録したときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24時間を上限として記録しました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorded up to the 24-hour maximum."
+          }
+        }
+      }
+    },
+    "session.start.error": {
+      "comment": "読書セッションの開始に失敗したときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を始められませんでした。もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not start reading. Please try again."
+          }
+        }
+      }
+    },
+    "session.save.error": {
+      "comment": "読書記録の保存に失敗したときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save the reading record. Please try again."
+          }
+        }
+      }
+    },
+    "common.save.error": {
+      "comment": "データの保存に失敗したときの汎用エラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存できませんでした。もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not save. Please try again."
+          }
+        }
+      }
+    },
+    "store.load.error": {
+      "comment": "起動時や画面表示時にデータを読み込めなかったときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "データを読み込めませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not load your data."
+          }
+        }
+      }
+    },
+    "book.title.invalid": {
+      "comment": "書名が空または100文字を超えているときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名を1〜100文字で入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a book title between 1 and 100 characters."
+          }
+        }
+      }
+    },
+    "book.author.invalid": {
+      "comment": "著者名が100文字を超えているときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者名を100文字以内で入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the author name within 100 characters."
+          }
+        }
+      }
+    },
+    "mark.line.invalid": {
+      "comment": "しおりの一行が空または60文字を超えているときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一行を1〜60文字で入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a line between 1 and 60 characters."
+          }
+        }
+      }
+    },
+    "mark.page.invalid": {
+      "comment": "ページ数や進捗の数値が範囲外のときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正しい数値を入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a valid number."
+          }
+        }
+      }
+    },
+    "record.minutes.invalid": {
+      "comment": "読書時間の編集で1〜1440分の範囲外のときのバリデーションエラー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1〜1440分の数値を入力してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a duration between 1 and 1440 minutes."
+          }
+        }
+      }
+    },
+    "store.unavailable": {
+      "comment": "端末でApp内課金が制限されているときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この端末では購入が制限されています。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases are restricted on this device."
+          }
+        }
+      }
+    },
+    "store.offline": {
+      "comment": "オフラインのためStoreKitの価格を取得できないときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフラインのため価格を取得できません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cannot fetch price while offline."
+          }
+        }
+      }
+    },
+    "store.purchase.error": {
+      "comment": "よむま Plusの購入処理に失敗したときのエラーバナー",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を完了できませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not complete the purchase."
+          }
+        }
+      }
+    },
+    "store.restore.done": {
+      "comment": "購入の復元に成功したときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元しました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchases restored."
+          }
+        }
+      }
+    },
+    "store.restore.none": {
+      "comment": "復元できる購入履歴が見つからなかったときのバナー通知",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "復元できる購入が見つかりませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No purchases found to restore."
+          }
+        }
+      }
+    },
+    "bookmark.line.empty": {
+      "comment": "しおりの一行がまだ登録されていないときの縦書き領域ラベル",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ一行はありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved line yet"
+          }
+        }
+      }
+    }
+  }
+}

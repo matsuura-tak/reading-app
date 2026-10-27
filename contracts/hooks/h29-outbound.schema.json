@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:hooks:h29-outbound:1",
+  "title": "H29・H31 外へ出したものの記録（要素 hook.outbound の accessibilityValue の JSON）大きな版 1",
+  "description": "H29：アプリ本体が出そうとした外部 HTTP/HTTPS 通信の要求を URLProtocol インターセプタ等で監視・遮断し、記録する。書誌 DB も端末内 SQLite DB（H20）で完結するため、アプリからの外部への HTTP 通信要求はどのホストに対しても常に 0 件（requests が空配列 []）であることを検証する（AC-2、AC-6、AC-9、AC-10、AC-103）。部品を通らない通信がないことは G2 で reviewer が grep で補う（PRD AC-103）。H31：アプリが開こうとした外の URL（プライバシーポリシー AC-88、CC BY 4.0 ライセンス AC-93、OS 設定遷移など）を記録する。関係：contracts/test-hooks.md、ADR 0004、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：外部 HTTP 通信 0 件の検証用に更新）。\n\n[並び] seq の順（このプロセスで出した順。開き直すと空から）。url はパーセントエンコードを戻した全体。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
+  "type": "object",
+  "required": [
+    "logVersion",
+    "requests",
+    "openedURLs"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "logVersion": {
+      "const": 1
+    },
+    "requests": {
+      "type": "array",
+      "description": "アプリが出した外部 HTTP 通信の要求の一覧。v1.0 ではどの場面でも 0 件（空配列 []）であることが合格条件（AC-103）。",
+      "items": {
+        "$ref": "#/$defs/request"
+      }
+    },
+    "openedURLs": {
+      "type": "array",
+      "description": "H31。アプリが開こうとした外部 URL（プライバシーポリシー AC-88、CC BY 4.0 ライセンス AC-93 など）の一覧。",
+      "items": {
+        "$ref": "#/$defs/opened"
+      }
+    }
+  },
+  "$defs": {
+    "request": {
+      "type": "object",
+      "required": [
+        "seq",
+        "at",
+        "method",
+        "url",
+        "host",
+        "path",
+        "query",
+        "headers",
+        "body",
+        "outcome"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+          "description": "アプリの時計（H4、H5）。"
+        },
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE",
+            "HEAD"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "host": {
+          "type": "string",
+          "description": "要求先のホスト名。v1.0 ではどのホストへの通信も 0 件（AC-103、G4-20）。"
+        },
+        "path": {
+          "type": "string"
+        },
+        "query": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "送った順。値はパーセントエンコードを戻した形。"
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "部品が付けたヘッダー（URLRequest.allHTTPHeaderFields）。"
+        },
+        "body": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "outcome": {
+          "enum": [
+            "blocked",
+            "stubbed",
+            "offline",
+            "noStub"
+          ],
+          "description": "blocked：外部 HTTP 通信ゼロの原則により遮断・記録された要求（万一発生した場合は AC-103 違反）。stubbed / offline / noStub：旧互換。"
+        },
+        "status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599
+        },
+        "stub": {
+          "type": "object",
+          "required": [
+            "rule",
+            "kind"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "rule": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "description": "合った rules の位置（0から）。unmatched なら null。"
+            },
+            "kind": {
+              "enum": [
+                "items",
+                "zero",
+                "paramError",
+                "http"
+              ]
+            },
+            "held": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "stubbed"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "stub",
+              "status"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "stub"
+                  ]
+                },
+                {
+                  "required": [
+                    "status"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "opened": {
+      "type": "object",
+      "required": [
+        "seq",
+        "at",
+        "url",
+        "passedThrough"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "passedThrough": {
+          "type": "boolean",
+          "description": "本当に開いたか（-uitest-openurl passthrough のときだけ真）。"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "logVersion": 1,
+      "requests": [],
+      "openedURLs": []
+    },
+    {
+      "logVersion": 1,
+      "requests": [],
+      "openedURLs": [
+        {
+          "seq": 1,
+          "at": "2026-10-15T14:51:00.000Z",
+          "url": "https://example.com/privacy",
+          "passedThrough": false
+        },
+        {
+          "seq": 2,
+          "at": "2026-10-15T14:51:05.000Z",
+          "url": "https://creativecommons.org/licenses/by/4.0/deed.ja",
+          "passedThrough": false
+        }
+      ]
+    }
+  ]
+}

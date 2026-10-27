@@ -1,0 +1,60 @@
+{
+  "sourceLanguage": "ja",
+  "version": "1.0",
+  "strings": {
+    "CFBundleDisplayName": {
+      "comment": "ホーム画面に表示するアプリ名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yomuma"
+          }
+        }
+      }
+    },
+    "CFBundleName": {
+      "comment": "バンドル名",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yomuma"
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription": {
+      "comment": "カメラ権限の目的説明文（撮影した画像は文字とバーコードの読み取りにのみ使い保存しない旨を明記）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本のページ番号や残したい一行、裏表紙のバーコード、表紙や奥付の文字を読み取るためにカメラを使います。撮影した画像は文字の読み取りにだけ使い、端末にも外にも保存しません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yomuma uses the camera to read page numbers, a line to save, back-cover barcodes, and book details from covers or colophons. Captured images are used only for text recognition and are never saved on your device or sent anywhere."
+          }
+        }
+      }
+    }
+  }
+}
