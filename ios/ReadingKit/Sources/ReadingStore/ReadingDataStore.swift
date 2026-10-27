@@ -503,6 +503,9 @@ public final class ReadingDataStore {
         activeNoticeKey = nil
         faceDownEnteredAtMs = nil
         lastSessionActionAt = nil
+        areActivitiesEnabled = true
+        failScheduleCount = 0
+        failStartImmediateCount = 0
         liveActivities = []
         liveActivityRequests = []
         needsRescheduleOnActivate = false
@@ -868,7 +871,7 @@ public final class ReadingDataStore {
             cause: nil,
             recordReload: false
         )
-        if liveActivities.isEmpty && areActivitiesEnabled && currentBook != nil && sessionState == .idle {
+        if liveActivities.isEmpty && areActivitiesEnabled && currentBook != nil && sessionState == .idle && failScheduleCount == 0 {
             scheduleNextEntryLiveActivityIfNeeded(source: "launch")
         }
     }
@@ -1537,12 +1540,15 @@ public final class ReadingDataStore {
             return
         }
 
+        let wasAlreadyFaceDown = (currentOrientation == "faceDown")
         currentOrientation = "faceDown"
         guard !wasLaunchedFaceDown, isFlipMonitoringOn else {
             faceDownEnteredAtMs = nil
             return
         }
-        faceDownEnteredAtMs = clock.currentOffsetMilliseconds
+        if !wasAlreadyFaceDown || faceDownEnteredAtMs == nil {
+            faceDownEnteredAtMs = clock.currentOffsetMilliseconds
+        }
     }
 
     public func evaluateFlipOnClockAdvance() {
@@ -2711,34 +2717,49 @@ public final class ReadingDataStore {
             } else {
                 mode = (orientRaw == "horizontal") ? .pageHorizontal : .pageVertical
                 var parsedCols: [H23OCRColumn] = []
-                let linesRaw = (rawPage["lines"] as? [[String: Any]]) ?? (rawPage["columns"] as? [[String: Any]]) ?? []
-                for (idx, item) in linesRaw.enumerated() {
-                    let text = (item["text"] as? String) ?? ""
-                    let xVal: Double
-                    let yVal: Double?
-                    if let bbox = item["bbox"] as? [NSNumber], bbox.count >= 2 {
-                        xVal = bbox[0].doubleValue
-                        yVal = bbox[1].doubleValue
-                    } else if let xNum = (item["x"] as? NSNumber) ?? (item["normalizedX"] as? NSNumber) {
-                        xVal = xNum.doubleValue
-                        yVal = (item["y"] as? NSNumber)?.doubleValue ?? (item["normalizedY"] as? NSNumber)?.doubleValue
-                    } else {
-                        xVal = Double(linesRaw.count - idx) / Double(max(1, linesRaw.count + 1))
-                        yVal = 0.5
-                    }
-                    let isFolio = (item["isFolio"] as? Bool) ?? (item["isRunningHead"] as? Bool) ?? (item["isPageNumber"] as? Bool)
-                    parsedCols.append(
-                        H23OCRColumn(
-                            id: (item["id"] as? String) ?? "col-\(idx + 1)",
-                            text: text,
-                            normalizedX: xVal,
-                            normalizedY: yVal,
-                            isPageNumber: isFolio
+                if let colStrings = rawPage["columns"] as? [String] {
+                    for (idx, text) in colStrings.enumerated() {
+                        let xVal = Double(colStrings.count - idx) / Double(max(1, colStrings.count + 1))
+                        parsedCols.append(
+                            H23OCRColumn(
+                                id: "col-\(idx + 1)",
+                                text: text,
+                                normalizedX: xVal,
+                                normalizedY: 0.5,
+                                isPageNumber: nil
+                            )
                         )
-                    )
+                    }
+                } else {
+                    let linesRaw = (rawPage["lines"] as? [[String: Any]]) ?? (rawPage["columns"] as? [[String: Any]]) ?? []
+                    for (idx, item) in linesRaw.enumerated() {
+                        let text = (item["text"] as? String) ?? ""
+                        let xVal: Double
+                        let yVal: Double?
+                        if let bbox = item["bbox"] as? [NSNumber], bbox.count >= 2 {
+                            xVal = bbox[0].doubleValue
+                            yVal = bbox[1].doubleValue
+                        } else if let xNum = (item["x"] as? NSNumber) ?? (item["normalizedX"] as? NSNumber) {
+                            xVal = xNum.doubleValue
+                            yVal = (item["y"] as? NSNumber)?.doubleValue ?? (item["normalizedY"] as? NSNumber)?.doubleValue
+                        } else {
+                            xVal = Double(linesRaw.count - idx) / Double(max(1, linesRaw.count + 1))
+                            yVal = 0.5
+                        }
+                        let isFolio = (item["isFolio"] as? Bool) ?? (item["isRunningHead"] as? Bool) ?? (item["isPageNumber"] as? Bool)
+                        parsedCols.append(
+                            H23OCRColumn(
+                                id: (item["id"] as? String) ?? "col-\(idx + 1)",
+                                text: text,
+                                normalizedX: xVal,
+                                normalizedY: yVal,
+                                isPageNumber: isFolio
+                            )
+                        )
+                    }
                 }
                 columns = parsedCols
-                detectedPage = rawPage["detectedPageNumber"] as? Int
+                detectedPage = (rawPage["detectedPageNumber"] as? Int) ?? (rawPage["detectedPage"] as? Int)
             }
         }
 
@@ -3133,7 +3154,7 @@ public final class ReadingDataStore {
             }
         }
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         guard let data = try? encoder.encode(payload),
               let str = String(data: data, encoding: .utf8) else {
             return "{}"
@@ -3153,7 +3174,7 @@ public final class ReadingDataStore {
             requests: liveActivityRequests
         )
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         guard let data = try? encoder.encode(payload),
               let str = String(data: data, encoding: .utf8) else {
             return "{}"
@@ -3184,7 +3205,7 @@ public final class ReadingDataStore {
     public func hookOutboundJSONString() -> String {
         let readout = H16OutboundReadout(totalCount: 0, requests: [], openedURLs: openedURLs)
         let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         guard let data = try? encoder.encode(readout),
               let str = String(data: data, encoding: .utf8) else {
             return "{}"

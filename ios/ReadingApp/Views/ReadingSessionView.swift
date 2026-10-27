@@ -65,9 +65,10 @@ public struct ReadingSessionView: View {
                     .accessibilityIdentifier("reading.ebookNote")
             }
 
-            Spacer()
-
             Button {
+                #if UITEST_HOOKS
+                UITestHookCoordinator.shared.syncAllDarwinTokenStates()
+                #endif
                 let res = model.store.endReadingSession(source: "app")
                 switch res {
                 case .saved:
@@ -83,11 +84,13 @@ public struct ReadingSessionView: View {
                 Text("読み終える")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 14)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .accessibilityIdentifier("reading.end")
+
+            Spacer()
         }
         .padding(32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

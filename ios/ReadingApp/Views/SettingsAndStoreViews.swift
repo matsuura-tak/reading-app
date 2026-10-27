@@ -71,7 +71,7 @@ public struct SettingsView: View {
                         }
                     ))
                     .labelsHidden()
-                    .accessibilityIdentifier("settings.flipToggle")
+                    .accessibilityIdentifier("settings.flipToStart")
                 }
             } else {
                 Text("この端末では伏せて開始を利用できません")
@@ -108,40 +108,49 @@ public struct SettingsView: View {
                 Text("ライブアクティビティがオフになっています")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .accessibilityIdentifier("settings.liveActivity.disabledGuide")
+                    .accessibilityIdentifier("settings.liveActivity.off")
             }
 
-            Button {
-                entryTimeInput = model.store.settings.entryTime
-                showEntryTimePicker.toggle()
-                model.notifyHookChanged()
-            } label: {
-                HStack {
-                    Text("夜の入口の時刻")
-                        .foregroundStyle(.primary)
-                    Spacer()
+            HStack {
+                Text("夜の入口の時刻")
+                    .foregroundStyle(.primary)
+                Spacer()
+                Button {
+                    entryTimeInput = model.store.settings.entryTime
+                    showEntryTimePicker.toggle()
+                    model.notifyHookChanged()
+                } label: {
                     Text(model.store.settings.entryTime)
                         .font(.body.monospacedDigit())
-                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
                 }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("settings.entryTime")
+                .accessibilityValue(model.store.settings.entryTime)
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("settings.entryTime")
-            .accessibilityValue(model.store.settings.entryTime)
 
             if showEntryTimePicker {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        ForEach(["20:00", "21:00", "21:30", "22:00", "22:30", "23:00"], id: \.self) { preset in
-                            Button(preset) {
-                                model.store.setEntryTime(preset)
-                                entryTimeInput = preset
-                                showEntryTimePicker = false
-                                model.notifyHookChanged()
+                let presets = (72..<96).map { idx -> String in
+                    let h = idx / 4
+                    let m = (idx % 4) * 15
+                    return String(format: "%02d:%02d", h, m)
+                }
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(0..<4, id: \.self) { row in
+                        HStack(spacing: 6) {
+                            ForEach(0..<6, id: \.self) { col in
+                                let preset = presets[row * 6 + col]
+                                Button(preset) {
+                                    model.store.setEntryTime(preset)
+                                    entryTimeInput = preset
+                                    showEntryTimePicker = false
+                                    model.notifyHookChanged()
+                                }
+                                .buttonStyle(.bordered)
+                                .font(.caption2.monospacedDigit())
+                                .accessibilityIdentifier("settings.entryTime.\(preset)")
                             }
-                            .buttonStyle(.bordered)
-                            .font(.caption.monospacedDigit())
-                            .accessibilityIdentifier("settings.entryTime.\(preset)")
                         }
                     }
                 }

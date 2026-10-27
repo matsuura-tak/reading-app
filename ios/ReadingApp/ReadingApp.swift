@@ -4,6 +4,7 @@ import ReadingStore
 
 @main
 struct ReadingApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var model: ReadingAppModel
 
     init() {
@@ -25,6 +26,23 @@ struct ReadingApp: App {
                         model.currentScreen = .sessionActive
                     }
                     model.notifyHookChanged()
+                }
+                .onChange(of: scenePhase) { _, newPhase in
+                    #if !UITEST_HOOKS
+                    switch newPhase {
+                    case .background:
+                        model.store.handleDidEnterBackground()
+                        model.notifyHookChanged()
+                    case .active:
+                        model.currentScreen = (model.store.sessionState == .reading)
+                            ? .sessionActive
+                            : ((model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty)
+                        model.store.handleDidBecomeActive()
+                        model.notifyHookChanged()
+                    default:
+                        break
+                    }
+                    #endif
                 }
         }
     }

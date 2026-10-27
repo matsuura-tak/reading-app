@@ -18,22 +18,8 @@ public struct ContentView: View {
             if model.sessionState == .reading {
                 ReadingSessionView(model: model)
                     .tint(palette.accent)
-            } else {
-                NavigationStack(path: $model.navigationPath) {
-                    BookmarkHomeView(model: model)
-                        .navigationDestination(for: NavigationDestinationItem.self) { dest in
-                            switch dest {
-                            case .shelf:
-                                ShelfListView(model: model)
-                            case .settings:
-                                SettingsView(model: model)
-                            case .bookDetail(let bookId):
-                                BookDetailView(model: model, bookId: bookId)
-                            }
-                        }
-                }
-                .tint(palette.accent)
-                .sheet(item: $model.activeSheet) { sheet in
+            } else if let sheet = model.activeSheet {
+                VStack {
                     switch sheet {
                     case .addBook(let pendingMode):
                         BookAddFlowSheetView(model: model, titlePendingMode: pendingMode)
@@ -64,6 +50,24 @@ public struct ContentView: View {
                         }
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(uiColor: .systemBackground))
+                .tint(palette.accent)
+            } else {
+                NavigationStack(path: $model.navigationPath) {
+                    BookmarkHomeView(model: model)
+                        .navigationDestination(for: NavigationDestinationItem.self) { dest in
+                            switch dest {
+                            case .shelf:
+                                ShelfListView(model: model)
+                            case .settings:
+                                SettingsView(model: model)
+                            case .bookDetail(let bookId):
+                                BookDetailView(model: model, bookId: bookId)
+                            }
+                        }
+                }
+                .tint(palette.accent)
             }
 
             #if UITEST_HOOKS

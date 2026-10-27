@@ -304,11 +304,12 @@ public struct BookmarkMarkFlowSheet: View {
                 .foregroundStyle(.secondary)
 
             Button {
-                _ = model.store.clock.endInterval(.markWait)
+                model.store.clock.beginInterval(.markWait)
                 lineText = ""
                 pageText = ""
                 step = .lineInput
                 model.currentScreen = .bookmarkMarkLineInput
+                _ = model.store.clock.endInterval(.markWait)
                 model.notifyHookChanged()
             } label: {
                 Text("一行を手で書く")
@@ -318,11 +319,12 @@ public struct BookmarkMarkFlowSheet: View {
             .accessibilityIdentifier("mark.manual")
 
             Button {
-                _ = model.store.clock.endInterval(.markWait)
+                model.store.clock.beginInterval(.markWait)
                 lineText = ""
                 pageText = ""
                 step = .pageOnlyInput
                 model.currentScreen = .bookmarkMarkPageInput
+                _ = model.store.clock.endInterval(.markWait)
                 model.notifyHookChanged()
             } label: {
                 Text("ページ数だけ残す")
@@ -491,6 +493,7 @@ public struct BookmarkMarkFlowSheet: View {
         if model.store.ocrHoldEnabled && !model.store.isOCRHoldReleased {
             step = .ocrProcessing
             model.currentScreen = .bookmarkMarkCamera
+            _ = model.store.clock.endInterval(.markWait)
             model.notifyHookChanged()
             return
         }

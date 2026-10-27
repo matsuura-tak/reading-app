@@ -9,11 +9,20 @@ import ReadingStore
 @_silgen_name("notify_register_check")
 private func c_notify_register_check(_ name: UnsafePointer<CChar>, _ out_token: UnsafeMutablePointer<Int32>) -> UInt32
 
+@_silgen_name("notify_register_dispatch")
+private func c_notify_register_dispatch(_ name: UnsafePointer<CChar>, _ out_token: UnsafeMutablePointer<Int32>, _ queue: DispatchQueue, _ handler: @escaping @convention(block) (Int32) -> Void) -> UInt32
+
 @_silgen_name("notify_check")
 private func c_notify_check(_ token: Int32, _ check: UnsafeMutablePointer<Int32>) -> UInt32
 
 @_silgen_name("notify_get_state")
 private func c_notify_get_state(_ token: Int32, _ state64: UnsafeMutablePointer<UInt64>) -> UInt32
+
+@_silgen_name("notify_set_state")
+private func c_notify_set_state(_ token: Int32, _ state64: UInt64) -> UInt32
+
+@_silgen_name("notify_cancel")
+private func c_notify_cancel(_ token: Int32) -> UInt32
 
 @MainActor
 @Observable
@@ -27,9 +36,14 @@ public final class UITestHookCoordinator {
     public var barcodeStubString: String?
     public var isFakeBarcodeScannerEnabled: Bool = false
 
-    private weak var activeModel: ReadingAppModel?
+    private var activeModel: ReadingAppModel?
     private var isMonitoringInstalled = false
     private var barcodePostCount = 0
+    private var notifyTokens: [String: Int32] = [:]
+    private var baselineClockStateOnLaunch: UInt64 = 0
+    private var didEnterBackgroundSinceLaunch = false
+    private var hasReceivedInitialOrientation = false
+    private var launchTimestamp: Date = .distantPast
 
     public init() {}
 
@@ -125,13 +139,19 @@ public final class UITestHookCoordinator {
         let skStub = env["UITEST_STOREKIT"] ?? env["UITEST_STOREKIT_STUB"]
         store.configureStoreKit(from: skStub)
 
+        hasReceivedInitialOrientation = false
+        launchTimestamp = Date()
         if let initOrient = env["UITEST_INITIAL_ORIENTATION"], !initOrient.isEmpty {
             store.setOrientation(initOrient, isInitialLaunch: true)
+            hasReceivedInitialOrientation = true
         } else {
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
             let devOrient = UIDevice.current.orientation
-            if devOrient == .faceDown {
-                store.setOrientation("faceDown", isInitialLaunch: true)
+            if devOrient != .unknown {
+                hasReceivedInitialOrientation = true
+                if devOrient == .faceDown {
+                    store.setOrientation("faceDown", isInitialLaunch: true)
+                }
             }
         }
 
@@ -150,7 +170,9 @@ public final class UITestHookCoordinator {
             }
         }
 
+        didEnterBackgroundSinceLaunch = false
         installSystemAndDarwinObserversIfNeeded()
+        clearAllDarwinTokenStatesOnLaunch()
         model.notifyHookChanged()
     }
 
@@ -164,7 +186,7 @@ public final class UITestHookCoordinator {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in
+            MainActor.assumeIsolated {
                 self?.handleUIDeviceOrientationChange()
             }
         }
@@ -174,9 +196,30 @@ public final class UITestHookCoordinator {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in
+            MainActor.assumeIsolated {
                 guard let self, let model = self.activeModel else { return }
+                self.didEnterBackgroundSinceLaunch = true
                 model.store.handleDidEnterBackground()
+                model.notifyHookChanged()
+            }
+        }
+
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self, let model = self.activeModel else { return }
+                self.syncAllDarwinTokenStates()
+                model.store.handleDidBecomeActive()
+                model.notifyHookChanged()
+                let deadline = Date().addingTimeInterval(0.65)
+                while Date() < deadline {
+                    _ = RunLoop.main.run(mode: .default, before: Date().addingTimeInterval(0.02))
+                    usleep(20_000)
+                }
+                self.syncAllDarwinTokenStates()
                 model.notifyHookChanged()
             }
         }
@@ -186,19 +229,110 @@ public final class UITestHookCoordinator {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor in
+            MainActor.assumeIsolated {
                 guard let self, let model = self.activeModel else { return }
+                self.didEnterBackgroundSinceLaunch = false
+                if !self.hasReceivedInitialOrientation {
+                    let devOrient = UIDevice.current.orientation
+                    if devOrient != .unknown {
+                        self.hasReceivedInitialOrientation = true
+                        if devOrient == .faceDown {
+                            model.store.setOrientation("faceDown", isInitialLaunch: true)
+                        }
+                    }
+                }
+                model.currentScreen = (model.store.sessionState == .reading)
+                    ? .sessionActive
+                    : ((model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty)
+                self.syncAllDarwinTokenStates()
                 model.store.handleDidBecomeActive()
                 model.notifyHookChanged()
             }
         }
 
-        startDarwinPollingThread()
+        registerDarwinDispatchListeners()
+    }
+
+    public func clearAllDarwinTokenStatesOnLaunch() {
+        for (name, token) in notifyTokens {
+            if name == "yomuma.uitest.clock" {
+                _ = c_notify_set_state(token, 0)
+                baselineClockStateOnLaunch = 0
+            }
+            var check: Int32 = 0
+            _ = c_notify_check(token, &check)
+        }
+    }
+
+    public func syncAllDarwinTokenStates() {
+        for (name, token) in notifyTokens {
+            var check: Int32 = 0
+            if c_notify_check(token, &check) == 0 && check != 0 {
+                var state64: UInt64 = 0
+                _ = c_notify_get_state(token, &state64)
+                handleDarwinNotification(name: name, state: state64)
+            } else if name == "yomuma.uitest.clock" {
+                var state64: UInt64 = 0
+                if c_notify_get_state(token, &state64) == 0,
+                   state64 > 0,
+                   let store = activeModel?.store,
+                   Int64(state64) != store.clock.currentOffsetMilliseconds {
+                    handleDarwinNotification(name: name, state: state64)
+                }
+            }
+        }
+        var freshClockToken: Int32 = 0
+        if "yomuma.uitest.clock".withCString({ c_notify_register_check($0, &freshClockToken) }) == 0 {
+            var freshState: UInt64 = 0
+            if c_notify_get_state(freshClockToken, &freshState) == 0,
+               freshState > 0,
+               let store = activeModel?.store,
+               Int64(freshState) != store.clock.currentOffsetMilliseconds {
+                handleDarwinNotification(name: "yomuma.uitest.clock", state: freshState)
+            }
+            _ = c_notify_cancel(freshClockToken)
+        }
+    }
+
+    private func registerDarwinDispatchListeners() {
+        let names = [
+            "yomuma.uitest.clock",
+            "yomuma.uitest.offline",
+            "yomuma.uitest.ocr.release",
+            "yomuma.uitest.barcode",
+            "yomuma.uitest.liveactivity.transition",
+            "yomuma.uitest.storekit.refund",
+            "yomuma.uitest.intent.run"
+        ]
+        for name in names {
+            var checkToken: Int32 = 0
+            _ = name.withCString { c_notify_register_check($0, &checkToken) }
+            var initialCheck: Int32 = 0
+            _ = c_notify_check(checkToken, &initialCheck)
+            notifyTokens[name] = checkToken
+
+            var dispatchToken: Int32 = 0
+            let notifName = name
+            _ = name.withCString { cStr in
+                c_notify_register_dispatch(cStr, &dispatchToken, .main) { t in
+                    var state64: UInt64 = 0
+                    _ = c_notify_get_state(t, &state64)
+                    MainActor.assumeIsolated {
+                        var chk: Int32 = 0
+                        if let ct = UITestHookCoordinator.shared.notifyTokens[notifName] {
+                            _ = c_notify_check(ct, &chk)
+                        }
+                        UITestHookCoordinator.shared.handleDarwinNotification(name: notifName, state: state64)
+                    }
+                }
+            }
+        }
     }
 
     private func handleUIDeviceOrientationChange() {
         guard let model = activeModel else { return }
         let devOrient = UIDevice.current.orientation
+        guard devOrient != .unknown else { return }
         let mapped: String
         switch devOrient {
         case .faceDown:
@@ -212,51 +346,15 @@ public final class UITestHookCoordinator {
         default:
             mapped = "portrait"
         }
-        model.store.setOrientation(mapped, isInitialLaunch: false)
+        let isInit: Bool
+        if !hasReceivedInitialOrientation {
+            hasReceivedInitialOrientation = true
+            isInit = (devOrient == .faceDown && Date().timeIntervalSince(launchTimestamp) < 4.0)
+        } else {
+            isInit = false
+        }
+        model.store.setOrientation(mapped, isInitialLaunch: isInit)
         model.notifyHookChanged()
-    }
-
-    private nonisolated func startDarwinPollingThread() {
-        let names = [
-            "yomuma.uitest.clock",
-            "yomuma.uitest.offline",
-            "yomuma.uitest.ocr.release",
-            "yomuma.uitest.barcode",
-            "yomuma.uitest.liveactivity.transition",
-            "yomuma.uitest.storekit.refund",
-            "yomuma.uitest.intent.run"
-        ]
-        var tokens: [Int32] = Array(repeating: 0, count: names.count)
-        for (i, name) in names.enumerated() {
-            var t: Int32 = 0
-            _ = name.withCString { c_notify_register_check($0, &t) }
-            var check: Int32 = 0
-            _ = c_notify_check(t, &check)
-            tokens[i] = t
-        }
-
-        let thread = Thread {
-            while true {
-                var didWork = false
-                for (i, t) in tokens.enumerated() {
-                    var check: Int32 = 0
-                    if c_notify_check(t, &check) == 0 && check != 0 {
-                        var state64: UInt64 = 0
-                        _ = c_notify_get_state(t, &state64)
-                        didWork = true
-                        let notifName = names[i]
-                        Task { @MainActor in
-                            UITestHookCoordinator.shared.handleDarwinNotification(name: notifName, state: state64)
-                        }
-                    }
-                }
-                if !didWork {
-                    usleep(5000)
-                }
-            }
-        }
-        thread.qualityOfService = QualityOfService.userInitiated
-        thread.start()
     }
 
     public func handleDarwinNotification(name: String, state: UInt64) {
@@ -277,6 +375,7 @@ public final class UITestHookCoordinator {
                 let epochSec = TimeInterval(state & ((1 << 62) - 1))
                 store.clock.setNow(Date(timeIntervalSince1970: epochSec))
             } else {
+                baselineClockStateOnLaunch = state
                 let targetMs = Int64(state)
                 let delta = targetMs - store.clock.currentOffsetMilliseconds
                 handleUIDeviceOrientationChange()

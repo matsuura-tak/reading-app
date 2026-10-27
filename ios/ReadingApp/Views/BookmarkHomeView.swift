@@ -91,8 +91,10 @@ public struct BookmarkHomeView: View {
             }
         }
         .onAppear {
-            model.activeTab = .bookmark
-            model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+            if model.navigationPath.isEmpty {
+                model.activeTab = .bookmark
+                model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+            }
             model.updateScreenStateFlags()
             model.notifyHookChanged()
         }
@@ -254,6 +256,9 @@ public struct BookmarkHomeView: View {
             }
 
             Button {
+                #if UITEST_HOOKS
+                UITestHookCoordinator.shared.syncAllDarwinTokenStates()
+                #endif
                 if model.store.startReadingSession(startedBy: "tap", explicitEntry: nil) {
                     model.currentScreen = .sessionActive
                 }
