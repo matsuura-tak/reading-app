@@ -21,9 +21,16 @@ struct ReadingApp: App {
         WindowGroup {
             ContentView(model: model)
                 .onOpenURL { url in
-                    model.store.openEntryURL(url.absoluteString)
-                    if model.store.sessionState == .reading {
-                        model.currentScreen = .sessionActive
+                    let prevOpenedAt = model.store.pendingEntryURL?.openedAt
+                    model.store.openEntryURL(url)
+                    if model.store.pendingEntryURL?.openedAt != prevOpenedAt {
+                        if model.store.sessionState == .reading {
+                            model.currentScreen = .sessionActive
+                        } else {
+                            model.activeSheet = nil
+                            model.navigationPath = []
+                            model.currentScreen = model.store.currentBook != nil ? .bookmarkCurrent : .bookmarkEmpty
+                        }
                     }
                     model.notifyHookChanged()
                 }

@@ -1,5 +1,8 @@
 import Foundation
 import ReadingCore
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 public struct WidgetRenderSpec: Codable, Sendable, Equatable {
     public var family: String
@@ -121,6 +124,16 @@ public struct FullWidgetHookPayload: Codable, Sendable, Equatable {
 
 @MainActor
 public final class SnapshotStore {
+    public nonisolated static let appGroupIdentifier = "group.com.takumamatsuura.readingapp"
+
+    public nonisolated static func defaultContainerDirectoryURL() -> URL {
+        if let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) {
+            return groupURL
+        }
+        return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSTemporaryDirectory())
+    }
+
     public let fileURL: URL
     public private(set) var currentSnapshot: WidgetSnapshot
     public private(set) var reloadTimelineCount: Int = 0
@@ -235,6 +248,12 @@ public final class SnapshotStore {
         let dir = fileURL.deletingLastPathComponent()
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         try data.write(to: fileURL, options: .atomic)
+        #if os(iOS)
+        try? FileManager.default.setAttributes(
+            [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+            ofItemAtPath: fileURL.path
+        )
+        #endif
         var rv = URLResourceValues()
         rv.isExcludedFromBackup = true
         var mutableURL = fileURL
@@ -247,6 +266,9 @@ public final class SnapshotStore {
             if let cause, !cause.isEmpty {
                 reloadsByCause[cause, default: 0] += 1
             }
+            #if canImport(WidgetKit)
+            WidgetCenter.shared.reloadAllTimelines()
+            #endif
         }
 
         let elapsedNs = DispatchTime.now().uptimeNanoseconds &- startNs

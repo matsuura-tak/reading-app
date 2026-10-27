@@ -2,7 +2,7 @@ import SwiftUI
 import ReadingCore
 
 public enum ReadingSharedContainer {
-    public static let appGroupIdentifier = "group.com.example.readingapp"
+    public static let appGroupIdentifier = "group.com.takumamatsuura.readingapp"
 
     public nonisolated static func containerDirectoryURL() -> URL {
         if let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroupIdentifier) {

@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(ActivityKit) && os(iOS)
+import ActivityKit
+#endif
 
 // MARK: - WidgetSnapshot (contracts/widget-snapshot.schema.json)
 
@@ -1408,3 +1411,41 @@ public struct HookConfigEnvelope: Codable, Sendable, Equatable {
         self.permissionStates = try c.decodeIfPresent(H32PermissionStates.self, forKey: .permissionStates)
     }
 }
+
+#if canImport(ActivityKit) && os(iOS)
+public struct ReadingActivityAttributes: ActivityAttributes, Codable, Sendable {
+    public struct ContentState: Codable, Hashable, Sendable {
+        public var mode: String
+        public var title: String
+        public var line: String?
+        public var progressText: String?
+        public var summaryText: String?
+        public var hideOnWidgets: Bool
+
+        public nonisolated init(
+            mode: String = "reading",
+            title: String,
+            line: String? = nil,
+            progressText: String? = nil,
+            summaryText: String? = nil,
+            hideOnWidgets: Bool = false
+        ) {
+            self.mode = mode
+            self.title = title
+            self.line = line
+            self.progressText = progressText
+            self.summaryText = summaryText
+            self.hideOnWidgets = hideOnWidgets
+        }
+    }
+
+    public var bookId: UUID?
+    public var startedAt: Date?
+
+    public nonisolated init(bookId: UUID? = nil, startedAt: Date? = nil) {
+        self.bookId = bookId
+        self.startedAt = startedAt
+    }
+}
+#endif
+

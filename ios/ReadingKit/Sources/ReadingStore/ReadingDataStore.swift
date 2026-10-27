@@ -1,6 +1,10 @@
 import Foundation
 import Observation
 import SwiftData
+import StoreKit
+#if canImport(ActivityKit) && os(iOS)
+import ActivityKit
+#endif
 import ReadingCore
 
 // MARK: - SwiftData Schema V1
@@ -66,6 +70,83 @@ public enum ReadingSchemaV1: VersionedSchema {
             self.tsundokuAt = snapshot.tsundokuAt
             self.finishedAt = snapshot.finishedAt
         }
+
+        public func matches(_ snapshot: BookSnapshot) -> Bool {
+            id == snapshot.id &&
+            isbn13 == snapshot.isbn13 &&
+            title == snapshot.title &&
+            author == snapshot.author &&
+            publisher == snapshot.publisher &&
+            label == snapshot.label &&
+            publishedYear == snapshot.publishedYear &&
+            seriesTitle == snapshot.seriesTitle &&
+            volumeNumber == snapshot.volumeNumber &&
+            ndc == snapshot.ndc &&
+            statusRaw == snapshot.status.rawValue &&
+            isEbook == snapshot.isEbook &&
+            isTitlePending == snapshot.isTitlePending &&
+            progressUnitRaw == snapshot.progressUnit.rawValue &&
+            currentPage == snapshot.currentPage &&
+            currentLocation == snapshot.currentLocation &&
+            currentPercent == snapshot.currentPercent &&
+            lastSavedLine == snapshot.lastSavedLine &&
+            createdAt == snapshot.createdAt &&
+            updatedAt == snapshot.updatedAt &&
+            tsundokuAt == snapshot.tsundokuAt &&
+            finishedAt == snapshot.finishedAt
+        }
+
+        public func update(from snapshot: BookSnapshot) {
+            guard !matches(snapshot) else { return }
+            self.isbn13 = snapshot.isbn13
+            self.title = snapshot.title
+            self.author = snapshot.author
+            self.publisher = snapshot.publisher
+            self.label = snapshot.label
+            self.publishedYear = snapshot.publishedYear
+            self.seriesTitle = snapshot.seriesTitle
+            self.volumeNumber = snapshot.volumeNumber
+            self.ndc = snapshot.ndc
+            self.statusRaw = snapshot.status.rawValue
+            self.isEbook = snapshot.isEbook
+            self.isTitlePending = snapshot.isTitlePending
+            self.progressUnitRaw = snapshot.progressUnit.rawValue
+            self.currentPage = snapshot.currentPage
+            self.currentLocation = snapshot.currentLocation
+            self.currentPercent = snapshot.currentPercent
+            self.lastSavedLine = snapshot.lastSavedLine
+            self.createdAt = snapshot.createdAt
+            self.updatedAt = snapshot.updatedAt
+            self.tsundokuAt = snapshot.tsundokuAt
+            self.finishedAt = snapshot.finishedAt
+        }
+
+        public func toSnapshot() -> BookSnapshot {
+            BookSnapshot(
+                id: id,
+                isbn13: isbn13,
+                title: title,
+                author: author,
+                publisher: publisher,
+                label: label,
+                publishedYear: publishedYear,
+                seriesTitle: seriesTitle,
+                volumeNumber: volumeNumber,
+                ndc: ndc,
+                status: BookStatus(rawValue: statusRaw) ?? .current,
+                isEbook: isEbook,
+                isTitlePending: isTitlePending,
+                progressUnit: ProgressUnit(rawValue: progressUnitRaw) ?? .page,
+                currentPage: currentPage,
+                currentLocation: currentLocation,
+                currentPercent: currentPercent,
+                lastSavedLine: lastSavedLine,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                tsundokuAt: tsundokuAt,
+                finishedAt: finishedAt
+            )
+        }
     }
 
     @Model
@@ -103,6 +184,62 @@ public enum ReadingSchemaV1: VersionedSchema {
             self.endPercent = snapshot.endPercent
             self.savedLine = snapshot.savedLine
         }
+
+        public func matches(_ snapshot: ReadingRecordSnapshot) -> Bool {
+            id == snapshot.id &&
+            bookId == snapshot.bookId &&
+            startedAt == snapshot.startedAt &&
+            endedAt == snapshot.endedAt &&
+            durationMinutes == snapshot.durationMinutes &&
+            nightDate == snapshot.nightDate &&
+            entryRaw == snapshot.entry.rawValue &&
+            progressUnitRaw == snapshot.progressUnit?.rawValue &&
+            startPage == snapshot.startPage &&
+            endPage == snapshot.endPage &&
+            startLocation == snapshot.startLocation &&
+            endLocation == snapshot.endLocation &&
+            startPercent == snapshot.startPercent &&
+            endPercent == snapshot.endPercent &&
+            savedLine == snapshot.savedLine
+        }
+
+        public func update(from snapshot: ReadingRecordSnapshot) {
+            guard !matches(snapshot) else { return }
+            self.bookId = snapshot.bookId
+            self.startedAt = snapshot.startedAt
+            self.endedAt = snapshot.endedAt
+            self.durationMinutes = snapshot.durationMinutes
+            self.nightDate = snapshot.nightDate
+            self.entryRaw = snapshot.entry.rawValue
+            self.progressUnitRaw = snapshot.progressUnit?.rawValue
+            self.startPage = snapshot.startPage
+            self.endPage = snapshot.endPage
+            self.startLocation = snapshot.startLocation
+            self.endLocation = snapshot.endLocation
+            self.startPercent = snapshot.startPercent
+            self.endPercent = snapshot.endPercent
+            self.savedLine = snapshot.savedLine
+        }
+
+        public func toSnapshot() -> ReadingRecordSnapshot {
+            ReadingRecordSnapshot(
+                id: id,
+                bookId: bookId,
+                startedAt: startedAt,
+                endedAt: endedAt,
+                durationMinutes: durationMinutes,
+                nightDate: nightDate,
+                entry: SessionEntryPoint(rawValue: entryRaw) ?? .app,
+                progressUnit: progressUnitRaw.flatMap(ProgressUnit.init(rawValue:)),
+                startPage: startPage,
+                endPage: endPage,
+                startLocation: startLocation,
+                endLocation: endLocation,
+                startPercent: startPercent,
+                endPercent: endPercent,
+                savedLine: savedLine
+            )
+        }
     }
 
     @Model
@@ -113,6 +250,7 @@ public enum ReadingSchemaV1: VersionedSchema {
         public var startedByRaw: String
         public var entryRaw: String
         public var liveActivityId: String?
+        public var hadCancelledTonightSchedule: Bool
 
         public init(from session: ActiveSessionSnapshot) {
             self.id = "active"
@@ -121,6 +259,27 @@ public enum ReadingSchemaV1: VersionedSchema {
             self.startedByRaw = session.startedBy
             self.entryRaw = session.entry.rawValue
             self.liveActivityId = session.liveActivityId
+            self.hadCancelledTonightSchedule = session.hadCancelledTonightSchedule
+        }
+
+        public func update(from session: ActiveSessionSnapshot) {
+            self.bookId = session.bookId
+            self.startedAt = session.startedAt
+            self.startedByRaw = session.startedBy
+            self.entryRaw = session.entry.rawValue
+            self.liveActivityId = session.liveActivityId
+            self.hadCancelledTonightSchedule = session.hadCancelledTonightSchedule
+        }
+
+        public func toSnapshot() -> ActiveSessionSnapshot {
+            ActiveSessionSnapshot(
+                bookId: bookId,
+                startedAt: startedAt,
+                startedBy: startedByRaw,
+                entry: SessionEntryPoint(rawValue: entryRaw) ?? .app,
+                liveActivityId: liveActivityId,
+                hadCancelledTonightSchedule: hadCancelledTonightSchedule
+            )
         }
     }
 
@@ -135,6 +294,16 @@ public enum ReadingSchemaV1: VersionedSchema {
         public var isPlusPurchased: Bool
         public var firstNightCompletedAt: String?
         public var seventhNightReachedAt: String?
+        public var readersChosen: Int
+        public var readersSkipped: Int
+        public var nextVolumeChosen: Int
+        public var nextVolumeSkipped: Int
+        public var authorChosen: Int
+        public var authorSkipped: Int
+        public var awardChosen: Int
+        public var awardSkipped: Int
+        public var sameLabelChosen: Int
+        public var sameLabelSkipped: Int
 
         public init(from settings: SettingsSnapshot) {
             self.id = "singleton"
@@ -146,6 +315,57 @@ public enum ReadingSchemaV1: VersionedSchema {
             self.isPlusPurchased = settings.isPlusPurchased
             self.firstNightCompletedAt = settings.firstNightCompletedAt
             self.seventhNightReachedAt = settings.seventhNightReachedAt
+            self.readersChosen = settings.recommendationWeights.readers.chosen
+            self.readersSkipped = settings.recommendationWeights.readers.skipped
+            self.nextVolumeChosen = settings.recommendationWeights.nextVolume.chosen
+            self.nextVolumeSkipped = settings.recommendationWeights.nextVolume.skipped
+            self.authorChosen = settings.recommendationWeights.author.chosen
+            self.authorSkipped = settings.recommendationWeights.author.skipped
+            self.awardChosen = settings.recommendationWeights.award.chosen
+            self.awardSkipped = settings.recommendationWeights.award.skipped
+            self.sameLabelChosen = settings.recommendationWeights.sameLabel.chosen
+            self.sameLabelSkipped = settings.recommendationWeights.sameLabel.skipped
+        }
+
+        public func update(from settings: SettingsSnapshot) {
+            self.flipToStartEnabled = settings.flipToStartEnabled
+            self.hideOnWidgets = settings.hideOnWidgets
+            self.widgetGuideShown = settings.widgetGuideShown
+            self.entryTime = settings.entryTime
+            self.appearanceIDRaw = settings.appearanceID.rawValue
+            self.isPlusPurchased = settings.isPlusPurchased
+            self.firstNightCompletedAt = settings.firstNightCompletedAt
+            self.seventhNightReachedAt = settings.seventhNightReachedAt
+            self.readersChosen = settings.recommendationWeights.readers.chosen
+            self.readersSkipped = settings.recommendationWeights.readers.skipped
+            self.nextVolumeChosen = settings.recommendationWeights.nextVolume.chosen
+            self.nextVolumeSkipped = settings.recommendationWeights.nextVolume.skipped
+            self.authorChosen = settings.recommendationWeights.author.chosen
+            self.authorSkipped = settings.recommendationWeights.author.skipped
+            self.awardChosen = settings.recommendationWeights.award.chosen
+            self.awardSkipped = settings.recommendationWeights.award.skipped
+            self.sameLabelChosen = settings.recommendationWeights.sameLabel.chosen
+            self.sameLabelSkipped = settings.recommendationWeights.sameLabel.skipped
+        }
+
+        public func toSnapshot() -> SettingsSnapshot {
+            SettingsSnapshot(
+                flipToStartEnabled: flipToStartEnabled,
+                hideOnWidgets: hideOnWidgets,
+                widgetGuideShown: widgetGuideShown,
+                entryTime: entryTime,
+                appearanceID: AppearanceID(rawValue: appearanceIDRaw) ?? .default,
+                isPlusPurchased: isPlusPurchased,
+                firstNightCompletedAt: firstNightCompletedAt,
+                seventhNightReachedAt: seventhNightReachedAt,
+                recommendationWeights: RecommendationWeights(
+                    readers: RecommendationCategoryCounter(chosen: readersChosen, skipped: readersSkipped),
+                    nextVolume: RecommendationCategoryCounter(chosen: nextVolumeChosen, skipped: nextVolumeSkipped),
+                    author: RecommendationCategoryCounter(chosen: authorChosen, skipped: authorSkipped),
+                    award: RecommendationCategoryCounter(chosen: awardChosen, skipped: awardSkipped),
+                    sameLabel: RecommendationCategoryCounter(chosen: sameLabelChosen, skipped: sameLabelSkipped)
+                )
+            )
         }
     }
 }
@@ -353,9 +573,11 @@ public enum StoreRestoreResult: Sendable, Equatable {
 @MainActor
 @Observable
 public final class ReadingDataStore {
+    public static weak var shared: ReadingDataStore?
+    public static let plusProductID = "jp.yomuma.plus"
+
     public let containerDirectory: URL
     public let storeFileURL: URL
-    public let stateJSONURL: URL
     public let clock: ReadingClock
     public let snapshotStore: SnapshotStore
     public let catalogDB: CatalogDatabase
@@ -409,6 +631,7 @@ public final class ReadingDataStore {
     public var remainingFailSaves: [String: Int] = [:]
 
     // Live Activity state (H17)
+    public private(set) var isLiveActivityStubbed: Bool = false
     public var areActivitiesEnabled: Bool = true
     public var failScheduleCount: Int = 0
     public var failStartImmediateCount: Int = 0
@@ -417,6 +640,7 @@ public final class ReadingDataStore {
     public var liveActivityRequests: [LiveActivityRequestLog] = []
 
     // StoreKit state (H19)
+    public private(set) var isStoreKitStubbed: Bool = false
     public var storeCanMakePayments: Bool = true
     public var storeProductLoadAvailable: Bool = true
     public var storePurchaseOutcome: String = "success"
@@ -457,9 +681,16 @@ public final class ReadingDataStore {
         let baseDir = containerDirectory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first ?? URL(fileURLWithPath: NSTemporaryDirectory())
         self.containerDirectory = baseDir
         let appSupportDir = baseDir.appendingPathComponent("Application Support", isDirectory: true)
+        #if os(iOS)
+        try? FileManager.default.createDirectory(
+            at: appSupportDir,
+            withIntermediateDirectories: true,
+            attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication]
+        )
+        #else
         try? FileManager.default.createDirectory(at: appSupportDir, withIntermediateDirectories: true)
+        #endif
         self.storeFileURL = appSupportDir.appendingPathComponent("ReadingStore.store")
-        self.stateJSONURL = appSupportDir.appendingPathComponent("ReadingStoreState.json")
         self.clock = clock ?? ReadingClock()
         self.snapshotStore = SnapshotStore(containerDirectory: baseDir)
         let catalogURL = appSupportDir.appendingPathComponent("catalog.sqlite")
@@ -468,15 +699,27 @@ public final class ReadingDataStore {
         let schema = Schema(versionedSchema: ReadingSchemaV1.self)
         let config = ModelConfiguration(schema: schema, url: storeFileURL, allowsSave: true)
         self.modelContainer = try? ModelContainer(for: schema, migrationPlan: ReadingMigrationPlan.self, configurations: [config])
-        setExcludedFromBackup(false, for: storeFileURL)
+        self.modelContainer?.mainContext.autosaveEnabled = false
+        applyStoreFileAttributes()
+        Self.shared = self
     }
 
-    private func setExcludedFromBackup(_ excluded: Bool, for url: URL) {
-        guard FileManager.default.fileExists(atPath: url.path) else { return }
-        var rv = URLResourceValues()
-        rv.isExcludedFromBackup = excluded
-        var mutable = url
-        try? mutable.setResourceValues(rv)
+    private func applyStoreFileAttributes() {
+        let companionSuffixes = ["", "-wal", "-shm"]
+        for suffix in companionSuffixes {
+            let fileURL = URL(fileURLWithPath: storeFileURL.path + suffix)
+            guard FileManager.default.fileExists(atPath: fileURL.path) else { continue }
+            var rv = URLResourceValues()
+            rv.isExcludedFromBackup = false
+            var mutable = fileURL
+            try? mutable.setResourceValues(rv)
+            #if os(iOS)
+            try? FileManager.default.setAttributes(
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+                ofItemAtPath: fileURL.path
+            )
+            #endif
+        }
     }
 
     // MARK: - Reset, Seed, and Launch Configuration
@@ -503,12 +746,14 @@ public final class ReadingDataStore {
         activeNoticeKey = nil
         faceDownEnteredAtMs = nil
         lastSessionActionAt = nil
+        isLiveActivityStubbed = false
         areActivitiesEnabled = true
         failScheduleCount = 0
         failStartImmediateCount = 0
         liveActivities = []
         liveActivityRequests = []
         needsRescheduleOnActivate = false
+        isStoreKitStubbed = false
         intentInvocations = []
         shareCards = []
         openedURLs = []
@@ -518,7 +763,6 @@ public final class ReadingDataStore {
         storeStatusMessageKey = nil
         snapshotStore.resetCounts()
 
-        try? FileManager.default.removeItem(at: stateJSONURL)
         try? FileManager.default.removeItem(at: snapshotStore.fileURL)
         try? persistCurrentEnvelopeToDisk()
         _ = try? snapshotStore.writeSnapshot(
@@ -841,12 +1085,48 @@ public final class ReadingDataStore {
             return
         }
 
-        if FileManager.default.fileExists(atPath: stateJSONURL.path),
-           let data = try? Data(contentsOf: stateJSONURL),
-           let envelope = try? JSONDecoder().decode(PersistedStoreEnvelope.self, from: data) {
+        guard let context = modelContainer?.mainContext else {
+            self.books = []
+            self.records = []
+            self.settings = SettingsSnapshot()
+            self.activeSession = nil
+            self.sessionState = .idle
+            self.isStoreLoadFailed = true
+            self.activeErrorKey = "store.load.error"
+            return
+        }
+
+        do {
+            let bookModels = try context.fetch(
+                FetchDescriptor<ReadingSchemaV1.PersistedBookModel>(
+                    sortBy: [SortDescriptor(\.createdAt), SortDescriptor(\.id)]
+                )
+            )
+            let recordModels = try context.fetch(
+                FetchDescriptor<ReadingSchemaV1.PersistedReadingRecordModel>(
+                    sortBy: [SortDescriptor(\.startedAt), SortDescriptor(\.id)]
+                )
+            )
+            let sessionModels = try context.fetch(FetchDescriptor<ReadingSchemaV1.PersistedActiveSessionModel>())
+            let settingsModels = try context.fetch(FetchDescriptor<ReadingSchemaV1.PersistedSettingsModel>())
+
+            let envelope = PersistedStoreEnvelope(
+                schemaVersion: 1,
+                books: bookModels.map { $0.toSnapshot() },
+                records: recordModels.map { $0.toSnapshot() },
+                settings: settingsModels.first?.toSnapshot() ?? SettingsSnapshot(),
+                activeSession: sessionModels.first?.toSnapshot()
+            )
             applyEnvelope(envelope)
-        } else {
-            applyEnvelope(PersistedStoreEnvelope())
+        } catch {
+            context.rollback()
+            self.books = []
+            self.records = []
+            self.settings = SettingsSnapshot()
+            self.activeSession = nil
+            self.sessionState = .idle
+            self.isStoreLoadFailed = true
+            self.activeErrorKey = "store.load.error"
         }
     }
 
@@ -891,14 +1171,82 @@ public final class ReadingDataStore {
     }
 
     private func writeEnvelopeToDisk(_ envelope: PersistedStoreEnvelope) throws {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
-        let data = try encoder.encode(envelope)
-        let dir = stateJSONURL.deletingLastPathComponent()
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        try data.write(to: stateJSONURL, options: .atomic)
-        setExcludedFromBackup(false, for: stateJSONURL)
-        setExcludedFromBackup(false, for: storeFileURL)
+        guard let context = modelContainer?.mainContext else {
+            throw NSError(
+                domain: "ReadingDataStore",
+                code: 1,
+                userInfo: [NSLocalizedDescriptionKey: "SwiftData ModelContainer is unavailable"]
+            )
+        }
+        do {
+            let existingBooks = try context.fetch(FetchDescriptor<ReadingSchemaV1.PersistedBookModel>())
+            var existingBooksById: [UUID: ReadingSchemaV1.PersistedBookModel] = [:]
+            existingBooksById.reserveCapacity(existingBooks.count)
+            for model in existingBooks {
+                existingBooksById[model.id] = model
+            }
+            let targetBookIds = Set(envelope.books.map(\.id))
+            for model in existingBooks where !targetBookIds.contains(model.id) {
+                context.delete(model)
+            }
+            for snapshot in envelope.books {
+                if let existing = existingBooksById[snapshot.id] {
+                    existing.update(from: snapshot)
+                } else {
+                    context.insert(ReadingSchemaV1.PersistedBookModel(from: snapshot))
+                }
+            }
+
+            let existingRecords = try context.fetch(FetchDescriptor<ReadingSchemaV1.PersistedReadingRecordModel>())
+            var existingRecordsById: [UUID: ReadingSchemaV1.PersistedReadingRecordModel] = [:]
+            existingRecordsById.reserveCapacity(existingRecords.count)
+            for model in existingRecords {
+                existingRecordsById[model.id] = model
+            }
+            let targetRecordIds = Set(envelope.records.map(\.id))
+            for model in existingRecords where !targetRecordIds.contains(model.id) {
+                context.delete(model)
+            }
+            for snapshot in envelope.records {
+                if let existing = existingRecordsById[snapshot.id] {
+                    existing.update(from: snapshot)
+                } else {
+                    context.insert(ReadingSchemaV1.PersistedReadingRecordModel(from: snapshot))
+                }
+            }
+
+            let existingSessions = try context.fetch(FetchDescriptor<ReadingSchemaV1.PersistedActiveSessionModel>())
+            if let active = envelope.activeSession {
+                if let first = existingSessions.first {
+                    first.update(from: active)
+                    for extra in existingSessions.dropFirst() {
+                        context.delete(extra)
+                    }
+                } else {
+                    context.insert(ReadingSchemaV1.PersistedActiveSessionModel(from: active))
+                }
+            } else {
+                for sessionModel in existingSessions {
+                    context.delete(sessionModel)
+                }
+            }
+
+            let existingSettings = try context.fetch(FetchDescriptor<ReadingSchemaV1.PersistedSettingsModel>())
+            if let first = existingSettings.first {
+                first.update(from: envelope.settings)
+                for extra in existingSettings.dropFirst() {
+                    context.delete(extra)
+                }
+            } else {
+                context.insert(ReadingSchemaV1.PersistedSettingsModel(from: envelope.settings))
+            }
+
+            try context.save()
+            applyStoreFileAttributes()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
     // MARK: - Computed Properties
@@ -1449,15 +1797,31 @@ public final class ReadingDataStore {
 
     // MARK: - Entry URL & App Lifecycle
 
-    public func openEntryURL(_ entryRaw: String) {
-        let extracted: String
-        if let comps = URLComponents(string: entryRaw),
-           let val = comps.queryItems?.first(where: { $0.name == "entry" })?.value {
-            extracted = val
-        } else {
-            extracted = entryRaw
+    public func openEntryURL(_ url: URL) {
+        guard url.scheme?.lowercased() == "yomuma",
+              url.host?.lowercased() == "open",
+              let comps = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              let val = comps.queryItems?.first(where: { $0.name == "entry" })?.value,
+              ["lock_widget", "small_widget", "live_activity"].contains(val),
+              let entry = SessionEntryPoint(rawValue: val) else {
+            return
         }
-        let entry = SessionEntryPoint(rawValue: extracted) ?? .app
+        pendingEntryURL = (entry: entry, openedAt: clock.now())
+        lastEntryPoint = entry
+    }
+
+    public func openEntryURL(_ entryRaw: String) {
+        let trimmed = entryRaw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        if trimmed.contains("://") {
+            guard let url = URL(string: trimmed) else { return }
+            openEntryURL(url)
+            return
+        }
+        guard ["lock_widget", "small_widget", "live_activity", "intent_open"].contains(trimmed),
+              let entry = SessionEntryPoint(rawValue: trimmed) else {
+            return
+        }
         pendingEntryURL = (entry: entry, openedAt: clock.now())
         lastEntryPoint = entry
     }
@@ -1481,6 +1845,10 @@ public final class ReadingDataStore {
                 cause: "store.refund",
                 recordReload: true
             )
+        } else if !isStoreKitStubbed {
+            Task { @MainActor [weak self] in
+                await self?.refreshEntitlementsFromStoreKitAsync()
+            }
         }
 
         let now = clock.now()
@@ -1499,6 +1867,7 @@ public final class ReadingDataStore {
                         timestamp: clock.nowISO8601()
                     )
                 )
+                syncSystemLiveActivityEnd(immediate: true)
                 cleanedUpUnread = true
             }
         }
@@ -1514,11 +1883,11 @@ public final class ReadingDataStore {
 
     private func resolveEntryForSessionStart() -> SessionEntryPoint {
         if let pending = pendingEntryURL {
-            pendingEntryURL = nil
             let elapsed = clock.now().timeIntervalSince(pending.openedAt)
             if elapsed >= 0 && elapsed <= 300 {
                 return pending.entry
             }
+            pendingEntryURL = nil
         }
         return .app
     }
@@ -1606,6 +1975,15 @@ public final class ReadingDataStore {
                 liveActivityRequests.append(
                     LiveActivityRequestLog(kind: "updateToReading", source: source, timestamp: nowISO)
                 )
+                syncSystemLiveActivityStartOrUpdate(
+                    mode: "reading",
+                    title: liveActivities[startedIdx].title,
+                    line: nil,
+                    progressText: nil,
+                    staleDateISO: liveActivities[startedIdx].staleDate,
+                    bookId: book.id,
+                    startedAt: clock.now()
+                )
             } else {
                 if let scheduledIdx = liveActivities.firstIndex(where: { $0.state == "scheduled" }) {
                     liveActivities.remove(at: scheduledIdx)
@@ -1613,6 +1991,7 @@ public final class ReadingDataStore {
                     liveActivityRequests.append(
                         LiveActivityRequestLog(kind: "cancel", source: source, timestamp: nowISO)
                     )
+                    syncSystemLiveActivityEnd(immediate: true)
                 } else if isBeforeEntryTimeTonight(clock.now()) {
                     hadCancelledTonight = true
                 }
@@ -1626,11 +2005,12 @@ public final class ReadingDataStore {
                     } else {
                         let newId = "la-reading-\(liveActivityRequests.count + 1)"
                         let displayTitle = settings.hideOnWidgets ? "しおり" : (book.title.isEmpty ? "しおり" : book.title)
+                        let staleISO = nextFourAMISO(from: clock.now())
                         let item = LiveActivityItemState(
                             id: newId,
                             kind: "immediate",
                             state: "reading",
-                            staleDate: nextFourAMISO(from: clock.now()),
+                            staleDate: staleISO,
                             title: displayTitle,
                             line: nil,
                             progressText: nil,
@@ -1643,6 +2023,15 @@ public final class ReadingDataStore {
                         activeLAId = newId
                         liveActivityRequests.append(
                             LiveActivityRequestLog(kind: "startImmediate", source: source, timestamp: nowISO, succeeded: true)
+                        )
+                        syncSystemLiveActivityStartOrUpdate(
+                            mode: "reading",
+                            title: displayTitle,
+                            line: nil,
+                            progressText: nil,
+                            staleDateISO: staleISO,
+                            bookId: book.id,
+                            startedAt: clock.now()
                         )
                     }
                 }
@@ -1712,6 +2101,7 @@ public final class ReadingDataStore {
             activeNoticeKey = "session.tooShort"
             notices["session.tooShort", default: 0] += 1
             liveActivities.removeAll { $0.state == "reading" }
+            syncSystemLiveActivityEnd(immediate: true)
             if hadCancelledTonight {
                 scheduleEntryLiveActivityForTonightOrTomorrow(forceTonightIfBeforeEntry: true, source: source)
             }
@@ -1785,6 +2175,7 @@ public final class ReadingDataStore {
 
         do {
             try persistCurrentEnvelopeToDisk()
+            pendingEntryURL = nil
             updateLiveActivityOnSessionEnd(minutes: finalMinutes, progressText: nil, source: source)
             return .saved(record: record, capped: isCapped)
         } catch {
@@ -2084,6 +2475,11 @@ public final class ReadingDataStore {
             storeStatusMessageKey = "store.offline"
             return .offline
         }
+        if !isStoreKitStubbed {
+            Task { @MainActor [weak self] in
+                _ = await self?.purchasePlusWithStoreKitAsync()
+            }
+        }
         switch storePurchaseOutcome {
         case "success":
             settings.isPlusPurchased = true
@@ -2111,7 +2507,74 @@ public final class ReadingDataStore {
     }
 
     @discardableResult
+    public func purchasePlusWithStoreKitAsync() async -> StorePurchaseResult {
+        if isStoreKitStubbed {
+            return purchasePlus()
+        }
+        guard AppStore.canMakePayments && storeCanMakePayments else {
+            storeStatusMessageKey = "store.unavailable"
+            return .unavailable
+        }
+        guard !isOffline else {
+            storeStatusMessageKey = "store.offline"
+            return .offline
+        }
+        do {
+            let products = try await Product.products(for: [Self.plusProductID])
+            guard let product = products.first else {
+                storeProductLoadAvailable = false
+                storeStatusMessageKey = "store.offline"
+                return .offline
+            }
+            storeProductLoadAvailable = true
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verification):
+                switch verification {
+                case .verified(let transaction):
+                    await transaction.finish()
+                    settings.isPlusPurchased = true
+                    if let preview = previewAppearanceID {
+                        settings.appearanceID = preview
+                    }
+                    previewAppearanceID = nil
+                    storeStatusMessageKey = nil
+                    try? persistCurrentEnvelopeToDisk()
+                    _ = try? snapshotStore.writeSnapshot(
+                        currentBook: currentBook,
+                        settings: settings,
+                        nowISO: clock.nowISO8601(),
+                        cause: "store.purchase",
+                        recordReload: true
+                    )
+                    return .success
+                case .unverified:
+                    storeStatusMessageKey = "store.purchase.error"
+                    return .error
+                }
+            case .userCancelled:
+                storeStatusMessageKey = nil
+                return .userCancelled
+            case .pending:
+                storeStatusMessageKey = nil
+                return .userCancelled
+            @unknown default:
+                storeStatusMessageKey = "store.purchase.error"
+                return .error
+            }
+        } catch {
+            storeStatusMessageKey = "store.purchase.error"
+            return .error
+        }
+    }
+
+    @discardableResult
     public func restorePurchases() -> StoreRestoreResult {
+        if !isStoreKitStubbed {
+            Task { @MainActor [weak self] in
+                _ = await self?.restorePurchasesWithStoreKitAsync()
+            }
+        }
         if storeRestoreOutcome == "hasEntitlement" {
             settings.isPlusPurchased = true
             if let preview = previewAppearanceID {
@@ -2136,6 +2599,89 @@ public final class ReadingDataStore {
         }
     }
 
+    @discardableResult
+    public func restorePurchasesWithStoreKitAsync() async -> StoreRestoreResult {
+        if isStoreKitStubbed {
+            return restorePurchases()
+        }
+        try? await AppStore.sync()
+        var hasValidEntitlement = false
+        for await verificationResult in Transaction.currentEntitlements {
+            if case .verified(let transaction) = verificationResult,
+               transaction.productID == Self.plusProductID,
+               transaction.revocationDate == nil {
+                hasValidEntitlement = true
+                break
+            }
+        }
+        if hasValidEntitlement {
+            settings.isPlusPurchased = true
+            if let preview = previewAppearanceID {
+                settings.appearanceID = preview
+                previewAppearanceID = nil
+            }
+            storeStatusMessageKey = "store.restore.done"
+            try? persistCurrentEnvelopeToDisk()
+            _ = try? snapshotStore.writeSnapshot(
+                currentBook: currentBook,
+                settings: settings,
+                nowISO: clock.nowISO8601(),
+                cause: "store.restore",
+                recordReload: true
+            )
+            return .restored
+        } else {
+            settings.isPlusPurchased = false
+            storeStatusMessageKey = "store.restore.none"
+            try? persistCurrentEnvelopeToDisk()
+            return .none
+        }
+    }
+
+    public func refreshEntitlementsFromStoreKitAsync() async {
+        guard !isStoreKitStubbed else { return }
+        var hasActiveEntitlement = false
+        var wasRevoked = false
+        for await verificationResult in Transaction.currentEntitlements {
+            if case .verified(let transaction) = verificationResult,
+               transaction.productID == Self.plusProductID {
+                if transaction.revocationDate == nil {
+                    hasActiveEntitlement = true
+                } else {
+                    wasRevoked = true
+                }
+            }
+        }
+        if !hasActiveEntitlement,
+           let latest = await Transaction.latest(for: Self.plusProductID),
+           case .verified(let latestTx) = latest,
+           latestTx.revocationDate != nil {
+            wasRevoked = true
+        }
+        if wasRevoked && settings.isPlusPurchased {
+            settings.isPlusPurchased = false
+            settings.appearanceID = .default
+            try? persistCurrentEnvelopeToDisk()
+            _ = try? snapshotStore.writeSnapshot(
+                currentBook: currentBook,
+                settings: settings,
+                nowISO: clock.nowISO8601(),
+                cause: "store.refund",
+                recordReload: true
+            )
+        } else if hasActiveEntitlement && !settings.isPlusPurchased {
+            settings.isPlusPurchased = true
+            try? persistCurrentEnvelopeToDisk()
+            _ = try? snapshotStore.writeSnapshot(
+                currentBook: currentBook,
+                settings: settings,
+                nowISO: clock.nowISO8601(),
+                cause: "store.entitlement",
+                recordReload: true
+            )
+        }
+    }
+
     public func triggerStoreRefund() {
         pendingRefundOnActivate = true
     }
@@ -2146,8 +2692,10 @@ public final class ReadingDataStore {
         guard let jsonString, !jsonString.isEmpty,
               let data = jsonString.data(using: .utf8),
               let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            isLiveActivityStubbed = false
             return
         }
+        isLiveActivityStubbed = true
         if let enabled = obj["areActivitiesEnabled"] as? Bool {
             areActivitiesEnabled = enabled
         }
@@ -2252,18 +2800,39 @@ public final class ReadingDataStore {
                 succeeded: true
             )
         )
+        syncSystemLiveActivityStartOrUpdate(
+            mode: "scheduled",
+            title: displayTitle,
+            line: displayLine,
+            progressText: progressText,
+            staleDateISO: staleISO,
+            bookId: book.id,
+            startedAt: nil
+        )
     }
 
     private func updateLiveActivityOnSessionEnd(minutes: Int, progressText: String?, source: String) {
         guard areActivitiesEnabled else { return }
         for idx in liveActivities.indices where liveActivities[idx].state == "reading" || liveActivities[idx].state == "ended" {
             liveActivities[idx].state = "ended"
+            let summary: String
             if let progressText {
                 liveActivities[idx].progressText = progressText
-                liveActivities[idx].summaryText = "\(progressText)　\(minutes)分"
+                summary = "\(progressText)　\(minutes)分"
             } else {
-                liveActivities[idx].summaryText = "\(minutes)分"
+                summary = "\(minutes)分"
             }
+            liveActivities[idx].summaryText = summary
+            syncSystemLiveActivityStartOrUpdate(
+                mode: "ended",
+                title: liveActivities[idx].title,
+                line: nil,
+                progressText: liveActivities[idx].progressText,
+                summaryText: summary,
+                staleDateISO: liveActivities[idx].staleDate,
+                bookId: currentBook?.id,
+                startedAt: nil
+            )
         }
     }
 
@@ -2277,7 +2846,71 @@ public final class ReadingDataStore {
                 liveActivities[idx].title = book.title.isEmpty ? "しおり" : book.title
                 liveActivities[idx].line = book.lastSavedLine
             }
+            syncSystemLiveActivityStartOrUpdate(
+                mode: liveActivities[idx].state,
+                title: liveActivities[idx].title,
+                line: liveActivities[idx].line,
+                progressText: liveActivities[idx].progressText,
+                summaryText: liveActivities[idx].summaryText,
+                staleDateISO: liveActivities[idx].staleDate,
+                bookId: book.id,
+                startedAt: nil
+            )
         }
+    }
+
+    private func syncSystemLiveActivityStartOrUpdate(
+        mode: String,
+        title: String,
+        line: String?,
+        progressText: String?,
+        summaryText: String? = nil,
+        staleDateISO: String?,
+        bookId: UUID?,
+        startedAt: Date?
+    ) {
+        guard !isLiveActivityStubbed else { return }
+        #if canImport(ActivityKit) && os(iOS)
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
+        let staleDate = staleDateISO.flatMap { NightDateCalculator.parseISO8601($0) }
+        let contentState = ReadingActivityAttributes.ContentState(
+            mode: mode,
+            title: title,
+            line: line,
+            progressText: progressText,
+            summaryText: summaryText,
+            hideOnWidgets: settings.hideOnWidgets
+        )
+        Task.detached {
+            let existingActivities = Activity<ReadingActivityAttributes>.activities
+            if let existing = existingActivities.first {
+                await existing.update(ActivityContent(state: contentState, staleDate: staleDate))
+            } else {
+                let attributes = ReadingActivityAttributes(bookId: bookId, startedAt: startedAt)
+                _ = try? Activity<ReadingActivityAttributes>.request(
+                    attributes: attributes,
+                    content: ActivityContent(state: contentState, staleDate: staleDate),
+                    pushType: nil
+                )
+            }
+        }
+        #endif
+    }
+
+    private func syncSystemLiveActivityEnd(immediate: Bool) {
+        guard !isLiveActivityStubbed else { return }
+        #if canImport(ActivityKit) && os(iOS)
+        Task.detached {
+            let existingActivities = Activity<ReadingActivityAttributes>.activities
+            for activity in existingActivities {
+                let finalState = activity.content.state
+                await activity.end(
+                    ActivityContent(state: finalState, staleDate: nil),
+                    dismissalPolicy: immediate ? .immediate : .default
+                )
+            }
+        }
+        #endif
     }
 
     private func parseEntryHourMinute() -> (hour: Int, minute: Int) {
@@ -2835,8 +3468,10 @@ public final class ReadingDataStore {
         guard let jsonString, !jsonString.isEmpty,
               let data = jsonString.data(using: .utf8),
               let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            isStoreKitStubbed = false
             return
         }
+        isStoreKitStubbed = true
         if let canPay = obj["canMakePayments"] as? Bool {
             storeCanMakePayments = canPay
         }

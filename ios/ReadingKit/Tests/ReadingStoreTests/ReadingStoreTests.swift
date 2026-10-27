@@ -477,4 +477,60 @@ struct ReadingStoreTests {
         #expect(weakSnapshotStore == nil)
         #expect(weakCatalogDB == nil)
     }
+
+    @Test("SwiftData ReadingStore.store persistence without JSON state file, entry URL scheme/host validation, and <60s discarded session entry preservation")
+    func swiftDataPersistenceAndEntryURLValidation() throws {
+        let dir = try makeTempDir()
+        defer { try? FileManager.default.removeItem(at: dir) }
+
+        let clock = ReadingClock(nowISO8601: "2026-10-18T21:00:00+09:00", timeZoneID: "Asia/Tokyo")
+        let store = ReadingDataStore(containerDirectory: dir, clock: clock)
+        store.resetAllData()
+
+        _ = store.addBook(id: ReadingDataStore.uuidBookA, title: "羅生門", author: "芥川龍之介")
+        store.recordRecommendationFeedback(chosenCategory: "readers", allShownCategories: ["readers", "author"])
+
+        let legacyJSONURL = dir
+            .appendingPathComponent("Application Support", isDirectory: true)
+            .appendingPathComponent("ReadingStoreState.json")
+        #expect(FileManager.default.fileExists(atPath: store.storeFileURL.path) == true)
+        #expect(FileManager.default.fileExists(atPath: legacyJSONURL.path) == false)
+
+        // Invalid scheme or host must be ignored
+        store.openEntryURL("shiori://open?entry=lock_widget")
+        #expect(store.pendingEntryURL == nil)
+        store.openEntryURL("yomuma://wrong?entry=lock_widget")
+        #expect(store.pendingEntryURL == nil)
+
+        // Valid URL sets pendingEntryURL; discarded <60s session preserves pendingEntryURL for retry within 300s
+        store.openEntryURL("YOMUMA://OPEN?entry=small_widget")
+        #expect(store.pendingEntryURL?.entry == .smallWidget)
+
+        clock.advance(seconds: 30)
+        #expect(store.startReadingSession() == true)
+        clock.advance(seconds: 45) // < 60s -> discardedTooShort
+        #expect(store.endReadingSession() == .discardedTooShort)
+        #expect(store.pendingEntryURL?.entry == .smallWidget)
+
+        // Retry within 300s of initial URL open still uses small_widget
+        clock.advance(seconds: 20)
+        #expect(store.startReadingSession() == true)
+        clock.advance(seconds: 120) // >= 60s -> saved and clears pendingEntryURL
+        let savedRes = store.endReadingSession()
+        if case .saved(let rec, _) = savedRes {
+            #expect(rec.entry == .smallWidget)
+        } else {
+            Issue.record("Expected second session to save with small_widget entry")
+        }
+        #expect(store.pendingEntryURL == nil)
+
+        // Relaunch store from SwiftData and verify recommendationWeights and records persisted
+        let relaunched = ReadingDataStore(containerDirectory: dir, clock: clock)
+        relaunched.loadFromDisk()
+        #expect(relaunched.books.count == 1)
+        #expect(relaunched.records.count == 1)
+        #expect(relaunched.settings.recommendationWeights.readers.chosen == 1)
+        #expect(relaunched.settings.recommendationWeights.author.skipped == 1)
+    }
 }
+
