@@ -35,6 +35,10 @@ public final class UITestHookCoordinator {
     public var selectedOCRColumnIndex: Int?
     public var barcodeStubString: String?
     public var isFakeBarcodeScannerEnabled: Bool = false
+    public var areReadoutsEnabled: Bool = true
+    public var appearanceSchemeOverride: String?
+    public var isAX5Override: Bool = false
+    public var widgetShowcaseSpec: String?
 
     private var activeModel: ReadingAppModel?
     private var isMonitoringInstalled = false
@@ -125,6 +129,31 @@ public final class UITestHookCoordinator {
 
         if let dtSize = env["UITEST_DYNAMIC_TYPE"], !dtSize.isEmpty {
             dynamicTypeSizeName = dtSize
+        }
+
+        if args.contains("-uitest-ax5") || (env["UITEST_AX5"] == "1") {
+            isAX5Override = true
+            dynamicTypeSizeName = "accessibility5"
+        } else {
+            isAX5Override = false
+        }
+
+        if let readoutsArg = argValue("-uitest-readouts", in: args) ?? env["UITEST_READOUTS"] {
+            areReadoutsEnabled = (readoutsArg.lowercased() != "off" && readoutsArg != "0" && readoutsArg.lowercased() != "false")
+        } else {
+            areReadoutsEnabled = true
+        }
+
+        if let appOverride = argValue("-uitest-appearance", in: args) ?? env["UITEST_APPEARANCE"] {
+            appearanceSchemeOverride = appOverride.lowercased()
+        } else {
+            appearanceSchemeOverride = nil
+        }
+
+        if let showcase = argValue("-uitest-widget-show", in: args) ?? env["UITEST_WIDGET_SHOW"] {
+            widgetShowcaseSpec = showcase
+        } else {
+            widgetShowcaseSpec = nil
         }
 
         let seedJSON = env["UITEST_SEED"] ?? env["UITEST_SEED_JSON"]

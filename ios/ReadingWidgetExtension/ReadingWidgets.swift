@@ -60,13 +60,13 @@ struct VerticalQuoteWidgetGridView: View {
                     ForEach(1...maxRow, id: \.self) { row in
                         if let cell = cells.first(where: { $0.column == col && $0.row == row }) {
                             Text(cell.display)
-                                .font(.custom("Hiragino Mincho ProN", size: 15, relativeTo: .subheadline))
+                                .font(ThemeTypography.widgetLine(size: 15))
                                 .foregroundStyle(textPrimary)
                                 .rotationEffect(.degrees(Double(cell.rotation)))
                                 .offset(x: cell.dx * 15.0, y: cell.dy * 15.0)
                         } else {
                             Text("　")
-                                .font(.custom("Hiragino Mincho ProN", size: 15, relativeTo: .subheadline))
+                                .font(ThemeTypography.widgetLine(size: 15))
                                 .opacity(0)
                         }
                     }
@@ -100,7 +100,7 @@ struct ReadingHomeSmallWidgetView: View {
             if let book = entry.snapshot.currentBook {
                 if entry.snapshot.hideOnWidgets {
                     Text("しおり")
-                        .font(.custom("Hiragino Mincho ProN", size: 15, relativeTo: .subheadline))
+                        .font(ThemeTypography.widgetLine(size: 15))
                         .foregroundStyle(palette.textPrimary)
                         .lineLimit(1)
                         .accessibilityIdentifier("widget.hidden")
@@ -130,7 +130,7 @@ struct ReadingHomeSmallWidgetView: View {
                             .lineLimit(3)
                     } else {
                         Text(book.isTitlePending ? "しおり" : (book.title ?? "しおり"))
-                            .font(.custom("Hiragino Mincho ProN", size: 15, relativeTo: .subheadline))
+                            .font(ThemeTypography.widgetLine(size: 15))
                             .foregroundStyle(palette.textPrimary)
                             .lineLimit(2)
                     }

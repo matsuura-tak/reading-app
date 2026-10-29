@@ -11,6 +11,8 @@ public struct FinishNightView: View {
     @Bindable var model: ReadingAppModel
     public let bookId: UUID
     public let previewState: FinishNightViewState?
+    @Environment(\.themePalette) private var palette
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @State private var showShareCardSheet = false
     @State private var showColophonSheet = false
@@ -41,10 +43,28 @@ public struct FinishNightView: View {
         return .withoutReflection(title: title, author: author, summary: summary, candidates: candidates)
     }
 
+    private var resolvedCandidates: [RecommendationCandidate] {
+        switch resolvedState {
+        case .withReflection(_, _, _, _, let candidates):
+            return candidates
+        case .withoutReflection(_, _, _, let candidates):
+            return candidates
+        }
+    }
+
     public var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            SheetHeaderBar(
+                title: AppL10n.pick("読了の夜", "Finished Reading"),
+                leftTitle: AppL10n.pick("閉じる", "Close"),
+                leftId: "finish.close",
+                onLeft: {
+                    closeFinishNight(candidates: resolvedCandidates)
+                }
+            )
+
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: ThemeSpace.s24) {
                     BannerNoticeView(model: model)
 
                     switch resolvedState {
@@ -60,40 +80,51 @@ public struct FinishNightView: View {
                         skipButtonSection(candidates: candidates)
                     }
                 }
-                .padding(20)
+                .padding(.horizontal, ThemeSpace.s24)
+                .padding(.vertical, ThemeSpace.s16)
             }
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("screen.finishNight")
-            .navigationTitle("読了の夜")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showShareCardSheet) {
-                if let book {
-                    ShareCardPreviewSheetView(model: model, book: book) {
-                        showShareCardSheet = false
-                        model.currentScreen = .finishNight
-                        model.notifyHookChanged()
-                    }
-                }
-            }
-            .sheet(isPresented: $showColophonSheet) {
-                ColophonOCRSheetView(model: model, bookId: bookId) {
-                    showColophonSheet = false
+        }
+        .background(palette.bgPrimary.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("screen.finishNight")
+        .sheet(isPresented: $showShareCardSheet) {
+            if let book {
+                ShareCardPreviewSheetView(model: model, book: book) {
+                    showShareCardSheet = false
                     model.currentScreen = .finishNight
                     model.notifyHookChanged()
                 }
             }
-            .onAppear {
-                if cachedCandidates == nil && previewState == nil {
-                    cachedCandidates = model.store.buildNextBookCandidates(for: bookId)
-                }
+        }
+        .sheet(isPresented: $showColophonSheet) {
+            ColophonOCRSheetView(model: model, bookId: bookId) {
+                showColophonSheet = false
                 model.currentScreen = .finishNight
                 model.notifyHookChanged()
             }
         }
+        .onAppear {
+            if cachedCandidates == nil && previewState == nil {
+                cachedCandidates = model.store.buildNextBookCandidates(for: bookId)
+            }
+            model.currentScreen = .finishNight
+            model.notifyHookChanged()
+        }
+    }
+
+    private func closeFinishNight(candidates: [RecommendationCandidate]) {
+        let allCats = candidates.map { $0.axis.rawValue }
+        model.store.recordRecommendationFeedback(
+            chosenCategory: nil,
+            allShownCategories: allCats
+        )
+        model.activeSheet = nil
+        model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+        model.notifyHookChanged()
     }
 
     private func headerSection(title: String, author: String, summary: String, reflection: String?) -> some View {
-        let displayTitle = title.isEmpty ? "（書名未設定）" : title
+        let displayTitle = title.isEmpty ? AppL10n.pick("今の本", "Current Book") : title
         let formattedPublisher: String? = {
             let pub = book?.publisher?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             let lbl = book?.label?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -124,51 +155,79 @@ public struct FinishNightView: View {
             return parts.joined(separator: " ")
         }()
 
-        return VStack(alignment: .leading, spacing: 10) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text(displayTitle)
-                    .font(.title2.bold())
-                    .accessibilityIdentifier("colophon.title")
-                    .accessibilityLabel(displayTitle)
-                    .accessibilityValue(displayTitle)
+        return VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+            Text(AppL10n.pick("読み終えました", "Finished Reading"))
+                .font(.largeTitle.bold())
+                .foregroundStyle(palette.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("finish.title")
+
+            Text(summary)
+                .font(.headline.monospacedDigit())
+                .foregroundStyle(palette.textPrimary)
+                .accessibilityIdentifier("finish.summary")
+                .accessibilityLabel(summary)
+                .accessibilityValue(summary)
+
+            if let reflection {
+                Text(reflection)
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(palette.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("finish.reflection")
+                    .accessibilityLabel(reflection)
+                    .accessibilityValue(reflection)
+            }
+
+            VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                Rectangle()
+                    .fill(palette.hairline)
+                    .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1)
+
+                colophonRow(
+                    key: AppL10n.pick("書名", "Title"),
+                    value: displayTitle,
+                    id: "colophon.title"
+                )
 
                 if !author.isEmpty {
-                    Text(author)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .accessibilityIdentifier("colophon.author")
-                        .accessibilityLabel(author)
-                        .accessibilityValue(author)
+                    colophonRow(
+                        key: AppL10n.pick("著者", "Author"),
+                        value: author,
+                        id: "colophon.author"
+                    )
                 }
 
                 if let formattedPublisher {
-                    Text(formattedPublisher)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .accessibilityIdentifier("colophon.publisher")
-                        .accessibilityLabel(formattedPublisher)
-                        .accessibilityValue(formattedPublisher)
+                    colophonRow(
+                        key: AppL10n.pick("出版社・レーベル", "Publisher"),
+                        value: formattedPublisher,
+                        id: "colophon.publisher"
+                    )
                 }
 
                 if let yr = book?.publishedYear {
-                    let yrText = "\(yr)年"
-                    Text(yrText)
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                        .accessibilityIdentifier("colophon.year")
-                        .accessibilityLabel(yrText)
-                        .accessibilityValue(yrText)
+                    colophonRow(
+                        key: AppL10n.pick("出版年", "Published"),
+                        value: "\(yr)年",
+                        id: "colophon.year",
+                        monospaced: true
+                    )
                 }
 
                 if let awardDisplay {
-                    Text(awardDisplay)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .accessibilityIdentifier("colophon.award")
-                        .accessibilityLabel(awardDisplay)
-                        .accessibilityValue(awardDisplay)
+                    colophonRow(
+                        key: AppL10n.pick("受賞", "Award"),
+                        value: awardDisplay,
+                        id: "colophon.award"
+                    )
                 }
+
+                Rectangle()
+                    .fill(palette.hairline)
+                    .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1)
             }
+            .padding(.vertical, ThemeSpace.s4)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("finish.colophon")
             .accessibilityLabel(combinedColophonLabel)
@@ -178,31 +237,45 @@ public struct FinishNightView: View {
                 showColophonSheet = true
                 model.notifyHookChanged()
             } label: {
-                Text("奥付を写して補う")
-                    .font(.caption)
+                Text(AppL10n.pick("奥付を写して補う", "Scan Colophon to Complete"))
+                    .frame(maxWidth: .infinity)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("colophon.capture")
+        }
+    }
 
-            Text(summary)
-                .font(.headline.monospacedDigit())
-                .accessibilityIdentifier("finish.summary")
-                .accessibilityLabel(summary)
-                .accessibilityValue(summary)
-
-            if let reflection {
-                Text(reflection)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 4)
-                    .accessibilityIdentifier("finish.reflection")
-                    .accessibilityLabel(reflection)
-                    .accessibilityValue(reflection)
+    @ViewBuilder
+    private func colophonRow(key: String, value: String, id: String, monospaced: Bool = false) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: ThemeSpace.s4) {
+                Text(key)
+                    .font(.footnote)
+                    .foregroundStyle(palette.textSecondary)
+                Text(value)
+                    .font(monospaced ? .subheadline.monospacedDigit() : .subheadline)
+                    .foregroundStyle(palette.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier(id)
+                    .accessibilityLabel(value)
+                    .accessibilityValue(value)
+            }
+        } else {
+            HStack(alignment: .firstTextBaseline, spacing: ThemeSpace.s12) {
+                Text(key)
+                    .font(.footnote)
+                    .foregroundStyle(palette.textSecondary)
+                    .frame(minWidth: 108, alignment: .leading)
+                Text(value)
+                    .font(monospaced ? .subheadline.monospacedDigit() : .subheadline)
+                    .foregroundStyle(palette.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier(id)
+                    .accessibilityLabel(value)
+                    .accessibilityValue(value)
+                Spacer(minLength: 0)
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var shareCardButtonSection: some View {
@@ -229,24 +302,25 @@ public struct FinishNightView: View {
             showShareCardSheet = true
             model.notifyHookChanged()
         } label: {
-            Text("読了カードを作る")
+            Text(AppL10n.pick("読了カードを共有", "Share Finish Card"))
                 .frame(maxWidth: .infinity)
         }
-        .buttonStyle(.bordered)
-        .controlSize(.large)
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
         .accessibilityIdentifier("finish.card.share")
     }
 
     private func candidatesSection(candidates: [RecommendationCandidate]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("次の一冊を選ぶ")
+        VStack(alignment: .leading, spacing: ThemeSpace.s12) {
+            Text(AppL10n.pick("次の1冊", "Next Book"))
                 .font(.headline)
+                .foregroundStyle(palette.textPrimary)
 
             if candidates.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("まだ積読や関連する候補がありません。新しい本を加えましょう")
+                VStack(alignment: .leading, spacing: ThemeSpace.s12) {
+                    Text(AppL10n.pick("本棚から次の本を選ぶか、新しく登録できます。", "Choose your next book from the shelf or add a new one."))
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(palette.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
                         .accessibilityIdentifier("next.empty.message")
 
                     Button {
@@ -254,15 +328,22 @@ public struct FinishNightView: View {
                         model.activeSheet = .addBook(titlePendingMode: false)
                         model.notifyHookChanged()
                     } label: {
-                        Text("新しい本を加える")
+                        Text(AppL10n.pick("新しい本を加える", "Add a New Book"))
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("next.addBook")
                 }
-                .padding(14)
+                .padding(ThemeSpace.s16)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+                .background(
+                    RoundedRectangle(cornerRadius: ThemeRadius.card)
+                        .fill(palette.groupedRow)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: ThemeRadius.card)
+                        .strokeBorder(palette.hairline, lineWidth: 1)
+                )
             } else {
                 ForEach(Array(candidates.prefix(3).enumerated()), id: \.element.id) { _, cand in
                     let candIdentifier = cand.bookId?.uuidString.lowercased() ?? cand.isbn13 ?? cand.id
@@ -274,16 +355,19 @@ public struct FinishNightView: View {
                         }
                         .joined(separator: " ")
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: ThemeSpace.s8) {
                         Text(cand.reason)
-                            .font(.caption.bold())
-                            .foregroundStyle(.secondary)
+                            .font(.footnote)
+                            .foregroundStyle(palette.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier("next.reason")
                             .accessibilityLabel(cand.reason)
                             .accessibilityValue(cand.reason)
 
                         Text(cand.title)
                             .font(.headline)
+                            .foregroundStyle(palette.textPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier("next.title")
                             .accessibilityLabel(cand.title)
                             .accessibilityValue(cand.title)
@@ -291,7 +375,8 @@ public struct FinishNightView: View {
                         if let author = cand.author, !author.isEmpty {
                             Text(author)
                                 .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(palette.textSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
                                 .accessibilityIdentifier("next.author")
                         }
 
@@ -308,15 +393,15 @@ public struct FinishNightView: View {
                                 }
                                 model.notifyHookChanged()
                             } label: {
-                                Text("これを読み始める")
+                                Text(AppL10n.pick("これを今の本にする", "Make Current Book"))
                                     .frame(maxWidth: .infinity)
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                             .accessibilityIdentifier("next.choose")
                         } else if isAdded {
-                            Text("積読に加えました")
-                                .font(.caption.bold())
-                                .foregroundStyle(.secondary)
+                            Text(AppL10n.pick("積読に置きました", "Added to Tsundoku"))
+                                .font(.footnote.bold())
+                                .foregroundStyle(palette.textSecondary)
                                 .accessibilityIdentifier("next.added")
                         } else {
                             Button {
@@ -342,16 +427,23 @@ public struct FinishNightView: View {
                                 }
                                 model.notifyHookChanged()
                             } label: {
-                                Text("積読に置く")
+                                Text(AppL10n.pick("積読に置く", "Add to Tsundoku"))
                                     .frame(maxWidth: .infinity)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                             .accessibilityIdentifier("next.addToShelf")
                         }
                     }
-                    .padding(14)
+                    .padding(ThemeSpace.s16)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+                    .background(
+                        RoundedRectangle(cornerRadius: ThemeRadius.card)
+                            .fill(palette.groupedRow)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: ThemeRadius.card)
+                            .strokeBorder(palette.hairline, lineWidth: 1)
+                    )
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("next.candidate.\(candIdentifier)")
                     .accessibilityLabel(combinedCandidateLabel)
@@ -361,22 +453,22 @@ public struct FinishNightView: View {
     }
 
     private func skipButtonSection(candidates: [RecommendationCandidate]) -> some View {
-        Button {
-            let allCats = candidates.map { $0.axis.rawValue }
-            model.store.recordRecommendationFeedback(
-                chosenCategory: nil,
-                allShownCategories: allCats
-            )
-            model.activeSheet = nil
-            model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
-            model.notifyHookChanged()
-        } label: {
-            Text("あとで決める")
-                .frame(maxWidth: .infinity)
+        VStack(alignment: .leading, spacing: ThemeSpace.s12) {
+            Button {
+                closeFinishNight(candidates: candidates)
+            } label: {
+                Text(AppL10n.pick("今は読まない", "Skip for Now"))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("next.skip")
+
+            Text(AppL10n.pick("本棚からいつでも『今の本』に戻せます。", "You can switch it back to Current Book anytime from the Shelf."))
+                .font(.footnote)
+                .foregroundStyle(palette.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("finish.undoNote")
         }
-        .buttonStyle(.plain)
-        .padding(.top, 8)
-        .accessibilityIdentifier("finish.close")
     }
 }
 

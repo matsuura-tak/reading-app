@@ -10,72 +10,111 @@ public struct ContentView: View {
     }
 
     private var palette: ThemePalette {
-        ThemePalette(appearanceID: model.settings.appearanceID)
+        ThemePalette.palette(for: model.settings.appearanceID)
+    }
+
+    private var effectiveColorScheme: ColorScheme? {
+        #if UITEST_HOOKS
+        if let override = UITestHookCoordinator.shared.appearanceSchemeOverride {
+            if override == "dark" { return .dark }
+            if override == "light" { return .light }
+        }
+        #endif
+        return palette.preferredColorScheme
     }
 
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
-            if model.sessionState == .reading {
-                ReadingSessionView(model: model)
-                    .tint(palette.accent)
-            } else if let sheet = model.activeSheet {
-                VStack {
-                    switch sheet {
-                    case .addBook(let pendingMode):
-                        BookAddFlowSheetView(model: model, titlePendingMode: pendingMode)
-                    case .markFlow:
-                        BookmarkMarkFlowSheet(model: model, initialStep: .select)
-                    case .resultSheet:
-                        SessionResultSheetView(model: model)
-                    case .widgetGuide:
-                        WidgetGuideSheetView(model: model)
-                    case .finishNight(let bookId):
-                        FinishNightView(model: model, bookId: bookId)
-                    case .manualInput(let isbn, let title, let author, let pub, _, _, let pending):
-                        BookAddFlowSheetView(
-                            model: model,
-                            titlePendingMode: pending,
-                            initialStep: .manualInput(isbn13: isbn, prefillTitle: title, prefillAuthor: author, prefillPublisher: pub)
-                        )
-                    case .coverCapture(let isbn, let pending):
-                        BookAddFlowSheetView(
-                            model: model,
-                            titlePendingMode: pending,
-                            initialStep: .coverCandidates(isbn13: isbn, candidates: model.store.ocrConfiguration?.coverLines ?? [])
-                        )
-                    case .colophonCapture(let bookId):
-                        ColophonOCRSheetView(model: model, bookId: bookId) {
-                            model.activeSheet = nil
-                            model.notifyHookChanged()
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(uiColor: .systemBackground))
-                .tint(palette.accent)
+            #if UITEST_HOOKS
+            if let showcaseSpec = UITestHookCoordinator.shared.widgetShowcaseSpec, !showcaseSpec.isEmpty {
+                WidgetShowcaseHarnessView(model: model, spec: showcaseSpec)
+                    .tint(palette.actionTint)
             } else {
-                NavigationStack(path: $model.navigationPath) {
-                    BookmarkHomeView(model: model)
-                        .navigationDestination(for: NavigationDestinationItem.self) { dest in
-                            switch dest {
-                            case .shelf:
-                                ShelfListView(model: model)
-                            case .settings:
-                                SettingsView(model: model)
-                            case .bookDetail(let bookId):
-                                BookDetailView(model: model, bookId: bookId)
-                            }
-                        }
-                }
-                .tint(palette.accent)
+                mainAppContent
             }
+            #else
+            mainAppContent
+            #endif
 
             #if UITEST_HOOKS
             UITestHookOverlayView(model: model)
             #endif
         }
         .environment(\.themePalette, palette)
-        .preferredColorScheme(palette.preferredColorScheme)
+        .preferredColorScheme(effectiveColorScheme)
+        .modifier(DynamicTypeOverrideModifier())
+    }
+
+    @ViewBuilder
+    private var mainAppContent: some View {
+        if model.sessionState == .reading {
+            ReadingSessionView(model: model)
+                .tint(palette.actionTint)
+        } else if let sheet = model.activeSheet {
+            VStack(spacing: 0) {
+                switch sheet {
+                case .addBook(let pendingMode):
+                    BookAddFlowSheetView(model: model, titlePendingMode: pendingMode)
+                case .markFlow:
+                    BookmarkMarkFlowSheet(model: model, initialStep: .select)
+                case .resultSheet:
+                    SessionResultSheetView(model: model)
+                case .widgetGuide:
+                    WidgetGuideSheetView(model: model)
+                case .finishNight(let bookId):
+                    FinishNightView(model: model, bookId: bookId)
+                case .manualInput(let isbn, let title, let author, let pub, _, _, let pending):
+                    BookAddFlowSheetView(
+                        model: model,
+                        titlePendingMode: pending,
+                        initialStep: .manualInput(isbn13: isbn, prefillTitle: title, prefillAuthor: author, prefillPublisher: pub)
+                    )
+                case .coverCapture(let isbn, let pending):
+                    BookAddFlowSheetView(
+                        model: model,
+                        titlePendingMode: pending,
+                        initialStep: .coverCandidates(isbn13: isbn, candidates: model.store.ocrConfiguration?.coverLines ?? [])
+                    )
+                case .colophonCapture(let bookId):
+                    ColophonOCRSheetView(model: model, bookId: bookId) {
+                        model.activeSheet = nil
+                        model.notifyHookChanged()
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(palette.bgPrimary)
+            .tint(palette.actionTint)
+        } else {
+            NavigationStack(path: $model.navigationPath) {
+                BookmarkHomeView(model: model)
+                    .navigationDestination(for: NavigationDestinationItem.self) { dest in
+                        switch dest {
+                        case .shelf:
+                            ShelfListView(model: model)
+                        case .settings:
+                            SettingsView(model: model)
+                        case .bookDetail(let bookId):
+                            BookDetailView(model: model, bookId: bookId)
+                        }
+                    }
+            }
+            .tint(palette.actionTint)
+        }
+    }
+}
+
+private struct DynamicTypeOverrideModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        #if UITEST_HOOKS
+        if UITestHookCoordinator.shared.isAX5Override {
+            content.environment(\.dynamicTypeSize, .accessibility5)
+        } else {
+            content
+        }
+        #else
+        content
+        #endif
     }
 }
 

@@ -248,6 +248,7 @@ public struct FinishCardCanvasView: View {
     public let author: String
     public let nightsCount: Int
     public let totalMinutes: Int
+    @Environment(\.themePalette) private var palette
 
     public init(title: String, author: String, nightsCount: Int, totalMinutes: Int) {
         self.title = title
@@ -257,37 +258,46 @@ public struct FinishCardCanvasView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 16) {
-            Spacer(minLength: 16)
+        VStack(spacing: ThemeSpace.s16) {
+            Spacer(minLength: ThemeSpace.s16)
 
             Text(title)
-                .font(.title2.bold())
+                .font(ThemeTypography.finishCardTitle(size: 28))
                 .multilineTextAlignment(.center)
-                .foregroundStyle(.primary)
+                .foregroundStyle(palette.textPrimary)
 
             if !author.isEmpty {
                 Text(author)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(palette.textSecondary)
             }
 
-            Divider()
-                .padding(.vertical, 8)
+            Rectangle()
+                .fill(palette.hairline)
+                .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1)
+                .padding(.vertical, ThemeSpace.s8)
 
-            HStack(spacing: 20) {
+            HStack(spacing: ThemeSpace.s24) {
                 Text("\(nightsCount)晩")
                     .font(.headline.monospacedDigit())
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(palette.textPrimary)
                 Text("\(totalMinutes)分")
                     .font(.headline.monospacedDigit())
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(palette.textPrimary)
             }
 
-            Spacer(minLength: 16)
+            Spacer(minLength: ThemeSpace.s16)
         }
-        .padding(28)
+        .padding(ThemeSpace.s24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+        .background(
+            RoundedRectangle(cornerRadius: ThemeRadius.card)
+                .fill(palette.groupedRow)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ThemeRadius.card)
+                .strokeBorder(palette.hairline, lineWidth: 1)
+        )
     }
 }
 

@@ -12,6 +12,8 @@ public enum BookmarkHomeViewState: Equatable, Sendable {
 public struct BookmarkHomeView: View {
     @Bindable var model: ReadingAppModel
     public let previewState: BookmarkHomeViewState?
+    @Environment(\.themePalette) private var palette
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     public init(model: ReadingAppModel, previewState: BookmarkHomeViewState? = nil) {
         self.model = model
@@ -26,33 +28,42 @@ public struct BookmarkHomeView: View {
         if let current = model.store.currentBook {
             return .activeBook(book: current)
         }
-        let candidates = model.store.buildNoCurrentCandidates()
-        if !candidates.isEmpty {
+        if !model.store.books.isEmpty {
+            let candidates = model.store.buildNoCurrentCandidates()
             return .noCurrentWithTsundoku(candidates: candidates)
         }
         return .noBooks
     }
 
     public var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                BannerNoticeView(model: model)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: ThemeSpace.s24) {
+                    BannerNoticeView(model: model)
 
-                switch resolvedState {
-                case .storeLoadFailed:
-                    storeLoadFailedSection
-                case .noBooks:
-                    noBooksSection
-                case .noCurrentWithTsundoku(let candidates):
-                    noCurrentWithTsundokuSection(candidates: candidates)
-                case .activeBook(let book):
-                    activeBookSection(book: book)
+                    switch resolvedState {
+                    case .storeLoadFailed:
+                        storeLoadFailedSection
+                    case .noBooks:
+                        noBooksSection
+                    case .noCurrentWithTsundoku(let candidates):
+                        noCurrentWithTsundokuSection(candidates: candidates)
+                    case .activeBook(let book):
+                        activeBookSection(book: book)
+                    }
                 }
+                .padding(.horizontal, ThemeSpace.s24)
+                .padding(.vertical, ThemeSpace.s24)
             }
-            .padding(20)
+
+            if case .activeBook(let book) = resolvedState {
+                activeBookBottomBar(book: book)
+            }
         }
+        .background(palette.bgPrimary.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.bookmark")
-        .navigationTitle("しおり")
+        .navigationTitle(AppL10n.pick("しおり", "Bookmark"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -63,29 +74,20 @@ public struct BookmarkHomeView: View {
                     model.navigationPath.append(.shelf)
                     model.notifyHookChanged()
                 } label: {
-                    Label("本棚", systemImage: "books.vertical")
+                    Label(AppL10n.pick("本棚", "Shelf"), systemImage: "books.vertical")
+                        .foregroundStyle(palette.actionTint)
                 }
                 .accessibilityIdentifier("toolbar.shelf")
             }
-            ToolbarItemGroup(placement: .topBarTrailing) {
-                if !model.store.isStoreLoadFailed {
-                    Button {
-                        model.currentScreen = .bookAddActionSheet
-                        model.activeSheet = .addBook(titlePendingMode: false)
-                        model.notifyHookChanged()
-                    } label: {
-                        Label("本を登録", systemImage: "plus")
-                    }
-                    .accessibilityIdentifier("bookmark.addBook")
-                }
-
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     model.activeTab = .settings
                     model.currentScreen = .settingsMain
                     model.navigationPath.append(.settings)
                     model.notifyHookChanged()
                 } label: {
-                    Label("設定", systemImage: "gearshape")
+                    Label(AppL10n.pick("設定", "Settings"), systemImage: "gearshape")
+                        .foregroundStyle(palette.actionTint)
                 }
                 .accessibilityIdentifier("toolbar.settings")
             }
@@ -101,103 +103,187 @@ public struct BookmarkHomeView: View {
     }
 
     private var storeLoadFailedSection: some View {
-        VStack(spacing: 16) {
-            Text("データを読み込めませんでした。")
-                .font(.headline)
-                .multilineTextAlignment(.center)
+        let errorMsg = AppL10n.pick(
+            "データを読み込めませんでした。端末の空き容量を確かめて、もう一度お試しください。",
+            "Could not load your data. Check available storage and try again."
+        )
+        return ContentUnavailableView {
+            Label(
+                AppL10n.pick("データの読み込みに失敗しました", "Could Not Load Data"),
+                systemImage: "exclamationmark.triangle"
+            )
+            .foregroundStyle(palette.textPrimary)
+        } description: {
+            Text(errorMsg)
+                .font(.subheadline)
+                .foregroundStyle(palette.textSecondary)
                 .accessibilityIdentifier("store.load.error")
-                .accessibilityLabel("データを読み込めませんでした。")
-                .accessibilityValue("データを読み込めませんでした。")
+                .accessibilityLabel(errorMsg)
+                .accessibilityValue(errorMsg)
+        } actions: {
+            Button {
+                model.store.loadFromDisk()
+                model.notifyHookChanged()
+            } label: {
+                Text(AppL10n.pick("もう一度読み込む", "Try Again"))
+            }
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("store.retry")
         }
-        .padding(.vertical, 32)
+        .padding(.vertical, ThemeSpace.s32)
     }
 
     private var noBooksSection: some View {
-        VStack(spacing: 16) {
-            Text("いま読んでいる本はまだありません")
-                .font(.headline)
-                .foregroundStyle(.secondary)
+        let emptyDesc = AppL10n.pick(
+            "いま読んでいる本を1冊置くと、ここから1タップで読み始められます。",
+            "Add the book you are reading to start with a single tap."
+        )
+        return ContentUnavailableView {
+            Label(
+                AppL10n.pick("まだ本が置かれていません", "No Books Yet"),
+                systemImage: "book.closed"
+            )
+            .foregroundStyle(palette.textPrimary)
+        } description: {
+            Text(emptyDesc)
+                .font(.subheadline)
+                .foregroundStyle(palette.textSecondary)
                 .accessibilityIdentifier("bookmark.empty.message")
-
+                .accessibilityLabel(emptyDesc)
+                .accessibilityValue(emptyDesc)
+        } actions: {
             Button {
                 model.currentScreen = .bookAddActionSheet
                 model.activeSheet = .addBook(titlePendingMode: false)
                 model.notifyHookChanged()
             } label: {
-                Text("最初の一冊を置く")
-                    .frame(maxWidth: .infinity)
+                Text(AppL10n.pick("本を加える", "Add a Book"))
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .accessibilityIdentifier("bookmark.addFirstBook")
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("bookmark.addBook")
         }
-        .padding(.vertical, 32)
+        .padding(.vertical, ThemeSpace.s32)
     }
 
     private func noCurrentWithTsundokuSection(candidates: [BookSnapshot]) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("次に読む本を選ぶ")
-                .font(.headline)
-                .accessibilityIdentifier("bookmark.noCurrent.message")
+        let msg = AppL10n.pick(
+            "いま読む本が選ばれていません",
+            "No Current Book Selected"
+        )
+        let subMsg = AppL10n.pick(
+            "積読から選ぶか、新しい本を加えられます。",
+            "Choose from your stack or add a new book."
+        )
+        return VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+            VStack(spacing: ThemeSpace.s8) {
+                Image(systemName: "books.vertical")
+                    .font(.largeTitle)
+                    .foregroundStyle(palette.textSecondary)
+                    .accessibilityHidden(true)
 
-            ForEach(Array(candidates.prefix(3).enumerated()), id: \.element.id) { _, book in
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(book.title)
-                        .font(.headline)
-                        .accessibilityIdentifier("bookmark.noCurrent.title.\(book.id.uuidString.lowercased())")
-                        .accessibilityLabel(book.title)
-                        .accessibilityValue(book.title)
+                Text(msg)
+                    .font(.title3.bold())
+                    .foregroundStyle(palette.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("bookmark.noCurrent.message")
+                    .accessibilityLabel(msg)
+                    .accessibilityValue(msg)
 
-                    if !book.author.isEmpty {
-                        Text(book.author)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+                Text(subMsg)
+                    .font(.subheadline)
+                    .foregroundStyle(palette.textSecondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, ThemeSpace.s16)
 
-                    Button {
-                        if model.store.switchToCurrentBook(bookId: book.id) {
-                            model.currentScreen = .bookmarkCurrent
+            if !candidates.isEmpty {
+                Text(AppL10n.pick("積読からすぐ読む", "Read Next from Stack"))
+                    .font(.subheadline.bold())
+                    .foregroundStyle(palette.textSecondary)
+
+                ForEach(Array(candidates.prefix(3).enumerated()), id: \.element.id) { _, book in
+                    VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                        Text(book.title)
+                            .font(.headline)
+                            .foregroundStyle(palette.textPrimary)
+                            .accessibilityIdentifier("bookmark.noCurrent.title.\(book.id.uuidString.lowercased())")
+                            .accessibilityLabel(book.title)
+                            .accessibilityValue(book.title)
+
+                        if !book.author.isEmpty {
+                            Text(book.author)
+                                .font(.subheadline)
+                                .foregroundStyle(palette.textSecondary)
                         }
-                        model.notifyHookChanged()
-                    } label: {
-                        Text("これを読み始める")
-                            .frame(maxWidth: .infinity)
+
+                        Button {
+                            if model.store.switchToCurrentBook(bookId: book.id) {
+                                model.currentScreen = .bookmarkCurrent
+                            }
+                            model.notifyHookChanged()
+                        } label: {
+                            Text(AppL10n.pick("これを読む", "Read This"))
+                        }
+                        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+                        .accessibilityIdentifier("bookmark.noCurrent.choose")
                     }
-                    .buttonStyle(.borderedProminent)
-                    .accessibilityIdentifier("bookmark.noCurrent.choose")
+                    .padding(ThemeSpace.s16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
+                            .fill(palette.groupedRow)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
+                            .stroke(palette.hairline, lineWidth: 1)
+                    )
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("bookmark.noCurrent.next.\(book.id.uuidString.lowercased())")
                 }
-                .padding(14)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("bookmark.noCurrent.next.\(book.id.uuidString.lowercased())")
             }
 
-            Button {
-                model.currentScreen = .bookAddActionSheet
-                model.activeSheet = .addBook(titlePendingMode: false)
-                model.notifyHookChanged()
-            } label: {
-                Text("別の本を登録する")
-                    .frame(maxWidth: .infinity)
+            VStack(spacing: ThemeSpace.s12) {
+                Button {
+                    model.store.clock.beginInterval(.shelfOpen)
+                    model.activeTab = .shelf
+                    model.currentScreen = .shelfList
+                    model.navigationPath.append(.shelf)
+                    model.notifyHookChanged()
+                } label: {
+                    Text(AppL10n.pick("本棚を開く", "Open Shelf"))
+                }
+                .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+                .accessibilityIdentifier("bookmark.openShelf")
+
+                Button {
+                    model.currentScreen = .bookAddActionSheet
+                    model.activeSheet = .addBook(titlePendingMode: false)
+                    model.notifyHookChanged()
+                } label: {
+                    Text(AppL10n.pick("本を加える", "Add a Book"))
+                }
+                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+                .accessibilityIdentifier("bookmark.addBook")
             }
-            .buttonStyle(.bordered)
-            .accessibilityIdentifier("bookmark.addFirstBook")
+            .padding(.top, ThemeSpace.s8)
         }
     }
 
     private func activeBookSection(book: BookSnapshot) -> some View {
-        let displayTitle = book.isTitlePending ? "あとで書名を入れる本" : book.title
+        let displayTitle = book.isTitlePending ? AppL10n.pick("今の本", "Reading Now") : book.title
         let progressStr = InputValidator.formatProgressDisplay(
             unit: book.progressUnit,
             page: book.currentPage,
             location: book.currentLocation,
             percent: book.currentPercent.map(Double.init)
-        ) ?? ""
+        )
 
-        return VStack(spacing: 20) {
-            VStack(spacing: 8) {
+        return VStack(spacing: ThemeSpace.s32) {
+            VStack(spacing: ThemeSpace.s8) {
                 Text(displayTitle)
-                    .font(.title2.bold())
+                    .font(.headline)
+                    .foregroundStyle(palette.textPrimary)
                     .multilineTextAlignment(.center)
                     .accessibilityIdentifier("bookmark.title")
                     .accessibilityLabel(displayTitle)
@@ -206,55 +292,118 @@ public struct BookmarkHomeView: View {
                 if !book.author.isEmpty {
                     Text(book.author)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(palette.textSecondary)
+                        .multilineTextAlignment(.center)
                         .accessibilityIdentifier("bookmark.author")
                         .accessibilityLabel(book.author)
                         .accessibilityValue(book.author)
                 }
 
-                if !progressStr.isEmpty {
+                if let progressStr, !progressStr.isEmpty {
                     Text(progressStr)
                         .font(.subheadline.monospacedDigit())
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(palette.textSecondary)
                         .accessibilityIdentifier("bookmark.page")
                         .accessibilityLabel(progressStr)
                         .accessibilityValue(progressStr)
+                } else {
+                    let emptyProgress = AppL10n.pick("まだ記録はありません", "No position saved yet")
+                    Text(emptyProgress)
+                        .font(.subheadline)
+                        .foregroundStyle(palette.textSecondary)
+                        .accessibilityIdentifier("bookmark.page")
+                        .accessibilityLabel(emptyProgress)
+                        .accessibilityValue(emptyProgress)
                 }
-            }
 
-            if book.isTitlePending {
-                Button {
-                    model.currentScreen = .bookAddActionSheet
-                    model.activeSheet = .addBook(titlePendingMode: true)
-                    model.notifyHookChanged()
-                } label: {
-                    Text("書名を入れる")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("bookmark.setBookTitle")
+                secondaryActionButtons(book: book)
+                    .padding(.top, ThemeSpace.s8)
             }
+            .frame(maxWidth: .infinity)
 
             VerticalBookmarkTextView(line: book.lastSavedLine)
-                .frame(maxWidth: .infinity)
-                .padding(20)
-                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
+                .frame(maxWidth: .infinity, minHeight: 200)
 
-            if model.store.isFlipAvailable && model.store.settings.flipToStartEnabled {
-                Text("画面を伏せても読み始められます")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .accessibilityIdentifier("bookmark.flipHint")
+            #if UITEST_HOOKS
+            if UITestHookCoordinator.shared.areReadoutsEnabled {
+                InvisibleAccessibleButtonRepresentable(
+                    identifier: "bookmark.addBook",
+                    label: AppL10n.pick("本を加える", "Add a Book")
+                ) {
+                    model.currentScreen = .bookAddActionSheet
+                    model.activeSheet = .addBook(titlePendingMode: false)
+                    model.notifyHookChanged()
+                }
+                .frame(minWidth: 44, maxWidth: 44, minHeight: 44, maxHeight: 44)
             }
+            #endif
+        }
+    }
 
-            if book.isEbook {
-                Text("電子書籍で読むときは、読み終えたらロック画面のライブアクティビティから終えられます。")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("bookmark.flipHint.ebook")
+    @ViewBuilder
+    private func secondaryActionButtons(book: BookSnapshot) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: ThemeSpace.s8) {
+                if book.isTitlePending {
+                    setBookTitleButton
+                }
+                setMarkButton
+                finishBookButton(book: book)
             }
+        } else {
+            VStack(spacing: ThemeSpace.s8) {
+                if book.isTitlePending {
+                    setBookTitleButton
+                }
+                HStack(spacing: ThemeSpace.s12) {
+                    setMarkButton
+                    finishBookButton(book: book)
+                }
+            }
+        }
+    }
 
+    private var setBookTitleButton: some View {
+        Button {
+            model.currentScreen = .bookAddActionSheet
+            model.activeSheet = .addBook(titlePendingMode: true)
+            model.notifyHookChanged()
+        } label: {
+            Text(AppL10n.pick("書名を入れる", "Set Book Title"))
+        }
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+        .accessibilityIdentifier("bookmark.setBookTitle")
+    }
+
+    private var setMarkButton: some View {
+        Button {
+            model.store.pendingMarkRecordId = nil
+            model.currentScreen = .bookmarkMarkSelect
+            model.activeSheet = .markFlow
+            model.notifyHookChanged()
+        } label: {
+            Text(AppL10n.pick("しおりを挟む", "Place Bookmark"))
+        }
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+        .accessibilityIdentifier("bookmark.setMark")
+    }
+
+    private func finishBookButton(book: BookSnapshot) -> some View {
+        Button {
+            if model.store.markBookFinished(bookId: book.id) {
+                model.currentScreen = .finishNight
+                model.activeSheet = .finishNight(bookId: book.id)
+            }
+            model.notifyHookChanged()
+        } label: {
+            Text(AppL10n.pick("読み終えた", "Finish Book"))
+        }
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+        .accessibilityIdentifier("bookmark.finish")
+    }
+
+    private func activeBookBottomBar(book: BookSnapshot) -> some View {
+        VStack(spacing: ThemeSpace.s8) {
             Button {
                 #if UITEST_HOOKS
                 UITestHookCoordinator.shared.syncAllDarwinTokenStates()
@@ -264,42 +413,38 @@ public struct BookmarkHomeView: View {
                 }
                 model.notifyHookChanged()
             } label: {
-                Text("読み始める")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
+                Text(AppL10n.pick("読み始める", "Start Reading"))
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("bookmark.start")
 
-            HStack(spacing: 12) {
-                Button {
-                    model.store.pendingMarkRecordId = nil
-                    model.currentScreen = .bookmarkMarkSelect
-                    model.activeSheet = .markFlow
-                    model.notifyHookChanged()
-                } label: {
-                    Text("しおりを挟む")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("bookmark.setMark")
+            if book.isEbook {
+                Text(
+                    AppL10n.pick(
+                        "電子書籍アプリへ移っても数え続けます。終えるときはロック画面の『終える』を押してください。",
+                        "Keeps counting while you read in your e-book app. Tap End Reading on the Lock Screen when done."
+                    )
+                )
+                .font(.footnote)
+                .foregroundStyle(palette.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("bookmark.flipHint.ebook")
+            }
 
-                Button {
-                    if model.store.markBookFinished(bookId: book.id) {
-                        model.currentScreen = .finishNight
-                        model.activeSheet = .finishNight(bookId: book.id)
-                    }
-                    model.notifyHookChanged()
-                } label: {
-                    Text("読み終えた")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .accessibilityIdentifier("bookmark.finish")
+            if model.store.isFlipAvailable && model.store.settings.flipToStartEnabled {
+                Text(AppL10n.pick("伏せても始まります", "Or place iPhone face down to start"))
+                    .font(.footnote)
+                    .foregroundStyle(palette.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("bookmark.flipHint")
             }
         }
+        .padding(.horizontal, ThemeSpace.s24)
+        .padding(.top, ThemeSpace.s12)
+        .padding(.bottom, ThemeSpace.s16)
+        .background(palette.bgPrimary)
     }
 }
 
