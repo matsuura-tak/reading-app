@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -50,16 +50,9 @@
 		A30000010000000000000001 /* BackgroundAssetsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30000010000000000000001 /* BackgroundAssetsHandler.swift */; };
 		A30000020000000000000001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F30000020000000000000001 /* PrivacyInfo.xcprivacy */; };
 
-		A40000010000000000000001 /* AcceptanceTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000010000000000000001 /* AcceptanceTestBase.swift */; };
-		A40000020000000000000001 /* FirstLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000020000000000000001 /* FirstLaunchTests.swift */; };
-		A40000030000000000000001 /* ReadingSessionAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000030000000000000001 /* ReadingSessionAcceptanceTests.swift */; };
-		A40000040000000000000001 /* BookmarkAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000040000000000000001 /* BookmarkAcceptanceTests.swift */; };
-		A40000050000000000000001 /* WidgetAndActivityAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000050000000000000001 /* WidgetAndActivityAcceptanceTests.swift */; };
-		A40000060000000000000001 /* ShelfAndBookAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000060000000000000001 /* ShelfAndBookAcceptanceTests.swift */; };
-		A40000070000000000000001 /* RegistrationAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000070000000000000001 /* RegistrationAcceptanceTests.swift */; };
-		A40000080000000000000001 /* FinishAndRecommendationAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000080000000000000001 /* FinishAndRecommendationAcceptanceTests.swift */; };
-		A40000090000000000000001 /* SettingsStoreIntentsAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40000090000000000000001 /* SettingsStoreIntentsAcceptanceTests.swift */; };
-		A400000A0000000000000001 /* PerformanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F400000A0000000000000001 /* PerformanceTests.swift */; };
+		A10000F00000000000000001 /* ReadingWidgetSurfaceViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000F00000000000000001 /* ReadingWidgetSurfaceViews.swift */; };
+		A20000F00000000000000001 /* ReadingWidgetSurfaceViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000F00000000000000001 /* ReadingWidgetSurfaceViews.swift */; };
+		A10000F10000000000000001 /* LoadingPlaceholderViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000F10000000000000001 /* LoadingPlaceholderViews.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,17 +148,30 @@
 		F30000030000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ReadingBackgroundAssetsExtension/Info.plist; sourceTree = "<group>"; };
 		F30000040000000000000001 /* ReadingBackgroundAssetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ReadingBackgroundAssetsExtension/ReadingBackgroundAssetsExtension.entitlements; sourceTree = "<group>"; };
 
-		F40000010000000000000001 /* AcceptanceTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/Support/AcceptanceTestBase.swift; sourceTree = "<group>"; };
-		F40000020000000000000001 /* FirstLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/FirstLaunchTests.swift; sourceTree = "<group>"; };
-		F40000030000000000000001 /* ReadingSessionAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/ReadingSessionAcceptanceTests.swift; sourceTree = "<group>"; };
-		F40000040000000000000001 /* BookmarkAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/BookmarkAcceptanceTests.swift; sourceTree = "<group>"; };
-		F40000050000000000000001 /* WidgetAndActivityAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/WidgetAndActivityAcceptanceTests.swift; sourceTree = "<group>"; };
-		F40000060000000000000001 /* ShelfAndBookAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/ShelfAndBookAcceptanceTests.swift; sourceTree = "<group>"; };
-		F40000070000000000000001 /* RegistrationAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/RegistrationAcceptanceTests.swift; sourceTree = "<group>"; };
-		F40000080000000000000001 /* FinishAndRecommendationAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/FinishAndRecommendationAcceptanceTests.swift; sourceTree = "<group>"; };
-		F40000090000000000000001 /* SettingsStoreIntentsAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift; sourceTree = "<group>"; };
-		F400000A0000000000000001 /* PerformanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptanceTests/PerformanceTests.swift; sourceTree = "<group>"; };
+		F10000F00000000000000001 /* ReadingWidgetSurfaceViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Shared/ReadingWidgetSurfaceViews.swift; sourceTree = "<group>"; };
+		F10000F10000000000000001 /* LoadingPlaceholderViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingApp/Views/LoadingPlaceholderViews.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E40000010000000000000001 /* Exceptions for "AcceptanceTests" folder in "ReadingAcceptanceTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				AcceptanceTests.xctestplan,
+			);
+			target = D40000010000000000000001 /* ReadingAcceptanceTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		G40000010000000000000001 /* AcceptanceTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E40000010000000000000001 /* Exceptions for "AcceptanceTests" folder in "ReadingAcceptanceTests" target */,
+			);
+			path = AcceptanceTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B10000010000000000000001 /* Frameworks */ = {
@@ -213,6 +219,9 @@
 				F10000050000000000000001 /* ReadingAppModel.swift */,
 				F10000060000000000000001 /* ReadingActivityAttributes.swift */,
 				F10000070000000000000001 /* ReadingAppIntents.swift */,
+				F10000F00000000000000001 /* ReadingWidgetSurfaceViews.swift */,
+				F10000F10000000000000001 /* LoadingPlaceholderViews.swift */,
+				G40000010000000000000001 /* AcceptanceTests */,
 				F10000080000000000000001 /* UITestHookTypes.swift */,
 				F10000090000000000000001 /* UITestHookCoordinator.swift */,
 				F100000A0000000000000001 /* UITestHookReadoutBuilder.swift */,
@@ -241,16 +250,6 @@
 				F30000020000000000000001 /* PrivacyInfo.xcprivacy */,
 				F30000030000000000000001 /* Info.plist */,
 				F30000040000000000000001 /* ReadingBackgroundAssetsExtension.entitlements */,
-				F40000010000000000000001 /* AcceptanceTestBase.swift */,
-				F40000020000000000000001 /* FirstLaunchTests.swift */,
-				F40000030000000000000001 /* ReadingSessionAcceptanceTests.swift */,
-				F40000040000000000000001 /* BookmarkAcceptanceTests.swift */,
-				F40000050000000000000001 /* WidgetAndActivityAcceptanceTests.swift */,
-				F40000060000000000000001 /* ShelfAndBookAcceptanceTests.swift */,
-				F40000070000000000000001 /* RegistrationAcceptanceTests.swift */,
-				F40000080000000000000001 /* FinishAndRecommendationAcceptanceTests.swift */,
-				F40000090000000000000001 /* SettingsStoreIntentsAcceptanceTests.swift */,
-				F400000A0000000000000001 /* PerformanceTests.swift */,
 				G00000020000000000000001 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -344,6 +343,9 @@
 			);
 			dependencies = (
 				T10000030000000000000001 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				G40000010000000000000001 /* AcceptanceTests */,
 			);
 			name = ReadingAcceptanceTests;
 			productName = ReadingAcceptanceTests;
@@ -451,6 +453,8 @@
 				A10000050000000000000001 /* ReadingAppModel.swift in Sources */,
 				A10000060000000000000001 /* ReadingActivityAttributes.swift in Sources */,
 				A10000070000000000000001 /* ReadingAppIntents.swift in Sources */,
+				A10000F00000000000000001 /* ReadingWidgetSurfaceViews.swift in Sources */,
+				A10000F10000000000000001 /* LoadingPlaceholderViews.swift in Sources */,
 				A10000080000000000000001 /* UITestHookTypes.swift in Sources */,
 				A10000090000000000000001 /* UITestHookCoordinator.swift in Sources */,
 				A100000A0000000000000001 /* UITestHookReadoutBuilder.swift in Sources */,
@@ -475,6 +479,7 @@
 				A20000010000000000000001 /* ReadingWidgets.swift in Sources */,
 				A20000020000000000000001 /* ReadingActivityAttributes.swift in Sources */,
 				A20000030000000000000001 /* ReadingAppIntents.swift in Sources */,
+				A20000F00000000000000001 /* ReadingWidgetSurfaceViews.swift in Sources */,
 				A20000090000000000000001 /* ThemeTokens.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -491,16 +496,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A40000010000000000000001 /* AcceptanceTestBase.swift in Sources */,
-				A40000020000000000000001 /* FirstLaunchTests.swift in Sources */,
-				A40000030000000000000001 /* ReadingSessionAcceptanceTests.swift in Sources */,
-				A40000040000000000000001 /* BookmarkAcceptanceTests.swift in Sources */,
-				A40000050000000000000001 /* WidgetAndActivityAcceptanceTests.swift in Sources */,
-				A40000060000000000000001 /* ShelfAndBookAcceptanceTests.swift in Sources */,
-				A40000070000000000000001 /* RegistrationAcceptanceTests.swift in Sources */,
-				A40000080000000000000001 /* FinishAndRecommendationAcceptanceTests.swift in Sources */,
-				A40000090000000000000001 /* SettingsStoreIntentsAcceptanceTests.swift in Sources */,
-				A400000A0000000000000001 /* PerformanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

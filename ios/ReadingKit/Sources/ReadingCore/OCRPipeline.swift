@@ -200,6 +200,20 @@ public enum OCRPipeline: Sendable {
     }
 
     /// Combines selected column indices in reading order (`1...N` ascending) and clamps to 60 characters (AC-66).
+    /// 選んだ列をつなぐ（切り詰めない）。S-3c の mark.lineField に入れ、60字を超えれば保存のときに
+    /// mark.line.invalid を出す（design/ 5 の S-3c、AC-72）。
+    public nonisolated static func joinSelectedColumns(
+        columns: [OCRPageColumnItem],
+        selectedIndices: [Int]
+    ) -> String {
+        let indexSet = Set(selectedIndices)
+        let orderedTexts = columns
+            .filter { indexSet.contains($0.index) }
+            .sorted { $0.index < $1.index }
+            .map(\.text)
+        return VerticalLineLayout.normalizeSingleLine(orderedTexts.joined())
+    }
+
     public nonisolated static func combineSelectedColumns(
         columns: [OCRPageColumnItem],
         selectedIndices: [Int]

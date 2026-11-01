@@ -77,6 +77,11 @@ public enum ThemeTypography {
         .custom("HiraMinProN-W6", size: size, relativeTo: .body)
     }
 
+    /// ウィジェットの縦書きの字。枠に収める大きさを ReadingVerticalFit が決めるため、大きさを固定する（screens.md W-1、W-2）。
+    public static func widgetLineFixed(size: CGFloat) -> Font {
+        .custom("HiraMinProN-W6", fixedSize: size)
+    }
+
     public static func finishCardTitle(size: CGFloat = 28) -> Font {
         .custom("HiraMinProN-W6", size: size, relativeTo: .title)
     }

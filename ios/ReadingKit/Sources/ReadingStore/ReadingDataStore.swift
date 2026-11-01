@@ -663,6 +663,13 @@ public final class ReadingDataStore {
     public var savedImageFileCount: Int = 0
     public var photoLibraryWriteCount: Int = 0
     public var isOffline: Bool = false
+    /// S-10 の設定の保存に失敗した節（"reading" か "lockScreen"）。design/ 5 の S-10 のエラー。
+    public var settingsSaveErrorSection: String?
+    public private(set) var storePurchaseAttempts: Int = 0
+    public private(set) var storeRestoreAttempts: Int = 0
+    public private(set) var storeRefundCount: Int = 0
+    /// 読み込みの実行時の門（H33）。既定は素通り。
+    public let loadGate = LoadHoldGate()
     public var cameraAuthorization: String = "authorized"
     public var ocrConfiguration: H23OCRStubConfig?
     public var ocrHoldEnabled: Bool = false
@@ -1837,6 +1844,7 @@ public final class ReadingDataStore {
             pendingRefundOnActivate = false
             settings.isPlusPurchased = false
             settings.appearanceID = .default
+            storeRefundCount += 1
             try? persistCurrentEnvelopeToDisk()
             _ = try? snapshotStore.writeSnapshot(
                 currentBook: currentBook,
@@ -2412,12 +2420,24 @@ public final class ReadingDataStore {
 
     // MARK: - Settings & StoreKit 2 (S-10, S-11)
 
+    /// 設定の保存に入る前の門（H7 `settings.save`）。失敗なら値を変えずに節にエラーを出す。
+    private func beginSettingsSave(section: String) -> Bool {
+        if consumeFailSave(for: "settings.save") {
+            settingsSaveErrorSection = section
+            return false
+        }
+        settingsSaveErrorSection = nil
+        return true
+    }
+
     public func setFlipToStartEnabled(_ enabled: Bool) {
+        guard beginSettingsSave(section: "reading") else { return }
         settings.flipToStartEnabled = enabled
         try? persistCurrentEnvelopeToDisk()
     }
 
     public func setHideOnWidgets(_ hide: Bool) {
+        guard beginSettingsSave(section: "lockScreen") else { return }
         settings.hideOnWidgets = hide
         try? persistCurrentEnvelopeToDisk()
         _ = try? snapshotStore.writeSnapshot(
@@ -2431,6 +2451,7 @@ public final class ReadingDataStore {
     }
 
     public func setEntryTime(_ entryTime: String) {
+        guard beginSettingsSave(section: "reading") else { return }
         settings.entryTime = entryTime
         try? persistCurrentEnvelopeToDisk()
         scheduleNextEntryLiveActivityIfNeeded(source: "settings.entryTime")
@@ -2467,6 +2488,7 @@ public final class ReadingDataStore {
 
     @discardableResult
     public func purchasePlus() -> StorePurchaseResult {
+        storePurchaseAttempts += 1
         guard storeCanMakePayments else {
             storeStatusMessageKey = "store.unavailable"
             return .unavailable
@@ -2570,6 +2592,12 @@ public final class ReadingDataStore {
 
     @discardableResult
     public func restorePurchases() -> StoreRestoreResult {
+        storeRestoreAttempts += 1
+        // H8：通信がなければ、復元は通信の誤りで終わる。購入の状態は変えない（test-hooks.md H8、H30）。
+        guard !isOffline else {
+            storeStatusMessageKey = "store.offline"
+            return .none
+        }
         if !isStoreKitStubbed {
             Task { @MainActor [weak self] in
                 _ = await self?.restorePurchasesWithStoreKitAsync()
@@ -2661,6 +2689,7 @@ public final class ReadingDataStore {
         if wasRevoked && settings.isPlusPurchased {
             settings.isPlusPurchased = false
             settings.appearanceID = .default
+            storeRefundCount += 1
             try? persistCurrentEnvelopeToDisk()
             _ = try? snapshotStore.writeSnapshot(
                 currentBook: currentBook,
@@ -3880,12 +3909,18 @@ public final class ReadingDataStore {
             var canMakePayments: Bool
             var productLoadAvailable: Bool
             var appearanceID: String
+            var purchaseAttempts: Int
+            var restoreAttempts: Int
+            var refundCount: Int
         }
         let payload = Payload(
             isPlusPurchased: settings.isPlusPurchased,
             canMakePayments: storeCanMakePayments,
             productLoadAvailable: storeProductLoadAvailable,
-            appearanceID: settings.appearanceID.rawValue
+            appearanceID: settings.appearanceID.rawValue,
+            purchaseAttempts: storePurchaseAttempts,
+            restoreAttempts: storeRestoreAttempts,
+            refundCount: storeRefundCount
         )
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]

@@ -185,7 +185,20 @@ public struct SettingsView: View {
                 RoundedRectangle(cornerRadius: ThemeRadius.card)
                     .strokeBorder(palette.hairline, lineWidth: 1)
             )
+            if model.store.settingsSaveErrorSection == "reading" {
+                settingsSaveErrorText
+            }
         }
+    }
+
+    /// design/ 5 の S-10：設定の保存に失敗したら、切り替えを前の値に戻し、節の下に common.save.error を出す。
+    private var settingsSaveErrorText: some View {
+        Text("common.save.error")
+            .font(.footnote)
+            .foregroundStyle(Color("SemanticError"))
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, ThemeSpace.s4)
+            .accessibilityIdentifier("common.save.error")
     }
 
     private var lockScreenSection: some View {
@@ -222,6 +235,9 @@ public struct SettingsView: View {
                 RoundedRectangle(cornerRadius: ThemeRadius.card)
                     .strokeBorder(palette.hairline, lineWidth: 1)
             )
+            if model.store.settingsSaveErrorSection == "lockScreen" {
+                settingsSaveErrorText
+            }
         }
     }
 
@@ -315,15 +331,28 @@ public struct SettingsView: View {
                         .accessibilityValue(msgText)
                 }
 
-                Button {
-                    _ = model.store.restorePurchases()
-                    model.notifyHookChanged()
-                } label: {
-                    Text(AppL10n.pick("購入を復元", "Restore Purchases"))
-                        .frame(maxWidth: .infinity)
+                HStack(spacing: ThemeSpace.s8) {
+                    Button {
+                        Task {
+                            await model.store.loadGate.pass(.storekitRestore)
+                            _ = model.store.restorePurchases()
+                            model.notifyHookChanged()
+                        }
+                    } label: {
+                        Text(AppL10n.pick("購入を復元", "Restore Purchases"))
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+                    .accessibilityIdentifier("settings.restorePurchases")
+                    if model.store.loadGate.isHolding(.storekitRestore) {
+                        // design/ 5 の S-10：購入の復元中は settings.restorePurchases の横に ProgressView を出す。
+                        ProgressView()
+                            .task {
+                                try? await ContinuousClock().sleep(for: .milliseconds(300))
+                                model.store.loadGate.markShown(.storekitRestore)
+                            }
+                    }
                 }
-                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                .accessibilityIdentifier("settings.restorePurchases")
             }
             .padding(ThemeSpace.s16)
             .background(

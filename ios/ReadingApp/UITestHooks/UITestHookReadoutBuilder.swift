@@ -16,15 +16,34 @@ public enum UITestHookReadoutBuilder {
     }
 
     public static func stateJSON(model: ReadingAppModel) -> String {
-        model.store.hookStateString()
+        let base = model.store.hookStateString()
+        let holds = model.store.loadGate.phases
+            .sorted { $0.key.rawValue < $1.key.rawValue }
+            .map { "hold.\($0.key.rawValue)=\($0.value.rawValue)" }
+        return ([base] + holds).joined(separator: ";")
     }
 
     public static func storeJSON(model: ReadingAppModel) -> String {
-        model.store.hookStoreJSONString()
+        // H33：store.load を止めている間、hook.store は空の文字列（H13 の失敗と同じ）。
+        if model.store.loadGate.isHolding(.storeLoad) { return "" }
+        return model.store.hookStoreJSONString()
     }
 
     public static func widgetJSON(model: ReadingAppModel) -> String {
-        model.store.hookWidgetJSONString()
+        let base = model.store.hookWidgetJSONString()
+        guard let showcase = UITestHookCoordinator.shared.widgetShowcaseReadout,
+              let baseData = base.data(using: .utf8),
+              var object = (try? JSONSerialization.jsonObject(with: baseData)) as? [String: Any],
+              let showcaseData = try? JSONEncoder().encode(showcase),
+              let showcaseObject = try? JSONSerialization.jsonObject(with: showcaseData) else {
+            return base
+        }
+        object["showcase"] = showcaseObject
+        guard let merged = try? JSONSerialization.data(withJSONObject: object, options: [.sortedKeys, .withoutEscapingSlashes]),
+              let text = String(data: merged, encoding: .utf8) else {
+            return base
+        }
+        return text
     }
 
     public static func verticalJSON(model: ReadingAppModel) -> String {

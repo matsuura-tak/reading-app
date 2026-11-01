@@ -26,23 +26,35 @@ public struct ContentView: View {
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
             #if UITEST_HOOKS
-            if let showcaseSpec = UITestHookCoordinator.shared.widgetShowcaseSpec, !showcaseSpec.isEmpty {
-                WidgetShowcaseHarnessView(model: model, spec: showcaseSpec)
-                    .tint(palette.actionTint)
+            if let errorValue = UITestHookCoordinator.shared.hookErrorValue {
+                UITestHookErrorView(value: errorValue)
+            } else if let showcase = UITestHookCoordinator.shared.widgetShowcase {
+                UITestHookWidgetShowcaseView(model: model, spec: showcase)
             } else {
-                mainAppContent
+                gatedMainAppContent
             }
             #else
-            mainAppContent
+            gatedMainAppContent
             #endif
 
             #if UITEST_HOOKS
-            UITestHookOverlayView(model: model)
+            if UITestHookCoordinator.shared.hookErrorValue == nil {
+                UITestHookOverlayView(model: model)
+            }
             #endif
         }
         .environment(\.themePalette, palette)
         .preferredColorScheme(effectiveColorScheme)
         .modifier(DynamicTypeOverrideModifier())
+    }
+
+    /// 起動の読み込み（H33 `store.load`）が 0.3秒を超えたら、S-1 の灰の帯を出す（design/ 5 の S-1）。
+    private var gatedMainAppContent: some View {
+        GatedLoadView(gate: model.store.loadGate, point: .storeLoad) {
+            mainAppContent
+        } placeholder: {
+            BookmarkLoadingPlaceholderView()
+        }
     }
 
     @ViewBuilder

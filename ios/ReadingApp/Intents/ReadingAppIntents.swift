@@ -70,11 +70,7 @@ public struct WhereStoppedIntent: AppIntent {
         }
         return .result(
             dialog: IntentDialog(stringLiteral: spokenText),
-            view: VStack(alignment: .leading, spacing: 4) {
-                Text(spokenText)
-                    .font(.body)
-            }
-            .padding()
+            view: WhereStoppedSnippetView(text: spokenText)
         )
     }
 
@@ -82,23 +78,19 @@ public struct WhereStoppedIntent: AppIntent {
     /// Never includes the book title, saved line, or app name.
     public static func formatResponse(for snapshot: WidgetSnapshot) -> String {
         guard let book = snapshot.currentBook else {
-            return "いま読んでいる本はまだありません。"
+            return String(localized: "intent.whereStopped.noCurrent")
         }
         guard let rawProgress = book.progressDisplay?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !rawProgress.isEmpty else {
-            return "まだページが記録されていません。"
-        }
-        let digits = rawProgress.filter(\.isNumber)
-        guard !digits.isEmpty else {
-            return "まだページが記録されていません。"
+              let value = Int(rawProgress.filter(\.isNumber)) else {
+            return String(localized: "intent.whereStopped.noPage")
         }
         switch book.progressUnit {
         case .page:
-            return "\(digits)ページからです。"
+            return String(format: String(localized: "intent.whereStopped.page"), value)
         case .location:
-            return "位置\(digits)からです。"
+            return String(format: String(localized: "intent.whereStopped.location"), value)
         case .percent:
-            return "\(digits)パーセントからです。"
+            return String(format: String(localized: "intent.whereStopped.percent"), value)
         }
     }
 }

@@ -39,6 +39,10 @@ public final class UITestHookCoordinator {
     public var appearanceSchemeOverride: String?
     public var isAX5Override: Bool = false
     public var widgetShowcaseSpec: String?
+    public var widgetShowcase: UITestHookWidgetShowcaseSpec?
+    public var widgetShowcaseReadout: UITestHookWidgetShowcaseReadout?
+    /// 契約 1-6 の hook.error の値（H22、H33）。
+    public var hookErrorValue: String?
 
     private var activeModel: ReadingAppModel?
     private var isMonitoringInstalled = false
@@ -51,6 +55,43 @@ public final class UITestHookCoordinator {
     private let darwinDispatchQueue = DispatchQueue(label: "yomuma.uitest.darwin.queue", qos: .userInteractive)
 
     public init() {}
+
+    /// H22 の撮影用の見本の指定を読み、描けない指定は hook.error（`H22:<値>`）にする。
+    private func configureWidgetShowcase(store: ReadingDataStore, model: ReadingAppModel) {
+        widgetShowcase = nil
+        widgetShowcaseReadout = nil
+        guard let raw = widgetShowcaseSpec, !raw.isEmpty else { return }
+        switch UITestHookWidgetShowcaseSpec.parse(raw) {
+        case .failure(let error):
+            hookErrorValue = error.value
+        case .success(let spec):
+            if spec.surface == .liveActivity {
+                if store.currentBook == nil && spec.variant != "ended" {
+                    hookErrorValue = "H22:\(raw)"
+                    return
+                }
+                if spec.variant == "ended" && UITestHookWidgetShowcaseView.latestRecord(model: model) == nil {
+                    hookErrorValue = "H22:liveActivity.ended.noRecord"
+                    return
+                }
+            }
+            widgetShowcase = spec
+        }
+    }
+
+    /// H33：`-uitest-hold-load <対象>[,<対象>…]` を読み、門に止める対象を設定する（テストの起動の引数だけで効く）。
+    private func configureLoadHold(store: ReadingDataStore, args: [String]) {
+        guard let raw = argValue("-uitest-hold-load", in: args), !raw.isEmpty else { return }
+        var points: Set<LoadHoldGate.Point> = []
+        for item in raw.split(separator: ",").map({ String($0).trimmingCharacters(in: .whitespaces) }) {
+            guard let point = LoadHoldGate.Point(rawValue: item) else {
+                hookErrorValue = "H33:\(item)"
+                return
+            }
+            points.insert(point)
+        }
+        store.loadGate.arm(points)
+    }
 
     private func argValue(_ flag: String, in args: [String]) -> String? {
         guard let idx = args.firstIndex(of: flag), idx + 1 < args.count else {
@@ -168,6 +209,9 @@ public final class UITestHookCoordinator {
 
         let skStub = env["UITEST_STOREKIT"] ?? env["UITEST_STOREKIT_STUB"]
         store.configureStoreKit(from: skStub)
+
+        configureWidgetShowcase(store: store, model: model)
+        configureLoadHold(store: store, args: args)
 
         hasReceivedInitialOrientation = false
         launchTimestamp = Date()
@@ -351,7 +395,8 @@ public final class UITestHookCoordinator {
             "yomuma.uitest.barcode",
             "yomuma.uitest.liveactivity.transition",
             "yomuma.uitest.storekit.refund",
-            "yomuma.uitest.intent.run"
+            "yomuma.uitest.intent.run",
+            "yomuma.uitest.load.release"
         ]
         for name in names {
             var checkToken: Int32 = 0
@@ -469,6 +514,12 @@ public final class UITestHookCoordinator {
             }
         case "yomuma.uitest.offline":
             store.isOffline = (state == 1)
+        case "yomuma.uitest.load.release":
+            if state == 0 {
+                store.loadGate.release(nil)
+            } else if let point = LoadHoldGate.Point.allCases.first(where: { $0.releaseNumber == state }) {
+                store.loadGate.release(point)
+            }
         case "yomuma.uitest.ocr.release":
             store.isOCRHoldReleased = true
         case "yomuma.uitest.barcode":

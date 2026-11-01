@@ -19,16 +19,7 @@ public struct ReadingWidgetTimelineProvider: TimelineProvider {
     public init() {}
 
     public func placeholder(in context: Context) -> ReadingWidgetTimelineEntry {
-        ReadingWidgetTimelineEntry(
-            date: Date(),
-            snapshot: WidgetSnapshot(
-                version: 1,
-                updatedAt: "1970-01-01T00:00:00Z",
-                appearanceID: .default,
-                hideOnWidgets: false,
-                currentBook: nil
-            )
-        )
+        ReadingWidgetTimelineEntry(date: Date(), snapshot: ReadingWidgetPlaceholder.snapshot)
     }
 
     public func getSnapshot(in context: Context, completion: @escaping @Sendable (ReadingWidgetTimelineEntry) -> Void) {
@@ -43,126 +34,22 @@ public struct ReadingWidgetTimelineProvider: TimelineProvider {
     }
 }
 
-// MARK: - Vertical Text Grid for Widget (W-1)
-
-struct VerticalQuoteWidgetGridView: View {
-    let cells: [H22GlyphCell]
-    let columnCount: Int
-    let rowsPerColumn: Int
-    let textPrimary: Color
-
-    var body: some View {
-        let maxCol = max(columnCount, 1)
-        let maxRow = max(rowsPerColumn, 1)
-        HStack(alignment: .top, spacing: 6) {
-            ForEach((1...maxCol).reversed(), id: \.self) { col in
-                VStack(alignment: .center, spacing: 2) {
-                    ForEach(1...maxRow, id: \.self) { row in
-                        if let cell = cells.first(where: { $0.column == col && $0.row == row }) {
-                            Text(cell.display)
-                                .font(ThemeTypography.widgetLine(size: 15))
-                                .foregroundStyle(textPrimary)
-                                .rotationEffect(.degrees(Double(cell.rotation)))
-                                .offset(x: cell.dx * 15.0, y: cell.dy * 15.0)
-                        } else {
-                            Text("　")
-                                .font(ThemeTypography.widgetLine(size: 15))
-                                .opacity(0)
-                        }
-                    }
-                }
-            }
-        }
-        .accessibilityHidden(true)
-    }
-}
-
 // MARK: - W-2: Home Small Widget (.systemSmall)
+// View の本体は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift（アプリの H22 の見本と共有）。
 
-struct ReadingHomeSmallWidgetView: View {
+struct ReadingHomeSmallWidgetEntryView: View {
     let entry: ReadingWidgetTimelineEntry
 
-    private var palette: ThemePalette {
-        ThemePalette(appearanceID: entry.snapshot.appearanceID)
-    }
-
-    private var composition: H22WidgetComposition {
-        VerticalLineLayout.composeWidget(snapshot: entry.snapshot)
-    }
-
-    private var destinationURL: URL {
-        URL(string: "yomuma://open?entry=small_widget") ?? URL(fileURLWithPath: "/")
-    }
-
     var body: some View {
-        let comp = composition
-        VStack(alignment: .leading, spacing: 6) {
-            if let book = entry.snapshot.currentBook {
-                if entry.snapshot.hideOnWidgets {
-                    Text("しおり")
-                        .font(ThemeTypography.widgetLine(size: 15))
-                        .foregroundStyle(palette.textPrimary)
-                        .lineLimit(1)
-                        .accessibilityIdentifier("widget.hidden")
-                    Spacer(minLength: 4)
-                    if let progress = book.progressDisplay, !progress.isEmpty {
-                        Text(progress)
-                            .font(.caption2.monospacedDigit())
-                            .foregroundStyle(palette.accent)
-                            .lineLimit(1)
-                            .accessibilityIdentifier("widget.page")
-                    }
-                } else {
-                    if comp.orientation == .vertical && !comp.cells.isEmpty {
-                        HStack {
-                            Spacer(minLength: 0)
-                            VerticalQuoteWidgetGridView(
-                                cells: comp.cells,
-                                columnCount: comp.columnCount,
-                                rowsPerColumn: max(comp.rowsPerColumn, 1),
-                                textPrimary: palette.textPrimary
-                            )
-                        }
-                    } else if let line = comp.displayedLine, !line.isEmpty {
-                        Text(line)
-                            .font(.subheadline)
-                            .foregroundStyle(palette.textPrimary)
-                            .lineLimit(3)
-                    } else {
-                        Text(book.isTitlePending ? "しおり" : (book.title ?? "しおり"))
-                            .font(ThemeTypography.widgetLine(size: 15))
-                            .foregroundStyle(palette.textPrimary)
-                            .lineLimit(2)
-                    }
-
-                    Spacer(minLength: 4)
-
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(book.isTitlePending ? "しおり" : (book.title ?? "しおり"))
-                            .font(.caption2)
-                            .foregroundStyle(palette.textSecondary)
-                            .lineLimit(1)
-                        if let progress = book.progressDisplay, !progress.isEmpty {
-                            Text(progress)
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(palette.accent)
-                                .lineLimit(1)
-                        }
-                    }
-                }
-            } else {
-                Spacer(minLength: 0)
-                Text("いま読んでいる本はありません")
-                    .font(.subheadline)
-                    .foregroundStyle(palette.textSecondary)
-                Spacer(minLength: 0)
-            }
+        GeometryReader { proxy in
+            ReadingHomeSmallWidgetView(
+                snapshot: entry.snapshot,
+                size: proxy.size,
+                contentMargins: ReadingWidgetMetrics.homeSmallContentMargins
+            )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .widgetURL(destinationURL)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(comp.accessibilityLabel))
-        .containerBackground(palette.bgPrimary, for: .widget)
+        .widgetURL(URL(string: "yomuma://open?entry=small_widget"))
+        .containerBackground(ThemePalette(appearanceID: entry.snapshot.appearanceID).bgPrimary, for: .widget)
     }
 }
 
@@ -173,123 +60,32 @@ public struct ReadingHomeSmallWidget: Widget {
 
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ReadingWidgetTimelineProvider()) { entry in
-            ReadingHomeSmallWidgetView(entry: entry)
+            ReadingHomeSmallWidgetEntryView(entry: entry)
         }
         .configurationDisplayName(Text("widget.gallery.small.name"))
         .description(Text("widget.gallery.small.description"))
         .supportedFamilies([.systemSmall])
+        .contentMarginsDisabled()
     }
 }
 
 // MARK: - W-1: Lock Screen Widgets (.accessoryRectangular)
 
-struct ReadingLockScreenWidgetView: View {
+struct ReadingLockScreenWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetContentMargins) private var systemMargins
     let entry: ReadingWidgetTimelineEntry
 
-    private var composition: H22WidgetComposition {
-        VerticalLineLayout.composeWidget(snapshot: entry.snapshot)
-    }
-
-    private var destinationURL: URL {
-        URL(string: "yomuma://open?entry=lock_widget") ?? URL(fileURLWithPath: "/")
-    }
-
     var body: some View {
-        let comp = composition
-        Group {
-            switch family {
-            case .accessoryInline:
-                if let book = entry.snapshot.currentBook {
-                    let titleText = entry.snapshot.hideOnWidgets
-                        ? "しおり"
-                        : (book.isTitlePending ? "しおり" : (book.title ?? "しおり"))
-                    if let progress = book.progressDisplay, !progress.isEmpty {
-                        Text("📖 \(titleText) \(progress)")
-                    } else {
-                        Text("📖 \(titleText)")
-                    }
-                } else {
-                    Text("いま読んでいる本はありません")
-                }
-            case .accessoryCircular:
-                VStack(spacing: 2) {
-                    Image(systemName: "bookmark.fill")
-                        .font(.caption)
-                    if let book = entry.snapshot.currentBook, let progress = book.progressDisplay, !progress.isEmpty {
-                        Text(progress)
-                            .font(.caption2.monospacedDigit())
-                            .lineLimit(1)
-                    } else {
-                        Text("しおり")
-                            .font(.caption2)
-                            .lineLimit(1)
-                    }
-                }
-            default:
-                if let book = entry.snapshot.currentBook {
-                    if entry.snapshot.hideOnWidgets {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("しおり")
-                                .font(.headline)
-                                .lineLimit(1)
-                                .accessibilityIdentifier("widget.hidden")
-                            if let progress = book.progressDisplay, !progress.isEmpty {
-                                Text(progress)
-                                    .font(.caption.monospacedDigit())
-                                    .lineLimit(1)
-                                    .accessibilityIdentifier("widget.page")
-                            }
-                        }
-                    } else if comp.orientation == .vertical && !comp.cells.isEmpty {
-                        HStack(alignment: .top, spacing: 8) {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(book.isTitlePending ? "しおり" : (book.title ?? "しおり"))
-                                    .font(.caption2)
-                                    .lineLimit(1)
-                                if let progress = book.progressDisplay, !progress.isEmpty {
-                                    Text(progress)
-                                        .font(.caption2.monospacedDigit())
-                                        .lineLimit(1)
-                                }
-                            }
-                            Spacer(minLength: 0)
-                            VerticalQuoteWidgetGridView(
-                                cells: comp.cells,
-                                columnCount: comp.columnCount,
-                                rowsPerColumn: max(comp.rowsPerColumn, 1),
-                                textPrimary: .primary
-                            )
-                        }
-                    } else {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(book.isTitlePending ? "しおり" : (book.title ?? "しおり"))
-                                .font(.headline)
-                                .lineLimit(1)
-                            if let progress = book.progressDisplay, !progress.isEmpty {
-                                Text(progress)
-                                    .font(.caption.monospacedDigit())
-                                    .lineLimit(1)
-                            }
-                            if let line = comp.displayedLine, !line.isEmpty {
-                                Text(line)
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
-                            }
-                        }
-                    }
-                } else {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("いま読んでいる本はありません")
-                            .font(.caption)
-                    }
-                }
-            }
+        GeometryReader { proxy in
+            ReadingLockScreenWidgetView(
+                family: family,
+                snapshot: entry.snapshot,
+                size: proxy.size,
+                contentMargins: family == .accessoryRectangular ? ReadingWidgetMetrics.lockScreenContentMargins : systemMargins
+            )
         }
-        .widgetURL(destinationURL)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(comp.accessibilityLabel))
+        .widgetURL(URL(string: "yomuma://open?entry=lock_widget"))
         .containerBackground(.fill.tertiary, for: .widget)
     }
 }
@@ -301,11 +97,12 @@ public struct ReadingLockScreenWidget: Widget {
 
     public var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ReadingWidgetTimelineProvider()) { entry in
-            ReadingLockScreenWidgetView(entry: entry)
+            ReadingLockScreenWidgetEntryView(entry: entry)
         }
         .configurationDisplayName(Text("widget.gallery.lock.name"))
         .description(Text("widget.gallery.lock.description"))
         .supportedFamilies([.accessoryRectangular, .accessoryInline, .accessoryCircular])
+        .contentMarginsDisabled()
     }
 }
 
@@ -319,11 +116,10 @@ public struct ReadingControlWidget: ControlWidget {
     public var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: kind) {
             ControlWidgetButton(action: StartReadingIntent()) {
-                Label("今夜の読書を始める", systemImage: "book.fill")
+                ReadingControlLabelView()
             }
         }
-        .displayName("今夜の読書を始める")
-        .description("しおりの続きから今夜の読書を始めます。")
+        .displayName(LocalizedStringResource("control.startReading"))
     }
 }
 
@@ -332,89 +128,59 @@ public struct ReadingControlWidget: ControlWidget {
 public struct ReadingLiveActivityWidget: Widget {
     public init() {}
 
-    private var liveActivityURL: URL {
-        URL(string: "yomuma://open?entry=live_activity") ?? URL(fileURLWithPath: "/")
+    private var liveActivityURL: URL? {
+        URL(string: "yomuma://open?entry=live_activity")
     }
 
     public var body: some WidgetConfiguration {
         ActivityConfiguration(for: ReadingActivityAttributes.self) { context in
-            let displayTitle = context.state.hideOnWidgets ? "しおり" : context.state.title
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(displayTitle)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                    if context.state.mode == "ended", let summary = context.state.summaryText, !summary.isEmpty {
-                        Text(summary)
-                            .font(.caption.monospacedDigit())
-                            .foregroundStyle(.secondary)
-                    } else if context.state.mode != "reading" {
-                        if !context.state.hideOnWidgets, let line = context.state.line, !line.isEmpty {
-                            Text(line)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                        }
-                        if let progress = context.state.progressText, !progress.isEmpty {
-                            Text(progress)
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-                Spacer(minLength: 8)
-                if context.state.mode == "reading" {
-                    VStack(alignment: .trailing, spacing: 6) {
-                        Text("読書中")
-                            .font(.caption.weight(.medium))
-                        Button(intent: EndReadingFromActivityIntent()) {
-                            Text("終える")
-                                .font(.caption.weight(.semibold))
-                        }
-                        .accessibilityIdentifier("liveActivity.end")
-                    }
-                } else if context.state.mode == "ended" {
-                    Text("おやすみなさい")
-                        .font(.caption.weight(.medium))
-                } else {
-                    Text("今夜の読書を始める")
-                        .font(.caption.weight(.semibold))
-                }
+            ReadingLiveActivityLockScreenView(attributes: context.attributes, state: context.state) { label in
+                Button(intent: EndReadingFromActivityIntent()) { label }
             }
-            .padding(16)
             .widgetURL(liveActivityURL)
-            .activityBackgroundTint(Color("DefaultBgSecondary"))
+            .activityBackgroundTint(Color("DefaultBackgroundSecondary"))
         } dynamicIsland: { context in
-            let displayTitle = context.state.hideOnWidgets ? "しおり" : context.state.title
+            let displayTitle = context.state.hideOnWidgets ? ReadingWidgetStrings.hidden : context.state.title
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Label(context.state.mode == "reading" ? "読書中" : displayTitle, systemImage: "book.fill")
-                        .font(.caption)
+                    Label(displayTitle, systemImage: "book")
+                        .font(.headline)
+                        .lineLimit(1)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     if context.state.mode == "reading" {
                         Button(intent: EndReadingFromActivityIntent()) {
-                            Text("終える")
-                                .font(.caption.weight(.semibold))
+                            Text(ReadingWidgetStrings.endButtonTitle)
                         }
+                        .accessibilityLabel(Text(ReadingWidgetStrings.endButtonLabel))
                         .accessibilityIdentifier("liveActivity.end")
                     } else if let progress = context.state.progressText {
-                        Text(progress)
+                        Text(verbatim: progress)
                             .font(.caption.monospacedDigit())
                     }
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    Text(displayTitle)
-                        .font(.subheadline.weight(.medium))
-                        .lineLimit(1)
+                    if context.state.mode == "reading", let startedAt = context.attributes.startedAt {
+                        Text(ReadingWidgetStrings.readingSince(startedAt))
+                            .font(.subheadline.monospacedDigit())
+                    } else if !context.state.hideOnWidgets, let line = context.state.line, !line.isEmpty {
+                        Text(verbatim: line)
+                            .font(.subheadline)
+                            .lineLimit(1)
+                    }
                 }
             } compactLeading: {
-                Image(systemName: "book.fill")
+                Image(systemName: "book")
             } compactTrailing: {
-                Text(context.state.progressText ?? "")
-                    .font(.caption2.monospacedDigit())
+                if context.state.mode == "reading", let startedAt = context.attributes.startedAt {
+                    Text(startedAt, style: .time)
+                        .font(.caption2.monospacedDigit())
+                } else {
+                    Text(verbatim: context.state.progressText ?? "")
+                        .font(.caption2.monospacedDigit())
+                }
             } minimal: {
-                Image(systemName: "book.fill")
+                Image(systemName: "book")
             }
             .widgetURL(liveActivityURL)
         }

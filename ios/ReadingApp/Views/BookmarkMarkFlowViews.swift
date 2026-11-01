@@ -132,7 +132,7 @@ public struct BookmarkMarkFlowSheet: View {
             .padding(.bottom, ThemeSpace.s16)
             .background(palette.bgPrimary)
         case .ocrCandidates(let columns, let selectedIndices):
-            let selectedColumnText = OCRPipeline.combineSelectedColumns(columns: columns, selectedIndices: selectedIndices)
+            let selectedColumnText = OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices)
             let effectiveLineValue = lineText.isEmpty ? selectedColumnText : lineText
             VStack(spacing: 0) {
                 Button {
@@ -479,7 +479,7 @@ public struct BookmarkMarkFlowSheet: View {
     }
 
     private func markOCRCandidatesContent(columns: [OCRPageColumnItem], selectedIndices: [Int]) -> some View {
-        let selectedColumnText = OCRPipeline.combineSelectedColumns(columns: columns, selectedIndices: selectedIndices)
+        let selectedColumnText = OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices)
         let effectiveLineValue = lineText.isEmpty ? selectedColumnText : lineText
         let lineFieldLabel = AppL10n.pick("選んだ一行（60文字まで）", "Selected Line (up to 60 chars)")
 

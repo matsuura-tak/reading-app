@@ -543,19 +543,19 @@
       }
     },
     "reading.end": {
-      "comment": "今夜の読書セッションを終えてしおり挟み画面へ進むボタン",
+      "comment": "S-2 primary action and the Live Activity end button title.",
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "読み終える"
+            "value": "終える"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Finish for Tonight"
+            "value": "End Reading"
           }
         }
       }
@@ -3171,19 +3171,19 @@
       }
     },
     "widget.empty": {
-      "comment": "今の本が未設定のときのウィジェット表示",
+      "comment": "W-1, W-2 when there is no current book (AC-32).",
       "extractionState": "manual",
       "localizations": {
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "よむまで本を選ぶ"
+            "value": "今の本を選ぶと、ここに続きの一行が出ます。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose a book in Yomuma"
+            "value": "Choose a book in Yomuma to see your place here."
           }
         }
       }
@@ -3832,6 +3832,240 @@
           "stringUnit": {
             "state": "translated",
             "value": "No saved line yet"
+          }
+        }
+      }
+    },
+    "control.startReading": {
+      "comment": "W-4 Control button label (AC-126).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start Reading"
+          }
+        }
+      }
+    },
+    "intent.whereStopped.error": {
+      "comment": "AC-133.",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりを読み込めませんでした。よむまを開いて確かめてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load your bookmark. Open Yomuma to check."
+          }
+        }
+      }
+    },
+    "intent.whereStopped.location": {
+      "comment": "Where-stopped answer, location unit (AC-143).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置%lldからです。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From location %lld."
+          }
+        }
+      }
+    },
+    "intent.whereStopped.noCurrent": {
+      "comment": "AC-122.",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いま読んでいる本が選ばれていません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No current book is selected."
+          }
+        }
+      }
+    },
+    "intent.whereStopped.noPage": {
+      "comment": "AC-122.",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本には、まだページが記録されていません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No page is saved for your current book yet."
+          }
+        }
+      }
+    },
+    "intent.whereStopped.page": {
+      "comment": "Where-stopped answer, page unit (AC-121).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lldページからです。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From page %lld."
+          }
+        }
+      }
+    },
+    "intent.whereStopped.percent": {
+      "comment": "Where-stopped answer, percent unit (AC-143).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lldパーセントからです。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From %lld percent."
+          }
+        }
+      }
+    },
+    "liveActivity.end.label": {
+      "comment": "VoiceOver label of the Live Activity end button (AC-114).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を終える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End Reading"
+          }
+        }
+      }
+    },
+    "liveActivity.readingSince": {
+      "comment": "W-3 reading state. %@ is the start time (screens.md W-3).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ から読書中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading since %@"
+          }
+        }
+      }
+    },
+    "widget.currentBookAsTitle": {
+      "comment": "Title slot for an untitled current book (AC-139).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading Now"
+          }
+        }
+      }
+    },
+    "widget.hidden": {
+      "comment": "W-1, W-2, W-3 when hiding titles and lines (design 7).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおり"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmark"
+          }
+        }
+      }
+    },
+    "widget.unavailable": {
+      "comment": "W-1, W-2 when the snapshot cannot be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむまを開くと、ここに続きの一行が出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Yomuma to show your place here."
+          }
+        }
+      }
+    },
+    "common.loading": {
+      "comment": "VoiceOver label of loading placeholders (design 5, loading state).",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み込み中"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading"
           }
         }
       }

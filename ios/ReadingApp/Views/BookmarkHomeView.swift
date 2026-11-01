@@ -316,13 +316,23 @@ public struct BookmarkHomeView: View {
                         .accessibilityValue(emptyProgress)
                 }
 
+                // AX1 以上は一行が横書きになり長くなるため、ボタンより上に置き、下端の bookmark.start の裏に回らないようにする
+                // （G3 r2 verifier の S1_normal_ax5）。
+                if dynamicTypeSize.isAccessibilitySize {
+                    VerticalBookmarkTextView(line: book.lastSavedLine)
+                        .frame(maxWidth: .infinity)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
                 secondaryActionButtons(book: book)
                     .padding(.top, ThemeSpace.s8)
             }
             .frame(maxWidth: .infinity)
 
-            VerticalBookmarkTextView(line: book.lastSavedLine)
-                .frame(maxWidth: .infinity, minHeight: 200)
+            if !dynamicTypeSize.isAccessibilitySize {
+                VerticalBookmarkTextView(line: book.lastSavedLine)
+                    .frame(maxWidth: .infinity, minHeight: 200)
+            }
 
             #if UITEST_HOOKS
             if UITestHookCoordinator.shared.areReadoutsEnabled {

@@ -32,6 +32,14 @@ public struct ShelfListView: View {
     }
 
     public var body: some View {
+        GatedLoadView(gate: model.store.loadGate, point: .shelfLoad) {
+            shelfContent
+        } placeholder: {
+            RedactedRowsPlaceholderView(rowCount: 5)
+        }
+    }
+
+    private var shelfContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: ThemeSpace.s24) {
                 BannerNoticeView(model: model)

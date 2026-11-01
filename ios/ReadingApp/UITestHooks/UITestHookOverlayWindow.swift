@@ -32,6 +32,8 @@ public struct UITestHookOverlayView: View {
             let _ = model.store.openedURLs.count
             let _ = model.store.shareCards.count
             let _ = model.store.intentInvocations.count
+            let _ = coordinator.widgetShowcaseReadout
+            let _ = model.store.loadGate.phases
             let stateStr = UITestHookReadoutBuilder.stateJSON(model: model)
             let storeStr = UITestHookReadoutBuilder.storeJSON(model: model)
             let widgetStr = UITestHookReadoutBuilder.widgetJSON(model: model)
@@ -65,7 +67,7 @@ public struct UITestHookOverlayView: View {
     }
 }
 
-private struct HookReadoutAccessibleView: UIViewRepresentable {
+struct HookReadoutAccessibleView: UIViewRepresentable {
     let id: String
     let value: String
 
@@ -88,379 +90,276 @@ private struct HookReadoutAccessibleView: UIViewRepresentable {
     }
 }
 
-public struct WidgetShowcaseHarnessView: View {
-    @Bindable var model: ReadingAppModel
-    public let spec: String
-    @Environment(\.themePalette) private var palette
+// MARK: - H22 の撮影用の見本（-uitest-widget-show）
 
-    public init(model: ReadingAppModel, spec: String) {
+/// `-uitest-widget-show <面>:<幅>x<高さ>[:<種類>]` を契約 H22 の文法どおりに読んだ結果。
+public struct UITestHookWidgetShowcaseSpec: Equatable, Sendable {
+    public enum Surface: String, Sendable {
+        case accessoryRectangular, systemSmall, liveActivity, control, snippet
+
+        var allowedVariants: [String] {
+            switch self {
+            case .accessoryRectangular, .systemSmall: return ["normal", "placeholder"]
+            case .liveActivity: return ["waiting", "reading", "ended"]
+            case .control: return ["startReading"]
+            case .snippet: return ["whereStopped"]
+            }
+        }
+
+        var defaultVariant: String? {
+            switch self {
+            case .accessoryRectangular, .systemSmall: return "normal"
+            case .liveActivity: return nil
+            case .control: return "startReading"
+            case .snippet: return "whereStopped"
+            }
+        }
+
+        /// 中身に合わせ、指定の高さを上限とする面。
+        var fitsContentHeight: Bool { self == .liveActivity || self == .snippet }
+    }
+
+    public let raw: String
+    public let surface: Surface
+    public let width: Double
+    public let height: Double
+    public let variant: String
+
+    /// 読めなければ `.failure("H22:<値>")`。
+    public static func parse(_ raw: String) -> Result<UITestHookWidgetShowcaseSpec, UITestHookShowcaseError> {
+        let parts = raw.split(separator: ":", omittingEmptySubsequences: false).map(String.init)
+        guard parts.count == 2 || parts.count == 3, let surface = Surface(rawValue: parts[0]) else {
+            return .failure(UITestHookShowcaseError(value: "H22:\(raw)"))
+        }
+        let dims = parts[1].split(separator: "x", omittingEmptySubsequences: false).map(String.init)
+        guard dims.count == 2, let width = Double(dims[0]), let height = Double(dims[1]),
+              width.isFinite, height.isFinite, width > 0, height > 0 else {
+            return .failure(UITestHookShowcaseError(value: "H22:\(raw)"))
+        }
+        if surface == .liveActivity && height > 160 {
+            return .failure(UITestHookShowcaseError(value: "H22:\(raw)"))
+        }
+        let variant: String
+        if parts.count == 3 {
+            guard surface.allowedVariants.contains(parts[2]) else {
+                return .failure(UITestHookShowcaseError(value: "H22:\(raw)"))
+            }
+            variant = parts[2]
+        } else if let fallback = surface.defaultVariant {
+            variant = fallback
+        } else {
+            return .failure(UITestHookShowcaseError(value: "H22:\(raw)"))
+        }
+        return .success(UITestHookWidgetShowcaseSpec(raw: raw, surface: surface, width: width, height: height, variant: variant))
+    }
+}
+
+public struct UITestHookShowcaseError: Error, Equatable, Sendable {
+    public let value: String
+}
+
+/// hook.widget の `showcase`（contracts/hooks/h22-widget.schema.json の $defs/showcase）。
+public struct UITestHookWidgetShowcaseReadout: Codable, Equatable, Sendable {
+    public var spec: String
+    public var surface: String
+    public var variant: String
+    public var viewType: String
+    public var requestedWidth: Double
+    public var requestedHeight: Double
+    public var canvasWidth: Double
+    public var canvasHeight: Double
+    public var idealHeight: Double
+    public var contentOverflow: Bool
+    public var colorScheme: String
+    public var dynamicTypeSize: String
+}
+
+private func showcaseTypeName<T>(_ type: T.Type) -> String {
+    let full = String(describing: type)
+    return full.split(separator: "<").first.map(String.init) ?? full
+}
+
+/// 拡張と同じ View の型を、実寸の枠（hook.widget.canvas）に1つだけ描く。
+public struct UITestHookWidgetShowcaseView: View {
+    @Bindable var model: ReadingAppModel
+    let spec: UITestHookWidgetShowcaseSpec
+    @Environment(\.colorScheme) private var systemColorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @State private var idealHeight: CGFloat = 0
+
+    public init(model: ReadingAppModel, spec: UITestHookWidgetShowcaseSpec) {
         self.model = model
         self.spec = spec
     }
 
+    private var snapshot: WidgetSnapshot {
+        let _ = model.hookGeneration
+        return model.store.snapshotStore.currentSnapshot
+    }
+
+    private var colorScheme: ColorScheme {
+        spec.surface == .accessoryRectangular ? .dark : systemColorScheme
+    }
+
+    private var canvasSize: CGSize {
+        let width = CGFloat(spec.width)
+        let height = CGFloat(spec.height)
+        guard spec.surface.fitsContentHeight else { return CGSize(width: width, height: height) }
+        return CGSize(width: width, height: idealHeight > 0 ? min(idealHeight, height) : height)
+    }
+
     public var body: some View {
-        let book = model.store.currentBook
-        let hideOnWidgets = model.store.settings.hideOnWidgets
-        let rawLine = hideOnWidgets ? nil : book?.lastSavedLine
-        let rawTitle = hideOnWidgets ? AppL10n.pick("しおり", "Bookmark") : ((book?.isTitlePending == true) ? AppL10n.pick("今の本", "Reading Now") : (book?.title ?? AppL10n.pick("しおり", "Bookmark")))
-        let progressText: String = {
-            guard let book else { return "" }
-            return InputValidator.formatProgressDisplay(
-                unit: book.progressUnit,
-                page: book.currentPage,
-                location: book.currentLocation,
-                percent: book.currentPercent.map(Double.init)
-            ) ?? ""
-        }()
-        let lower = spec.lowercased()
-
-        VStack(spacing: ThemeSpace.s24) {
-            Spacer()
-
-            if lower.contains("w-1") || lower.contains("w1") || lower.contains("accessoryrectangular") {
-                let isCompact = lower.contains("153x68")
-                let width: CGFloat = isCompact ? 153 : 172
-                let height: CGFloat = isCompact ? 68 : 76
-                lockWidgetCard(
-                    line: rawLine,
-                    title: rawTitle,
-                    progress: progressText,
-                    hasBook: book != nil,
-                    width: width,
-                    height: height
-                )
-            } else if lower.contains("w-2") || lower.contains("w2") || lower.contains("systemsmall") {
-                let isCompact = lower.contains("148x148")
-                let side: CGFloat = isCompact ? 148 : 170
-                smallWidgetCard(
-                    line: rawLine,
-                    title: rawTitle,
-                    progress: progressText,
-                    hasBook: book != nil,
-                    side: side
-                )
-            } else if lower.contains("w-3") || lower.contains("w3") || lower.contains("liveactivity") {
-                liveActivityShowcase(
-                    line: rawLine,
-                    title: rawTitle,
-                    progress: progressText,
-                    mode: lower
-                )
-            } else if lower.contains("w-4") || lower.contains("w4") || lower.contains("control") {
-                controlCenterShowcase(title: rawTitle)
-            } else {
-                siriSnippetShowcase(progress: progressText.isEmpty ? "p.61" : progressText)
-            }
-
-            Spacer()
-        }
-        .padding(ThemeSpace.s24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(palette.bgPrimary)
-        .accessibilityIdentifier("screen.widgetShowcase")
-    }
-
-    private func lockWidgetCard(
-        line: String?,
-        title: String,
-        progress: String,
-        hasBook: Bool,
-        width: CGFloat,
-        height: CGFloat
-    ) -> some View {
-        let shortened = line.map { VerticalLineLayout.shortenForWidget($0).text }
-        return ZStack(alignment: .bottomLeading) {
-            RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                .fill(palette.groupedRow)
-                .overlay(
-                    RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                        .stroke(palette.hairline, lineWidth: 1)
-                )
-
-            if !hasBook {
-                Text(AppL10n.pick("よむまで本を選ぶ", "Choose a book in Yomuma"))
-                    .font(.caption)
-                    .foregroundStyle(palette.textSecondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    .accessibilityIdentifier("widget.empty")
-            } else {
-                HStack(alignment: .top, spacing: ThemeSpace.s8) {
-                    VStack(alignment: .leading, spacing: ThemeSpace.s4) {
-                        Spacer(minLength: 0)
-                        if !progress.isEmpty {
-                            Text(progress)
-                                .font(.caption2.monospacedDigit())
-                                .foregroundStyle(palette.textSecondary)
-                                .accessibilityIdentifier("widget.page")
-                        }
-                    }
-
-                    Spacer(minLength: ThemeSpace.s4)
-
-                    if let shortened, !shortened.isEmpty {
-                        if VerticalLineLayout.containsJapaneseScript(shortened) {
-                            let cells = VerticalLineLayout.layoutVerticalCells(text: shortened, maxColumns: 2, rowsPerColumn: 12)
-                            let grouped = Dictionary(grouping: cells, by: \.column)
-                            let cols = [1, 0].compactMap { grouped[$0] != nil ? $0 : nil }
-                            HStack(alignment: .top, spacing: ThemeSpace.s4) {
-                                ForEach(cols, id: \.self) { colNum in
-                                    let colCells = grouped[colNum] ?? []
-                                    VStack(spacing: 0) {
-                                        ForEach(Array(colCells.enumerated()), id: \.offset) { _, cell in
-                                            Text(cell.display)
-                                                .font(ThemeTypography.widgetLine(size: 11))
-                                                .foregroundStyle(palette.textPrimary)
-                                        }
-                                    }
-                                }
-                            }
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityIdentifier("widget.line")
-                            .accessibilityLabel(shortened)
-                        } else {
-                            Text(shortened)
-                                .font(ThemeTypography.widgetLine(size: 12))
-                                .foregroundStyle(palette.textPrimary)
-                                .lineLimit(2)
-                                .accessibilityIdentifier("widget.line")
-                        }
-                    } else {
-                        Text(title)
-                            .font(ThemeTypography.widgetLine(size: 13))
-                            .foregroundStyle(palette.textPrimary)
-                            .lineLimit(2)
-                            .accessibilityIdentifier("widget.title")
-                    }
+        ZStack {
+            rootBackground
+                .ignoresSafeArea()
+            surface
+                .frame(width: canvasSize.width, height: canvasSize.height, alignment: .topLeading)
+                .background(canvasBackground)
+                .clipped()
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("hook.widget.canvas")
+                .background(alignment: .top) {
+                    surface
+                        .frame(width: canvasSize.width)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .hidden()
+                        .accessibilityHidden(true)
+                        .onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: { newValue in
+                            idealHeight = newValue
+                            publishReadout()
+                        })
                 }
-                .padding(ThemeSpace.s12)
-            }
         }
-        .frame(minWidth: width, maxWidth: width, minHeight: height, maxHeight: height)
+        .environment(\.colorScheme, colorScheme)
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("widget.accessoryRectangular")
+        .accessibilityIdentifier("hook.widget.showcase")
+        .onAppear { publishReadout() }
     }
 
-    private func smallWidgetCard(
-        line: String?,
-        title: String,
-        progress: String,
-        hasBook: Bool,
-        side: CGFloat
-    ) -> some View {
-        let shortened = line.map { VerticalLineLayout.shortenForWidget($0).text }
-        return ZStack {
-            RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                .fill(palette.bgPrimary)
-                .overlay(
-                    RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                        .stroke(palette.hairline, lineWidth: 1)
-                )
+    private var rootBackground: Color {
+        spec.surface == .accessoryRectangular ? Color.black : Color(uiColor: .systemBackground)
+    }
 
-            if !hasBook {
-                Text(AppL10n.pick("よむまで本を選ぶ", "Choose a book in Yomuma"))
-                    .font(.caption)
-                    .foregroundStyle(palette.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(ThemeSpace.s12)
-                    .accessibilityIdentifier("widget.empty")
+    private var canvasBackground: Color {
+        switch spec.surface {
+        case .accessoryRectangular: return Color.black
+        case .systemSmall: return ThemePalette(appearanceID: snapshot.appearanceID).bgPrimary
+        case .liveActivity: return Color("DefaultBackgroundSecondary")
+        case .control: return Color(uiColor: .secondarySystemFill)
+        case .snippet: return Color(uiColor: .secondarySystemBackground)
+        }
+    }
+
+    private var size: CGSize { CGSize(width: spec.width, height: spec.height) }
+
+    @ViewBuilder
+    private var surface: some View {
+        switch spec.surface {
+        case .accessoryRectangular:
+            if spec.variant == "placeholder" {
+                ReadingLockScreenWidgetView(family: .accessoryRectangular, snapshot: ReadingWidgetPlaceholder.snapshot, size: size, contentMargins: ReadingWidgetMetrics.lockScreenContentMargins)
+                    .redacted(reason: .placeholder)
             } else {
-                VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                    HStack(alignment: .top) {
-                        Spacer()
-                        if let shortened, !shortened.isEmpty {
-                            if VerticalLineLayout.containsJapaneseScript(shortened) {
-                                let cells = VerticalLineLayout.layoutVerticalCells(text: shortened, maxColumns: 2, rowsPerColumn: 12)
-                                let grouped = Dictionary(grouping: cells, by: \.column)
-                                let cols = [1, 0].compactMap { grouped[$0] != nil ? $0 : nil }
-                                HStack(alignment: .top, spacing: ThemeSpace.s8) {
-                                    ForEach(cols, id: \.self) { colNum in
-                                        let colCells = grouped[colNum] ?? []
-                                        VStack(spacing: 1) {
-                                            ForEach(Array(colCells.enumerated()), id: \.offset) { _, cell in
-                                                Text(cell.display)
-                                                    .font(ThemeTypography.widgetLine(size: 14))
-                                                    .foregroundStyle(palette.textPrimary)
-                                            }
-                                        }
-                                    }
-                                }
-                                .accessibilityElement(children: .ignore)
-                                .accessibilityIdentifier("widget.line")
-                                .accessibilityLabel(shortened)
-                            } else {
-                                Text(shortened)
-                                    .font(ThemeTypography.widgetLine(size: 14))
-                                    .foregroundStyle(palette.textPrimary)
-                                    .lineLimit(3)
-                                    .accessibilityIdentifier("widget.line")
-                            }
-                        } else {
-                            Text(title)
-                                .font(ThemeTypography.widgetLine(size: 16))
-                                .foregroundStyle(palette.textPrimary)
-                                .lineLimit(3)
-                                .accessibilityIdentifier("widget.title")
-                        }
-                        Spacer()
-                    }
-                    Spacer(minLength: 0)
-                    HStack {
-                        if !progress.isEmpty {
-                            Text(progress)
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(palette.textSecondary)
-                                .accessibilityIdentifier("widget.page")
-                        }
-                        Spacer()
-                        Text(title)
-                            .font(.caption2)
-                            .foregroundStyle(palette.textSecondary)
-                            .lineLimit(1)
-                    }
-                }
-                .padding(ThemeSpace.s16)
+                ReadingLockScreenWidgetView(family: .accessoryRectangular, snapshot: snapshot, size: size, contentMargins: ReadingWidgetMetrics.lockScreenContentMargins)
             }
-        }
-        .frame(minWidth: side, maxWidth: side, minHeight: side, maxHeight: side)
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("widget.systemSmall")
-    }
-
-    private func liveActivityShowcase(
-        line: String?,
-        title: String,
-        progress: String,
-        mode: String
-    ) -> some View {
-        let showSingleState = mode.contains("waiting") || mode.contains("reading") || mode.contains("ended")
-        return VStack(spacing: ThemeSpace.s16) {
-            if !showSingleState || mode.contains("waiting") {
-                VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                    HStack {
-                        Text(title)
-                            .font(.subheadline.bold())
-                            .foregroundStyle(palette.textPrimary)
-                        Spacer()
-                        if !progress.isEmpty {
-                            Text(progress)
-                                .font(.caption.monospacedDigit())
-                                .foregroundStyle(palette.textSecondary)
-                        }
-                    }
-                    if let line, !line.isEmpty {
-                        Text(line)
-                            .font(ThemeTypography.widgetLine(size: 14))
-                            .foregroundStyle(palette.textPrimary)
-                            .lineLimit(1)
-                    }
-                    Text(AppL10n.pick("続きから読む", "Continue Reading"))
-                        .font(.caption)
-                        .foregroundStyle(palette.textSecondary)
-                }
-                .padding(ThemeSpace.s16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(palette.groupedRow, in: RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                        .stroke(palette.hairline, lineWidth: 1)
-                )
-                .accessibilityIdentifier("liveActivity.waiting")
+        case .systemSmall:
+            if spec.variant == "placeholder" {
+                ReadingHomeSmallWidgetView(snapshot: ReadingWidgetPlaceholder.snapshot, size: size, contentMargins: ReadingWidgetMetrics.homeSmallContentMargins)
+                    .redacted(reason: .placeholder)
+            } else {
+                ReadingHomeSmallWidgetView(snapshot: snapshot, size: size, contentMargins: ReadingWidgetMetrics.homeSmallContentMargins)
             }
-
-            if !showSingleState || mode.contains("reading") {
-                HStack(spacing: ThemeSpace.s12) {
-                    VStack(alignment: .leading, spacing: ThemeSpace.s4) {
-                        Text(title)
-                            .font(.subheadline.bold())
-                            .foregroundStyle(palette.textPrimary)
-                        Text(AppL10n.pick("21:04 から数えています。", "Counting since 21:04."))
-                            .font(.caption.monospacedDigit())
-                            .foregroundStyle(palette.textSecondary)
-                    }
-                    Spacer()
-                    Button {} label: {
-                        Text(AppL10n.pick("終える", "End Reading"))
-                    }
-                    .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
-                    .frame(minWidth: 112, maxWidth: 112)
-                    .accessibilityIdentifier("liveActivity.end")
+        case .liveActivity:
+            if let state = liveActivityState {
+                ReadingLiveActivityLockScreenView(attributes: liveActivityAttributes, state: state) { label in
+                    Button(action: {}) { label }
                 }
-                .padding(ThemeSpace.s16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(palette.groupedRow, in: RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                        .stroke(palette.hairline, lineWidth: 1)
-                )
-                .accessibilityIdentifier("liveActivity.reading")
             }
-
-            if !showSingleState || mode.contains("ended") {
-                HStack {
-                    Text(progress.isEmpty ? "18分" : "\(progress)　18分")
-                        .font(.subheadline.bold().monospacedDigit())
-                        .foregroundStyle(palette.textPrimary)
-                    Spacer()
-                    Text(AppL10n.pick("記録しました。", "Saved."))
-                        .font(.caption)
-                        .foregroundStyle(palette.textSecondary)
-                }
-                .padding(ThemeSpace.s16)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(palette.groupedRow, in: RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                        .stroke(palette.hairline, lineWidth: 1)
-                )
-                .accessibilityIdentifier("liveActivity.ended")
-            }
+        case .control:
+            ReadingControlLabelView()
+                .font(.body)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityIdentifier("control.startReading")
+        case .snippet:
+            WhereStoppedSnippetView(text: WhereStoppedIntent.formatResponse(for: snapshot))
         }
     }
 
-    private func controlCenterShowcase(title: String) -> some View {
-        HStack(spacing: ThemeSpace.s12) {
-            Image(systemName: "book.fill")
-                .font(.title3)
-                .foregroundStyle(palette.actionPrimaryLabel)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(AppL10n.pick("読書を始める", "Start Reading"))
-                    .font(.subheadline.bold())
-                    .foregroundStyle(palette.actionPrimaryLabel)
-                Text(title)
-                    .font(.caption)
-                    .foregroundStyle(palette.actionPrimaryLabel)
-            }
-            Spacer()
+    private var liveActivityAttributes: ReadingActivityAttributes {
+        let startedAt: Date
+        if let iso = model.store.activeSession?.startedAt, let parsed = NightDateCalculator.parseISO8601(iso) {
+            startedAt = parsed
+        } else {
+            startedAt = model.store.clock.now()
         }
-        .padding(ThemeSpace.s16)
-        .frame(minWidth: 220, maxWidth: 220, minHeight: 72)
-        .background(palette.actionPrimaryBg, in: RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous))
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("control.startReading")
+        return ReadingActivityAttributes(bookId: snapshot.currentBook?.id, startedAt: startedAt)
     }
 
-    private func siriSnippetShowcase(progress: String) -> some View {
-        VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-            Text(AppL10n.pick("しおりの位置", "Bookmark Position"))
-                .font(.caption)
-                .foregroundStyle(palette.textSecondary)
-            Text(progress)
-                .font(.title2.bold().monospacedDigit())
-                .foregroundStyle(palette.textPrimary)
-                .accessibilityIdentifier("snippet.progress")
-            Text(AppL10n.pick("61ページからです。", "You stopped at page 61."))
-                .font(.subheadline)
-                .foregroundStyle(palette.textPrimary)
+    private var liveActivityState: ReadingActivityAttributes.ContentState? {
+        switch spec.variant {
+        case "waiting":
+            return ReadingLiveActivityStateFactory.waiting(from: snapshot)
+        case "reading":
+            return ReadingLiveActivityStateFactory.reading(from: snapshot)
+        default:
+            guard let record = UITestHookWidgetShowcaseView.latestRecord(model: model) else { return nil }
+            return ReadingLiveActivityStateFactory.ended(from: snapshot, minutes: record.durationMinutes, progressText: snapshot.currentBook?.progressDisplay)
         }
-        .padding(ThemeSpace.s16)
-        .frame(minWidth: 280, maxWidth: 280, alignment: .leading)
-        .background(palette.groupedRow, in: RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                .stroke(palette.hairline, lineWidth: 1)
+    }
+
+    static func latestRecord(model: ReadingAppModel) -> ReadingRecordSnapshot? {
+        guard let bookId = model.store.currentBook?.id else { return nil }
+        return model.store.records.filter { $0.bookId == bookId }.max { $0.endedAt < $1.endedAt }
+    }
+
+    private var viewTypeName: String {
+        switch spec.surface {
+        case .accessoryRectangular: return showcaseTypeName(ReadingLockScreenWidgetView.self)
+        case .systemSmall: return showcaseTypeName(ReadingHomeSmallWidgetView.self)
+        case .liveActivity: return showcaseTypeName(ReadingLiveActivityLockScreenView<Button<Text>>.self)
+        case .control: return showcaseTypeName(ReadingControlLabelView.self)
+        case .snippet: return showcaseTypeName(WhereStoppedSnippetView.self)
+        }
+    }
+
+    private func publishReadout() {
+        let canvas = canvasSize
+        let readout = UITestHookWidgetShowcaseReadout(
+            spec: spec.raw,
+            surface: spec.surface.rawValue,
+            variant: spec.variant,
+            viewType: viewTypeName,
+            requestedWidth: spec.width,
+            requestedHeight: spec.height,
+            canvasWidth: Double(canvas.width),
+            canvasHeight: Double(canvas.height),
+            idealHeight: Double(idealHeight),
+            contentOverflow: idealHeight > canvas.height + 0.5,
+            colorScheme: colorScheme == .dark ? "dark" : "light",
+            dynamicTypeSize: String(describing: dynamicTypeSize)
         )
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("snippet.whereStopped")
+        if UITestHookCoordinator.shared.widgetShowcaseReadout != readout {
+            UITestHookCoordinator.shared.widgetShowcaseReadout = readout
+        }
+    }
+}
+
+/// 契約 1-6：空の画面に hook.error の要素だけを出す。
+public struct UITestHookErrorView: View {
+    let value: String
+
+    public init(value: String) {
+        self.value = value
+    }
+
+    public var body: some View {
+        ZStack(alignment: .topLeading) {
+            Color(uiColor: .systemBackground).ignoresSafeArea()
+            HookReadoutAccessibleView(id: "hook.error", value: value)
+                .frame(width: 44, height: 44)
+        }
     }
 }
 #endif
