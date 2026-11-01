@@ -464,3 +464,10 @@ drwxr-xr-x@   4 takumamatsuura  staff     128 Oct 26 01:53 ..
 -rw-r--r--    1 takumamatsuura  staff   72997 Oct 29 23:42 explore_R5.png
 -rw-r--r--    1 takumamatsuura  staff  111778 Oct 29 23:43 explore_R6.png
 -rw-r--r--@   1 takumamatsuura  staff     148 Oct 26 01:53 red.log
+
+=== [G3 r2 追記 2026-11-02] performAccessibilityAudit(for: .all) の撮り直し（コミット 818a07e の作業ツリー、直し 31633e3 のあと） ===
+全文: docs/verification/001-reading-session/evidence/accessibility-audit.log（撮影用テスト G3EvidenceCaptureTests/test_G3_accessibilityAudit、light、ja）
+27 画面、合計 92 件 = つなぎ口の要素（hook.*、W-1〜W-5 のみ readouts を出して起動）50 件 + 製品の部品 42 件
+製品の部品の内訳: W-1 14（widget.line hit area 11x132pt、widget.page と縦書きの各字 Dynamic Type partial）/ W-2 4（widget.line hit area、書名 Dynamic Type partial + clipped、widget.page clipped）/ W-3 1（一行 clipped）/ S-3a 2（mark.lineField・mark.pageField placeholder clipped）/ S-3b 1 / S-3c 1 / S-5 13（見本の縦書きの各字と p.61 Dynamic Type partial）/ S-8 1（register.footer clipped）/ S-10a 5（store.preview の書名・一行・p.61 clipped、Dynamic Type partial）
+W-4、W-5、S-1、S-2、S-3、S-4、N、S-6、S-7、S-7a、S-7b、S-7c、S-8a〜S-8d、S-9、S-10: 製品の指摘 0 件
+r1 の [Check 1]〜[Check 3] と r1 の監査ログ（171〜197 行）はそのまま残す。r1 の「画面×状態」一覧（221〜462 行）は複製画像に基づくため無効。今回の画像一覧は verification.md 9 章。

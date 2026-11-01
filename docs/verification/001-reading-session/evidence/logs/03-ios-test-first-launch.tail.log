@@ -1,0 +1,60 @@
+CodeSign /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app (in target 'ReadingApp' from project 'ReadingApp')
+    cd /Users/takumamatsuura/reading-app/ios
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Intermediates.noindex/ReadingApp.build/Debug-iphonesimulator/ReadingApp.build/ReadingApp.app.xcent --timestamp\=none --generate-entitlement-der --strip-disallowed-xattrs /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app
+/Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app: replacing existing signature
+
+Validate /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app (in target 'ReadingApp' from project 'ReadingApp')
+    cd /Users/takumamatsuura/reading-app/ios
+    builtin-validationUtility /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app -shallow-bundle -infoplist-subpath Info.plist
+
+ValidateEmbeddedBinary /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app/PlugIns/ReadingWidgetExtension.appex (in target 'ReadingApp' from project 'ReadingApp')
+    cd /Users/takumamatsuura/reading-app/ios
+    /Applications/Xcode.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app/PlugIns/ReadingWidgetExtension.appex -signing-cert - -info-plist-path /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Debug-iphonesimulator/ReadingApp.app/Info.plist
+
+PruneExplicitPrecompiledModules /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules
+
+2026-11-02 00:04:11.609232+0900 ReadingAcceptanceTests-Runner[26920:4133746] [Default] Running tests...
+2026-11-02 00:04:11.992037+0900 ReadingAcceptanceTests-Runner[26920:4134053] [General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-02 00:04:12.035157+0900 ReadingAcceptanceTests-Runner[26920:4134052] [General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+Test Suite 'Selected tests' started at 2026-11-02 00:04:34.572.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-02 00:04:34.580.
+Test Suite 'FirstLaunchTests' started at 2026-11-02 00:04:34.581.
+Test Case '-[ReadingAcceptanceTests.FirstLaunchTests test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない]' started.
+Test Case '-[ReadingAcceptanceTests.FirstLaunchTests test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない]' passed (23.878 seconds).
+Test Suite 'FirstLaunchTests' passed at 2026-11-02 00:04:58.465.
+	 Executed 1 test, with 0 failures (0 unexpected) in 23.878 (23.885) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-02 00:04:58.468.
+	 Executed 1 test, with 0 failures (0 unexpected) in 23.878 (23.887) seconds
+Test Suite 'Selected tests' passed at 2026-11-02 00:04:58.471.
+	 Executed 1 test, with 0 failures (0 unexpected) in 23.878 (23.898) seconds
+2026-11-02 00:05:00.752696+0900 ReadingAcceptanceTests-Runner[27389:4136654] [Default] Running tests...
+Test Suite 'Selected tests' started at 2026-11-02 00:05:02.785.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-02 00:05:02.786.
+Test Suite 'FirstLaunchTests' started at 2026-11-02 00:05:02.786.
+Test Case '-[ReadingAcceptanceTests.FirstLaunchTests test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない]' started.
+Test Case '-[ReadingAcceptanceTests.FirstLaunchTests test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない]' passed (10.125 seconds).
+Test Suite 'FirstLaunchTests' passed at 2026-11-02 00:05:12.915.
+	 Executed 1 test, with 0 failures (0 unexpected) in 10.125 (10.129) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-02 00:05:12.915.
+	 Executed 1 test, with 0 failures (0 unexpected) in 10.125 (10.129) seconds
+Test Suite 'Selected tests' passed at 2026-11-02 00:05:12.915.
+	 Executed 1 test, with 0 failures (0 unexpected) in 10.125 (10.131) seconds
+2026-11-02 00:05:13.403 xcodebuild[26272:4129413] [MT] IDETestOperationsObserverDebug: 120.394 elapsed -- Testing started completed.
+2026-11-02 00:05:13.403 xcodebuild[26272:4129413] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-02 00:05:13.403 xcodebuild[26272:4129413] [MT] IDETestOperationsObserverDebug: 120.394 sec, +120.394 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Logs/Test/Test-ReadingApp-2026.11.02_00-03-10-+0900.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
+end 2026-11-02 00:05:17
+exit=0

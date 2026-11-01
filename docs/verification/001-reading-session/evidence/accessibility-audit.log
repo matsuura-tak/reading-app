@@ -1,0 +1,2117 @@
+=== performAccessibilityAudit(for: .all), -uitest-readouts off (no hook elements on screen) ===
+Screens audited: 27
+Total issues: 96
+W-1 (accessoryRectangular:172x76): 24 issues
+  - XCUIAccessibilityAuditType(rawValue: 4): Hit area is too small [element=Attributes: Other, 0x14bf47330, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+Element subtree:
+ →Other, 0x14bf47330, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+    StaticText, 0x14bf47460, {{264.0, 385.0}, {11.0, 11.0}}, label: '下'
+    StaticText, 0x14bf47590, {{264.0, 396.0}, {11.0, 11.0}}, label: '人'
+    StaticText, 0x14bf476c0, {{264.0, 407.0}, {11.0, 11.0}}, label: 'の'
+    StaticText, 0x14bf477f0, {{264.0, 418.0}, {11.0, 11.0}}, label: '行'
+    StaticText, 0x14bf47920, {{264.0, 429.0}, {11.0, 11.0}}, label: '方'
+    StaticText, 0x14bf47a50, {{264.0, 440.0}, {11.0, 11.0}}, label: 'は'
+    StaticText, 0x14bf47b80, {{264.0, 451.0}, {11.0, 11.0}}, label: '︑'
+    StaticText, 0x14bf47cb0, {{264.0, 462.0}, {11.0, 11.0}}, label: '誰'
+    StaticText, 0x14bf47de0, {{264.0, 473.0}, {11.0, 11.0}}, label: 'も'
+    StaticText, 0x14bf47f10, {{264.0, 484.0}, {11.0, 11.0}}, label: '知'
+    StaticText, 0x14bf480d0, {{264.0, 495.0}, {11.0, 11.0}}, label: 'ら'
+    StaticText, 0x14bf48200, {{264.0, 506.0}, {11.0, 11.0}}, label: 'な'
+Path to element:
+ →Application, 0x14bf3caa0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf42510, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bf43630, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bf46fa0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf448d0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bf43a50, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bf470d0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bf47330, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14c11dc30, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162966048.20
+    Output: {
+      Other, 0x1455355e0, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14c223100, {{264.0, 440.0}, {11.0, 11.0}}, label: 'は'
+Element subtree:
+ →StaticText, 0x14c223100, {{264.0, 440.0}, {11.0, 11.0}}, label: 'は'
+Path to element:
+ →Application, 0x14c226aa0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14c227580, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14c2249e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14c225490, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14c225fd0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14c226370, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14c2250f0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14c224660, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14c223100, {{264.0, 440.0}, {11.0, 11.0}}, label: 'は'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14c22c800, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162960544.26
+    Output: {
+      StaticText, 0x15b016820, {{264.0, 440.0}, {11.0, 11.0}}, label: 'は'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bf5b960, {{264.0, 495.0}, {11.0, 11.0}}, label: 'ら'
+Element subtree:
+ →StaticText, 0x14bf5b960, {{264.0, 495.0}, {11.0, 11.0}}, label: 'ら'
+Path to element:
+ →Application, 0x14bf59960, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf5a1c0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bf5a590, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bf5a7d0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf5a2f0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bf5a420, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bf5a900, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bf5ab60, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bf5b960, {{264.0, 495.0}, {11.0, 11.0}}, label: 'ら'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bf678c0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162964464.31
+    Output: {
+      StaticText, 0x14bf64bc0, {{264.0, 495.0}, {11.0, 11.0}}, label: 'ら'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14c231300, {{264.0, 407.0}, {11.0, 11.0}}, label: 'の'
+Element subtree:
+ →StaticText, 0x14c231300, {{264.0, 407.0}, {11.0, 11.0}}, label: 'の'
+Path to element:
+ →Application, 0x14c232f70, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14c22b9f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14c2324d0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14c232150, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14c232850, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14c232be0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14c231dd0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14c231690, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14c231300, {{264.0, 407.0}, {11.0, 11.0}}, label: 'の'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14c141e20, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162958192.23
+    Output: {
+      StaticText, 0x1455616a0, {{264.0, 407.0}, {11.0, 11.0}}, label: 'の'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bf71ff0, {{264.0, 506.0}, {11.0, 11.0}}, label: 'な'
+Element subtree:
+ →StaticText, 0x14bf71ff0, {{264.0, 506.0}, {11.0, 11.0}}, label: 'な'
+Path to element:
+ →Application, 0x14bf70a30, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf5e180, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bf70c00, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bf70d30, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf68a20, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bf67d80, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bf70e60, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bf710c0, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bf71ff0, {{264.0, 506.0}, {11.0, 11.0}}, label: 'な'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bf82bd0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162965248.32
+    Output: {
+      StaticText, 0x14bf809f0, {{264.0, 506.0}, {11.0, 11.0}}, label: 'な'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bf7fd20, {{264.0, 418.0}, {11.0, 11.0}}, label: '行'
+Element subtree:
+ →StaticText, 0x14bf7fd20, {{264.0, 418.0}, {11.0, 11.0}}, label: '行'
+Path to element:
+ →Application, 0x14bf88840, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf89ef0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bf7b2d0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bf7c370, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf8a6e0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bf83090, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bf5e180, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bf67d80, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bf7fd20, {{264.0, 418.0}, {11.0, 11.0}}, label: '行'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bf8ca20, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162958976.24
+    Output: {
+      StaticText, 0x145577490, {{264.0, 418.0}, {11.0, 11.0}}, label: '行'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bf96110, {{127.0, 503.7}, {24.0, 13.3}}, identifier: 'widget.page', label: 'p.61'
+Element subtree:
+ →StaticText, 0x14bf96110, {{127.0, 503.7}, {24.0, 13.3}}, identifier: 'widget.page', label: 'p.61'
+Path to element:
+ →Application, 0x14bf83090, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf67d80, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bf68a20, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bf96d20, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf8ace0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bf8a2c0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bf95fe0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳StaticText, 0x14bf96110, {{127.0, 503.7}, {24.0, 13.3}}, identifier: 'widget.page', label: 'p.61'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bf9d500, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6137623664.19
+    Output: {
+      StaticText, 0x14bf99a50, {{127.0, 503.7}, {24.0, 13.3}}, identifier: 'widget.page', label: 'p.61'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bfa8b80, {{264.0, 473.0}, {11.0, 11.0}}, label: 'も'
+Element subtree:
+ →StaticText, 0x14bfa8b80, {{264.0, 473.0}, {11.0, 11.0}}, label: 'も'
+Path to element:
+ →Application, 0x14bf8a2c0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf96d20, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bfa7c10, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bfa7d40, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bfa7970, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bfa7aa0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bfa7e70, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bfa80d0, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bfa8b80, {{264.0, 473.0}, {11.0, 11.0}}, label: 'も'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bfb4b50, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162962896.29
+    Output: {
+      StaticText, 0x14bfb2130, {{264.0, 473.0}, {11.0, 11.0}}, label: 'も'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bfb6d90, {{264.0, 396.0}, {11.0, 11.0}}, label: '人'
+Element subtree:
+ →StaticText, 0x14bfb6d90, {{264.0, 396.0}, {11.0, 11.0}}, label: '人'
+Path to element:
+ →Application, 0x14bf99a50, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bf83090, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bf96d20, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bfb9300, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf8a2c0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bf9b830, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bfaef50, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bfb6b30, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bfb6d90, {{264.0, 396.0}, {11.0, 11.0}}, label: '人'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bfc85a0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162957408.22
+    Output: {
+      StaticText, 0x14bfc6050, {{264.0, 396.0}, {11.0, 11.0}}, label: '人'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bfc8930, {{264.0, 385.0}, {11.0, 11.0}}, label: '下'
+Element subtree:
+ →StaticText, 0x14bfc8930, {{264.0, 385.0}, {11.0, 11.0}}, label: '下'
+Path to element:
+ →Application, 0x14bfc5450, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bfcd4c0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bfaef50, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bfae4c0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bf9b830, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bfc0fc0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bfc85a0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bfc8800, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bfc8930, {{264.0, 385.0}, {11.0, 11.0}}, label: '下'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bfd3ef0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162948544.21
+    Output: {
+      StaticText, 0x14bfd1870, {{264.0, 385.0}, {11.0, 11.0}}, label: '下'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x15b4777c0, {{264.0, 429.0}, {11.0, 11.0}}, label: '方'
+Element subtree:
+ →StaticText, 0x15b4777c0, {{264.0, 429.0}, {11.0, 11.0}}, label: '方'
+Path to element:
+ →Application, 0x15b476340, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x15b472240, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x15b476c20, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x15b476d50, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x15b476980, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x15b476ab0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x15b476e80, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x15b4770e0, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x15b4777c0, {{264.0, 429.0}, {11.0, 11.0}}, label: '方'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bfd8ae0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162959760.25
+    Output: {
+      StaticText, 0x14bfc9850, {{264.0, 429.0}, {11.0, 11.0}}, label: '方'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bfdacd0, {{264.0, 462.0}, {11.0, 11.0}}, label: '誰'
+Element subtree:
+ →StaticText, 0x14bfdacd0, {{264.0, 462.0}, {11.0, 11.0}}, label: '誰'
+Path to element:
+ →Application, 0x14bfb9300, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bfd98e0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bfd9e90, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bfd9fc0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bfd9a10, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bfd9b40, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bfda0f0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bfda350, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bfdacd0, {{264.0, 462.0}, {11.0, 11.0}}, label: '誰'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bfed660, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162962112.28
+    Output: {
+      StaticText, 0x14bfeed80, {{264.0, 462.0}, {11.0, 11.0}}, label: '誰'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x14bfdb2a0, {{264.0, 484.0}, {11.0, 11.0}}, label: '知'
+Element subtree:
+ →StaticText, 0x14bfdb2a0, {{264.0, 484.0}, {11.0, 11.0}}, label: '知'
+Path to element:
+ →Application, 0x14bfb9300, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bfc0fc0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bfda200, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bfda330, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bfda0b0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bfeb860, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14bfda460, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x14bfda6c0, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x14bfdb2a0, {{264.0, 484.0}, {11.0, 11.0}}, label: '知'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bffbf70, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162963680.30
+    Output: {
+      StaticText, 0x14bff91c0, {{264.0, 484.0}, {11.0, 11.0}}, label: '知'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x177811180, {{264.0, 451.0}, {11.0, 11.0}}, label: '︑'
+Element subtree:
+ →StaticText, 0x177811180, {{264.0, 451.0}, {11.0, 11.0}}, label: '︑'
+Path to element:
+ →Application, 0x17780f870, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x1455f67c0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177810420, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x177810550, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1778102d0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1455f93d0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x177810680, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x1778108e0, {{264.0, 385.0}, {11.0, 132.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+         ↳StaticText, 0x177811180, {{264.0, 451.0}, {11.0, 11.0}}, label: '︑'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x17790e820, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162961328.27
+    Output: {
+      StaticText, 0x17790cd00, {{264.0, 451.0}, {11.0, 11.0}}, label: '︑'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x17790fc00, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Element subtree:
+ →Other, 0x17790fc00, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x14bff5df0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x14bfeb860, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bff75a0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x17790d720, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bfeee80, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x14bfc0fc0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x17790fc00, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x14bfb9300, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6137611072.18
+    Output: {
+      Other, 0x17782bd80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x17782eb80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Element subtree:
+ →Other, 0x17782eb80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Path to element:
+ →Application, 0x17782c2d0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x177828200, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x17782ce80, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x177826230, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x17782cac0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x177828c20, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x17782eb80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x17792b7f0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6137608464.17
+    Output: {
+      Other, 0x17792b150, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x17792a390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Element subtree:
+ →Other, 0x17792a390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Path to element:
+ →Application, 0x177906130, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x17791f1f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x17792ee40, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x17792ef70, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x17792eba0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x17792ecd0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x17792a390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x177937e70, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6137604688.16
+    Output: {
+      Other, 0x177937ae0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x177929670, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Element subtree:
+ →Other, 0x177929670, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Path to element:
+ →Application, 0x177933b00, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x177930480, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x14bff75a0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x14bfeb860, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x17793af10, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x177906130, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x177929670, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x177942a80, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6137602864.15
+    Output: {
+      Other, 0x17784d3f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x1779486c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Element subtree:
+ →Other, 0x1779486c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Path to element:
+ →Application, 0x1779453f0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x17793f190, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177906130, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x177944fd0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x17793af10, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x177933b00, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1779486c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x17785d200, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6137373328.14
+    Output: {
+      Other, 0x702bc136c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702bc20f40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Element subtree:
+ →Other, 0x702bc20f40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Path to element:
+ →Application, 0x702bc1cf00, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x702bc1f180, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702bc1f550, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702bc1f690, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702bc1f2b0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702bc1f3e0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702bc20f40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x177860a20, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162766560.13
+    Output: {
+      Other, 0x15b02bbb0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x17795b380, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Element subtree:
+ →Other, 0x17795b380, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Path to element:
+ →Application, 0x14bfeb860, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x177929cc0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177959ad0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x177959c00, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x177959900, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x17791f1f0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x17795b380, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x177969060, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162762096.12
+    Output: {
+      Other, 0x177967dd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x177876450, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Element subtree:
+ →Other, 0x177876450, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Path to element:
+ →Application, 0x1778739b0, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x177874430, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177874d20, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x177874e50, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x177874a80, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x177874bb0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x177876450, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x17796f310, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162753536.11
+    Output: {
+      Other, 0x17796df50, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x177875fa0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Element subtree:
+ →Other, 0x177875fa0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Path to element:
+ →Application, 0x17787ce50, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x177877b10, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177874430, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x17787c3c0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1778767a0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1778739b0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x177875fa0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x17797dd60, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162742848.10
+    Output: {
+      Other, 0x17797ed60, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x1778924c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Element subtree:
+ →Other, 0x1778924c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Path to element:
+ →Application, 0x177875740, pid: 68535, label: 'よむま'
+  ↳Window (Main), 0x177875870, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177875c40, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x177875d70, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x177876320, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1778759a0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1778924c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1778767a0, pid: 68535, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68535, elementOrHash.elementID: 6162666528.9
+    Output: {
+      Other, 0x177987e70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+    }
+]
+W-2 (systemSmall:170x170): 14 issues
+  - XCUIAccessibilityAuditType(rawValue: 4): Hit area is too small [element=Attributes: Other, 0x177997910, {{194.0, 346.3}, {14.0, 179.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+Element subtree:
+ →Other, 0x177997910, {{194.0, 346.3}, {14.0, 179.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+    StaticText, 0x177997a40, {{194.0, 346.3}, {14.0, 14.0}}, label: '下'
+    StaticText, 0x177997c60, {{194.0, 361.3}, {14.0, 14.0}}, label: '人'
+    StaticText, 0x177997d90, {{194.0, 376.3}, {14.0, 14.0}}, label: 'の'
+    StaticText, 0x177997ec0, {{194.0, 391.3}, {14.0, 14.0}}, label: '行'
+    StaticText, 0x177997ff0, {{194.0, 406.3}, {14.0, 14.0}}, label: '方'
+    StaticText, 0x177998120, {{194.0, 421.3}, {14.0, 14.0}}, label: 'は'
+    StaticText, 0x177998250, {{194.0, 436.3}, {14.0, 14.0}}, label: '︑'
+    StaticText, 0x177998380, {{194.0, 451.3}, {14.0, 14.0}}, label: '誰'
+    StaticText, 0x1779984b0, {{194.0, 466.3}, {14.0, 14.0}}, label: 'も'
+    StaticText, 0x1779985e0, {{194.0, 481.3}, {14.0, 14.0}}, label: '知'
+    StaticText, 0x177998710, {{194.0, 496.3}, {14.0, 14.0}}, label: 'ら'
+    StaticText, 0x177998840, {{194.0, 511.3}, {14.0, 14.0}}, label: 'な'
+Path to element:
+ →Application, 0x177991370, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x177997190, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177997580, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779976b0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1779972c0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1779973f0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1779977e0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳Other, 0x177997910, {{194.0, 346.3}, {14.0, 179.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1778a9230, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156611120.19
+    Output: {
+      Other, 0x1778a6de0, {{194.0, 346.3}, {14.0, 179.0}}, identifier: 'widget.line', label: '下人の行方は、誰も知らない。'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x1778a7500, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+Element subtree:
+ →StaticText, 0x1778a7500, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+Path to element:
+ →Application, 0x1778ac210, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x1778abd60, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1778ac8e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1778aca10, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1778ac790, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1778aaea0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1778acb40, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳StaticText, 0x1778a7500, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1779a5c90, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156613680.21
+    Output: {
+      StaticText, 0x1778c1070, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x1779b1730, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+Element subtree:
+ →StaticText, 0x1779b1730, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+Path to element:
+ →Application, 0x1779af6f0, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x177997ea0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1779b0210, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779b0340, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1779aff30, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1779b0060, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1779b0470, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳StaticText, 0x1779b1730, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x15b104080, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156613680.21
+    Output: {
+      StaticText, 0x1779b8890, {{239.0, 541.8}, {31.0, 13.3}}, label: '羅生門'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x1778ca6a0, {{132.0, 541.3}, {26.0, 14.3}}, identifier: 'widget.page', label: 'p.61'
+Element subtree:
+ →StaticText, 0x1778ca6a0, {{132.0, 541.3}, {26.0, 14.3}}, identifier: 'widget.page', label: 'p.61'
+Path to element:
+ →Application, 0x1778c7d00, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x1778aaea0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1778c6190, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1778c9490, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1778af110, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1778c74a0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1778c95c0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.widgetShowcase'
+        ↳StaticText, 0x1778ca6a0, {{132.0, 541.3}, {26.0, 14.3}}, identifier: 'widget.page', label: 'p.61'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1778d93f0, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156612576.20
+    Output: {
+      StaticText, 0x702c916db0, {{132.0, 541.3}, {26.0, 14.3}}, identifier: 'widget.page', label: 'p.61'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702c91b2e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Element subtree:
+ →Other, 0x702c91b2e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x702c913d40, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x702c915850, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702c9124a0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702c91a050, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702c911c40, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702c918b30, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702c91b2e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1778e1550, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156473456.18
+    Output: {
+      Other, 0x1779ca8d0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702bc97d10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Element subtree:
+ →Other, 0x702bc97d10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Path to element:
+ →Application, 0x1779cae40, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x1779c1670, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1779bfbc0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779c8b50, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1779b8190, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1779c0bf0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702bc97d10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1779d6640, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156470352.17
+    Output: {
+      Other, 0x1779d5f30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702c92cd30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Element subtree:
+ →Other, 0x702c92cd30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Path to element:
+ →Application, 0x702c928e80, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x702c91df90, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702c91ea60, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702c91fb50, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702c918b30, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702c911c40, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702c92cd30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1779e2590, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156467792.16
+    Output: {
+      Other, 0x1779e0e90, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x1779da1b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Element subtree:
+ →Other, 0x1779da1b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Path to element:
+ →Application, 0x702bcaf840, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x702bca8b80, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702bcb1030, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702bcb1160, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702bcaa5e0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702bcb0dd0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1779da1b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x1779e7eb0, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156458064.15
+    Output: {
+      Other, 0x1779ea8a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037810b30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Element subtree:
+ →Other, 0x7037810b30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Path to element:
+ →Application, 0x1778fe3c0, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x70378085f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703780ef10, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703780f040, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703780edc0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1778cf530, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037810b30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703781c340, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156462768.14
+    Output: {
+      Other, 0x703781b110, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x14c2606c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Element subtree:
+ →Other, 0x14c2606c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Path to element:
+ →Application, 0x1779bfbc0, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x1779fbba0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1779fc050, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779fc180, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1779fbcd0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1779fbe00, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x14c2606c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702bcc85b0, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156459920.13
+    Output: {
+      Other, 0x703790ef30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702bcd00d0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Element subtree:
+ →Other, 0x702bcd00d0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Path to element:
+ →Application, 0x702bcc85b0, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x702bccc280, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702bcd13f0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702bcd1a30, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702bccc730, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702bccd300, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702bcd00d0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037915c40, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156456848.12
+    Output: {
+      Other, 0x7037913da0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037913920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Element subtree:
+ →Other, 0x7037913920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Path to element:
+ →Application, 0x7037915c40, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x7037915f60, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1779e54e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779bfbc0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037910a40, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037911490, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037913920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037922670, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156454288.11
+    Output: {
+      Other, 0x7037922540, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x70379230b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Element subtree:
+ →Other, 0x70379230b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Path to element:
+ →Application, 0x7037919180, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x703791f750, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037915f60, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037910a40, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x1779db820, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1779e08e0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x70379230b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703792b090, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156451728.10
+    Output: {
+      Other, 0x702bcf4f30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037922a80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Element subtree:
+ →Other, 0x7037922a80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Path to element:
+ →Application, 0x703792e590, pid: 68671, label: 'よむま'
+  ↳Window (Main), 0x703792b090, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703791f750, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779db820, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037929760, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037915c40, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037922a80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703792e060, pid: 68671, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68671, elementOrHash.elementID: 6156449200.9
+    Output: {
+      Other, 0x7037933590, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+    }
+]
+W-3 (w3:waiting): 11 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x70378610e0, {{40.0, 445.8}, {196.0, 14.0}}, identifier: 'screen.widgetShowcase', label: '下人の行方は、誰も知らない。'
+Element subtree:
+ →StaticText, 0x70378610e0, {{40.0, 445.8}, {196.0, 14.0}}, identifier: 'screen.widgetShowcase', label: '下人の行方は、誰も知らない。'
+Path to element:
+ →Application, 0x7037a06c90, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x7037a07d20, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037a09210, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037860840, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037861300, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037861470, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳StaticText, 0x70378610e0, {{40.0, 445.8}, {196.0, 14.0}}, identifier: 'screen.widgetShowcase', label: '下人の行方は、誰も知らない。'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037941a20, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998339168.10
+    Output: {
+      StaticText, 0x1779e54e0, {{40.0, 445.8}, {196.0, 14.0}}, identifier: 'screen.widgetShowcase', label: '下人の行方は、誰も知らない。'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037874fd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Element subtree:
+ →Other, 0x7037874fd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x70378644f0, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x70378730d0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70378734f0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037873620, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037873200, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037873330, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037874fd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037943dc0, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998076736.21
+    Output: {
+      Other, 0x702c983950, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037a1d040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Element subtree:
+ →Other, 0x7037a1d040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Path to element:
+ →Application, 0x703794d200, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x7037a116f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702bcefba0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037a066b0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037a12850, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037a14e50, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037a1d040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037a212a0, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998194336.20
+    Output: {
+      Other, 0x70379555f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037885f10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Element subtree:
+ →Other, 0x7037885f10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Path to element:
+ →Application, 0x7037883d30, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x70378821d0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703786f730, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70378791c0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703787f2c0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x70378549f0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037885f10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x17795cb60, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998118576.19
+    Output: {
+      Other, 0x14bfeb860, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x703795f810, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Element subtree:
+ →Other, 0x703795f810, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Path to element:
+ →Application, 0x703795ea20, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x7037958ed0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x177974750, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x1779bfbc0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x14bfeb860, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x1779e54e0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703795f810, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703796aea0, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998106656.18
+    Output: {
+      Other, 0x702c9a67a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x703794d970, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Element subtree:
+ →Other, 0x703794d970, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Path to element:
+ →Application, 0x703796a6b0, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x7037958ed0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037960f20, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703796e040, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703796e460, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703794d200, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703794d970, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037970ed0, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998159744.17
+    Output: {
+      Other, 0x703789f9f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x70378a73f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Element subtree:
+ →Other, 0x70378a73f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Path to element:
+ →Application, 0x70378a3660, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x70378a4e00, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703786f730, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703789f9f0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703788e690, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x70378a1f30, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x70378a73f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70378a7190, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998181312.16
+    Output: {
+      Other, 0x17795cb60, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x703796a6b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Element subtree:
+ →Other, 0x703796a6b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Path to element:
+ →Application, 0x703789f9f0, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x70378a9c50, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70378a5410, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70378549f0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70378a1f30, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703788e690, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703796a6b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70378c1560, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998186656.15
+    Output: {
+      Other, 0x70378bfc70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x70379868a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Element subtree:
+ →Other, 0x70379868a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Path to element:
+ →Application, 0x7037983750, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x14bfeb860, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x1779bfbc0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x17791f1f0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x17795cb60, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x177929cc0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x70379868a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703798c280, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998119472.14
+    Output: {
+      Other, 0x703798d910, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x70378d4b70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Element subtree:
+ →Other, 0x70378d4b70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Path to element:
+ →Application, 0x70378a1f30, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x70378b2e10, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703788e690, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70378a5410, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70378549f0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x70378866e0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x70378d4b70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702c9c5cc0, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998150976.13
+    Output: {
+      Other, 0x1779bfbc0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x1779e54e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Element subtree:
+ →Other, 0x1779e54e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Path to element:
+ →Application, 0x7037991b40, pid: 68787, label: 'よむま'
+  ↳Window (Main), 0x7037975260, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703799a1c0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703796e040, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70379970a0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037983750, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x1779e54e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70378eeb90, pid: 68787, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68787, elementOrHash.elementID: 5998188464.12
+    Output: {
+      Other, 0x70378a5410, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+    }
+]
+W-4 (w4:control): 10 issues
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037918910, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Element subtree:
+ →Other, 0x7037918910, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x7037915f60, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x7037911490, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703792ed40, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037930050, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037927510, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037910a40, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037918910, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70378f5a20, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130266112.18
+    Output: {
+      Other, 0x7037b13e70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x703794d970, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Element subtree:
+ →Other, 0x703794d970, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Path to element:
+ →Application, 0x7037915c40, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x7037915f60, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037910a40, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037979730, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037927510, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037930050, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703794d970, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70379a6200, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130270816.17
+    Output: {
+      Other, 0x702b811900, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702c8aaae0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Element subtree:
+ →Other, 0x702c8aaae0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Path to element:
+ →Application, 0x7037a8fed0, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x7037a98c10, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037a9ce80, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037a9cfb0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037a9cca0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037a97290, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702c8aaae0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702b826950, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130258016.16
+    Output: {
+      Other, 0x702c9e6130, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x703796e040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Element subtree:
+ →Other, 0x703796e040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Path to element:
+ →Application, 0x70379b5e90, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x70379b2240, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70379aea70, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70379b3bc0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037915c40, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703799a1c0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703796e040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70379ccaf0, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130252592.15
+    Output: {
+      Other, 0x70379cbbf0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x70379b4750, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Element subtree:
+ →Other, 0x70379b4750, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Path to element:
+ →Application, 0x70379cd9d0, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x703799a1c0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037913450, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037990690, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70379b3bc0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703796e040, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x70379b4750, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702b831500, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130253488.14
+    Output: {
+      Other, 0x7037b36700, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037979730, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Element subtree:
+ →Other, 0x7037979730, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Path to element:
+ →Application, 0x70379d1b70, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x70379d4620, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703799a1c0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70379b3bc0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70379cd9d0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x70379d2cf0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037979730, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70379e0270, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130250768.13
+    Output: {
+      Other, 0x70379df330, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x703796e040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Element subtree:
+ →Other, 0x703796e040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Path to element:
+ →Application, 0x70379b3bc0, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x70379d2270, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70379a88e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037930050, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703792e4e0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037979730, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703796e040, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70379e5920, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130246208.12
+    Output: {
+      Other, 0x702b85df80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702b85ec90, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Element subtree:
+ →Other, 0x702b85ec90, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Path to element:
+ →Application, 0x702b8410d0, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x702b85daa0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702b85e310, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702b85e440, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702b85e070, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702b85e1a0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702b85ec90, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703792ed40, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130243472.11
+    Output: {
+      Other, 0x703799ffa0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037ae1920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Element subtree:
+ →Other, 0x7037ae1920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Path to element:
+ →Application, 0x7037adff50, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x7037ada820, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037ae1060, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037ae1190, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037ae0dc0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037ae0ef0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037ae1920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d04900, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130240240.10
+    Output: {
+      Other, 0x7037913450, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037af0390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Element subtree:
+ →Other, 0x7037af0390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Path to element:
+ →Application, 0x7037ae8c80, pid: 68895, label: 'よむま'
+  ↳Window (Main), 0x7037aef790, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037aefb80, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037aefcb0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037aef8c0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037aef9f0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037af0390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d0e1d0, pid: 68895, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 68895, elementOrHash.elementID: 6130238432.9
+    Output: {
+      Other, 0x7037d0f380, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+    }
+]
+W-5 (w5:snippet): 10 issues
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d1ac20, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Element subtree:
+ →Other, 0x7037d1ac20, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x7037d152f0, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d18d30, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d19140, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d19270, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d18e60, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d18f90, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d1ac20, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d1f1e0, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041337760.18
+    Output: {
+      Other, 0x702b897cc0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d1aa10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Element subtree:
+ →Other, 0x7037d1aa10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Path to element:
+ →Application, 0x7037d21a70, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d1e340, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d152f0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d19370, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d186d0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d1c7a0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d1aa10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d2dac0, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041333152.17
+    Output: {
+      Other, 0x7037d2cbc0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d1a680, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Element subtree:
+ →Other, 0x7037d1a680, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Path to element:
+ →Application, 0x7037d2b180, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d2c6a0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d2ca70, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d2cba0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d2ccd0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d2c7d0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d1a680, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d413b0, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041328656.16
+    Output: {
+      Other, 0x7037d42cd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702b8ac5a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Element subtree:
+ →Other, 0x702b8ac5a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Path to element:
+ →Application, 0x7037d42640, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d42190, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d42af0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d42c20, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d429a0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d32400, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702b8ac5a0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d29c70, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041323184.15
+    Output: {
+      Other, 0x702b8ba4f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d4f2e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Element subtree:
+ →Other, 0x7037d4f2e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Path to element:
+ →Application, 0x7037d49bd0, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d42bc0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d42f90, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d430c0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d43430, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d42cf0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d4f2e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d56e40, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041324128.14
+    Output: {
+      Other, 0x7037d57e50, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d58a40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Element subtree:
+ →Other, 0x7037d58a40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Path to element:
+ →Application, 0x7037d57960, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d57a90, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d57e60, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d57f90, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d57bc0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d57cf0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d58a40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702b8c30d0, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041318592.13
+    Output: {
+      Other, 0x7037d619e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037e2d0f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Element subtree:
+ →Other, 0x7037e2d0f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Path to element:
+ →Application, 0x7037d624f0, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d64600, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d57960, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d57a90, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d63b80, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d31990, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037e2d0f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702b8d1640, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041314032.12
+    Output: {
+      Other, 0x7037d596f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d68eb0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Element subtree:
+ →Other, 0x7037d68eb0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Path to element:
+ →Application, 0x7037d596f0, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d624f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d4ff30, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d67460, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d5c9e0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d65b10, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d68eb0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d70f70, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041309472.11
+    Output: {
+      Other, 0x7037d6fdd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"accessibilityLab...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x7037d4ad40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Element subtree:
+ →Other, 0x7037d4ad40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Path to element:
+ →Application, 0x7037d74190, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x7037d624f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d5c9e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d65b10, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d67460, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d4ff30, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037d4ad40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x702b8cef70, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041300080.10
+    Output: {
+      Other, 0x7037d7a880, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 8): Label not human-readable [element=Attributes: Other, 0x702b8f1d50, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Element subtree:
+ →Other, 0x702b8f1d50, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Path to element:
+ →Application, 0x702b8cef70, pid: 69012, label: 'よむま'
+  ↳Window (Main), 0x702b8e3f80, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x702b8ee260, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x702b8d3380, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x702b8ef750, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x702b8d9280, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x702b8f1d50, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037d7b6b0, pid: 69012, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69012, elementOrHash.elementID: 6041175632.9
+    Output: {
+      Other, 0x7037d5d640, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+    }
+]
+S-1 (BookmarkHome): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 1): Contrast failed [element=nil]
+S-2 (ReadingSession): 0 issues
+S-3 (MarkSelect): 0 issues
+S-3a (MarkLineInput): 2 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: TextField, 0x7037d82ec0, {{23.5, 164.5}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '残す一行（60文字まで）', placeholderValue: '心に残った一行'
+Element subtree:
+ →TextField, 0x7037d82ec0, {{23.5, 164.5}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '残す一行（60文字まで）', placeholderValue: '心に残った一行'
+Path to element:
+ →Application, 0x7037d71f10, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7037d31990, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d822e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d82410, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d82190, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d7c990, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳ScrollView, 0x7037d828d0, {{0.0, 123.0}, {402.0, 639.0}}
+        ↳Other, 0x7037d82a00, {{0.0, 123.0}, {402.0, 272.7}}
+         ↳Other, 0x7037d82b30, {{23.5, 139.0}, {355.0, 240.7}}, identifier: 'sheet.mark.line'
+          ↳TextField, 0x7037d82ec0, {{23.5, 164.5}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '残す一行（60文字まで）', placeholderValue: '心に残った一行'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037e6e330, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 6254566400.86
+    Output: {
+      TextField, 0x70380196c0, {{23.5, 164.5}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '残す一行（60文字まで）', placeholderValue: '心に残った一行'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: TextField, 0x7037bc9680, {{23.5, 291.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+Element subtree:
+ →TextField, 0x7037bc9680, {{23.5, 291.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+Path to element:
+ →Application, 0x7037d83550, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7037d91ec0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037d837b0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d93fc0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d940f0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037d71f10, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳ScrollView, 0x7037d94480, {{0.0, 123.0}, {402.0, 639.0}}
+        ↳Other, 0x7037bc6a40, {{0.0, 123.0}, {402.0, 272.7}}
+         ↳Other, 0x7037bc8b90, {{23.5, 139.0}, {355.0, 240.7}}, identifier: 'sheet.mark.line'
+          ↳TextField, 0x7037bc9680, {{23.5, 291.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037da22e0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 6160981504.91
+    Output: {
+      TextField, 0x7037e7ad90, {{23.5, 291.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+    }
+]
+S-3b (MarkPageOnly): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: TextField, 0x7037da1140, {{23.5, 203.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+Element subtree:
+ →TextField, 0x7037da1140, {{23.5, 203.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+Path to element:
+ →Application, 0x7037d83550, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7037d91ec0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037da4080, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037d92260, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037d71f10, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037da1f00, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳ScrollView, 0x7037da07c0, {{0.0, 123.0}, {402.0, 639.0}}
+        ↳Other, 0x7037da08f0, {{0.0, 123.0}, {402.0, 184.7}}
+         ↳Other, 0x7037da0a20, {{23.5, 139.0}, {355.0, 152.7}}, identifier: 'sheet.mark.pageOnly'
+          ↳TextField, 0x7037da1140, {{23.5, 203.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037dad400, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 6253605888.153
+    Output: {
+      TextField, 0x7037dac990, {{23.5, 203.5}, {355.0, 47.0}}, identifier: 'mark.pageField', label: 'ページ数（1〜9999）', placeholderValue: 'ページ数（1〜9999）'
+    }
+]
+S-3c (MarkOCR): 4 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=nil]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=nil]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: TextField, 0x7037bdeed0, {{23.5, 437.8}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '選んだ一行（60文字まで）', placeholderValue: '広い門の下には、この男のほかに誰もいない。', value: 広い門の下には、この男のほかに誰もい...
+Element subtree:
+ →TextField, 0x7037bdeed0, {{23.5, 437.8}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '選んだ一行（60文字まで）', placeholderValue: '広い門の下には、この男のほかに誰もいない。', value: 広い門の下には、この男のほかに誰もい...
+Path to element:
+ →Application, 0x703803fa70, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703801bde0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70380424d0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038042600, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038042230, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037bcb710, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳ScrollView, 0x7037bdd380, {{0.0, 123.0}, {402.0, 639.0}}
+        ↳Other, 0x7037bdd4b0, {{0.0, 123.0}, {402.0, 654.7}}
+         ↳Other, 0x7037bdd5e0, {{23.5, 139.0}, {355.0, 622.7}}, identifier: 'sheet.mark.ocr'
+          ↳TextField, 0x7037bdeed0, {{23.5, 437.8}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '選んだ一行（60文字まで）', placeholderValue: '広い門の下には、この男のほかに誰もいない。', value: 広い門の下には、この男のほかに誰もい...
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037db7e10, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 6157381120.222
+    Output: {
+      TextField, 0x703804e050, {{23.5, 437.8}, {355.0, 47.0}}, identifier: 'mark.lineField', label: '選んだ一行（60文字まで）', placeholderValue: '広い門の下には、この男のほかに誰もいない。', value: 広い門の下には、この男のほかに誰もい...
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=nil]
+S-5 (WidgetGuide): 13 issues
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038051a70, {{264.0, 143.3}, {11.0, 11.0}}, label: '広'
+Element subtree:
+ →StaticText, 0x7038051a70, {{264.0, 143.3}, {11.0, 11.0}}, label: '広'
+Path to element:
+ →Application, 0x703803fa30, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703804bb10, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703804ebe0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703804ed10, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703804ea90, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703801bde0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703804ee40, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7038051480, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x70380515b0, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7038051810, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7038051a70, {{264.0, 143.3}, {11.0, 11.0}}, label: '広'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037dc9bc0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482282334992.254
+    Output: {
+      StaticText, 0x7037dc7b80, {{264.0, 143.3}, {11.0, 11.0}}, label: '広'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7037dc7ce0, {{264.0, 187.3}, {11.0, 11.0}}, label: '下'
+Element subtree:
+ →StaticText, 0x7037dc7ce0, {{264.0, 187.3}, {11.0, 11.0}}, label: '下'
+Path to element:
+ →Application, 0x7037dcb3d0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7037dce2a0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037dca550, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037dc4cb0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037dc9bc0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037dd0a00, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037dcec70, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7037da68b0, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7037dbe680, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7037d8f230, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7037dc7ce0, {{264.0, 187.3}, {11.0, 11.0}}, label: '下'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037ec5bb0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223393120.255
+    Output: {
+      StaticText, 0x703807ae20, {{264.0, 187.3}, {11.0, 11.0}}, label: '下'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7037eceb30, {{264.0, 176.3}, {11.0, 11.0}}, label: 'の'
+Element subtree:
+ →StaticText, 0x7037eceb30, {{264.0, 176.3}, {11.0, 11.0}}, label: 'の'
+Path to element:
+ →Application, 0x7037dcb3d0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7037dc9bc0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037dc4cb0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037dcec70, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037dd0a00, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037dca550, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037ecb8c0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7037ec5630, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7037ecc760, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7037ec4600, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7037eceb30, {{264.0, 176.3}, {11.0, 11.0}}, label: 'の'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037dea1c0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223669104.256
+    Output: {
+      StaticText, 0x7037de8bb0, {{264.0, 176.3}, {11.0, 11.0}}, label: 'の'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7037de9a20, {{264.0, 231.3}, {11.0, 11.0}}, label: 'こ'
+Element subtree:
+ →StaticText, 0x7037de9a20, {{264.0, 231.3}, {11.0, 11.0}}, label: 'こ'
+Path to element:
+ →Application, 0x7037dcb3d0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7037dec430, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7037dc4cb0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7037dcec70, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7037dc9bc0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7037dd0a00, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7037dca550, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7037da68b0, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7037de8be0, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7037de8e40, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7037de9a20, {{264.0, 231.3}, {11.0, 11.0}}, label: 'こ'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70380928e0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482224182400.257
+    Output: {
+      StaticText, 0x7037dfca20, {{264.0, 231.3}, {11.0, 11.0}}, label: 'こ'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x70380a3a60, {{264.0, 198.3}, {11.0, 11.0}}, label: 'に'
+Element subtree:
+ →StaticText, 0x70380a3a60, {{264.0, 198.3}, {11.0, 11.0}}, label: 'に'
+Path to element:
+ →Application, 0x70380a55e0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x70380928e0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70380a2890, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70380a29c0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70380a25f0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x70380a2720, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x70380a2af0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x70380a2e80, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x70380a2fb0, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x70380a3210, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x70380a3a60, {{264.0, 198.3}, {11.0, 11.0}}, label: 'に'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7037dc4cb0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223720640.258
+    Output: {
+      StaticText, 0x70380bf700, {{264.0, 198.3}, {11.0, 11.0}}, label: 'に'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x70382120f0, {{264.0, 165.3}, {11.0, 11.0}}, label: '門'
+Element subtree:
+ →StaticText, 0x70382120f0, {{264.0, 165.3}, {11.0, 11.0}}, label: '門'
+Path to element:
+ →Application, 0x703820cd60, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7038210dd0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70382111a0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70382112f0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038210f00, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7038211030, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7038211420, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x70382118a0, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x70382119d0, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7038211c30, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x70382120f0, {{264.0, 165.3}, {11.0, 11.0}}, label: '門'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70380d6fb0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223432608.259
+    Output: {
+      StaticText, 0x703821e000, {{264.0, 165.3}, {11.0, 11.0}}, label: '門'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038212200, {{264.0, 264.3}, {11.0, 11.0}}, label: 'の'
+Element subtree:
+ →StaticText, 0x7038212200, {{264.0, 264.3}, {11.0, 11.0}}, label: 'の'
+Path to element:
+ →Application, 0x703821bd00, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703821fde0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703821e510, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703821e9f0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x703821e3c0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703821dd80, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703821eb20, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7038210f00, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7038211030, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7038211290, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7038212200, {{264.0, 264.3}, {11.0, 11.0}}, label: 'の'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703822f540, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223546576.260
+    Output: {
+      StaticText, 0x7038232400, {{264.0, 264.3}, {11.0, 11.0}}, label: 'の'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038232070, {{264.0, 209.3}, {11.0, 11.0}}, label: 'は'
+Element subtree:
+ →StaticText, 0x7038232070, {{264.0, 209.3}, {11.0, 11.0}}, label: 'は'
+Path to element:
+ →Application, 0x703821bd00, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703821fde0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7038230860, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038230ea0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038235e90, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703821ebb0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7038230fd0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7038231360, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7038231490, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x70382316f0, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7038232070, {{264.0, 209.3}, {11.0, 11.0}}, label: 'は'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x703823dad0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482224104016.261
+    Output: {
+      StaticText, 0x703823ca70, {{264.0, 209.3}, {11.0, 11.0}}, label: 'は'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x703823c310, {{264.0, 220.3}, {11.0, 11.0}}, label: '︑'
+Element subtree:
+ →StaticText, 0x703823c310, {{264.0, 220.3}, {11.0, 11.0}}, label: '︑'
+Path to element:
+ →Application, 0x703823e790, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703823f820, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703823fbf0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x703823fd20, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038240090, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x703823f950, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x703823fa80, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x703823b4d0, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x703823b600, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x703823b860, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x703823c310, {{264.0, 220.3}, {11.0, 11.0}}, label: '︑'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7038512870, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 6152937952.262
+    Output: {
+      StaticText, 0x7038247890, {{264.0, 220.3}, {11.0, 11.0}}, label: '︑'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x703823be50, {{264.0, 253.3}, {11.0, 11.0}}, label: '男'
+Element subtree:
+ →StaticText, 0x703823be50, {{264.0, 253.3}, {11.0, 11.0}}, label: '男'
+Path to element:
+ →Application, 0x703824ade0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703821fde0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x703823e790, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038241f80, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038249b70, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7038240c30, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7038236c60, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x703823f820, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x703823f950, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x703823fbb0, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x703823be50, {{264.0, 253.3}, {11.0, 11.0}}, label: '男'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70382586c0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223821520.263
+    Output: {
+      StaticText, 0x703825a890, {{264.0, 253.3}, {11.0, 11.0}}, label: '男'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038259e30, {{264.0, 154.3}, {11.0, 11.0}}, label: 'い'
+Element subtree:
+ →StaticText, 0x7038259e30, {{264.0, 154.3}, {11.0, 11.0}}, label: 'い'
+Path to element:
+ →Application, 0x703824ade0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703821fde0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7038241f80, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038236c60, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038249b70, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7038240c30, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7038259380, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7038259710, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7038259840, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7038259aa0, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7038259e30, {{264.0, 154.3}, {11.0, 11.0}}, label: 'い'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7038263480, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482282318048.264
+    Output: {
+      StaticText, 0x703842ece0, {{264.0, 154.3}, {11.0, 11.0}}, label: 'い'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038157b50, {{264.0, 242.3}, {11.0, 11.0}}, label: 'の'
+Element subtree:
+ →StaticText, 0x7038157b50, {{264.0, 242.3}, {11.0, 11.0}}, label: 'の'
+Path to element:
+ →Application, 0x7038150c60, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7038155fb0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70381563d0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038156500, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70381560e0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7038156210, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7038156630, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x7038156ab0, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x7038156be0, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7038156e40, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7038157b50, {{264.0, 242.3}, {11.0, 11.0}}, label: 'の'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7038413f90, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482224066368.265
+    Output: {
+      StaticText, 0x7038273930, {{264.0, 242.3}, {11.0, 11.0}}, label: 'の'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038273860, {{127.0, 182.0}, {24.0, 13.3}}, label: 'p.61'
+Element subtree:
+ →StaticText, 0x7038273860, {{127.0, 182.0}, {24.0, 13.3}}, label: 'p.61'
+Path to element:
+ →Application, 0x7038274e70, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x7038275b00, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7038272db0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038272ee0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x7038236c60, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7038261650, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x7038273010, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'widgetGuide'
+        ↳ScrollView, 0x70382733a0, {{0.0, 99.3}, {402.0, 654.7}}
+         ↳Other, 0x70382734d0, {{0.0, 99.3}, {402.0, 313.7}}
+          ↳Other, 0x7038273730, {{114.5, 143.3}, {173.0, 132.0}}, identifier: 'widgetGuide.preview', label: 'ロック画面ウィジェットの見本'
+           ↳StaticText, 0x7038273860, {{127.0, 182.0}, {24.0, 13.3}}, label: 'p.61'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7038281b90, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482223882416.266
+    Output: {
+      StaticText, 0x7038280500, {{127.0, 182.0}, {24.0, 13.3}}, label: 'p.61'
+    }
+]
+S-4 (SessionResult): 0 issues
+N (BannerNotice): 0 issues
+S-6 (Shelf): 0 issues
+S-8 (AddBookMenu): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x7038584a60, {{24.0, 486.7}, {341.0, 33.7}}, identifier: 'register.footer', label: 'バーコードや書名から加えるときも、外部へ通信せず端末内の書誌データだけを引きます。'
+Element subtree:
+ →StaticText, 0x7038584a60, {{24.0, 486.7}, {341.0, 33.7}}, identifier: 'register.footer', label: 'バーコードや書名から加えるときも、外部へ通信せず端末内の書誌データだけを引きます。'
+Path to element:
+ →Application, 0x703857c650, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703857d0e0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7038583970, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x7038583aa0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x70385836d0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x7038583800, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳ScrollView, 0x7038583f60, {{0.0, 123.0}, {402.0, 751.0}}
+        ↳Other, 0x7038584090, {{0.0, 123.0}, {402.0, 413.3}}
+         ↳Other, 0x70385841c0, {{24.0, 139.0}, {354.0, 381.3}}, identifier: 'sheet.addBook'
+          ↳StaticText, 0x7038584a60, {{24.0, 486.7}, {341.0, 33.7}}, identifier: 'register.footer', label: 'バーコードや書名から加えるときも、外部へ通信せず端末内の書誌データだけを引きます。'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70382940c0, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 6124455344.515
+    Output: {
+      StaticText, 0x70382933d0, {{24.0, 486.7}, {341.0, 33.7}}, identifier: 'register.footer', label: 'バーコードや書名から加えるときも、外部へ通信せず端末内の書誌データだけを引きます。'
+    }
+]
+S-8a (BarcodeScan): 0 issues
+S-8b (CoverOCR): 0 issues
+S-8c (ManualInput): 0 issues
+S-8d (BookshelfOCR): 0 issues
+S-7 (BookDetail): 0 issues
+S-7a (BookEdit): 0 issues
+S-7b (RecordEdit): 0 issues
+S-9 (FinishNight): 0 issues
+S-7c (ColophonOCR): 0 issues
+S-10 (Settings): 0 issues
+S-10a (StorePreview): 5 issues
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x7038179760, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+Element subtree:
+ →StaticText, 0x7038179760, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+Path to element:
+ →Application, 0x703829eec0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x703829f4a0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x7038177e70, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70381780d0, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x7038178200, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x7038178330, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x7038178460, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x7038178590, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x70381786c0, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x7038178b80, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x7038178cb0, {{0.0, 123.0}, {402.0, 454.0}}
+            ↳Other, 0x7038178de0, {{24.0, 139.0}, {354.0, 243.7}}, identifier: 'store.preview', label: 'kinari', value: kinari
+             ↳StaticText, 0x7038179760, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70385a5d20, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482321732992.921
+    Output: {
+      StaticText, 0x7038198b30, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x70382b7ef0, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+Element subtree:
+ →StaticText, 0x70382b7ef0, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+Path to element:
+ →Application, 0x70382a15c0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x70382a16f0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70382b6730, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70382b6990, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x70382b6ac0, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x70382b6bf0, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x70382b6d20, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x70382b6e50, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x70382b6f80, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x70382b7440, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x70382b7570, {{0.0, 123.0}, {402.0, 454.0}}
+            ↳Other, 0x70382b76a0, {{24.0, 139.0}, {354.0, 243.7}}, identifier: 'store.preview', label: 'kinari', value: kinari
+             ↳StaticText, 0x70382b7ef0, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70385b5500, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482321732560.920
+    Output: {
+      StaticText, 0x70382cb470, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x70382b5a00, {{123.0, 305.5}, {156.0, 13.0}}, label: 'ある日の暮方の事である。'
+Element subtree:
+ →StaticText, 0x70382b5a00, {{123.0, 305.5}, {156.0, 13.0}}, label: 'ある日の暮方の事である。'
+Path to element:
+ →Application, 0x70382b0d20, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x70382c9410, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70382b4370, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70382b45d0, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x70382b4700, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x70382b4830, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x70382b4960, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x70382b4a90, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x70382b4bc0, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x70382b5080, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x70382b51b0, {{0.0, 123.0}, {402.0, 454.0}}
+            ↳Other, 0x70382b52e0, {{24.0, 139.0}, {354.0, 243.7}}, identifier: 'store.preview', label: 'kinari', value: kinari
+             ↳StaticText, 0x70382b5a00, {{123.0, 305.5}, {156.0, 13.0}}, label: 'ある日の暮方の事である。'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70382dcf60, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482321165568.919
+    Output: {
+      StaticText, 0x7037fe2fc0, {{123.0, 305.5}, {156.0, 13.0}}, label: 'ある日の暮方の事である。'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x70381ae9b0, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+Element subtree:
+ →StaticText, 0x70381ae9b0, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+Path to element:
+ →Application, 0x70382e99e0, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x70382e74b0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70381ad0c0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70381ad320, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x70381ad450, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x70381ad580, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x70381ad6b0, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x70381ad7e0, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x70381ad910, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x70381addd0, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x70381adf00, {{0.0, 123.0}, {402.0, 454.0}}
+            ↳Other, 0x70381ae030, {{24.0, 139.0}, {354.0, 243.7}}, identifier: 'store.preview', label: 'kinari', value: kinari
+             ↳StaticText, 0x70381ae9b0, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x70382efa00, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482321732992.921
+    Output: {
+      StaticText, 0x70381c6f90, {{155.0, 322.5}, {31.0, 13.3}}, label: '羅生門'
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x70382e0c00, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+Element subtree:
+ →StaticText, 0x70382e0c00, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+Path to element:
+ →Application, 0x70382f1800, pid: 69119, label: 'よむま'
+  ↳Window (Main), 0x70382f1930, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x70382f5bf0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x70382f5e50, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x70382f5f80, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x70382f60b0, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x70382f61e0, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x70382f6310, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x70382f6440, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x70382e0150, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x70382e0280, {{0.0, 123.0}, {402.0, 454.0}}
+            ↳Other, 0x70382e03b0, {{24.0, 139.0}, {354.0, 243.7}}, identifier: 'store.preview', label: 'kinari', value: kinari
+             ↳StaticText, 0x70382e0c00, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x7038713540, pid: 69119, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 69119, elementOrHash.elementID: 482321732560.920
+    Output: {
+      StaticText, 0x70387124a0, {{123.0, 322.5}, {24.0, 13.3}}, label: 'p.61'
+    }
+]

@@ -1,0 +1,60 @@
+	 Executed 21 tests, with 0 failures (0 unexpected) in 349.865 (349.888) seconds
+Test Suite 'FinishAndRecommendationAcceptanceTests' started at 2026-11-01 23:59:25.644.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC79_次の1冊の各候補に事実1行の理由が出る]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC79_次の1冊の各候補に事実1行の理由が出る]' passed (8.081 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない]' passed (8.619 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC87_端末内書誌DBからシリーズの次の巻と同じ著者の本を推薦し書誌つきで積読に加える]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC87_端末内書誌DBからシリーズの次の巻と同じ著者の本を推薦し書誌つきで積読に加える]' passed (17.619 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC146_読み終えた本の詳細画面にこの本のあとにが最大5冊出てその場で積読に加えられる]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC146_読み終えた本の詳細画面にこの本のあとにが最大5冊出てその場で積読に加えられる]' passed (18.081 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない]' passed (6.880 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC128_ふりかえり1行の1晩のみの文言と同点最長晩の新しい日付選択を検証する]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC128_ふりかえり1行の1晩のみの文言と同点最長晩の新しい日付選択を検証する]' passed (13.411 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC78_次の1冊に積読の関連本2冊と未所有の関連本1冊が順に並ぶ]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC78_次の1冊に積読の関連本2冊と未所有の関連本1冊が順に並ぶ]' passed (10.549 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC127_読み終えのふりかえり1行に晩数と合計時間と最長の晩が出てカードには載らない]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC127_読み終えのふりかえり1行に晩数と合計時間と最長の晩が出てカードには載らない]' passed (8.510 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC80_未所有の候補がないときは積読から最大3冊を出す]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC80_未所有の候補がないときは積読から最大3冊を出す]' passed (10.166 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC82_次の1冊で積読の本を選ぶと今の本になりウィジェットも更新される]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC82_次の1冊で積読の本を選ぶと今の本になりウィジェットも更新される]' passed (16.743 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC85_読み終えのカードの晩数を4時境目のユニーク晩数で数える]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC85_読み終えのカードの晩数を4時境目のユニーク晩数で数える]' passed (7.311 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC81_積読も未所有の候補もないときは本を加える案内が出る]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC81_積読も未所有の候補もないときは本を加える案内が出る]' passed (6.865 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC145_今の本が0冊で積読があるときしおり画面に最大3冊出て1タップで今の本になる]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC145_今の本が0冊で積読があるときしおり画面に最大3冊出て1タップで今の本になる]' passed (18.491 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC83_受賞一覧から出た未所有の本を積読に加えられる]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC83_受賞一覧から出た未所有の本を積読に加えられる]' passed (15.732 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC77_読み終えたボタンで読了になり奥付5行と奥付撮影ボタンが出る]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC77_読み終えたボタンで読了になり奥付5行と奥付撮影ボタンが出る]' passed (9.241 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC147_端末内の重み付けでよく選ぶ理由の候補が既定の順より上に繰り上がる]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC147_端末内の重み付けでよく選ぶ理由の候補が既定の順より上に繰り上がる]' passed (9.090 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC148_共起テーブルから文学NDC9かつ10人以上の本だけを人数を出さずに推薦する]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC148_共起テーブルから文学NDC9かつ10人以上の本だけを人数を出さずに推薦する]' passed (8.007 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC84_読み終えのカード画像に書名著者晩数分数だけを描き一行を含めない]' started.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC84_読み終えのカード画像に書名著者晩数分数だけを描き一行を含めない]' passed (8.432 seconds).
+Test Suite 'FinishAndRecommendationAcceptanceTests' passed at 2026-11-02 00:02:47.493.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 201.828 (201.849) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-02 00:02:47.496.
+	 Executed 148 tests, with 0 failures (0 unexpected) in 2550.402 (2550.595) seconds
+Test Suite 'Selected tests' passed at 2026-11-02 00:02:47.498.
+	 Executed 148 tests, with 0 failures (0 unexpected) in 2550.402 (2550.599) seconds
+2026-11-02 00:03:03.120 xcodebuild[85501:3970797] [MT] IDETestOperationsObserverDebug: 5480.329 elapsed -- Testing started completed.
+2026-11-02 00:03:03.120 xcodebuild[85501:3970797] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-02 00:03:03.120 xcodebuild[85501:3970797] [MT] IDETestOperationsObserverDebug: 5480.329 sec, +5480.329 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Logs/Test/Test-ReadingApp-2026.11.01_22-31-29-+0900.xcresult
+
+Failing tests:
+	SettingsStoreIntentsAcceptanceTests.test_AC91_7種類の保存失敗時にエラーが出て変更前のデータが保たれる()
+
+** TEST FAILED **
+
+Testing started
+make: *** [ios-test] Error 65
+end 2026-11-02 00:03:06
+exit=2
