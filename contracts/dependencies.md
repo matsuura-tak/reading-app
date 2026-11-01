@@ -18,7 +18,7 @@ reviewer は G2 で、差分の依存がこの表にあるかを確かめます�
 ### 使う Apple のフレームワーク（iOS 26 SDK。表に載せないが、使う所を決めておく）
 | フレームワーク | 使う所（ADR 0001 の単位） | 何に使うか | 関わる AC |
 |---|---|---|---|
-| SwiftUI | アプリ、ウィジェットの拡張、ReadingCore（W-1、W-2 の View） | 全画面、ウィジェット、Live Activity の描画、読み終えのカードの ImageRenderer | 全画面、AC-84 |
+| SwiftUI | アプリ、ウィジェットの拡張（W-1〜W-5 の View は両ターゲット共有の1ファイル。ADR 0005 追記） | 全画面、ウィジェット、Live Activity の描画、読み終えのカードの ImageRenderer | 全画面、AC-84 |
 | SwiftData | ReadingStore | 主の保存先（VersionedSchema。ADR 0002） | AC-89〜AC-91 ほか |
 | WidgetKit | ウィジェットの拡張、ReadingStore（再読み込み） | W-1、W-2、W-4（ControlWidget）、`reloadAllTimelines` | AC-27〜AC-35、AC-102、AC-126 |
 | ActivityKit | ReadingStore（要求）、ウィジェットの拡張（描画） | W-3 の予約（`request(...start:)`。iOS 26）、すぐ始める、更新、終わり。pushType は nil | AC-36〜AC-41、AC-97、AC-98、AC-114〜AC-120、AC-130〜AC-132、AC-136、AC-144 |

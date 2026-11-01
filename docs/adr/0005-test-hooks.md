@@ -142,16 +142,35 @@ G3 r2 の verifier の指摘（`docs/reviews/001-reading-session-G3-verifier-r2.
 ### 決めたこと
 - 案1。見本の根は `hook.widget.showcase`、枠は `hook.widget.canvas`。読み出しの `hook.widget` に `showcase`（使った View の型の名前、枠の大きさ、はみ出し）を足した。
 - H33 `-uitest-hold-load <対象>` と `yomuma.uitest.load.release`：端末内の読み込みはふだん 0.3秒より速く、design/ 5 の読み込み中の形を撮れないため。時間（N ミリ秒遅らせる）ではなく「止めて放す」にしたのは、sleep なしで撮る時を決められるから（H19 の hold と同じ考え）。テストの起動だけで効き、設定のファイルに書かない。
-- どちらも `#if UITEST_HOOKS` の中だけ（H33 の止める所も読み込みの関数の中で `#if UITEST_HOOKS` で包む）。
+- H22 の見本の入口と H33 の入口（引数を読む所、放す通知を受ける所、`hook.state` に書く所）は `#if UITEST_HOOKS` の中だけ。
+- H33 の止める門は H7 と同じ形にする（2026-11-02、G3 の契約の reviewer の要修正1）。
+  - 止める門は `ReadingStore` の読み込みの関数に、実行時の門として置く。`ReadingDataStore.consumeFailSave(for:)` と同じく `#if` なしの小さな関数で、既定は素通り（止める対象が空）。
+  - 門を設定するのは、アプリの `#if UITEST_HOOKS` の中のコーディネータ（`UITestHooks/`）だけ。H7 で `UITestHookCoordinator` が `store.configureFailSave(...)` を呼ぶのと同じ。
+  - `ReadingStore` には `UITEST_HOOKS` を定義しない。SwiftPM の `swiftSettings` の `.define` は構成を分けて書かない限り Release でも効き、Release から完全に除くという案A の前提が崩れるため。
+  - Release は門を設定する入口を持たないので、止まらない。Release のバイナリに門の関数は残るが、型と関数の名前は `UITestHook` で始めず、nm の検査（見直す条件の1）の対象の外にする。nm の検査は「入口が Release に入っていない」ことの目印で、門が残ることは H7 と同じく許す。
+  - 契約 1-1 の「ローカルのパッケージと拡張には置かない」は「入口（設定する側）は置かない。実行時の門は H7 と同じく置いてよい」に整えた。
+- 見本の「終える」ボタン（要修正2）：共有する Live Activity の View は「終える」の押す部分を引数で受ける。拡張は `Button(intent: EndReadingFromActivityIntent())`、見本は何もしないクロージャのボタンを渡す。`EndReadingFromActivityIntent` はアプリと拡張の両方のターゲットに入っている（`ReadingAppIntents.swift`）ので、同じ View をアプリの中で描いて intent のボタンを持たせると、撮影中に押したときにアプリの中で読書が終わってしまうため。押しても H17・H13・H32 の値が変わらないことを verifier が確かめる（契約 H22 の `reading`）。
+- 余白（提案4）：W-1、W-2 の View の `padding` は、システムの既定の余白（`EnvironmentValues.widgetContentMargins`）と同じ値にする。見本のために本物の余白を変えない。
 
 ### 招く悪い結果
 - 案1の View をアプリのターゲットにも入れるので、拡張だけで使う API（`containerBackground` など）をアプリの側でも通す必要がある。効かない修飾子はアプリの中では何もしない（見本では背景を枠に別に塗る）。
 - 見本は本物と同じではない所が残る：ロック画面の単色、角の丸み、Dynamic Island、Control と Siri の小窓の実寸。これは G4 の実機で見る。
+- `.contentMarginsDisabled()` を付けるので、`padding` の値を誤ると本物のウィジェットの余白が変わる。
+- H33 の門の関数が Release に残る（数十バイト。H7 の `consumeFailSave` と同じ）。
+
+### G4 の実機で見ること（この追記で増えた分）
+PRD 11 の G4 の表は pdm の持ち物なので、ここに書き、G4 で Takuma が PRD の行を撮るときに一緒に見る。
+| 見ること | 一緒に撮る PRD の行 | 合格 |
+|---|---|---|
+| W-1 の余白が変わっていない | G4-1 | `.contentMarginsDisabled()` を付ける前の版（BASE a30896c の拡張）と付けた後の版で、同じ一行・同じ文字の大きさのロック画面のスクリーンショットを並べ、文字の位置と欠けた字の数が同じ |
+| W-2 の余白が変わっていない | G4-3（とホーム画面） | 同上。小のウィジェットで、付ける前と後の文字の位置と欠けた字の数が同じ |
+| Live Activity の「終える」が本物では読書を終える | G4-6 | ロック画面の Live Activity の「終える」を押すと、アプリの読書が終わり、結果が出る（共有の View に変えても拡張の動きが変わっていない） |
+| Release で止まらない | G4 の TestFlight（Release）の版で行うどの行でも | Release の版で、本棚、本の画面、読み終えた画面、購入の復元が止まらずに出る。`nm` で `UITestHook` が0件 |
 
 ### 見直す条件
 - View の型が1ファイルで持てなくなったとき（案3へ）。
 - Apple が WidgetKit の View をアプリの中で描く正式の口（例：アプリの中のウィジェットのプレビュー）を出したとき。
-- H33 の止める所が読み込みの関数を読みにくくしたら（`#if` が3か所を超えたら）、読み込みの関数を1つの actor にまとめてから止める所を1つにする。
+- H33 の止める門の呼び出しが読み込みの関数を読みにくくしたら（1つの関数に門の呼び出しが2つ以上、または門の呼び出しが8つの対象より多くの所に散ったら）、読み込みの関数を1つの actor にまとめてから門を1つにする。
 
 ### 確かめたこと
 - `EnvironmentValues.widgetFamily` は読むだけ：https://developer.apple.com/documentation/swiftui/environmentvalues/widgetfamily の宣言 `var widgetFamily: WidgetFamily { get }`（2026-11-02 に Apple のドキュメントの JSON で確かめた）。

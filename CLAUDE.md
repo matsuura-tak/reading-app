@@ -30,6 +30,7 @@
 - JSON Schema（jsonschema 4.25.1。`make check-contracts`）：
   - コマンド：`make check-contracts`（初めての時は `make contracts-venv` を先に呼び、リポジトリの外の `~/.cache/reading-app/contracts-schema-venv` に `contracts/check-requirements.txt` の固定版を入れる。初回だけネットワークが要る）
   - 出力（2026-11-02、venv のない状態から作って終了コード 0）：`ALL PASSED: 8 schemas, 28 examples validated with 0 errors.`
+  - 別の Python を使う：`make check-contracts SCHEMA_PYTHON=<python>`（環境変数でも可）。venv を作らず、その Python の jsonschema の版を出してから検査する（2026-11-02、終了コード 0 を確認）。
 
 ## 構成
 既定の場所です。app.json の paths を変えたら、この表も同じに直します（バックエンドはサーバーがないので使わない）。

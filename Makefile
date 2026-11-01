@@ -11,6 +11,11 @@ SIM_DESTINATION ?= platform=iOS Simulator,name=iPhone 17,OS=26.0
 BOOTSTRAP_PYTHON ?= /usr/bin/python3
 SCHEMA_VENV ?= $(HOME)/.cache/reading-app/contracts-schema-venv
 SCHEMA_PYTHON ?= $(SCHEMA_VENV)/bin/python
+# SCHEMA_PYTHON をコマンドの行か環境変数で明示したときは、その Python をそのまま使い、venv を作らない（contracts-venv を通らない）。
+# その Python に contracts/check-requirements.txt の版（jsonschema 4.25.1 ほか）が入っていることは使う人が守る。版は実行のたびに出す。
+# 入れた版を出す引数（カンマを含むので $(if) の中に直に書かず、変数にする）
+SCHEMA_VERSION_ARGS := -I -c 'import jsonschema,referencing; from importlib.metadata import version as v; print("jsonschema", v("jsonschema"), "referencing", v("referencing"))'
+SCHEMA_PYTHON_GIVEN := $(filter command line environment environment override,$(origin SCHEMA_PYTHON))
 SCHEMA_REQUIREMENTS := contracts/check-requirements.txt
 SCHEMA_STAMP := $(SCHEMA_VENV)/.installed
 
@@ -74,9 +79,11 @@ $(SCHEMA_STAMP): $(SCHEMA_REQUIREMENTS)
 		"$(BOOTSTRAP_PYTHON)" -m venv "$(SCHEMA_VENV)" || exit 1; \
 	fi
 	"$(SCHEMA_VENV)/bin/python" -m pip install --quiet --disable-pip-version-check -r "$(SCHEMA_REQUIREMENTS)"
-	"$(SCHEMA_VENV)/bin/python" -I -c 'import jsonschema,referencing; from importlib.metadata import version as v; print("jsonschema", v("jsonschema"), "referencing", v("referencing"))'
+	"$(SCHEMA_VENV)/bin/python" $(SCHEMA_VERSION_ARGS)
 	@touch "$(SCHEMA_STAMP)"
 
 # check-contracts: Python jsonschema.Draft202012Validator ワンライナーによる全スキーマ＋全 examples の自動検証（外部スクリプト不使用）
-check-contracts: contracts-venv
+check-contracts: $(if $(SCHEMA_PYTHON_GIVEN),,contracts-venv)
+	$(if $(SCHEMA_PYTHON_GIVEN),@echo "using SCHEMA_PYTHON=$(SCHEMA_PYTHON) (given; venv is not created)")
+	$(if $(SCHEMA_PYTHON_GIVEN),"$(SCHEMA_PYTHON)" $(SCHEMA_VERSION_ARGS))
 	"$(SCHEMA_PYTHON)" -I -c 'import json,sys; from jsonschema import Draft202012Validator as V; from referencing import Registry,Resource; S=[json.load(open(p,encoding="utf-8")) for p in sys.argv[1:]]; [V.check_schema(s) for s in S]; R=Registry().with_resources([(s["$$id"],Resource.from_contents(s)) for s in S]); n=sum(1 for s in S for e in s.get("examples",[]) if V(s,registry=R).validate(e) is None)+sum(1 for s in S for d in s.get("$$defs",{}).values() for e in d.get("examples",[]) if V(d,registry=R).validate(e) is None); print(f"ALL PASSED: {len(S)} schemas, {n} examples validated with 0 errors.")' contracts/hooks/*.schema.json contracts/widget-snapshot.schema.json

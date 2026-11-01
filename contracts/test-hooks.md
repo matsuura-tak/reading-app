@@ -1,6 +1,6 @@
-# テストのつなぎ口（H1〜H32）
+# テストのつなぎ口（H1〜H33）
 
-- 書いた役：tech-lead　日付：2026-10-20（G1 の 7-4a。裁定 27、28）。2026-10-25 に更新（G1 の 7-A：これまで選択肢だった H19、H23、H24、H25、H27、H30、H32 をすべて v1.0 標準仕様に昇格し、H20 を端末内の書誌 SQLite DB および共起テーブルの差し替えに、H29 を外部 HTTP 通信 0 件の検証用に更新。全149 AC に対応）。2026-11-02 に更新（G3 r2 の verifier の指摘：H22 の撮影用の見本を細かく決め、H33 を足し、H8 と H30 の復元の通信なしを決め、8 に画面×状態の撮り方を足した）
+- 書いた役：tech-lead　日付：2026-10-20（G1 の 7-4a。裁定 27、28）。2026-10-25 に更新（G1 の 7-A：これまで選択肢だった H19、H23、H24、H25、H27、H30、H32 をすべて v1.0 標準仕様に昇格し、H20 を端末内の書誌 SQLite DB および共起テーブルの差し替えに、H29 を外部 HTTP 通信 0 件の検証用に更新。全149 AC に対応）。2026-11-02 に更新（G3 r2 の verifier の指摘：H22 の撮影用の見本を細かく決め、H33 を足し、H8 と H30 の復元の通信なしを決め、8 に画面×状態の撮り方を足した）。同日に G3 の契約の reviewer の要修正を受けて、1-1 の置き場所、H22 の「終える」の操作と余白、H33 の止める門の置き場所を直した
 - 大きな版：1。同じ大きな版の中では足すことだけをする（引数、環境変数、通知、要素の名前と、値の意味と範囲を変えない、消さない）。
 - 範囲：v1.0 の全149 AC（AC-1〜AC-149）が使う30個（H1、H2、H4〜H10、H12〜H32。H3 と H11 は欠番）と、G3 の画面×状態の証拠のための H33（AC の判定には使わない）の、計31個。
 - 関係：PRD 11 の冒頭（H1〜H32 と読み方の決まり）、設計メモ 2 と 5、ADR 0001〜0005、contracts/entry-urls.md、contracts/widget-snapshot.schema.json、contracts/hooks/ の JSON Schema、design/001-reading-session.md の 6 と 7。
@@ -16,7 +16,11 @@
 | Perf | 入る | Release と同じ（-O、DEBUG なし） | 速さの AC（AC-55、AC-100〜AC-102、AC-114、AC-115、AC-149）、G4-15 の投入 |
 | Release | 入らない（os_signpost のみ残す） | -O | TestFlight、App Store、G4 |
 
-- つなぎ口の型と関数は、アプリのターゲットの `UITestHooks/` の下だけに置き、ファイルごと `#if UITEST_HOOKS` で包む。ローカルのパッケージとウィジェットの拡張には置かない。
+- つなぎ口の型と関数は、アプリのターゲットの `UITestHooks/` の下だけに置き、ファイルごと `#if UITEST_HOOKS` で包む。ローカルのパッケージとウィジェットの拡張には、つなぎ口の入口（引数、環境変数、設定のファイル、Darwin の通知を読んで設定する側、`hook.*` の読み出し）を置かない。
+  - 例外は「実行時の門」だけ。保存や読み込みの関数の中で「止めるか、失敗させるか」を聞く小さな関数で、既定は素通り（何もしない）。H7 の `ReadingDataStore.consumeFailSave(for:)` と H33 の止める門がこれに当たる。
+  - 門はローカルのパッケージ `ReadingStore` に `#if` なしで置いてよい。パッケージには `UITEST_HOOKS` を定義しない（SwiftPM の `define` は構成を問わず効くので、Release でも有効になってしまうため）。
+  - 門の値を変えてよいのは、アプリの `#if UITEST_HOOKS` の中のつなぎ口（`UITestHooks/` の下）だけ。Release は門を設定する入口を持たないので、門は常に素通りする。
+  - 門の型と関数の名前は `UITestHook` で始めない（1-2 の nm の検査は Release に入らないものの目印なので、Release に残る門は対象の外にする）。ADR 0005 の追記。
 - 設定がない起動（テストの起動でなく、1-3 のファイルもない）では、Debug と Perf でもつなぎ口は何もしない（本物の時計、本物の DB、読み出しの要素なし）。
 
 ### 1-2 名前の決まり（G2 の grep と nm の目印。ADR 0005）
@@ -407,7 +411,10 @@
   - 拡張が使う View の型と同じ型を描く。見本のために別の View を書かない。
   - そのため、W-1〜W-5 の View の型は、アプリと拡張の両方のターゲットに入る1つのファイルに置く（`ReadingAppIntents.swift` がすでに両方に入っているのと同じやり方。新しいパッケージやモジュールは作らない）。
   - View は `@Environment(\.widgetFamily)` や `ActivityViewContext` を読まず、ファミリー、写し（`WidgetSnapshot`）、Live Activity の `ReadingActivityAttributes` と `ContentState` を引数で受ける。`EnvironmentValues.widgetFamily` は読むだけで書けないため（https://developer.apple.com/documentation/swiftui/environmentvalues/widgetfamily の宣言 `var widgetFamily: WidgetFamily { get }`）。拡張の側は、環境と context から読んだ値をその引数に渡すだけにする。
-  - 拡張は、余白をシステムに任せず View の中で決める。W-1 と W-2 の `Widget` に `.contentMarginsDisabled()` を付け、余白は View の `padding` で持つ（この Mac の Xcode の iPhoneSimulator27.2.sdk の WidgetKit.swiftinterface 662行に `public func contentMarginsDisabled() -> some SwiftUI::WidgetConfiguration` があることを確かめた）。これでアプリの見本と本物の余白が同じになる。
+  - 拡張は、余白をシステムに任せず View の中で決める。W-1 と W-2 の `Widget` に `.contentMarginsDisabled()` を付け、余白は View の `padding` で持つ。
+    - View の `padding` の値は、システムの既定の余白（`.contentMarginsDisabled()` を付けない時にシステムが入れる余白）と同じにする。見本のために本物のウィジェットの余白を変えない。
+    - 値は拡張の中で `@Environment(\.widgetContentMargins)` を読んで View の引数に渡すか、同じ値を定数で持つ（同じ SDK の WidgetKit.swiftinterface 641-646行に `extension EnvironmentValues { @available(iOS 17.0, …) public var widgetContentMargins: EdgeInsets { get } }` があることを確かめた。アプリの中の見本は環境から読めないので、拡張と同じ値を引数で渡す）。どちらでも、付ける前と後で本物のウィジェットの見た目が変わらないことを G4 の実機で見る（ADR 0005 の追記の「G4 の実機で見ること」。PRD の G4-1、G4-3 を撮るときに、`.contentMarginsDisabled()` を付ける前の版の画像と並べる）。
+    - `.contentMarginsDisabled()` は、この Mac の Xcode の iPhoneSimulator27.2.sdk の WidgetKit.swiftinterface 662行に `public func contentMarginsDisabled() -> some SwiftUI::WidgetConfiguration` があることを確かめた。これでアプリの見本と本物の余白が同じになる。
   - 写しは、拡張と同じく App Group の `widget-snapshot.json`（`UITEST_WIDGET_SNAPSHOT` があればその中身）を同じ読む関数で読む。H2 の投入と H4 の時計がそのまま効く。
   - 書名と一行を隠す設定（`hideOnWidgets`）、名無しの今の本、電子書籍の進み具合は、写しの値で決まる（見本の側で分けない）。
   - View の全体の要素には design/ 6 の識別子を付ける：W-1 `widget.rectangular`、W-2 `widget.small`、W-3 `liveActivity.banner`、W-4 `control.startReading`、W-5 `intent.snippet`。中の一行、場所、書名は design/ 6 のとおり読み上げから隠し、全体のラベルに入れる（いまの見本の `widget.accessoryRectangular`、`widget.systemSmall`、`snippet.whereStopped`、`snippet.progress` は design/ 6 にない名前なので使わない）。同じ識別子を拡張の側でも付けてよい（本物のウィジェットの識別子は XCUITest から読めないが、害はない）。
@@ -428,7 +435,11 @@
   - `normal`：写しから組んだ、いまの項目（タイムラインの最初の項目）。
   - `placeholder`：拡張の `TimelineProvider.placeholder(in:)` が返す項目を、同じ View に `.redacted(reason: .placeholder)` を付けて描く（design/ 5 の W-1、W-2 の読み込み中）。本の文を出さない。
   - `waiting`：Live Activity の `ContentState` を、拡張が予約で使うのと同じ関数で、写しの今の本から作る（mode `waiting`）。
-  - `reading`：H2 の `activeSession` があればその読み始めの時刻、なければ H4 の時計のいまを読み始めとして `ContentState`（mode `reading`）を作る。「終える」ボタン（`liveActivity.end`）は描くが、見本の中では押しても何もしない。
+  - `reading`：H2 の `activeSession` があればその読み始めの時刻、なければ H4 の時計のいまを読み始めとして `ContentState`（mode `reading`）を作る。「終える」ボタン（`liveActivity.end`）も描く。
+    - 共有する Live Activity の View は、「終える」の押す部分を引数で受ける（例：`@ViewBuilder endButton: (_ label: Label) -> some View` のような、ラベルを受けてボタンを返す引数。形は実装に任せるが、View の中で `EndReadingFromActivityIntent` を直に作らない）。
+    - 拡張は `Button(intent: EndReadingFromActivityIntent()) { label }` を渡す。いまの拡張と同じ動き。
+    - 見本は、何もしないクロージャのボタン `Button(action: {}) { label }` を渡す。インテントは作らず、実行もしない。見た目（ラベル、色、大きさ、識別子 `liveActivity.end`）は拡張と同じになる。
+    - 確かめ方：見本で `liveActivity.end` を押したあと、H17 の `hook.state` の `sessionEntry` と読書中の有無、H13 の `hook.store` の `activeSession` と記録の数が、押す前と同じであること。H32 の `invocations` にも `EndReadingFromActivityIntent` が足されないこと。
   - `ended`：今の本のいちばん新しい記録（H2 の `records`）から `ContentState`（mode `ended`）を作る。記録がなければ `hook.error`（`H22:liveActivity.ended.noRecord`）。
   - `startReading`：Control のラベル（文言キー `control.startReading` と記号）。押しても何もしない。
   - `whereStopped`：`WhereStoppedIntent` が声と小窓に使うのと同じ関数で、写しから文を作って描く。インテントの実行としては数えない（H32 の `invocations` に足さない）。
@@ -592,7 +603,10 @@
   - `store.load` を止めている間、H13 の `hook.store` は空の文字列（H13 の失敗と同じ）。
 - 失敗：知らない対象は `hook.error`（`H33:<値>`）。止めていない番号を放す知らせは無視する。
 - 速さの AC（AC-55、AC-100〜AC-102、AC-114、AC-115、AC-149）の起動には付けない。
-- 本番：Release に入らない（1-1。`#if UITEST_HOOKS` の中だけで、読み込みの関数に置く止める所も `#if UITEST_HOOKS` で包む）。
+- 本番：H7 と同じ形にする（1-1 の例外の「実行時の門」）。
+  - 止める門は、`ReadingStore` の読み込みの関数（`store.load`、`shelf.load`、`book.load`、`recommend.load`、`catalog.lookup`、`storekit.*` の入口）に、実行時の門として置く。`consumeFailSave(for:)` と同じ形で、既定は素通り（止める対象の一覧が空）。`#if UITEST_HOOKS` では包まない（パッケージには定義がないため）。
+  - 門に止める対象を設定し、`yomuma.uitest.load.release` を受けて放し、`hook.state` に `hold.<対象>` を書くのは、アプリの `#if UITEST_HOOKS` の中（`UITestHooks/` の下のコーディネータ）だけ。読み込みの関数がパッケージでなくアプリのターゲットにある対象があれば、その門も同じ形（`#if` で包まない実行時の門）で置き、対象ごとに形を分けない。
+  - Release は門を設定する入口を持たないので、門は常に素通りし、止まらない。門の関数は Release のバイナリに残るが、型と関数の名前は `UITestHook` で始めず、nm の検査の対象の外（ADR 0005 の追記）。
 
 ## 3. テストが読む識別子と属性（つなぎ口に関わる分）
 - 識別子は design/ 6 を正とする。この契約で足すのは `hook.*` だけで、画面の要素には足さない。
