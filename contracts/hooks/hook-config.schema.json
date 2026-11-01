@@ -187,19 +187,37 @@
             "family": {
               "enum": [
                 "accessoryRectangular",
-                "systemSmall"
+                "systemSmall",
+                "liveActivity",
+                "control",
+                "snippet"
               ],
-              "description": "W-1 は accessoryRectangular、W-2 は systemSmall。"
+              "description": "H22 の -uitest-widget-show の面。W-1 は accessoryRectangular、W-2 は systemSmall、W-3 は liveActivity（ロック画面のバナー）、W-4 は control（Control のラベルの中身だけ）、W-5 は snippet（WhereStoppedIntent の小窓）。2026-11-02 に liveActivity、control、snippet を足した。"
             },
             "width": {
               "type": "number",
-              "exclusiveMinimum": 0
+              "exclusiveMinimum": 0,
+              "description": "枠の幅（pt）。見本はこの幅の枠で描く。"
             },
             "height": {
               "type": "number",
-              "exclusiveMinimum": 0
+              "exclusiveMinimum": 0,
+              "description": "枠の高さ（pt）。accessoryRectangular、systemSmall、control はこの高さの枠で描く（固定）。liveActivity と snippet は中身に合わせた高さで、この値を上限とする（liveActivity は 160 以下）。"
+            },
+            "variant": {
+              "enum": [
+                "normal",
+                "placeholder",
+                "waiting",
+                "reading",
+                "ended",
+                "startReading",
+                "whereStopped"
+              ],
+              "description": "H22 の -uitest-widget-show の3つ目の区切り（2026-11-02 に足した）。accessoryRectangular と systemSmall は normal（省いたとき）か placeholder（TimelineProvider の placeholder の項目を redacted で描く。design/ 5 の読み込み中）。liveActivity は waiting、reading、ended のどれか（省けない）。control は startReading（省いたとき）。snippet は whereStopped（省いたとき）。"
             }
-          }
+          },
+          "description": "H22 の -uitest-widget-show（撮影用の見本）。要素 hook.widget.canvas に、拡張と同じ View 型を、width×height pt の枠で1つだけ描く（contracts/test-hooks.md の H22）。"
         },
         "snapshotOverride": {
           "type": "string",

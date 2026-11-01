@@ -127,3 +127,35 @@
 - [x] 案が2つ以上あり、どの案にも悪い点が書いてある
 - [x] 反論、悪い結果、見直す条件が空でない
 - [x] 確かめたことに、URL かコマンドの出力がある
+
+## 追記（2026-11-02、tech-lead）：H22 の撮影用の見本と H33（読み込みを止める）
+G3 r2 の verifier の指摘（`docs/reviews/001-reading-session-G3-verifier-r2.md`）を受けて、`contracts/test-hooks.md` の H22「撮影用の見本」、H33、8 章を足した。元に戻しにくいのは「ウィジェットの View の型をアプリと拡張の両方のターゲットに入れる」所なので、ここに残す。
+
+### 比べた案
+| 案 | 良い点 | 悪い点 | 選ばなかった理由 |
+|---|---|---|---|
+| **案1：W-1〜W-5 の View の型を、アプリと拡張の両方のターゲットに入る1つのファイルに置き、見本は同じ型を `<幅>×<高さ>` pt の枠で描く（採用）** | 撮った画像が製品の View そのもの。H22 の読み出し（同じ関数で組む）と画像が食い違わない。`ReadingAppIntents.swift` で同じやり方をすでにしており、モジュールを足さない | Release のアプリにも、アプリの中では使わない View の型が入る（数 KB）。View は環境（`widgetFamily`、`ActivityViewContext`）を読まず引数で受ける形に直す手間がある。壁紙の上の単色（vibrant）や Dynamic Island はアプリの中で描けない | — |
+| 案2：いまのまま、見本はアプリの中で別に書いた View（`WidgetShowcaseHarnessView`） | 直す手間がない | 製品の View と字の大きさも組み方も違い、172×76 の見本で2字欠けたのに H22 の読み出しは欠け0字という食い違いが起きた。画像が証拠にならない | 証拠にならないため |
+| 案3：ローカルの Swift パッケージに `ReadingWidgetUI` のような target を足し、両方から import する | 型の置き場所がはっきりする | テーマの型（`ThemeTokens.swift`）とインテントの型（`ReadingAppIntents.swift`）は、すでに「両方のターゲットに入る1つのファイル」として持っている。View だけをパッケージに移すと、それらも一緒に移すことになり変更が広がる。ADR 0001 の 3 のパッケージの形（ReadingCore と ReadingStore）を変える | 手間と影響が大きいため。View が増えて1ファイルで持てなくなったら見直す |
+| 案4：シミュレーターのホーム画面とロック画面に本物のウィジェットを置いて XCUITest で撮る | 本物の描画 | ウィジェットの置き方を XCUITest で決定的にできず、ロック画面のウィジェットは springboard の操作が要る。大きさを選べない | 決定的に撮れないため。本物の見た目は G4 の実機で見る |
+
+### 決めたこと
+- 案1。見本の根は `hook.widget.showcase`、枠は `hook.widget.canvas`。読み出しの `hook.widget` に `showcase`（使った View の型の名前、枠の大きさ、はみ出し）を足した。
+- H33 `-uitest-hold-load <対象>` と `yomuma.uitest.load.release`：端末内の読み込みはふだん 0.3秒より速く、design/ 5 の読み込み中の形を撮れないため。時間（N ミリ秒遅らせる）ではなく「止めて放す」にしたのは、sleep なしで撮る時を決められるから（H19 の hold と同じ考え）。テストの起動だけで効き、設定のファイルに書かない。
+- どちらも `#if UITEST_HOOKS` の中だけ（H33 の止める所も読み込みの関数の中で `#if UITEST_HOOKS` で包む）。
+
+### 招く悪い結果
+- 案1の View をアプリのターゲットにも入れるので、拡張だけで使う API（`containerBackground` など）をアプリの側でも通す必要がある。効かない修飾子はアプリの中では何もしない（見本では背景を枠に別に塗る）。
+- 見本は本物と同じではない所が残る：ロック画面の単色、角の丸み、Dynamic Island、Control と Siri の小窓の実寸。これは G4 の実機で見る。
+
+### 見直す条件
+- View の型が1ファイルで持てなくなったとき（案3へ）。
+- Apple が WidgetKit の View をアプリの中で描く正式の口（例：アプリの中のウィジェットのプレビュー）を出したとき。
+- H33 の止める所が読み込みの関数を読みにくくしたら（`#if` が3か所を超えたら）、読み込みの関数を1つの actor にまとめてから止める所を1つにする。
+
+### 確かめたこと
+- `EnvironmentValues.widgetFamily` は読むだけ：https://developer.apple.com/documentation/swiftui/environmentvalues/widgetfamily の宣言 `var widgetFamily: WidgetFamily { get }`（2026-11-02 に Apple のドキュメントの JSON で確かめた）。
+- `contentMarginsDisabled()`：この Mac の Xcode の iPhoneSimulator27.2.sdk の `WidgetKit.swiftinterface` 662行に `public func contentMarginsDisabled() -> some SwiftUI::WidgetConfiguration`。
+- Live Activity の高さの上限 160 pt：https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities の「The system may truncate a Live Activity if its height exceeds 160 points」。
+- 契約の検査：`make check-contracts` → `ALL PASSED: 8 schemas, 28 examples validated with 0 errors.`（2026-11-02）。
+- ビルドはしていない（ios/ は書かない）。案1で両方のターゲットに入れたときのビルドは ios-engineer が `make ios-build` で確かめる。

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h22-widget:1",
   "title": "H22 ウィジェットの中身（要素 hook.widget の accessibilityValue の JSON）大きな版 1",
-  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0003、ADR 0005、PRD 11 の冒頭のつなぎ口（AC-14、AC-16、AC-27〜AC-35、AC-40、AC-62、AC-64、AC-73、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139〜AC-141）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：電子書籍の進み具合表示と名無しの今の本を反映）。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[進み具合と名無しの今の本（AC-139〜AC-141）] 進み具合の短い表示文字列（texts[\"widget.page\"] および composition.page.text）は、紙の本のページなら「p.61」、電子書籍の位置番号（location）なら「位置1450」（英語は \"Loc 1450\"）、パーセント（percent）なら「52%」が入る。名無しの今の本（isTitlePending が真。register.later）で一行がないときは texts[\"widget.title\"] に文言キー widget.currentBookAsTitle の文（「今の本」／英語 \"Reading Now\"）が入り、accessibility.label の書名の位置も同じ文になる。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
+  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0003、ADR 0005、PRD 11 の冒頭のつなぎ口（AC-14、AC-16、AC-27〜AC-35、AC-40、AC-62、AC-64、AC-73、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139〜AC-141）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：電子書籍の進み具合表示と名無しの今の本を反映）。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[進み具合と名無しの今の本（AC-139〜AC-141）] 進み具合の短い表示文字列（texts[\"widget.page\"] および composition.page.text）は、紙の本のページなら「p.61」、電子書籍の位置番号（location）なら「位置1450」（英語は \"Loc 1450\"）、パーセント（percent）なら「52%」が入る。名無しの今の本（isTitlePending が真。register.later）で一行がないときは texts[\"widget.title\"] に文言キー widget.currentBookAsTitle の文（「今の本」／英語 \"Reading Now\"）が入り、accessibility.label の書名の位置も同じ文になる。\n\n[撮影用の見本（2026-11-02 に足した）] -uitest-widget-show で起動したときは showcase に見本の大きさと、使った View の型を書く。見本は拡張と同じ View の型を requestedWidth×requestedHeight pt の枠で描く（contracts/test-hooks.md の H22）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
   "type": "object",
   "required": [
     "outputVersion",
@@ -53,6 +53,10 @@
           }
         }
       }
+    },
+    "showcase": {
+      "$ref": "#/$defs/showcase",
+      "description": "-uitest-widget-show で起動したときだけ出す（2026-11-02 に足した）。ないときはキーを書かない。"
     }
   },
   "$defs": {
@@ -513,6 +517,126 @@
               ]
             }
           }
+        }
+      ]
+    },
+    "showcase": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "H22 の撮影用の見本（要素 hook.widget.canvas）を描いた結果。contracts/test-hooks.md の H22「撮影用の見本」。座標と大きさは pt。",
+      "required": [
+        "spec",
+        "surface",
+        "variant",
+        "viewType",
+        "requestedWidth",
+        "requestedHeight",
+        "canvasWidth",
+        "canvasHeight",
+        "idealHeight",
+        "contentOverflow",
+        "colorScheme",
+        "dynamicTypeSize"
+      ],
+      "properties": {
+        "spec": {
+          "type": "string",
+          "minLength": 1,
+          "description": "-uitest-widget-show に渡した文字列そのもの。"
+        },
+        "surface": {
+          "enum": [
+            "accessoryRectangular",
+            "systemSmall",
+            "liveActivity",
+            "control",
+            "snippet"
+          ]
+        },
+        "variant": {
+          "enum": [
+            "normal",
+            "placeholder",
+            "waiting",
+            "reading",
+            "ended",
+            "startReading",
+            "whereStopped"
+          ],
+          "description": "省いたときは既定の値（test-hooks.md の H22 の表）を書く。"
+        },
+        "viewType": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Za-z0-9]*$",
+          "description": "見本に描いた SwiftUI の View の型の名前（String(describing:) の、総称の引数を除いた部分）。拡張の Widget／ActivityConfiguration／ControlWidget／WhereStoppedIntent が使う型と同じ名前であること（reviewer が grep で照らす）。"
+        },
+        "requestedWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "requestedHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "canvasWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "hook.widget.canvas を実際に置いた幅。requestedWidth と同じ（差は 0.5 以下）。"
+        },
+        "canvasHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "hook.widget.canvas を実際に置いた高さ。accessoryRectangular、systemSmall、control は requestedHeight と同じ。liveActivity と snippet は min(idealHeight, requestedHeight)。"
+        },
+        "idealHeight": {
+          "type": "number",
+          "minimum": 0,
+          "description": "canvasWidth の幅で中身が欲しがった高さ（fixedSize で測った値）。"
+        },
+        "contentOverflow": {
+          "type": "boolean",
+          "description": "中身が枠に収まらず、枠で切った部分があれば真（幅か高さのどちらかで、中身の欲しがる大きさが枠より 0.5 を超えて大きい）。AC-27、AC-35 の見本では偽であること。"
+        },
+        "colorScheme": {
+          "enum": [
+            "light",
+            "dark"
+          ],
+          "description": "見本を描いた時の配色。"
+        },
+        "dynamicTypeSize": {
+          "type": "string",
+          "description": "見本を描いた時の DynamicTypeSize の case の名前（例 large、accessibility5）。"
+        }
+      },
+      "examples": [
+        {
+          "spec": "accessoryRectangular:172x76",
+          "surface": "accessoryRectangular",
+          "variant": "normal",
+          "viewType": "ReadingLockScreenWidgetView",
+          "requestedWidth": 172,
+          "requestedHeight": 76,
+          "canvasWidth": 172,
+          "canvasHeight": 76,
+          "idealHeight": 74,
+          "contentOverflow": false,
+          "colorScheme": "dark",
+          "dynamicTypeSize": "large"
+        },
+        {
+          "spec": "liveActivity:370x160:reading",
+          "surface": "liveActivity",
+          "variant": "reading",
+          "viewType": "ReadingLiveActivityLockScreenView",
+          "requestedWidth": 370,
+          "requestedHeight": 160,
+          "canvasWidth": 370,
+          "canvasHeight": 96,
+          "idealHeight": 96,
+          "contentOverflow": false,
+          "colorScheme": "light",
+          "dynamicTypeSize": "large"
         }
       ]
     }

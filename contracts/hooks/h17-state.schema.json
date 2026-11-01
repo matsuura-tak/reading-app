@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h17-state:1",
   "title": "H9・H10・H17 状態の読み出し（要素 hook.state の accessibilityValue）の書き方 大きな版 1",
-  "description": "hook.state の値は1行の文字列（$defs/raw の形）。テストは次の決まりで読んで、このスキーマの形のオブジェクトに直してから比べる。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：Live Activity、App Intents、OCR、端末内書誌 DB 検索の区間を追加）。\n\n[読み方] (1) ; で区切る (2) 最初の = の前がキー、後ろが値 (3) announce、notice、widgetReloads の値は「名前:回数」を , で区切った並び（空なら値は空で、{} とする） (4) lat. と prevLat. で始まるキーの値は、ミリ秒の整数を , で区切った並び（測った順） (5) true と false は真偽、数字だけの値は整数、ほかは文字列。キーの順に意味はない。\n\n[数える範囲] haptic、announce、notice、widgetReloads、lat.* は、プロセスが始まってからの数（開き直すと0から）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
+  "description": "hook.state の値は1行の文字列（$defs/raw の形）。テストは次の決まりで読んで、このスキーマの形のオブジェクトに直してから比べる。関係：contracts/test-hooks.md、ADR 0005、PRD 11 の冒頭のつなぎ口、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：Live Activity、App Intents、OCR、端末内書誌 DB 検索の区間を追加）。\n\n[読み方] (1) ; で区切る (2) 最初の = の前がキー、後ろが値 (3) announce、notice、widgetReloads の値は「名前:回数」を , で区切った並び（空なら値は空で、{} とする） (4) lat. と prevLat. で始まるキーの値は、ミリ秒の整数を , で区切った並び（測った順） (5) true と false は真偽、数字だけの値は整数、ほかは文字列。キーの順に意味はない。\n\n[H33 の hold.<対象>] 値は waiting、held、shown、released の文字列（2026-11-02 に足した）。\n\n[数える範囲] haptic、announce、notice、widgetReloads、lat.* は、プロセスが始まってからの数（開き直すと0から）。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
   "type": "object",
   "required": [
     "state",
@@ -151,6 +151,15 @@
         "minimum": 0
       },
       "description": "H10 の注。前の起動（-uitest-readouts off で測った起動）が UITestHooks/latency.json に残した区間の実時間。形は $defs/latencyFile の lat と同じ。読んだらファイルを消すので、出るのは readouts を出す最初の起動だけ。"
+    },
+    "^hold\\.(store\\.load|shelf\\.load|book\\.load|recommend\\.load|catalog\\.lookup|storekit\\.products|storekit\\.purchase|storekit\\.restore)$": {
+      "enum": [
+        "waiting",
+        "held",
+        "shown",
+        "released"
+      ],
+      "description": "H33（2026-11-02 に足した）。-uitest-hold-load に書いた対象ごとの止め方の進み。waiting＝まだその読み込みに来ていない、held＝読み込みを止めている（画面はまだ読み込み中の形を出していない）、shown＝止めたまま、design/ 5 の読み込み中の形（灰の帯または ProgressView）を画面に出した、released＝yomuma.uitest.load.release で放した。-uitest-hold-load に書かなかった対象のキーは出さない。"
     }
   },
   "$defs": {
@@ -159,7 +168,8 @@
       "pattern": "^[a-zA-Z][a-zA-Z0-9.]*=[^;=]*(;[a-zA-Z][a-zA-Z0-9.]*=[^;=]*)*$",
       "examples": [
         "state=reading;idleTimerDisabled=false;proximity=false;flipMonitoring=off;startedBy=flip;haptic=1;announce=session.flipStarted.announcement:1;notice=;entry=none;sessionEntry=lock_widget;entryCandidate=lock_widget;widgetReloads=launch:1",
-        "state=idle;idleTimerDisabled=false;proximity=false;flipMonitoring=on;startedBy=none;haptic=1;announce=session.flipStarted.announcement:1;notice=widgetGuide:1;entry=lock_widget;sessionEntry=none;entryCandidate=none;widgetReloads=launch:1,mark.save:1;lat.endToMark=212,198"
+        "state=idle;idleTimerDisabled=false;proximity=false;flipMonitoring=on;startedBy=none;haptic=1;announce=session.flipStarted.announcement:1;notice=widgetGuide:1;entry=lock_widget;sessionEntry=none;entryCandidate=none;widgetReloads=launch:1,mark.save:1;lat.endToMark=212,198",
+        "state=idle;idleTimerDisabled=false;proximity=false;flipMonitoring=off;startedBy=none;haptic=0;announce=;notice=;entry=none;sessionEntry=none;entryCandidate=none;widgetReloads=launch:1;hold.shelf.load=shown;hold.storekit.restore=waiting"
       ]
     },
     "latencyFile": {

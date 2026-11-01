@@ -28,8 +28,8 @@
 ### 契約の検査（動かして確かめた。版と入れ方は contracts/dependencies.md）
 - OpenAPI（spectral / oasdiff）：外部 HTTP 通信を0件（AC-103）にしたため `contracts/ndl-opensearch.yaml` は廃止・削除した（ADR 0004）。
 - JSON Schema（jsonschema 4.25.1。`make check-contracts`）：
-  - コマンド：`make check-contracts`
-  - 出力：`ALL PASSED: 8 schemas, 25 examples validated with 0 errors.`
+  - コマンド：`make check-contracts`（初めての時は `make contracts-venv` を先に呼び、リポジトリの外の `~/.cache/reading-app/contracts-schema-venv` に `contracts/check-requirements.txt` の固定版を入れる。初回だけネットワークが要る）
+  - 出力（2026-11-02、venv のない状態から作って終了コード 0）：`ALL PASSED: 8 schemas, 28 examples validated with 0 errors.`
 
 ## 構成
 既定の場所です。app.json の paths を変えたら、この表も同じに直します（バックエンドはサーバーがないので使わない）。
@@ -55,5 +55,5 @@
 - 書誌・共起データベース（`catalog.sqlite`、NDL CC BY 4.0 書誌約295万冊、FTS5 `trigram` 索引、ISBN 主キー、`cooccurrence` テーブル）は Apple-Hosted Background Assets で配信し、App Group コンテナに置いて `isExcludedFromBackup = true` を設定する（ADR 0002、0004）。
 - 保存と共有（ADR 0002）：保護の等級は既定の `.completeUntilFirstUserAuthentication`（ロック中の Live Activity・Control・Siri「どこまで読んだ？」を動かすため）。拡張は App Group の `widget-snapshot.json` を読む。
 - Vision OCR（ADR 0003）：`VNRecognizeTextRequest`（`.accurate`、`ja-JP`/`en-US`）でページ縦書き列、表紙・背表紙、本棚の複数背表紙（`minimumTextHeightFraction = 0.005`）、奥付を端末内で認識し、画像はファイルにも写真ライブラリにも一切残さない（AC-69、H27）。
-- 構成は Debug、Perf（Release 最適化 `-O` ＋ `UITEST_HOOKS`）、Release の3つ。テストのつなぎ口（H1〜H32、欠番 H3・H11 を除く30個）は `contracts/test-hooks.md` と `contracts/hooks/*.schema.json` に従う（ADR 0005）。
+- 構成は Debug、Perf（Release 最適化 `-O` ＋ `UITEST_HOOKS`）、Release の3つ。テストのつなぎ口（H1〜H33、欠番 H3・H11 を除く31個。H33 は G3 の撮影用で AC の判定に使わない）は `contracts/test-hooks.md` と `contracts/hooks/*.schema.json` に従う（ADR 0005）。ウィジェットの見本（H22）は拡張と同じ View の型を実寸の枠で描く。
 - 識別子（`accessibilityIdentifier`）と文言キーは `design/001-reading-session.md` の6章・7章を正とする。Logger の書名・著者・一行・ISBN・検索語は既定の `.private` のままにする。

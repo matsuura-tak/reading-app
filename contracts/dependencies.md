@@ -44,10 +44,10 @@ reviewer は G2 で、差分の依存がこの表にあるかを確かめます�
 | ISBN の出版者記号の種（`publisher-prefixes.json`） | アプリの束 | 書誌 DB から前処理で作る（出版者記号ごとに、いちばん多い出版社名）。出どころは上の書誌と同じ | 書誌と同じ（AC-93） | AC-11 |
 
 ## 契約の検査の道具（アプリの依存ではない）
-アプリにも拡張にも入らず、Package.resolved にも出ない。リポジトリの外に置いて、contracts/ を検査するためだけに使う。動かし方は CLAUDE.md と Makefile の `check-contracts`。CI に入れるには .github/ の変更が要るので、Takuma に頼む。
+アプリにも拡張にも入らず、Package.resolved にも出ない。contracts/ を検査するためだけに使う。置き場所はリポジトリの外の `~/.cache/reading-app/contracts-schema-venv`（Makefile の `SCHEMA_VENV` で変えられる。リポジトリの中はどの役も書かない決まりなので外に置く）で、`make check-contracts` が初めての時に `make contracts-venv` を通して作る（ネットワークが要るのは初回だけ）。固定した版の一覧は `contracts/check-requirements.txt`（依存の依存まで固定）。2026-11-02 までは /tmp の venv を使っていたが、/tmp が消えると動かなくなったので（G3 r2 の verifier の指摘）置き場所を変えた。CI に入れるには .github/ の変更が要るので、Takuma に頼む。
 
 | 道具 | 版 | 何に使うか | 入れ方（確かめた形） | 確かめた出力（2026-10-25） |
 |---|---|---|---|---|
-| jsonschema（と、一緒に入る referencing 0.36.2） | 4.25.1 | contracts/hooks/ と widget-snapshot.schema.json の metaschema と examples の検査（Draft202012Validator） | `python3 -m venv <外のフォルダ>/venv` のあと `<外のフォルダ>/venv/bin/pip install 'jsonschema==4.25.1'`（Python 3.9.6） | 設計メモの 4 |
+| jsonschema（一緒に入るもの：referencing 0.36.2、jsonschema-specifications 2025.9.1、rpds-py 0.27.1、attrs 26.1.0、typing_extensions 4.16.0。すべて `contracts/check-requirements.txt` で固定） | 4.25.1 | contracts/hooks/ と widget-snapshot.schema.json の metaschema と examples の検査（Draft202012Validator） | `make contracts-venv`（中身：`/usr/bin/python3 -m venv ~/.cache/reading-app/contracts-schema-venv` のあと `~/.cache/reading-app/contracts-schema-venv/bin/python -m pip install -r contracts/check-requirements.txt`。Python 3.9.6、macOS 同梱）。`make check-contracts` が先にこれを呼ぶ | 2026-11-02：`jsonschema 4.25.1 referencing 0.36.2` と `ALL PASSED: 8 schemas, 28 examples validated with 0 errors.`（venv のない状態から作って、終了コード 0） |
 
 - OpenAPI の契約（contracts/ndl-opensearch.yaml）は、アプリの外部通信を0件にしたので消した（ADR 0004）。だから Spectral と oasdiff は今は使わない。サーバーか外部 API の契約を足すときに、2026-10-20 の版（git の fc5906e^）の行を戻す。
