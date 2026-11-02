@@ -5,6 +5,7 @@
 - 方向性の承認：案A「白い紙と墨」（2026-10-19 に Takuma 承認済み。2026-10-20〜2026-10-25 の決定 `docs/approvals/001-reading-session-G1-decisions.md` により、端末内書誌 DB・表紙/背表紙/本棚/奥付/ページ/スクショ OCR・あとで登録・電子書籍対応・おすすめ3か所と好み重み付けと共起の器・夜の入口の予約 Live Activity・App Shortcuts と Control・ふりかえりとカード・有料の見た目「よむま＋」を含む AC-1〜AC-149 の全範囲を v1.0 として規定）
 - トークンの値：design/001-reading-session/tokens.md
 - 各画面の文字の図：design/001-reading-session/screens.md
+- 2026-11-02 の更新（G3。docs/reviews/001-reading-session-G3-ios-fix-r2g.md の未解決2〜5、同 r2d の未解決4、G3 のコード reviewer r1 と契約 reviewer r2 の提案を受けて）：7章に `intent.start.noCurrent`、`intent.end.completed`、`result.summary.*.first`、`result.summary.spoken`、`result.summary.first.spoken`、`liveActivity.readingSince`、`liveActivity.ended.summary`、`liveActivity.ended.spoken`、`duration.*.spoken`、`common.loading`、`next.reason.readers`、`next.reason.nextVolume`、`rec.reason.sameLabel` を足し、`session.start.error` の文を直し、`duration.minutes` を60分以上にも使うと決めた（決定 82〜86）。6章の W-3・S-2・S-4・S-7 の読み上げを直した。9章に W-1・W-2 と見本の Dynamic Type の例外を書いた。tokens.md の `type.book.line.widget.*` を契約「H22 の組み方」の値にそろえた。
 
 ## 1. 画面の流れ（テキスト図）
 
@@ -412,7 +413,7 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | 54 | S-1 の伏せる案内の1行は、紙の本のときは `bookmark.flipHint`（「この画面で iPhone を伏せて置いても、読み始めます。」）、電子書籍（`isEbook = true`）のときは `bookmark.flipHint.ebook`（「別の端末で読むなら伏せて置いても、この iPhone で読むなら『読み始める』を押して他のアプリに移っても数えられます。」）を出す（AC-50、AC-144。Takuma が決めた） | R-29、R-82、R-83 | https://developer.apple.com/design/human-interface-guidelines/accessibility 、https://developer.apple.com/design/human-interface-guidelines/writing |
 | 55 | シートの閉じる、取り消す、保存は、ツールバーの標準の記号のボタン（`Button` の `role: .close`、`.cancel`、`.confirm`）にする | R-23 | https://developer.apple.com/design/human-interface-guidelines/toolbars 、https://developer.apple.com/design/human-interface-guidelines/sheets |
 | 56 | 日付、時刻、数は端末の言語の書式（`Date.FormatStyle`）に従う。記録の行は「10/17」、晩の長い書き方は「10月17日の晩」。ページ数・位置番号・出版年に桁区切りのカンマを入れない | R-26 | https://developer.apple.com/design/human-interface-guidelines/writing |
-| 57 | 時間は60分未満を「18分」、60分以上を「1時間25分」と書く（ふりかえりの1行 `finish.reflection.multi` は合計分数と時間・分を併記して「142分（2時間22分）」とする。AC-127、AC-128） | R-26、R-31 | https://developer.apple.com/design/human-interface-guidelines/writing |
+| 57 | 時間は分のまま「18分」「85分」と書く（2026-11-02 に決定 82 で改めた。それまでは60分以上を「1時間25分」としていたが、AC-22 の合計「85分」と食い違っていた）。ふりかえりの1行 `finish.reflection.multi` だけは合計分数と時間・分を併記して「142分（2時間22分）」とする（AC-127、AC-128） | R-26、R-31 | https://developer.apple.com/design/human-interface-guidelines/writing |
 | 58 | 消す操作（`book.delete`、`record.delete`）は `role: .destructive` のまま、見える文字は本文の色（`color.text.primary`）にし、赤は記号 `trash` だけにする | R-23、R-24 | https://developer.apple.com/design/human-interface-guidelines/accessibility 、https://developer.apple.com/design/human-interface-guidelines/color |
 | 59 | 下端の主操作（S-1、S-2、S-3c、S-4、S-7、S-7c、S-8a、S-8b、S-8d）は `safeAreaInset(edge: .bottom)` で下端に固定し、上の内容だけをスクロールさせる。AX5 でも主操作が画面の外に出ない | R-24 | B-2、https://developer.apple.com/design/human-interface-guidelines/accessibility |
 | 60 | 読み上げのラベルは見える文字から始める。見える文字と読み上げを変える押せる要素（記録の行 `book.record.row.<id>`）は、見える文字（「10/17」）を `accessibilityInputLabels` に入れ、音声コントロールで見える文字のまま押せるようにする | R-24 | https://developer.apple.com/design/human-interface-guidelines/accessibility |
@@ -437,6 +438,11 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | 79 | 「どこまで読んだ？」のインテント（`AC-121`〜`AC-123`、`AC-133`、`AC-143`）は `authenticationPolicy = .alwaysAllowed` にし、ロック中でも声と1行の小窓でページ・位置番号・％だけ（「61ページからです。」「位置1450からです。」「52パーセントからです。」）を答え、一行の文字列と書名は声にも小窓にも出さない | R-63、R-67、R-81 | https://developer.apple.com/design/human-interface-guidelines/siri 、https://developer.apple.com/design/human-interface-guidelines/privacy |
 | 80 | 有料の見た目「よむま＋」（買い切り、商品 ID `jp.yomuma.plus`、`AC-104`〜`AC-111`）は、設定（S-10）の「見た目」（`settings.appearance`）の中だけに置き、毎晩の道や読み終えた画面には一切購入の案内を出さない。未購入で鍵つきの見た目（生成り `kinari`・墨 `sumi`・朱 `shu`）を押したときだけ、その見た目を当てた見本（`store.preview`）と買い切りの購入シート（`store.buy`、`store.restore`、`store.close`）を出す。S-10 にも「購入を復元する」（`settings.restorePurchases`）を置く | R-5、R-9、R-16、R-68、R-87 | B-2、https://developer.apple.com/design/human-interface-guidelines/in-app-purchase |
 | 81 | 写真やスクリーンショットの上に描く読み取り枠（S-3c の `mark.ocr.column.<n>`、S-8b の `cover.ocr.line.<n>`、S-8d の背表紙枠）は、白い紙の上でも暗い表紙の上でも 3:1 以上のコントラストを保つため、外側黒（`#000000` 2pt）・内側白（`#FFFFFF` 2pt、選択時は 3pt）の2重線にし、番号と役割札（「1」「書名」「著者」）を付けて色だけで区別しない | R-24、R-36、R-37 | B-5、https://developer.apple.com/design/human-interface-guidelines/accessibility |
+| 82 | 読書時間は画面のどこでも分のまま出す（`duration.minutes`。「18分」「85分」「1440分」）。時間に直すのは S-9 のふりかえりの括弧の中（`finish.reflection.multi` の `%3$@`「142分（2時間22分）」）だけ。PRD が分で指定している（AC-22 の合計「85分」、AC-57 の「1440分」、AC-127）うえ、記録を直す欄（S-7b）も分（1〜1440）なので、見る所と直す所の単位をそろえる（2026-11-02。G3 r2g の未解決5） | R-26 | B-4、https://developer.apple.com/design/human-interface-guidelines/writing |
+| 83 | 時刻（S-2 の `reading.startedAt`、W-3 の `liveActivity.readingSince`）はシステムの短い時刻の書式（`time: .shortened`。日本語「22:00」、英語「10:00 PM」）を書式の引数に入れ、見える文字と読み上げを同じキーから作る。「22時0分」のように手で組まない（言語ごとの書式を自分で持たないため）。VoiceOver は時刻の文字列を時刻として読む（2026-11-02。G3 r2d の未解決4） | R-24、R-26 | B-6、https://developer.apple.com/design/human-interface-guidelines/writing |
+| 84 | アプリの外からのインテントの声の文（`intent.start.noCurrent`「今の本がありません。よむまを開きます。」、`intent.end.completed`「読書を終えました。」、失敗時の `session.start.error`）は1〜2文の事実だけにし、書名・一行・分数・場所を入れない（決定 79 と同じ理由）。ボタンのない Siri からも動くので「押してください」ではなく「試してください」と言う。「よむま」の直後に「で」を続けない（7-2 の決まり）（2026-11-02。G3 r2g の未解決2） | R-22、R-82 | https://developer.apple.com/design/human-interface-guidelines/siri 、https://developer.apple.com/design/human-interface-guidelines/privacy |
+| 85 | 推薦の理由（S-9 の `next.reason`、S-1 の候補、S-7 の `after.reason`）は、軸（共起・次の巻・同じ著者・同じ賞・同じレーベル）と「積読にある本か」の組ごとに1つの文言キーから作る（7-1 の表）。コードで「積読から・」と軸の文をつながず、賞やレーベルの名前が空のときはその軸を使わない。利用者が本を選ぶ手がかり（同じ作者、賞）を1行の事実で言う（2026-11-02。G3 r2g の未解決4） | R-26、R-79、R-86 | B-4、https://developer.apple.com/design/human-interface-guidelines/writing |
+| 86 | W-1・W-2 の縦書きの一行と場所の文字、およびアプリの中の見本（S-5、S-10a）は固定の字の大きさのままにし、アクセシビリティ監査の「Dynamic Type font sizes are unsupported」を例外として受け入れる（2026-11-02、G3 の指揮役の裁定）。ロック画面の枠は OS が決めて広がらず、見本は実物と同じ大きさで見せないと嘘になる。読み上げは1つのラベルで全文を伝える（決定 8、53。理由の全文は 9 章） | R-18、R-19、R-24 | B-6、https://developer.apple.com/design/human-interface-guidelines/widgets 、https://developer.apple.com/design/human-interface-guidelines/accessibility |
 
 ---
 
@@ -448,7 +454,7 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 |---|---|---|---|---|---|---|---|
 | W-1 | 縦書きの一行（25字まで）を右から組み、左端の帯の下に「p.61」（電子書籍の位置・％なら「位置1450」「52%」） | 今の本なし（本0冊も）：`widget.empty`。一行なし：書名と「p.120」。ページもなし：書名だけ。一行あり・ページなし：一行だけ（帯は空けたまま） | placeholder は一行の形の灰の帯（redacted）。本の文を出さない | 写しを読めない（バックアップから戻した直後など）：`widget.unavailable`「よむまを開くと、ここに続きの一行が出ます。」。押すと S-1 | なし（App Group の写しを読むだけで通信を使わない） | なし（OS の許可を使わない。「一行と書名を隠す」がオンのときは `widget.hidden`「しおり」とページだけを出す。AC-34） | 26字以上の一行：AC-29 の縮め方で25字まで。名無しの今の本（`isTitlePending = true`）：一行があれば一行とページ、一行がなければ書名の所に `widget.currentBookAsTitle`「今の本」とページ（ページもなければ「今の本」だけ）。日本語の字を含まない一行：横書き（AC-30） |
 | W-2 | 縦書きの一行と「p.61」（または「位置1450」「52%」。列は上にそろえ、ページは列の下の左端。選んだ見た目 `appearanceID` の色トークンを適用） | W-1 と同じ（一行あり・ページなしは一行だけ） | W-1 と同じ | W-1 と同じ | なし（通信を使わない） | なし（許可を使わない。隠す設定は W-1 と同じ） | W-1 と同じ。暗い所の StandBy はシステムが赤の単色で描く（AC-35） |
-| W-3 | 予定の時刻の待つ状態（`waiting`）：書名、一行（横書き）、ページ（押すと S-1）。読書中（`reading`）：書名、開始時刻からの経過時間、`liveActivity.end`「終える」ボタン1つ（AC-41、AC-114）。終えた直後（`ended`）：「10分」「p.61」 | 一行がない今の本の待つ状態：書名とページ（ページもなければ書名だけ）。今の本がないときは予約を作らない | なし（予約または開始の時点で値が確定している） | 予約や開始の要求が失敗したときは Live Activity を出さず、アプリ側の画面（S-2 または S-4）でそのまま進める（AC-97、AC-131）。「終える」で保存に失敗したときは Live Activity を消さず S-2 に `session.save.error` を出す（AC-132） | なし（端末内の時計と ActivityKit だけで動き、通信を使わない。AC-125） | Live Activity がオフ（`areActivitiesEnabled == false`）：Live Activity は出ず、アラートも出さない（S-10 に `settings.liveActivity.off` を出す。AC-37、AC-118） | `settings.hideOnWidgets` がオン：書名と一行を出さず `widget.hidden`「しおり」とページ（読書中は「しおり」と経過時間と「終える」）だけを出す（AC-34、AC-120）。名無しの今の本：書名の所に `widget.currentBookAsTitle`「今の本」を出す（AC-139） |
+| W-3 | 予定の時刻の待つ状態（`waiting`）：書名、一行（横書き）、ページ（押すと S-1）。読書中（`reading`）：書名、読み始めの時刻（`liveActivity.readingSince`「22:00 から読書中」）、`liveActivity.end`「終える」ボタン1つ（AC-41、AC-114）。終えた直後（`ended`）：`liveActivity.ended.summary`「10分 · p.61」 | 一行がない今の本の待つ状態：書名とページ（ページもなければ書名だけ）。今の本がないときは予約を作らない | なし（予約または開始の時点で値が確定している） | 予約や開始の要求が失敗したときは Live Activity を出さず、アプリ側の画面（S-2 または S-4）でそのまま進める（AC-97、AC-131）。「終える」で保存に失敗したときは Live Activity を消さず S-2 に `session.save.error` を出す（AC-132） | なし（端末内の時計と ActivityKit だけで動き、通信を使わない。AC-125） | Live Activity がオフ（`areActivitiesEnabled == false`）：Live Activity は出ず、アラートも出さない（S-10 に `settings.liveActivity.off` を出す。AC-37、AC-118） | `settings.hideOnWidgets` がオン：書名と一行を出さず `widget.hidden`「しおり」とページ（読書中は「しおり」と経過時間と「終える」）だけを出す（AC-34、AC-120）。名無しの今の本：書名の所に `widget.currentBookAsTitle`「今の本」を出す（AC-139） |
 | W-4 | ロック画面・コントロールセンター・アクションボタンに `control.startReading`「読み始める」（記号 `book`）の単発ボタン1つを出す（AC-126） | 今の本がないときに押されたら、アプリを前に出して S-1 の空状態を見せる（AC-117） | 押してから 0.5秒以内に `reading` にして Live Activity を出す（AC-114） | 保存に失敗したときは声・通知で `session.start.error` を返し `idle` のままにする（AC-119）。Live Activity の要求だけ失敗したときはアプリを前に出して S-2 を出す（AC-131） | なし（通信を使わない。機内モードでもそのまま動く。AC-125） | Live Activity がオフのときは、その場で `reading` にしてアプリを前に出し S-2 を出す（AC-118） | すでに `reading` のときに押されたら、二重に始めず `intent.start.alreadyReading` を返す（AC-115） |
 | W-5 | 「読み始める」：`intent.start.started` を声で返し Live Activity を開始。「どこまで読んだ？」：声と1行の小窓で `intent.whereStopped.page` / `location` / `percent` を返す。「続きを読む」：アプリを前に出して S-1 を開く | 「どこまで読んだ？」で進み具合がないときは `intent.whereStopped.noPage`、今の本がないときは `intent.whereStopped.noCurrent` を返す（AC-122）。「読み始める」「続きを読む」で今の本がないときは S-1 の空状態を開く（AC-117、AC-135） | なし（ローカルの SwiftData / 写しを読むだけで 0.5秒以内に返る） | 「どこまで読んだ？」で読み込みに失敗したときは `intent.whereStopped.error` を返す（AC-133）。「読み始める」で保存に失敗したときは `session.start.error` を返す（AC-119） | なし（通信を使わない。機内モードでも3つともそのまま動く。AC-125） | なし（「どこまで読んだ？」は `alwaysAllowed` でロック中も認証を求めない。`settings.hideOnWidgets` がオンでもページ・位置・％だけを答え、一行と書名は出さない。AC-121、AC-123） | すでに `reading` のときに「続きを読む」を動かすと S-2 を前に出し（AC-134）、「読み始める」を動かすと `intent.start.alreadyReading` を返す（AC-115） |
 | S-1 | 書名、著者、縦書きの一行（全文）、「p.61」（または「位置1450」「52%」）、`bookmark.setMark`、`bookmark.finish`（`.bordered`）、下端に固定した `bookmark.start`、伏せる案内の1行（紙の本は `bookmark.flipHint`、電子書籍は `bookmark.flipHint.ebook`） | 本0冊：`ContentUnavailableView`（`bookmark.empty.title`、`bookmark.empty.message`、`bookmark.addBook`）。今の本なし・積読あり：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、積読から最大3冊の候補 `bookmark.noCurrent.next.<id>`（各行に `bookmark.noCurrent.choose`）と `bookmark.openShelf`（AC-145）。今の本なし・積読0冊：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、`bookmark.openShelf`。一行も場所もない：書名の下に `bookmark.noMark.message` | 起動して保存先を読む間、0.3秒を超えたら書名と一行の形の灰の帯（redacted）。空の状態を先に出さない | 保存先を読めない：`ContentUnavailableView`（`store.load.error.title`、`store.load.error`、`store.retry`）だけで、ツールバーは「設定」だけ（AC-90）。読み始めの保存失敗：知らせ `session.start.error`（AC-59）。読み終えたの保存失敗：知らせ `common.save.error`（AC-91） | なし（毎晩の道は通信を一切使わない。AC-62） | なし（S-1 自体は OS の許可を使わない。伏せ検知が使えない端末 H18 やオフのときは `bookmark.flipHint` を出さない。AC-51） | 名無しの今の本（`isTitlePending = true`）：`bookmark.title` に `widget.currentBookAsTitle`「今の本」を出し、下に `bookmark.setBookTitle`「書名を入れる」（`.bordered`）を出す（AC-139、AC-140）。一行あり・場所なし：場所の行を出さない。一行なし・場所あり：縦書きの所を詰め、著者の下に場所を出す |
@@ -504,7 +510,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 |---|---|---|---|
 | W-1、W-2 | ウィジェット全体（読み上げは1つのまとまり） | `widget.rectangular`、`widget.small`（足した。H22 で読む名前） | 「羅生門、61ページ。下人は、雨やみを待っていた。」（書名、場所、一行。縦書き用の字形は使わない。AC-99）。電子書籍の位置・％のときは「羅生門、位置1450。…」「羅生門、52パーセント。…」。場所なし「羅生門。下人は、雨やみを待っていた。」。一行なし「檸檬、120ページ」（`widget.spoken.noLine`）、場所もなし「檸檬」。隠す設定のとき「しおり、61ページ」。名無しの今の本（`isTitlePending = true`）は書名の所を `widget.currentBookAsTitle`「今の本」にして同じ書式で読む（「今の本、61ページ。…」）。今の本なし：`widget.empty` の文。写しを読めない：`widget.unavailable` の文 |
 | W-1、W-2 | 一行、場所、書名（読み上げからは隠し、全体のラベルに入れる） | `widget.line`、`widget.page`、`widget.title`（足した。H22 で読む名前） | （全体のラベルに入る） |
-| W-3 | 夜の入口・読書中の Live Activity 全体 | `liveActivity.banner`（足した。H23 で読む名前） | 待つ状態：「羅生門、61ページ。下人は、雨やみを待っていた。」（隠す設定なら「しおり、61ページ」）。読書中：「羅生門、22時0分から読書中」（隠す設定なら「しおり、22時0分から読書中」）。終えた直後：「羅生門、10分、61ページ」 |
+| W-3 | 夜の入口・読書中の Live Activity 全体 | `liveActivity.banner`（足した。H23 で読む名前） | 待つ状態：「羅生門、61ページ。下人は、雨やみを待っていた。」（`widget.spoken`。隠す設定なら「しおり、61ページ」）。読書中：「羅生門、22:00 から読書中」（`widget.spoken.noLine` の `%2$@` に `liveActivity.readingSince`。時刻はシステムの短い書式で、VoiceOver が時刻として読む。隠す設定なら「しおり、22:00 から読書中」。英語 "Rashomon, Reading since 10:00 PM"）。終えた直後：「羅生門、10分、61ページ」（`liveActivity.ended.spoken`。英語 "Rashomon, 10 minutes, page 61"）。名無しの今の本は書名の所を `widget.currentBookAsTitle`「今の本」にする（AC-139） |
 | W-3 | Live Activity の「終える」ボタン（読書中に1つだけ出る） | `liveActivity.end` | 文言キー `liveActivity.end.label` の文（「読書を終える」／「End Reading」。AC-114） |
 | W-4 | ロック画面・コントロールセンターの「読み始める」ボタン | `control.startReading` | 文言キー `control.startReading` の文（「読み始める」／「Start Reading」。AC-126） |
 | W-5 | Siri・ショートカットの小窓（`ShowsSnippetView`）の文 | `intent.snippet`（足した。H32 で読む名前） | 声の返答と同じ文（`intent.whereStopped.page`、`intent.whereStopped.location`、`intent.whereStopped.percent`、`intent.whereStopped.noPage`、`intent.whereStopped.noCurrent`、`intent.whereStopped.error`） |
@@ -531,7 +537,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | 部品 N | 知らせの帯と文 | `notice`（足した）。文の要素は文言キーと同じ識別子（`session.tooShort`、`session.invalidTime`、`session.start.error`、`session.save.error`、`session.capped`、`common.save.error`、`scan.duplicate`、`store.restore.done`、`store.restore.none`） | 文のとおり（出たときに1回読み上げを送る） |
 | 部品 N | 知らせを閉じるボタン | `notice.close`（足した） | 「閉じる」。ヒント「知らせを閉じます。」 |
 | S-2 | 読書中の本の書名 | `reading.title`（足した） | 書名（名無しの本なら「今の本」） |
-| S-2 | 始めた時刻の文 | `reading.startedAt`（足した） | 「21時4分から数えています。」 |
+| S-2 | 始めた時刻の文 | `reading.startedAt`（足した） | 見える文字と同じ「21:04 から数えています。」（時刻はシステムの短い書式で、VoiceOver が時刻として読む。手で「21時4分」と組まない。決定 83） |
 | S-2 | 数え続けることの1行（紙の本） | `reading.note`（足した） | 文のとおり |
 | S-2 | 電子書籍でアプリを閉じてよい旨の1行（`isEbook = true`） | `reading.ebookNote` | 文言キー `reading.ebookNote` の文（AC-144） |
 | S-2 | 終えるボタン（画面内の唯一の押せる要素） | `reading.end` | 「終える」（AC-43） |
@@ -553,7 +559,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-3c、S-7c、S-8b、S-8d | 文字が1つも読み取れなかったときの文 | `mark.ocr.none` | 文言キー `mark.ocr.none` の文（AC-68） |
 | S-3c | 撮り直す（スクショのときは選び直す）ボタン | `mark.retake` | 「撮り直す」（スクショのときは「選び直す」）（AC-68） |
 | S-4 | 本の書名 | `result.title`（足した） | 書名 |
-| S-4 | 読書のまとめ（場所の進みと分数） | `result.summary` | 「43ページから61ページ、18分」「位置1200から位置1450、18分」「34パーセントから52パーセント、18分」。前の場所なし「61ページ、18分」。あとで挟む「18分」（AC-75、AC-76、AC-141） |
+| S-4 | 読書のまとめ（場所の進みと分数） | `result.summary` | 「43ページから61ページ、18分」「位置1200から位置1450、18分」「34パーセントから52パーセント、18分」（`result.summary.spoken`）。前の場所なし「61ページ、18分」（`result.summary.first.spoken`）。あとで挟む「18分」（`duration.minutes.spoken`）。見える文字の「p.」を「ページ」に置き換えて作らない（決定 53）。90分の晩は「90分」のまま（決定 82）（AC-75、AC-76、AC-141） |
 | S-4 | 記録しましたの文と閉じるボタン | `result.saved`、`result.close`（足した） | 文のとおり、「閉じる」 |
 | S-5 | 置き方の案内のシート全体、見本、閉じるボタン | `widgetGuide`、`widgetGuide.preview`（足した）、`widgetGuide.close`（足した） | 見出し「ロック画面に置く」、「ロック画面での見え方。」＋W-1 のラベル、「閉じる」（AC-96） |
 | S-6 | 本棚の3つの区分 | `shelf.current`、`shelf.tsundoku`、`shelf.finished` | 「今の本」「積読」「読み終えた」（AC-13） |
@@ -564,7 +570,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-7、S-9 | 奥付の各行 | `colophon.title`、`colophon.author`、`colophon.publisher`、`colophon.year`、`colophon.award` | 行ごとに「書名、蜜蜂と遠雷」「著者、恩田陸」「出版社、新潮社、新潮文庫」「出版年、2016年」「受賞、第156回 直木三十五賞、2017年 本屋大賞」（AC-17〜AC-21、AC-77） |
 | S-7、S-9 | 奥付を撮って補うボタン | `colophon.capture`（S-7 では別名 `book.captureColophon` も同じ要素またはエイリアスとして対応） | 「奥付を撮って補う」（AC-77、AC-113） |
 | S-7c | 奥付の確認欄の保存ボタンと撮り直すボタン | `colophon.save`、`colophon.retake`（`retake` は足した） | 「保存」「撮り直す」（AC-113） |
-| S-7 | 何晩・合計時間 | `book.nights`、`book.total`（足した） | 「4晩」「合計1時間25分」（AC-22） |
+| S-7 | 何晩・合計時間 | `book.nights`、`book.total`（足した） | 「4晩」「合計 85分」（AC-22 のとおり分のまま。2026-11-02 に「合計1時間25分」から直した。決定 82） |
+| 全画面 | 読み込み中の形（redacted の灰の帯。決定 29） | （識別子なし） | `common.loading` の文「読み込み中」／"Loading" |
 | S-7 | 記録の行 | `book.record.row.<記録の id>`（前方一致 `book.record.row`） | 「10月17日の晩、10分」。見える文字「10/17」を `accessibilityInputLabels` に入れる（AC-22、決定 60） |
 | S-7 | 記録が0件のときの文 | `book.records.empty` | 文言キー `book.records.empty` の文（AC-23） |
 | S-7 | 読み終えた本の「この本のあとに」の見出し | `after.header` | 「この本のあとに」（見出しトレイト。AC-146） |
@@ -630,6 +637,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 ### 7-1 文言キーの一覧（日本語・英語）
 - **調子**：です・ます調で淡々と書く。感嘆符（`！`）、絵文字、冗談を使わない。ほめない、祝わない。ボタンは動詞（英語は動詞で始める）。エラーは何が起きたかとどう直すかを書き、利用者を責めない（R-21、R-26、R-31）。
 - **組み立て方**：文字列を `+` でつなげず、書名・ISBN・数・時刻はすべて書式の引数（`%@`、`%lld`）で入れる。英語の数は String Catalog の複数形（`one` / `other`）を使う。ページ数、位置番号、出版年には桁区切りのカンマを入れない。
+- **時間と時刻（2026-11-02、決定 82、83）**：読書時間は分のまま `duration.minutes`（60分以上も「85分」「1440分」）で出し、時間に直すのは `finish.reflection.multi` の括弧の中だけ。時刻（S-2 の `reading.startedAt`、W-3 の `liveActivity.readingSince`）はシステムの短い時刻の書式（`time: .shortened`）を `%@` に入れ、「22時0分」のように手で組まない。読み上げ用の文（`*.spoken`）は見える文字を置き換えて作らず、専用のキーから組む（決定 53）。
+- **見える文字と読み上げが違うキーの対（見える文字 → 読み上げ）**：`page.short` → `page.spoken`、`location.short` → `location.spoken`、`percent.short` → `percent.spoken`、`duration.minutes` → `duration.minutes.spoken`、`result.summary.*` → `result.summary.spoken` / `result.summary.first.spoken`、`liveActivity.ended.summary` → `liveActivity.ended.spoken`。
 
 | キー | 日本語 | 英語 | 使う場所 |
 |---|---|---|---|
@@ -668,17 +677,17 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `store.retry` | もう一度読み込む | Try Again | S-1。足した |
 | `notice.close` | 閉じる | Dismiss | 部品 N。足した |
 | `notice.close.hint` | 知らせを閉じます。 | Dismisses the notice. | 部品 N のヒント。足した |
-| `session.tooShort` | 1分未満の読書は記録に残しません。 | Sessions shorter than 1 minute aren't saved. | S-1 の知らせ。PRD（AC-56） |
+| `session.tooShort` | 1分未満の読書は記録に残しません。 | Sessions shorter than 1 minute aren't saved. | S-1 の知らせ。Live Activity の「終える」で1分未満だったときの声の文も同じ（AC-116）。決まりを言い切る形にし、「記録しませんでした」のように結果だけを言わない（2026-11-02 に見直し、値は変えない）。PRD（AC-56） |
 | `session.invalidTime` | 端末の時刻が読み始めより前になっていたので、この読書は記録に残しませんでした。「設定」で日付と時刻を確かめてから、もう一度読み始めてください。 | This session wasn't saved because the device's time was set earlier than when you started. Check the date and time in Settings, then start again. | S-1 の知らせ。PRD（AC-58） |
-| `session.start.error` | 読み始めを保存できませんでした。もう一度「読み始める」を押してください。 | Couldn't start the session. Tap Start Reading again. | S-1 の知らせ、および「読み始める」インテントの失敗応答。PRD（AC-59、AC-119） |
-| `common.save.error` | 保存できませんでした。変更は反映されていません。もう一度試してください。 | Couldn't save. Nothing was changed. Please try again. | 各画面の保存失敗の知らせ。PRD（AC-91、AC-95） |
+| `session.start.error` | 読み始めを保存できませんでした。もう一度「読み始める」を試してください。 | Couldn't save the start of this session. Try Start Reading again. | S-1 の知らせ、および「読み始める」インテント（Siri、Control、Action ボタン）の失敗応答。ボタンのない Siri からも動くので「押して」ではなく「試して」にする（2026-11-02 に「押してください」から直した。決定 84）。PRD（AC-59、AC-119） |
+| `common.save.error` | 保存できませんでした。変更は反映されていません。もう一度試してください。 | Couldn't save. Nothing was changed. Please try again. | 各画面の保存失敗の知らせ。「変更は反映されていません」は、入れた値が欄に残り記録も変わっていないこと（AC-95）を伝えるので残す（2026-11-02 に見直し、値は変えない）。PRD（AC-91、AC-95） |
 | `session.flipStarted.announcement` | 「%@」を読み始めました。 | Started reading %@. | 伏せて始まったときの読み上げ。PRD（AC-49） |
 | `reading.startedAt` | %@ から数えています。 | Counting since %@. | S-2。足した |
 | `reading.note` | 伏せても、ロックしても、ほかのアプリを使っても数え続けます。 | Keeps counting while iPhone is face down, locked, or in another app. | S-2（紙の本）。足した |
 | `reading.ebookNote` | この iPhone で電子書籍を読むときも、アプリを閉じたままで数え続けます。読み終えたらロック画面やダイナミックアイランドの「終える」でも終えられます。 | Keeps counting while you read in your e-book app on this iPhone. When you finish, you can also tap End Reading on the Lock Screen or Dynamic Island. | S-2（電子書籍 `isEbook = true`）。PRD（AC-144） |
 | `reading.end` | 終える | End Reading | S-2 の主操作。PRD（AC-43） |
-| `liveActivity.end.label` | 読書を終える | End Reading | W-3（Live Activity）の `liveActivity.end` ボタンの読み上げラベル。PRD（AC-114） |
-| `session.save.error` | 終わりを保存できませんでした。読書は続いています。もう一度「終える」を押してください。 | Couldn't save the end of this session. It's still running. Tap End Reading again. | S-2 の知らせ。PRD（AC-60、AC-132） |
+| `liveActivity.end.label` | 読書を終える | End Reading | W-3（Live Activity）の `liveActivity.end` ボタンの読み上げラベル（`accessibilityLabel`）。ボタンに見える文字は `reading.end`（「終える」／"End Reading"）で、S-2 と同じ（screens.md の W-3）。PRD（AC-114） |
+| `session.save.error` | 終わりを保存できませんでした。読書は続いています。もう一度「終える」を押してください。 | Couldn't save the end of this session. It's still running. Tap End Reading again. | S-2 の知らせ。Live Activity の「終える」で失敗したときも、アプリが前に出て S-2 にこの文を出す（AC-132）ので「押してください」のままでよい（2026-11-02 に見直し、値は変えない）。PRD（AC-60、AC-132） |
 | `mark.navTitle` | しおりを挟む | Mark Your Place | S-3 のナビゲーションタイトル。足した |
 | `mark.question` | どこまで読みましたか。 | Where did you stop? | S-3。足した |
 | `mark.photo` | ページを撮る | Capture Page | S-3（記号 `camera.viewfinder`）。PRD（AC-63、AC-65） |
@@ -711,6 +720,11 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `result.summary.pages` | p.%1$lld → p.%2$lld　%3$@ | p.%1$lld → p.%2$lld  %3$@ | S-4 の `result.summary`（ページ）。PRD（AC-76） |
 | `result.summary.locations` | 位置%1$lld → 位置%2$lld　%3$@ | Loc %1$lld → Loc %2$lld  %3$@ | S-4 の `result.summary`（位置番号）。PRD（AC-141） |
 | `result.summary.percents` | %1$lld%% → %2$lld%%　%3$@ | %1$lld%% → %2$lld%%  %3$@ | S-4 の `result.summary`（％）。PRD（AC-141） |
+| `result.summary.pages.first` | p.%1$lld　%2$@ | p.%1$lld  %2$@ | S-4 の `result.summary`（前の場所がない本で初めてページを入れた晩。`%2$@` は `duration.minutes`）。足した（2026-11-02）。PRD（AC-76 の (2)） |
+| `result.summary.locations.first` | 位置%1$lld　%2$@ | Loc %1$lld  %2$@ | S-4 の `result.summary`（前の場所がない本で初めて位置番号を入れた晩）。足した（2026-11-02）。PRD（AC-76、AC-141） |
+| `result.summary.percents.first` | %1$lld%%　%2$@ | %1$lld%%  %2$@ | S-4 の `result.summary`（前の場所がない本で初めて％を入れた晩）。足した（2026-11-02）。PRD（AC-76、AC-141） |
+| `result.summary.spoken` | %1$@から%2$@、%3$@ | %1$@ to %2$@, %3$@ | S-4 の `result.summary` の読み上げ（`%1$@`・`%2$@` は `page.spoken` / `location.spoken` / `percent.spoken` の文、`%3$@` は `duration.minutes.spoken`）。例「43ページから61ページ、18分」／"page 43 to page 61, 18 minutes"。見える文字の「p.」を置き換えて作らない（決定 53）。足した（2026-11-02）。PRD（AC-75、AC-76、AC-141） |
+| `result.summary.first.spoken` | %1$@、%2$@ | %1$@, %2$@ | S-4 の `result.summary` の読み上げ（前の場所がない晩。例「61ページ、18分」）。`mark.later` の晩は `duration.minutes.spoken` だけを読む。足した（2026-11-02）。PRD（AC-75、AC-76） |
 | `result.saved` | 記録しました。 | Session saved. | S-4。足した |
 | `result.close` | 閉じる | Done | S-4 の主操作。足した |
 | `session.capped` | 24時間で数えるのを止めました。分数は、本の画面の記録で直せます。 | Counting stopped at 24 hours. You can edit the minutes in the book's reading log. | S-4 の知らせ。PRD（AC-57） |
@@ -726,6 +740,9 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `widget.spoken` | %1$@、%2$@。%3$@ | %1$@, %2$@. %3$@ | W-1、W-2、W-3 の読み上げ（書名、場所、一行）。足した |
 | `widget.spoken.noPage` | %1$@。%2$@ | %1$@. %2$@ | W-1、W-2 の読み上げ（場所なし）。足した |
 | `widget.spoken.noLine` | %1$@、%2$@ | %1$@, %2$@ | W-1、W-2 の読み上げ（一行なし）。足した |
+| `liveActivity.readingSince` | %@ から読書中 | Reading since %@ | W-3（`reading`）のバナーと Dynamic Island Expanded の見える文字、および読み上げ（`widget.spoken.noLine` の `%2$@` に入れ、「羅生門、22:00 から読書中」）。`%@` はシステムの短い時刻の書式（`Date.FormatStyle` の `time: .shortened`。日本語「22:00」、英語「10:00 PM」）で、「22時0分」のように手で組まない（決定 83）。足した（2026-11-02）。PRD（AC-41、AC-114） |
+| `liveActivity.ended.summary` | %1$@ · %2$@ | %1$@ · %2$@ | W-3（`ended`）の見える文字（`%1$@` は `duration.minutes`、`%2$@` は `page.short` / `location.short` / `percent.short`）。例「10分 · p.61」。場所がなければ `duration.minutes` だけ。足した（2026-11-02）。PRD（AC-41、AC-114） |
+| `liveActivity.ended.spoken` | %1$@、%2$@、%3$@ | %1$@, %2$@, %3$@ | W-3（`ended`）の読み上げ（書名または `widget.hidden`、`duration.minutes.spoken`、`page.spoken` / `location.spoken` / `percent.spoken`）。例「羅生門、10分、61ページ」／"Rashomon, 10 minutes, page 61"。場所がなければ `widget.spoken.noLine`（書名、分）。足した（2026-11-02）。PRD（AC-41） |
 | `shelf.navTitle` | 本棚 | Bookshelf | S-6 の題。足した |
 | `shelf.current` | 今の本 | Reading Now | S-6 の区分。PRD（AC-13） |
 | `shelf.tsundoku` | 積読 | To Read | S-6 の区分。PRD（AC-13） |
@@ -743,11 +760,11 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `colophon.year.label` | 出版年 | Published | 奥付（`colophon.year`）。PRD（AC-17） |
 | `colophon.year.value` | %lld年 | %lld | 奥付（出版年の値）。PRD（AC-17） |
 | `colophon.award.label` | 受賞 | Awards | 奥付（`colophon.award`）。PRD（AC-17、AC-19〜AC-21） |
-| `colophon.capture` | 奥付を撮って補う | Scan Colophon | S-7（`colophon.capture` / `book.captureColophon`）、S-9（`colophon.capture`）。PRD（AC-77、AC-113） |
+| `colophon.capture` | 奥付を撮って補う | Scan Colophon | S-7（`colophon.capture` / `book.captureColophon`）、S-9（`colophon.capture`）。英語は動詞で始める短い形のまま。"Scan Colophon to Complete" のような目的の付け足しはしない（B-2。2026-11-02 に見直し、値は変えない）。PRD（AC-77、AC-113） |
 | `colophon.save` | 保存 | Save | S-7c の保存ボタン。PRD（AC-113） |
 | `book.records.header` | 記録 | Reading Log | S-7。足した |
 | `book.nights` | %lld晩 | one: %lld night / other: %lld nights | S-7、S-9（カード）。PRD（AC-22、AC-84、AC-85） |
-| `book.total` | 合計 %@ | Total %@ | S-7。PRD（AC-22） |
+| `book.total` | 合計 %@ | Total %@ | S-7（`%@` は `duration.minutes`。例「合計 85分」。AC-22 のとおり分のまま）。PRD（AC-22） |
 | `book.records.empty` | まだ記録がありません。読み始めて終えると、ここに残ります。 | No sessions yet. They appear here after you start and end reading. | S-7。PRD（AC-23） |
 | `book.record.spoken` | %1$@の晩、%2$@ | Night of %1$@, %2$@ | S-7 の `book.record.row.<id>` の読み上げ。足した |
 | `after.header` | この本のあとに | After This Book | S-7（読み終えた本 `finished` のおすすめ節の見出し）。PRD（AC-146） |
@@ -819,10 +836,13 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `next.reason.sameAuthor` | 積読から・同じ著者 | From your pile · Same author | S-9、S-1 の理由。PRD（AC-79） |
 | `next.reason.sameAward` | 積読から・同じ賞（%@） | From your pile · Same award (%@) | S-9、S-1 の理由。PRD（AC-79） |
 | `next.reason.sameLabel` | 積読から・同じレーベル（%@） | From your pile · Same imprint (%@) | S-9、S-1 の理由。PRD |
+| `next.reason.readers` | 積読から・この本を読み終えた人が、次に読んだ本 | From your pile · Read next by people who finished this book | S-9、S-1 の理由（積読にある本が共起の表にも当たったとき。人数は出さない）。足した（2026-11-02）。PRD（AC-80、AC-148） |
+| `next.reason.nextVolume` | 積読から・シリーズの次の巻 | From your pile · Next volume in the series | S-9、S-1 の理由（積読にある本が読み終えた本の次の巻のとき）。足した（2026-11-02）。PRD（AC-80、AC-87） |
 | `rec.reason.readers` | この本を読み終えた人が、次に読んだ本 | Read next by people who finished this book | S-9（`next.reason`）、S-7（`after.reason`）の共起の理由（人数は出さない）。PRD（AC-148） |
 | `rec.reason.nextVolume` | シリーズの次の巻 | Next volume in the series | S-9、S-7 の未所有の候補の理由。PRD（AC-87） |
 | `rec.reason.sameAuthor` | 同じ著者の本 | By the same author | S-9、S-7 の未所有の候補の理由。PRD（AC-87、AC-146、AC-147） |
-| `rec.reason.sameAward` | 同じ賞（%@） | Same award (%@) | S-9、S-7 の未所有の候補の理由（例：「同じ賞（第157回 直木三十五賞）」）。PRD（AC-79、AC-146、AC-147） |
+| `rec.reason.sameAward` | 同じ賞（%@） | Same award (%@) | S-9、S-7 の未所有の候補の理由（例：「同じ賞（第157回 直木三十五賞）」。`%@` は受賞一覧の表示名で、回・年を含む1つの文字列。画面の側で「第157回」と賞の名前をつながない）。PRD（AC-79、AC-146、AC-147） |
+| `rec.reason.sameLabel` | 同じレーベル（%@） | Same imprint (%@) | S-9、S-7 の未所有の候補の理由（書誌 DB で同じレーベルの本）。足した（2026-11-02）。PRD（AC-146） |
 | `next.choose` | この本を読む | Read This Book | S-9 の積読候補のボタン。PRD（AC-82） |
 | `next.addToShelf` | 積読に加える | Add to Pile | S-9 の未所有候補のボタン。PRD（AC-83、AC-87） |
 | `next.added` | 積読に加えました | Added to Pile | S-9 で `next.addToShelf` を押したあとの表示。足した |
@@ -871,15 +891,34 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `control.startReading` | 読み始める | Start Reading | W-4（`ControlWidgetButton` のラベル）。PRD（AC-126） |
 | `intent.start.started` | 読書を始めました。 | Started reading. | W-5（「読み始める」インテントの開始時の声の文）。PRD（AC-114） |
 | `intent.start.alreadyReading` | すでに読書中です。 | A reading session is already running. | W-5（読書中に「読み始める」を動かしたときの声の文）。PRD（AC-115） |
+| `intent.start.noCurrent` | 今の本がありません。よむまを開きます。 | There's no current book. Opening Yomuma. | W-5（「読み始める」で今の本が0冊のときの声の文。インテントの結果は「アプリを前に出す」で、前面は S-1。小窓は出さない。「よむまで」と続けない）。足した（2026-11-02、決定 84）。PRD（AC-117） |
+| `intent.end.completed` | 読書を終えました。 | Reading session ended. | W-5（Live Activity の「終える」で終わりを保存できたときの声の文。分数・場所・書名・一行は入れず、続きはアプリが前に出て S-3 で見せる。1分未満のときは `session.tooShort`、保存に失敗したときは `session.save.error` の文）。足した（2026-11-02、決定 84）。PRD（AC-116、AC-132） |
 | `intent.whereStopped.page` | %lldページからです。 | From page %lld. | W-5（「どこまで読んだ？」で単位が `page` のときの声と小窓の全文。書名と一行は含めない）。PRD（AC-121、AC-123、AC-125） |
 | `intent.whereStopped.location` | 位置%lldからです。 | From location %lld. | W-5（「どこまで読んだ？」で単位が `location` のときの声と小窓の全文）。PRD（AC-143） |
 | `intent.whereStopped.percent` | %lldパーセントからです。 | From %lld percent. | W-5（「どこまで読んだ？」で単位が `percent` のときの声と小窓の全文）。PRD（AC-143） |
 | `intent.whereStopped.noPage` | 今の本には、まだページが記録されていません。 | No page is saved for your current book yet. | W-5（「どこまで読んだ？」で今の本に場所の値がないとき）。PRD（AC-122） |
 | `intent.whereStopped.noCurrent` | いま読んでいる本が選ばれていません。 | No current book is selected. | W-5（「どこまで読んだ？」で今の本が0冊のとき）。PRD（AC-122） |
 | `intent.whereStopped.error` | しおりを読み込めませんでした。よむまを開いて確かめてください。 | Couldn't load your bookmark. Open Yomuma to check. | W-5（「どこまで読んだ？」で保存先の読み込みに失敗したとき）。PRD（AC-133） |
-| `duration.minutes` | %lld分 | %lld min | 60分未満の時間。足した |
-| `duration.hoursMinutes` | %1$lld時間%2$lld分 | %1$lld hr %2$lld min | 60分以上（分が0なら `duration.hours`）。足した |
-| `duration.hours` | %lld時間 | %lld hr | 足した |
+| `duration.minutes` | %lld分 | %lld min | 画面に出す読書時間はすべてこの形（1〜1440分。60分以上も「85分」「1440分」のまま）。S-4 の `result.summary`、W-3（`ended`）、S-7 の記録の行と `book.total`、S-9 の `finish.reflection.*` の分の値。PRD が分で指定している（AC-22 の合計「85分」、AC-57 の「1440分」、AC-127 の「142分」）ため、時間に直さない（2026-11-02 に「60分未満」の限定を外した。決定 82）。足した |
+| `duration.minutes.spoken` | %lld分 | one: %lld minute / other: %lld minutes | `duration.minutes` の読み上げ（S-4 の `result.summary.spoken`、W-3 の `liveActivity.ended.spoken`、S-7 の `book.record.spoken` と `book.total`）。足した（2026-11-02） |
+| `duration.hoursMinutes` | %1$lld時間%2$lld分 | %1$lld hr %2$lld min | `finish.reflection.multi` の括弧の中（`%3$@`。「142分（2時間22分）」）だけに使う。分が0なら `duration.hours`。ほかの画面の読書時間には使わない（決定 82）。PRD（AC-127、AC-128） |
+| `duration.hoursMinutes.spoken` | %1$lld時間%2$lld分 | %1$lld hours %2$lld minutes（hours と minutes をそれぞれ複数形にする） | `duration.hoursMinutes` の読み上げ（`finish.reflection` の括弧の中）。足した（2026-11-02） |
+| `duration.hours` | %lld時間 | %lld hr | `finish.reflection.multi` の括弧の中で分が0のとき（「120分（2時間）」）。足した |
+| `duration.hours.spoken` | %lld時間 | one: %lld hour / other: %lld hours | `duration.hours` の読み上げ。足した（2026-11-02） |
+| `common.loading` | 読み込み中 | Loading | 読み込み中の形（redacted の灰の帯。決定 29）の読み上げラベル。S-1、S-6、S-7、S-8c、S-9、S-10 の読み込み中。見える文字はない。足した（2026-11-02） |
+
+- **推薦の理由のキーの選び方（S-9 の `next.reason`、S-1 の候補の理由、S-7 の `after.reason`。2026-11-02、決定 85）**：理由の文は、軸（5つ）と「積読にある本か」の組ごとに1つのキーから作り、コードで「積読から・」と軸の文をつながない。英語でも同じキーから作る。
+
+  | 軸 | 積読にある本（S-9、S-1） | まだ持っていない本（S-9、S-7） |
+  |---|---|---|
+  | 共起（この本を読み終えた人が、次に読んだ本） | `next.reason.readers` | `rec.reason.readers` |
+  | シリーズの次の巻 | `next.reason.nextVolume` | `rec.reason.nextVolume` |
+  | 同じ著者 | `next.reason.sameAuthor` | `rec.reason.sameAuthor` |
+  | 同じ賞 | `next.reason.sameAward`（`%@` は賞の表示名） | `rec.reason.sameAward`（`%@` は賞の表示名） |
+  | 同じレーベル | `next.reason.sameLabel`（`%@` はレーベル名） | `rec.reason.sameLabel`（`%@` はレーベル名） |
+  | どの軸にも当たらない積読の本 | `next.reason.tsundoku` | （出さない。未所有の本は軸に当たったときだけ候補になる） |
+
+  - 賞の表示名やレーベル名が空のときは、その軸の理由を使わず、次の軸（積読の本なら最後は `next.reason.tsundoku`）にする。「同じ賞」「同じレーベルの本」「文学賞」のような名前のない文は出さない。
 
 ### 7-2 App Shortcuts の言い方と記号、Control のラベル、小窓の対応表（AC-121〜AC-126、AC-133、AC-143）
 - **日本語の言い方の決まり（AC-126）**：アプリ名（`よむま`）の差し込み `\(.applicationName)` の直後に助詞「で」を続けない（「よむまで」が「読むまで」と音声認識で衝突するため。R-64）。「の」「を使って」「から」でつなぐ。
@@ -905,7 +944,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 
 - **使うトークン**（すべての値とコントラスト比は `design/001-reading-session/tokens.md`）：
   - 色：標準（`default`）と、よむま＋の3種（生成り `kinari`、墨 `sumi`、朱 `shu`）の意味トークン（`color.background.primary`、`color.background.grouped`、`color.background.groupedRow`、`color.text.primary`、`color.text.secondary`、`color.action.primary.background`、`color.action.primary.label`、`color.action.tint`、`color.action.destructive`、`color.state.error`、`color.state.on`、`color.separator`）、および写真上の読み取り枠のトークン（`color.ocr.box.outer`、`color.ocr.box.inner`、`color.ocr.badge.background`、`color.ocr.badge.label`）。
-  - 文字：`type.book.line`（ヒラギノ明朝 ProN W3、28pt、Dynamic Type `.title` 追従）、`type.book.line.widget.rectangular`（W6、17pt/15pt 固定）、`type.book.line.widget.small`（W6、20pt/19pt 固定）、`type.book.line.liveActivity`（W6、16pt）、およびシステムの text style（`.largeTitle`、`.title`、`.title2`、`.headline`、`.body`、`.subheadline`、`.footnote`、`.caption2`）。
+  - 文字：`type.book.line`（ヒラギノ明朝 ProN W3、28pt、Dynamic Type `.title` 追従）、`type.book.line.widget.rectangular`（W6。17pt から始めて枠に入るまで 1pt ずつ下げる固定値、下限 13pt。14字は 17pt、かな25字は 172×76 で 15pt・153×68 で 13pt）、`type.book.line.widget.small`（W6。20pt から同じ手順、かな25字は 170 で 20pt・148 で 19pt。手順は contracts/test-hooks.md「H22 の組み方」）、`type.book.line.liveActivity`（W6、16pt）、およびシステムの text style（`.largeTitle`、`.title`、`.title2`、`.headline`、`.body`、`.subheadline`、`.footnote`、`.caption2`）。
   - 余白：`space.4`、`space.8`、`space.12`、`space.16`、`space.24`、`space.32` の6つだけ。
 - **画面ごとの文字の段（B-4：3段を目安に最大4段まで）**：
   - S-1：一行（`type.book.line`）、書名・主操作（`.headline`）、著者・場所・補助ボタン（`.subheadline`）、伏せる案内（`.footnote`）の4段。
@@ -966,7 +1005,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
   - **S-7、S-9 の奥付**：項目名と値の左右2列をやめ、項目名の下に値を縦に積む（accessibility1 以上）。
   - **S-7（「この本のあとに」）、S-9（「次の1冊」）、S-1（今の本なしの候補）**：候補の行のボタン（`next.choose`、`next.addToShelf`、`after.addToShelf`、`bookmark.noCurrent.choose`）を書名と理由の下に幅いっぱいで回す。
   - **S-8a**：カメラ領域を画面の高さの3分の1に縮め、読めた本の一覧に高さを回す。行内の `scan.row.captureCover` と `scan.row.editTitle` は縦に積む。
-  - **W-1、W-2**：枠が広がらないため固定サイズ（決定 8）。大きい文字の利用者は押して開いた S-1 で拡大された全文を読む。
+  - **W-1、W-2、およびその見本（S-5 の `widgetGuide.preview`、S-10a の `store.preview`）**：枠が広がらないため固定サイズ（決定 8）。大きい文字の利用者は押して開いた S-1 で拡大された全文を読む。
+    - **監査の「Dynamic Type font sizes are unsupported」は例外として受け入れる（2026-11-02、G3 の指揮役の裁定。決定 86）**。理由：(1) ロック画面とホーム画面のウィジェットの枠（172×76 / 153×68、148〜170 の四方）は OS が決め、Dynamic Type で字を大きくすると25字の一行が枠に入らず欠ける。(2) アプリの中の見本は「ロック画面でこう見える」を見せるためのもので、実物と同じ大きさで描かないと嘘になる（見本の字を大きくすると、置いたあとの実物と違う）。(3) 読み上げは全体を1つのラベル（`widget.spoken` など。AC-99）にしてあり、縦書きの字そのものを読ませないので、VoiceOver の利用者は字の大きさに依らず全文を聞ける。例外はこの縦書きの一行（`type.book.line.widget.*`）と場所の文字（`type.widget.page`）だけで、アプリの中の他の文字はすべて Dynamic Type に従う。
   - **W-3（Live Activity）**：上限 `.xxxLarge` まで拡大し、書名と経過時間と「終える」ボタンが重ならないよう2行に折り返す。
 - **色だけで区別していないか**：
   - 選んだ枠（S-3c、S-8b、S-8d）：白黒2重線の内側の太さ（2pt → 3pt）と、番号・役割札（「✓ 6」「書名」「著者」）、および VoiceOver の `.isSelected` トレイトで示す。
@@ -1028,12 +1068,16 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 
 ## 10. 未解決
 
-- なし（2026-10-19〜2026-10-25 に Takuma が方向性・範囲・端末内書誌 DB・OCR・電子書籍・おすすめ・予約 Live Activity・App Shortcuts・買い切り「よむま＋」をすべて承認・決定済み。`docs/approvals/001-reading-session-G1-decisions.md`、`docs/approvals/001-reading-session-G0.md`）。
+- 2026-11-02（G3）に足したもの：
+  - 受け入れテストが `result.summary` や `book.total` の値を「1440分」「85分」で比べている前提で `duration.minutes` を分のままにした（決定 82）。PRD の AC-22・AC-57・AC-127 と合うが、S-7 の「合計 85分」が読みにくいと Takuma が感じるなら、PRD（pdm）側で「合計1時間25分」に変える判断になる。design/ だけでは変えない。
+  - `session.start.error` の文を「押してください」から「試してください」に直した。受け入れテストが文の全文を比べているなら verifier の直しが要る（報告に書いた）。
+  - `intent.start.noCurrent` の声の文「今の本がありません。よむまを開きます。」は、Siri がアプリを開く直前に読み上げるものとして決めた。実機の Siri でアプリを開く結果（`opensIntent` / `.result(opensIntent:)`）のときに声が読まれるかは G4 の実機でしか確かめられない（読まれなければ画面の S-1 だけで足り、文は無駄になるが害はない）。
+- 上記のほかはなし（2026-10-19〜2026-10-25 に Takuma が方向性・範囲・端末内書誌 DB・OCR・電子書籍・おすすめ・予約 Live Activity・App Shortcuts・買い切り「よむま＋」をすべて承認・決定済み。`docs/approvals/001-reading-session-G1-decisions.md`、`docs/approvals/001-reading-session-G0.md`）。
 
 ## 確かめ（提出前に designer が印を付ける。design-reviewer はこれを信じずに確かめる）
 - [x] PRD のすべての AC に対応する画面と操作がある（2節の表に AC-1〜AC-149 の全149件を漏れなく記載）
 - [x] どの画面にも7つの状態があり、「なし」には理由がある（5節の表に W-1〜W-5、S-1〜S-10a、部品 N の7状態をすべて記載し、すべての「なし」に括弧で理由を記載）
-- [x] 判断の表のすべての行に、R の番号と原則がある（4節の判断 1〜81 のすべての行に R-1〜R-87 と HIG URL / B-1〜B-6 を記載）
+- [x] 判断の表のすべての行に、R の番号と原則がある（4節の判断 1〜86 のすべての行に R-1〜R-87 と HIG URL / B-1〜B-6 を記載）
 - [x] どの画面も仕事は1文、主操作は1つ（3節の表にすべての画面の1文の仕事と1つの主操作を記載）
 - [x] 標準部品から外れる所には、元の部品、理由、アクセシビリティの扱いがある（3節の表に記載）
 - [x] 色のすべての組にコントラスト比の計算があり、基準を満たす（9節の表と tokens.md にライト・ダーク・コントラストを上げるの3モードすべての計算値を記載し、文字 4.5:1 以上、記号・枠 3:1 以上を満たす）

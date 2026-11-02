@@ -54,7 +54,9 @@ p.61                  ← 場所（p.61 / 位置1450 / 52%）の行（13pt 固�
 ┌────────────────────────────────────────────────────────────────────────┐
 │ 羅生門                                         .headline               │
 │ 21:04 から読書中              [ 終える ]       Button(intent: EndReadingFromActivityIntent()) │
-│ （一行と場所は出さない）      liveActivity.end （ラベル liveActivity.end.label「読書を終える」） │
+│ （liveActivity.readingSince。  liveActivity.end（見える文字は reading.end「終える」、      │
+│  時刻はシステムの短い書式）     読み上げラベルは liveActivity.end.label「読書を終える」）   │
+│ （一行と場所は出さない）                                                                  │
 └────────────────────────────────────────────────────────────────────────┘
   Dynamic Island Expanded（reading）：
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -67,7 +69,7 @@ p.61                  ← 場所（p.61 / 位置1450 / 52%）の行（13pt 固�
 （ウ）終わった直後のライブアクティビティ（phase = ended。AC-41）
 ┌────────────────────────────────────────────────────────────────────────┐
 │ 羅生門                                         .subheadline 2つ目の色  │
-│ 10分 · p.61（または 位置1450 / 52%）           .headline 等幅数字      │
+│ 10分 · p.61（または 位置1450 / 52%）           .headline 等幅数字  liveActivity.ended.summary（場所がなければ「10分」だけ。読み上げは liveActivity.ended.spoken「羅生門、10分、61ページ」） │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 - `waiting` のときはボタンを置かず、バナー全体を押すと `yomuma://open?entry=live_activity` で S-1 を開く（AC-36、AC-40）。
@@ -295,7 +297,8 @@ p.61                         （bookmark.page）
 ──（下端に固定）──
 [                         閉じる                          ]          .borderedProminent  result.close
 ```
-- 単位が `location` のときは「位置1200 → 位置1450　18分」（`result.summary.locations`）、`percent` のときは「34% → 52%　18分」（`result.summary.percents`）（AC-141）。前の値がないときは「p.61　18分」、「あとで挟む」（`mark.later`）のときは「18分」だけを出す（AC-75、AC-76）。
+- 単位が `location` のときは「位置1200 → 位置1450　18分」（`result.summary.locations`）、`percent` のときは「34% → 52%　18分」（`result.summary.percents`）（AC-141）。前の値がないときは「p.61　18分」（`result.summary.pages.first`。位置・％は `.locations.first`・`.percents.first`）、「あとで挟む」（`mark.later`）のときは「18分」（`duration.minutes`）だけを出す（AC-75、AC-76）。60分以上も分のまま（「90分」「1440分」。決定 82）。読み上げは `result.summary.spoken`「43ページから61ページ、18分」／`result.summary.first.spoken`「61ページ、18分」／`duration.minutes.spoken`「18分」で、見える文字を置き換えて作らない。
+- `result.summary` に仮の値（「15分」など）を入れない。S-4 は保存した記録のあとにだけ出るので、まとめは必ずその記録の分数から組む。
 - 書名のない今の本（`isTitlePending = true`）では、`result.title` に `widget.currentBookAsTitle`（「今の本」）を出す。
 
 ## S-5 ロック画面への置き方の案内（シート .medium。AX では .large。整体識別子 `widgetGuide`。AC-96）
@@ -336,7 +339,7 @@ p.61                         （bookmark.page）
 [ text.viewfinder 奥付を撮って補う ]                       .bordered  colophon.capture（別名 book.captureColophon。AC-113）
   （カメラ拒否のときはここに camera.denied と camera.openSettings を出す）
 記録
-  4晩                          合計 1時間25分               book.nights / book.total（AC-22）
+  4晩                          合計 85分                    book.nights / book.total（AC-22 のとおり分のまま。決定 82）
   10/17                                   10分   >          book.record.row.<id>（押すと S-7b）
   10/16                                   30分   >
   （記録が0件のときは book.records.empty を1つ出す。AC-23）
