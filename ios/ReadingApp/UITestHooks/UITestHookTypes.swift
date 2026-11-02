@@ -2,26 +2,6 @@
 import Foundation
 import ReadingCore
 
-public struct UITestHookVerticalPayload: Codable, Sendable, Equatable {
-    public var orientation: String
-    public var displayedLine: String?
-    public var shortened: Bool
-    public var columnCount: Int
-    public var rowsPerColumn: Int
-    public var accessibilityLabel: String
-    public var cells: [H22GlyphCell]
-
-    public init(composition: H22WidgetComposition) {
-        self.orientation = composition.orientation.rawValue
-        self.displayedLine = composition.displayedLine
-        self.shortened = composition.shortened
-        self.columnCount = composition.columnCount
-        self.rowsPerColumn = composition.rowsPerColumn
-        self.accessibilityLabel = composition.accessibilityLabel
-        self.cells = composition.cells
-    }
-}
-
 public struct UITestHookOCRPayload: Codable, Sendable, Equatable {
     public var mode: String
     public var isHoldReleased: Bool

@@ -192,7 +192,18 @@ public struct UITestHookWidgetShowcaseView: View {
         self.spec = spec
     }
 
+    /// 拡張と同じ読み方（UITEST_WIDGET_SNAPSHOT があればその中身）。H22 の読み出しと同じ関数。
+    private var readResult: WidgetSnapshotReadResult {
+        let _ = model.hookGeneration
+        return model.store.snapshotStore.readForRender().result
+    }
+
     private var snapshot: WidgetSnapshot {
+        readResult.snapshot ?? WidgetSnapshot(updatedAt: "1970-01-01T00:00:00Z")
+    }
+
+    /// W-3・W-5 は写しのファイルを使わない（ADR 0002）。アプリの中の今の本の写しから作る。
+    private var appSnapshot: WidgetSnapshot {
         let _ = model.hookGeneration
         return model.store.snapshotStore.currentSnapshot
     }
@@ -260,14 +271,14 @@ public struct UITestHookWidgetShowcaseView: View {
                 ReadingLockScreenWidgetView(family: .accessoryRectangular, snapshot: ReadingWidgetPlaceholder.snapshot, size: size, contentMargins: ReadingWidgetMetrics.lockScreenContentMargins)
                     .redacted(reason: .placeholder)
             } else {
-                ReadingLockScreenWidgetView(family: .accessoryRectangular, snapshot: snapshot, size: size, contentMargins: ReadingWidgetMetrics.lockScreenContentMargins)
+                ReadingLockScreenWidgetView(family: .accessoryRectangular, snapshot: snapshot, unavailableReason: readResult.unavailableReason, size: size, contentMargins: ReadingWidgetMetrics.lockScreenContentMargins)
             }
         case .systemSmall:
             if spec.variant == "placeholder" {
                 ReadingHomeSmallWidgetView(snapshot: ReadingWidgetPlaceholder.snapshot, size: size, contentMargins: ReadingWidgetMetrics.homeSmallContentMargins)
                     .redacted(reason: .placeholder)
             } else {
-                ReadingHomeSmallWidgetView(snapshot: snapshot, size: size, contentMargins: ReadingWidgetMetrics.homeSmallContentMargins)
+                ReadingHomeSmallWidgetView(snapshot: snapshot, unavailableReason: readResult.unavailableReason, size: size, contentMargins: ReadingWidgetMetrics.homeSmallContentMargins)
             }
         case .liveActivity:
             if let state = liveActivityState {
@@ -283,7 +294,7 @@ public struct UITestHookWidgetShowcaseView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityIdentifier("control.startReading")
         case .snippet:
-            WhereStoppedSnippetView(text: WhereStoppedIntent.formatResponse(for: snapshot))
+            WhereStoppedSnippetView(text: WhereStoppedIntent.formatResponse(for: appSnapshot))
         }
     }
 
@@ -294,18 +305,18 @@ public struct UITestHookWidgetShowcaseView: View {
         } else {
             startedAt = model.store.clock.now()
         }
-        return ReadingActivityAttributes(bookId: snapshot.currentBook?.id, startedAt: startedAt)
+        return ReadingActivityAttributes(bookId: appSnapshot.currentBook?.id, startedAt: startedAt)
     }
 
     private var liveActivityState: ReadingActivityAttributes.ContentState? {
         switch spec.variant {
         case "waiting":
-            return ReadingLiveActivityStateFactory.waiting(from: snapshot)
+            return ReadingLiveActivityStateFactory.waiting(from: appSnapshot)
         case "reading":
-            return ReadingLiveActivityStateFactory.reading(from: snapshot)
+            return ReadingLiveActivityStateFactory.reading(from: appSnapshot)
         default:
             guard let record = UITestHookWidgetShowcaseView.latestRecord(model: model) else { return nil }
-            return ReadingLiveActivityStateFactory.ended(from: snapshot, minutes: record.durationMinutes, progressText: snapshot.currentBook?.progressDisplay)
+            return ReadingLiveActivityStateFactory.ended(from: appSnapshot, minutes: record.durationMinutes, progressText: appSnapshot.currentBook?.progressDisplay)
         }
     }
 

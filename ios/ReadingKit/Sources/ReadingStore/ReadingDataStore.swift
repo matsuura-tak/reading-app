@@ -1556,7 +1556,7 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: nowISO,
-                cause: "book.setTitle",
+                cause: "book.update",
                 recordReload: true
             )
             return true
@@ -1674,7 +1674,7 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: nowISO,
-                cause: "book.switch",
+                cause: "book.status",
                 recordReload: true
             )
             return true
@@ -1706,7 +1706,7 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: nowISO,
-                cause: "book.finish",
+                cause: "book.status",
                 recordReload: true
             )
             return true
@@ -1850,8 +1850,9 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "store.refund",
-                recordReload: true
+                cause: "settings.save",
+                recordReload: true,
+                reloadOnlyIfChanged: true
             )
         } else if !isStoreKitStubbed {
             Task { @MainActor [weak self] in
@@ -2444,7 +2445,7 @@ public final class ReadingDataStore {
             currentBook: currentBook,
             settings: settings,
             nowISO: clock.nowISO8601(),
-            cause: "settings.hideOnWidgets",
+            cause: "settings.save",
             recordReload: true
         )
         refreshScheduledLiveActivityPrivacy()
@@ -2466,7 +2467,7 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "settings.appearance",
+                cause: "settings.save",
                 recordReload: true
             )
         } else {
@@ -2515,8 +2516,9 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "store.purchase",
-                recordReload: true
+                cause: "settings.save",
+                recordReload: true,
+                reloadOnlyIfChanged: true
             )
             return .success
         case "userCancelled":
@@ -2566,8 +2568,9 @@ public final class ReadingDataStore {
                         currentBook: currentBook,
                         settings: settings,
                         nowISO: clock.nowISO8601(),
-                        cause: "store.purchase",
-                        recordReload: true
+                        cause: "settings.save",
+                        recordReload: true,
+                        reloadOnlyIfChanged: true
                     )
                     return .success
                 case .unverified:
@@ -2615,8 +2618,9 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "store.restore",
-                recordReload: true
+                cause: "settings.save",
+                recordReload: true,
+                reloadOnlyIfChanged: true
             )
             return .restored
         } else {
@@ -2654,8 +2658,9 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "store.restore",
-                recordReload: true
+                cause: "settings.save",
+                recordReload: true,
+                reloadOnlyIfChanged: true
             )
             return .restored
         } else {
@@ -2695,8 +2700,9 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "store.refund",
-                recordReload: true
+                cause: "settings.save",
+                recordReload: true,
+                reloadOnlyIfChanged: true
             )
         } else if hasActiveEntitlement && !settings.isPlusPurchased {
             settings.isPlusPurchased = true
@@ -2705,8 +2711,9 @@ public final class ReadingDataStore {
                 currentBook: currentBook,
                 settings: settings,
                 nowISO: clock.nowISO8601(),
-                cause: "store.entitlement",
-                recordReload: true
+                cause: "settings.save",
+                recordReload: true,
+                reloadOnlyIfChanged: true
             )
         }
     }
@@ -3821,17 +3828,8 @@ public final class ReadingDataStore {
             cause: nil,
             recordReload: false
         )
-        var payload = snapshotStore.fullHookPayload()
-        if let book = currentBook, !settings.hideOnWidgets, !book.isTitlePending, !book.title.isEmpty {
-            payload.snapshot.currentBook?.title = book.title
-            for idx in payload.renders.indices {
-                payload.renders[idx].texts["widget.title"] = book.title
-                payload.renders[idx].texts["title"] = book.title
-                if !payload.renders[idx].accessibilityLabel.contains(book.title) {
-                    payload.renders[idx].accessibilityLabel = "\(book.title)、\(payload.renders[idx].accessibilityLabel)"
-                }
-            }
-        }
+        // h22 の表のとおりに組む（書名は一行があるときは accessibility.label にだけ入る）。
+        let payload = snapshotStore.fullHookPayload(now: clock.now())
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
         guard let data = try? encoder.encode(payload),

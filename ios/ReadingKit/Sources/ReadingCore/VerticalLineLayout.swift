@@ -12,8 +12,6 @@ public struct VerticalShortenResult: Sendable, Equatable {
 
 public enum VerticalLineLayout: Sendable {
     public static let maxWidgetCharacters: Int = 25
-    public static let defaultWidgetMaxColumns: Int = 4
-    public static let defaultWidgetRowsPerColumn: Int = 8
     public static let defaultCardMaxColumns: Int = 6
     public static let defaultCardRowsPerColumn: Int = 13
 
@@ -210,10 +208,11 @@ public enum VerticalLineLayout: Sendable {
     }
 
     /// Splits characters into vertical columns (1-based right-to-left) while enforcing line-start Kinsoku.
+    /// アプリの中の縦書きの帯（BannerNoticeView）用。W-1・W-2 の組み方は `WidgetLineComposer`（枠から決め直す）。
     public nonisolated static func layoutVerticalCells(
         text: String,
-        maxColumns: Int = defaultWidgetMaxColumns,
-        rowsPerColumn: Int = defaultWidgetRowsPerColumn
+        maxColumns: Int,
+        rowsPerColumn: Int
     ) -> [H22GlyphCell] {
         let chars = Array(text)
         guard !chars.isEmpty, maxColumns > 0, rowsPerColumn > 0 else {
@@ -289,96 +288,5 @@ public enum VerticalLineLayout: Sendable {
             line = stripped.isEmpty ? nil : stripped
         }
         return strings.spokenLabel(title: title, place: place, line: line)
-    }
-
-    /// Composes the full `H22WidgetComposition` from a `WidgetSnapshot`.
-    public nonisolated static func composeWidget(
-        snapshot: WidgetSnapshot,
-        maxColumns: Int = defaultWidgetMaxColumns,
-        rowsPerColumn: Int = defaultWidgetRowsPerColumn,
-        strings: WidgetSpokenStrings = .japanese
-    ) -> H22WidgetComposition {
-        let spokenLabel = buildWidgetAccessibilityLabel(snapshot: snapshot, strings: strings)
-        guard let book = snapshot.currentBook else {
-            return H22WidgetComposition(
-                orientation: .empty,
-                displayedLine: nil,
-                shortened: false,
-                columnCount: 0,
-                rowsPerColumn: 0,
-                accessibilityLabel: spokenLabel,
-                cells: []
-            )
-        }
-
-        guard !snapshot.hideOnWidgets, let rawLine = book.latestLine, !rawLine.isEmpty else {
-            let fallbackText: String
-            if book.isTitlePending {
-                fallbackText = "書誌を確認中"
-            } else {
-                fallbackText = book.title ?? ""
-            }
-            let isJapanese = containsJapaneseScript(fallbackText)
-            if isJapanese && !fallbackText.isEmpty {
-                let shortenedTitle = shortenForWidget(fallbackText)
-                let cells = layoutVerticalCells(
-                    text: shortenedTitle.text,
-                    maxColumns: maxColumns,
-                    rowsPerColumn: rowsPerColumn
-                )
-                let colCount = cells.map(\.column).max() ?? 0
-                return H22WidgetComposition(
-                    orientation: .vertical,
-                    displayedLine: nil,
-                    shortened: false,
-                    columnCount: colCount,
-                    rowsPerColumn: rowsPerColumn,
-                    accessibilityLabel: spokenLabel,
-                    cells: cells
-                )
-            } else {
-                return H22WidgetComposition(
-                    orientation: .horizontal,
-                    displayedLine: nil,
-                    shortened: false,
-                    columnCount: 0,
-                    rowsPerColumn: 0,
-                    accessibilityLabel: spokenLabel,
-                    cells: []
-                )
-            }
-        }
-
-        let shortenResult = shortenForWidget(rawLine)
-        let displayedLine = shortenResult.text
-
-        if !containsJapaneseScript(displayedLine) {
-            return H22WidgetComposition(
-                orientation: .horizontal,
-                displayedLine: displayedLine,
-                shortened: shortenResult.shortened,
-                columnCount: 0,
-                rowsPerColumn: 0,
-                accessibilityLabel: spokenLabel,
-                cells: []
-            )
-        }
-
-        let cells = layoutVerticalCells(
-            text: displayedLine,
-            maxColumns: maxColumns,
-            rowsPerColumn: rowsPerColumn
-        )
-        let columnCount = cells.map(\.column).max() ?? 0
-
-        return H22WidgetComposition(
-            orientation: .vertical,
-            displayedLine: displayedLine,
-            shortened: shortenResult.shortened,
-            columnCount: columnCount,
-            rowsPerColumn: rowsPerColumn,
-            accessibilityLabel: spokenLabel,
-            cells: cells
-        )
     }
 }

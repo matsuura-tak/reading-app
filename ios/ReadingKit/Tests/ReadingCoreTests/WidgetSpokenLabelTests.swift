@@ -87,8 +87,6 @@ struct WidgetSpokenLabelTests {
         for scalar in ja.unicodeScalars {
             #expect(!(0xFE10...0xFE4F).contains(scalar.value))
         }
-        // composeWidget の読み上げも同じ文になる（拡張の View と H22 が同じ関数を使う）
-        #expect(VerticalLineLayout.composeWidget(snapshot: snapshot(c), strings: .japanese).accessibilityLabel == c.ja)
     }
 
     @Test("今の本なしは widget.empty の文")

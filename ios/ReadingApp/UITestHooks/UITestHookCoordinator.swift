@@ -130,7 +130,15 @@ public final class UITestHookCoordinator {
         store.configureFailSave(failSave)
 
         let widgetSpec = argValue("-uitest-widget", in: args) ?? env["UITEST_WIDGET"]
-        store.snapshotStore.configureSpecs(from: widgetSpec)
+        if let invalid = store.snapshotStore.configureSpecs(from: widgetSpec) {
+            hookErrorValue = "H22:\(invalid)"
+        }
+        // H22：UITEST_WIDGET_SNAPSHOT は写しの文字列そのもの。`@missing` はファイルなし。
+        if let override = env["UITEST_WIDGET_SNAPSHOT"] {
+            store.snapshotStore.snapshotOverride = override == "@missing" ? .missing : .contents(override)
+        } else {
+            store.snapshotStore.snapshotOverride = nil
+        }
 
         let isOfflineArg = args.contains("-uitest-offline") || (env["UITEST_OFFLINE"] == "1") || (env["UITEST_OFFLINE"]?.lowercased() == "true")
         store.isOffline = isOfflineArg

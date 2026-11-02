@@ -4,72 +4,115 @@ import ReadingCore
 import WidgetKit
 #endif
 
-public struct WidgetRenderSpec: Codable, Sendable, Equatable {
-    public var family: String
-    public var size: String
+/// `-uitest-widget` の1つ（`<ファミリー>:<幅>x<高さ>`）。
+public struct WidgetRenderSpec: Sendable, Equatable {
+    public var family: WidgetSurfaceFamily
+    public var width: Double
+    public var height: Double
 
-    public init(family: String, size: String) {
+    public init(family: WidgetSurfaceFamily, width: Double, height: Double) {
         self.family = family
-        self.size = size
+        self.width = width
+        self.height = height
     }
 
-    public static func parseList(_ raw: String) -> [WidgetRenderSpec] {
-        raw.split(separator: ",")
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-            .map { item in
-                let parts = item.split(separator: ":", maxSplits: 1).map(String.init)
-                if parts.count == 2 {
-                    return WidgetRenderSpec(family: parts[0], size: parts[1])
-                }
-                return WidgetRenderSpec(family: item, size: "172x76")
-            }
+    public static let defaultSpec = WidgetRenderSpec(family: .accessoryRectangular, width: 172, height: 76)
+
+    /// 1つを読む。ファミリーか枠が読めなければ nil。
+    public static func parse(_ item: String) -> WidgetRenderSpec? {
+        let parts = item.split(separator: ":", omittingEmptySubsequences: false).map(String.init)
+        guard parts.count == 2, let family = WidgetSurfaceFamily(rawValue: parts[0]) else { return nil }
+        let size = parts[1].split(separator: "x", omittingEmptySubsequences: false).map(String.init)
+        guard size.count == 2,
+              let width = Double(size[0]), let height = Double(size[1]),
+              width.isFinite, height.isFinite, width > 0, height > 0 else { return nil }
+        return WidgetRenderSpec(family: family, width: width, height: height)
+    }
+
+    /// 並びを読む。読めない1つがあれば `.failure(その1つ)`。
+    public static func parseList(_ raw: String) -> Result<[WidgetRenderSpec], WidgetRenderSpecError> {
+        var specs: [WidgetRenderSpec] = []
+        for item in raw.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) }) where !item.isEmpty {
+            guard let spec = parse(item) else { return .failure(WidgetRenderSpecError(value: item)) }
+            specs.append(spec)
+        }
+        guard !specs.isEmpty else { return .failure(WidgetRenderSpecError(value: raw)) }
+        return .success(specs)
     }
 }
 
-public struct WidgetTimelineMetrics: Codable, Sendable, Equatable {
+public struct WidgetRenderSpecError: Error, Sendable, Equatable {
+    public let value: String
+}
+
+/// `UITEST_WIDGET_SNAPSHOT` の差し替え（アプリの `UITestHooks/` だけが設定する）。
+public enum WidgetSnapshotOverride: Sendable, Equatable {
+    /// `@missing`：ファイルがないのと同じ。
+    case missing
+    /// 写しの文字列そのもの。
+    case contents(String)
+}
+
+// MARK: - H22 の読み出し（contracts/hooks/h22-widget.schema.json）
+
+public struct WidgetRenderRequest: Encodable, Sendable, Equatable {
+    public var family: String
+    public var width: Double
+    public var height: Double
+}
+
+public struct WidgetRenderAccessibility: Encodable, Sendable, Equatable {
+    public var identifier: String
+    public var label: String
+    public var groupCount: Int
+}
+
+public struct WidgetRenderTimelineEntry: Encodable, Sendable, Equatable {
+    public var date: String
+    public var state: WidgetRenderState
+}
+
+public enum WidgetRenderTimelinePolicy: Encodable, Sendable, Equatable {
+    case never
+    case atEnd
+    case after(String)
+
+    private enum AfterKey: String, CodingKey { case after }
+
+    public func encode(to encoder: any Encoder) throws {
+        switch self {
+        case .never:
+            var c = encoder.singleValueContainer()
+            try c.encode("never")
+        case .atEnd:
+            var c = encoder.singleValueContainer()
+            try c.encode("atEnd")
+        case .after(let date):
+            var c = encoder.container(keyedBy: AfterKey.self)
+            try c.encode(date, forKey: .after)
+        }
+    }
+}
+
+public struct WidgetRenderTimeline: Encodable, Sendable, Equatable {
+    public var entries: [WidgetRenderTimelineEntry]
+    public var policy: WidgetRenderTimelinePolicy
     public var elapsedMs: Double
-
-    public init(elapsedMs: Double) {
-        self.elapsedMs = elapsedMs
-    }
 }
 
-public struct WidgetRenderEntry: Codable, Sendable, Equatable {
-    public var family: String
-    public var size: String
-    public var state: String
-    public var request: WidgetRenderSpec
-    public var timeline: WidgetTimelineMetrics
-    public var entryURL: String
+public struct WidgetRenderEntry: Encodable, Sendable, Equatable {
+    public var request: WidgetRenderRequest
+    public var seq: Int
+    public var producedAt: String
+    public var snapshotSource: String
+    public var state: WidgetRenderState
+    public var unavailableReason: WidgetUnavailableReason?
+    public var url: String
     public var appearanceID: String
+    public var accessibility: WidgetRenderAccessibility
     public var texts: [String: String]
-    public var composition: H22WidgetComposition
-    public var accessibilityLabel: String
-
-    public init(
-        family: String,
-        size: String,
-        state: String,
-        request: WidgetRenderSpec,
-        timeline: WidgetTimelineMetrics,
-        entryURL: String,
-        appearanceID: String,
-        texts: [String: String],
-        composition: H22WidgetComposition,
-        accessibilityLabel: String
-    ) {
-        self.family = family
-        self.size = size
-        self.state = state
-        self.request = request
-        self.timeline = timeline
-        self.entryURL = entryURL
-        self.appearanceID = appearanceID
-        self.texts = texts
-        self.composition = composition
-        self.accessibilityLabel = accessibilityLabel
-    }
+    public var timeline: WidgetRenderTimeline
+    public var composition: WidgetLineComposition?
 }
 
 public struct WidgetReloadRequests: Codable, Sendable, Equatable {
@@ -82,44 +125,10 @@ public struct WidgetReloadRequests: Codable, Sendable, Equatable {
     }
 }
 
-public struct FullWidgetHookPayload: Codable, Sendable, Equatable {
-    public var title: String?
-    public var line: String?
-    public var progress: String?
-    public var accessibilityLabel: String
-    public var snapshot: WidgetSnapshot
-    public var composition: H22WidgetComposition
-    public var reloadTimelineCount: Int
-    public var lastReloadAt: String?
-    public var lastRenderMs: Double
-    public var reloadRequests: WidgetReloadRequests
+public struct FullWidgetHookPayload: Encodable, Sendable, Equatable {
+    public var outputVersion: Int = 1
     public var renders: [WidgetRenderEntry]
-
-    public init(
-        title: String? = nil,
-        line: String? = nil,
-        progress: String? = nil,
-        accessibilityLabel: String = "",
-        snapshot: WidgetSnapshot,
-        composition: H22WidgetComposition,
-        reloadTimelineCount: Int,
-        lastReloadAt: String?,
-        lastRenderMs: Double,
-        reloadRequests: WidgetReloadRequests,
-        renders: [WidgetRenderEntry]
-    ) {
-        self.title = title
-        self.line = line
-        self.progress = progress
-        self.accessibilityLabel = accessibilityLabel
-        self.snapshot = snapshot
-        self.composition = composition
-        self.reloadTimelineCount = reloadTimelineCount
-        self.lastReloadAt = lastReloadAt
-        self.lastRenderMs = lastRenderMs
-        self.reloadRequests = reloadRequests
-        self.renders = renders
-    }
+    public var reloadRequests: WidgetReloadRequests
 }
 
 @MainActor
@@ -138,11 +147,22 @@ public final class SnapshotStore {
     public private(set) var currentSnapshot: WidgetSnapshot
     public private(set) var reloadTimelineCount: Int = 0
     public private(set) var reloadsByCause: [String: Int] = [:]
-    public private(set) var lastReloadAt: String?
-    public private(set) var lastRenderMs: Double = 1.0
-    public var requestedSpecs: [WidgetRenderSpec] = [
-        WidgetRenderSpec(family: "accessoryRectangular", size: "172x76")
-    ]
+    public var requestedSpecs: [WidgetRenderSpec] = [WidgetRenderSpec.defaultSpec]
+    /// `UITEST_WIDGET_SNAPSHOT` の差し替え。設定するのはアプリの `#if UITEST_HOOKS` の中だけ（Release は常に nil）。
+    public var snapshotOverride: WidgetSnapshotOverride?
+    /// このプロセスで組んだ render の番号（h22 の `seq`）。
+    private var renderSeq: Int = 0
+    /// 最後に組んだ renders と、その入力（入力が同じなら組み直さない。h22 の「最新の1回分」）。
+    private var lastRenderKey: RenderKey?
+    private var lastRenders: [WidgetRenderEntry] = []
+
+    private struct RenderKey: Equatable {
+        var result: WidgetSnapshotReadResult
+        var source: String
+        var specs: [WidgetRenderSpec]
+        var reloadTimelineCount: Int
+        var strings: WidgetSpokenStrings
+    }
 
     public init(containerDirectory: URL) {
         let sharedDir = containerDirectory.appendingPathComponent("Shared", isDirectory: true)
@@ -163,18 +183,22 @@ public final class SnapshotStore {
         }
     }
 
-    public func configureSpecs(from raw: String?) {
-        guard let raw, !raw.isEmpty else { return }
-        let parsed = WidgetRenderSpec.parseList(raw)
-        if !parsed.isEmpty {
-            requestedSpecs = parsed
+    /// `-uitest-widget` の値を読む。読めない1つがあれば、それを返す（呼ぶ側が `hook.error`（`H22:<値>`）にする）。
+    @discardableResult
+    public func configureSpecs(from raw: String?) -> String? {
+        guard let raw, !raw.isEmpty else { return nil }
+        switch WidgetRenderSpec.parseList(raw) {
+        case .success(let specs):
+            requestedSpecs = specs
+            return nil
+        case .failure(let error):
+            return error.value
         }
     }
 
     public func resetCounts() {
         reloadTimelineCount = 0
         reloadsByCause = [:]
-        lastReloadAt = nil
     }
 
     @discardableResult
@@ -183,9 +207,9 @@ public final class SnapshotStore {
         settings: SettingsSnapshot,
         nowISO: String,
         cause: String?,
-        recordReload: Bool
+        recordReload: Bool,
+        reloadOnlyIfChanged: Bool = false
     ) throws -> WidgetSnapshot {
-        let startNs = DispatchTime.now().uptimeNanoseconds
 
         let snapshotBook: WidgetSnapshotBook?
         if let book = currentBook {
@@ -259,10 +283,13 @@ public final class SnapshotStore {
         var mutableURL = fileURL
         try? mutableURL.setResourceValues(rv)
 
+        var previous = currentSnapshot
+        previous.updatedAt = snapshot.updatedAt
+        let changed = previous != snapshot
         self.currentSnapshot = snapshot
-        if recordReload {
+        // 写しを変えない保存では、reloadOnlyIfChanged のとき再読み込みを求めない（G3 契約 r4 の指揮役の裁定）。
+        if recordReload && (!reloadOnlyIfChanged || changed) {
             reloadTimelineCount += 1
-            lastReloadAt = nowISO
             if let cause, !cause.isEmpty {
                 reloadsByCause[cause, default: 0] += 1
             }
@@ -270,124 +297,141 @@ public final class SnapshotStore {
             WidgetCenter.shared.reloadAllTimelines()
             #endif
         }
-
-        let elapsedNs = DispatchTime.now().uptimeNanoseconds &- startNs
-        let ms = Double(elapsedNs) / 1_000_000.0
-        self.lastRenderMs = max(0.2, min(ms, 15.0))
         return snapshot
     }
 
     /// 読み上げの文（アプリが String Catalog を通した文を入れる。既定は design/ 7 の ja の値）。
     public var spokenStrings: WidgetSpokenStrings = .japanese
 
-    public func buildComposition(from snapshot: WidgetSnapshot) -> H22WidgetComposition {
-        VerticalLineLayout.composeWidget(snapshot: snapshot, strings: spokenStrings)
+    /// 拡張と同じ読み方で写しを読む（差し替えがあればその中身）。H22 の読み出しと撮影用の見本が使う。
+    public func readForRender() -> (result: WidgetSnapshotReadResult, source: String) {
+        switch snapshotOverride {
+        case .none:
+            return (WidgetSnapshotReader.read(fileURL: fileURL), "file")
+        case .missing:
+            return (.unavailable(.missing), "override")
+        case .contents(let text):
+            return (WidgetSnapshotReader.read(data: Data(text.utf8)), "override")
+        }
     }
 
-    public func readout() -> H22WidgetReadout {
-        let comp = buildComposition(from: currentSnapshot)
-        return H22WidgetReadout(
-            snapshot: currentSnapshot,
-            composition: comp,
+    /// H22 の読み出しの全体（contracts/hooks/h22-widget.schema.json）。renders は request ごとに、その枠で組む。
+    public func fullHookPayload(now: Date = Date()) -> FullWidgetHookPayload {
+        let specs = requestedSpecs.isEmpty ? [WidgetRenderSpec.defaultSpec] : requestedSpecs
+        let read = readForRender()
+        let key = RenderKey(
+            result: read.result,
+            source: read.source,
+            specs: specs,
             reloadTimelineCount: reloadTimelineCount,
-            lastReloadAt: lastReloadAt
+            strings: spokenStrings
+        )
+        if key != lastRenderKey {
+            let producedAt = Self.formatProducedAt(now)
+            lastRenders = specs.map { spec in
+                renderSeq += 1
+                return makeRender(spec: spec, seq: renderSeq, producedAt: producedAt, now: now)
+            }
+            lastRenderKey = key
+        }
+        return FullWidgetHookPayload(
+            renders: lastRenders,
+            reloadRequests: WidgetReloadRequests(total: reloadTimelineCount, byCause: reloadsByCause)
         )
     }
 
-    public func fullHookPayload() -> FullWidgetHookPayload {
-        let comp = buildComposition(from: currentSnapshot)
-        let appearanceID = currentSnapshot.appearanceID.rawValue
-        let specs = requestedSpecs.isEmpty
-            ? [WidgetRenderSpec(family: "accessoryRectangular", size: "172x76")]
-            : requestedSpecs
+    /// 1つの request を組む。elapsedMs は、拡張のタイムラインと同じく写しを読んでから項目を返すまでの実時間。
+    private func makeRender(spec: WidgetRenderSpec, seq: Int, producedAt: String, now: Date) -> WidgetRenderEntry {
+        let clock = ContinuousClock()
+        let start = clock.now
+        let read = readForRender()
+        let state = WidgetRenderStateResolver.state(for: read.result)
+        let plan = WidgetTimelinePlan.make(now: now)
+        let strings = spokenStrings
+        let snapshot = read.result.snapshot
+        let book = snapshot?.currentBook
 
-        let renders: [WidgetRenderEntry] = specs.map { spec in
-            let entryURL: String
-            if spec.family == "systemSmall" {
-                entryURL = "yomuma://open?entry=small_widget"
-            } else {
-                entryURL = "yomuma://open?entry=lock_widget"
-            }
-
-            let renderState: String
-            var texts: [String: String] = [:]
-
-            if let book = currentSnapshot.currentBook {
-                if currentSnapshot.hideOnWidgets {
-                    renderState = "hidden"
-                    texts["widget.title"] = "しおり"
-                    texts["title"] = "しおり"
-                    if let prog = book.progressDisplay {
-                        texts["widget.page"] = prog
-                        texts["page"] = prog
-                    }
-                } else if let line = comp.displayedLine, !line.isEmpty {
-                    renderState = "hasLine"
-                    if let title = book.title {
-                        texts["widget.title"] = title
-                        texts["title"] = title
-                    }
-                    texts["widget.line"] = line
-                    texts["line"] = line
-                    if let prog = book.progressDisplay {
-                        texts["widget.page"] = prog
-                        texts["page"] = prog
-                    }
-                } else {
-                    renderState = "noLine"
-                    let displayTitle = book.title ?? "しおり"
-                    texts["widget.title"] = displayTitle
-                    texts["title"] = displayTitle
-                    if let prog = book.progressDisplay {
-                        texts["widget.page"] = prog
-                        texts["page"] = prog
-                    }
-                }
-            } else {
-                renderState = "empty"
-                texts["widget.empty"] = "いま読んでいる本はありません"
-                texts["empty"] = "いま読んでいる本はありません"
-            }
-            // 拡張の View と同じ1つのラベル（書名、場所、一行。design/ 6 の W-1・W-2、AC-99）。
-            let a11yLabel = comp.accessibilityLabel
-
-            return WidgetRenderEntry(
+        var texts: [String: String] = [:]
+        var composition: WidgetLineComposition?
+        switch state {
+        case .unavailable:
+            texts["messageKey"] = "widget.unavailable"
+            texts["message"] = strings.unavailable
+        case .empty:
+            texts["messageKey"] = "widget.empty"
+            texts["message"] = strings.empty
+        case .hidden:
+            texts["messageKey"] = "widget.hidden"
+            texts["message"] = strings.hidden
+            if let page = book?.progressDisplay, !page.isEmpty { texts["widget.page"] = page }
+        case .normal:
+            let page = book?.progressDisplay.flatMap { $0.isEmpty ? nil : $0 }
+            let comp = WidgetLineComposer.compose(
                 family: spec.family,
-                size: spec.size,
-                state: renderState,
-                request: spec,
-                timeline: WidgetTimelineMetrics(elapsedMs: lastRenderMs),
-                entryURL: entryURL,
-                appearanceID: appearanceID,
-                texts: texts,
-                composition: comp,
-                accessibilityLabel: a11yLabel
+                width: spec.width,
+                height: spec.height,
+                rawLine: book?.latestLine ?? "",
+                pageText: page
             )
+            composition = comp
+            texts["widget.line"] = comp.displayedLine
+            if let page { texts["widget.page"] = page }
+        case .noLine, .noLineNoPage:
+            if let book {
+                texts["widget.title"] = Self.displayTitle(for: book, strings: strings)
+                if state == .noLine, let page = book.progressDisplay { texts["widget.page"] = page }
+            }
         }
 
-        let topTitle: String? = currentSnapshot.hideOnWidgets
-            ? (currentSnapshot.currentBook != nil ? "しおり" : nil)
-            : currentSnapshot.currentBook?.title
-        let topLine: String? = currentSnapshot.hideOnWidgets ? nil : comp.displayedLine
-        let topProgress: String? = currentSnapshot.currentBook?.progressDisplay
-        let topA11y: String = renders.first?.accessibilityLabel ?? comp.accessibilityLabel
+        let label: String
+        if let snapshot {
+            label = VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: snapshot, strings: strings)
+        } else {
+            label = strings.unavailable
+        }
+        let entries = plan.entryDates.map { WidgetRenderTimelineEntry(date: Self.formatProducedAt($0), state: state) }
+        let policy: WidgetRenderTimelinePolicy
+        switch plan.policy {
+        case .never: policy = .never
+        case .atEnd: policy = .atEnd
+        case .after(let date): policy = .after(Self.formatProducedAt(date))
+        }
+        let elapsed = start.duration(to: clock.now)
+        let elapsedMs = Double(elapsed.components.seconds) * 1000 + Double(elapsed.components.attoseconds) / 1e15
 
-        return FullWidgetHookPayload(
-            title: topTitle,
-            line: topLine,
-            progress: topProgress,
-            accessibilityLabel: topA11y,
-            snapshot: currentSnapshot,
-            composition: comp,
-            reloadTimelineCount: reloadTimelineCount,
-            lastReloadAt: lastReloadAt,
-            lastRenderMs: lastRenderMs,
-            reloadRequests: WidgetReloadRequests(
-                total: reloadTimelineCount,
-                byCause: reloadsByCause
+        return WidgetRenderEntry(
+            request: WidgetRenderRequest(family: spec.family.rawValue, width: spec.width, height: spec.height),
+            seq: seq,
+            producedAt: producedAt,
+            snapshotSource: read.source,
+            state: state,
+            unavailableReason: read.result.unavailableReason,
+            url: spec.family == .systemSmall ? "yomuma://open?entry=small_widget" : "yomuma://open?entry=lock_widget",
+            appearanceID: (snapshot?.appearanceID ?? .default).rawValue,
+            accessibility: WidgetRenderAccessibility(
+                identifier: spec.family == .systemSmall ? "widget.small" : "widget.rectangular",
+                label: label,
+                groupCount: 1
             ),
-            renders: renders
+            texts: texts,
+            timeline: WidgetRenderTimeline(entries: entries, policy: policy, elapsedMs: max(elapsedMs, 0)),
+            composition: composition
         )
+    }
+
+    /// 一行がないときの書名の所（名無しの今の本は widget.currentBookAsTitle の文）。
+    private static func displayTitle(for book: WidgetSnapshotBook, strings: WidgetSpokenStrings) -> String {
+        if book.isTitlePending { return strings.currentBookAsTitle }
+        if let title = book.title, !title.isEmpty { return title }
+        return strings.hidden
+    }
+
+    /// 読み出す時刻（契約 1-7：UTC の Z とミリ秒）。
+    public nonisolated static func formatProducedAt(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.string(from: date)
     }
 
     public func formattedReloadsSummary() -> String {

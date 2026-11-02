@@ -152,8 +152,19 @@ struct ReadingStoreTests {
         let payload1 = snapStore.fullHookPayload()
         #expect(payload1.renders.count == 2)
         #expect(payload1.renders.first?.appearanceID == "kinari")
-        #expect(payload1.renders.first?.state == "hasLine")
-        #expect(payload1.composition.accessibilityLabel.unicodeScalars.allSatisfy { !(0xFE10...0xFE4F).contains($0.value) })
+        #expect(payload1.renders.first?.state == .normal)
+        #expect(payload1.renders.map(\.seq) == [1, 2])
+        #expect(payload1.renders.first?.snapshotSource == "file")
+        #expect(payload1.renders.first?.texts["widget.title"] == nil)
+        #expect(payload1.renders.first?.accessibility.label.hasPrefix("羅生門、61ページ。") == true)
+        #expect(payload1.renders.allSatisfy { $0.accessibility.label.unicodeScalars.allSatisfy { !(0xFE10...0xFE4F).contains($0.value) } })
+        // render ごとにその枠で組む（W-1 172x76 は 17pt、W-2 170x170 は 20pt）
+        #expect(payload1.renders[0].composition?.grid?.fontSize == 17)
+        #expect(payload1.renders[1].composition?.grid?.fontSize == 20)
+        #expect(payload1.renders[1].url == "yomuma://open?entry=small_widget")
+        #expect(payload1.renders[1].accessibility.identifier == "widget.small")
+        // 入力が同じなら組み直さない（seq はそのまま）
+        #expect(snapStore.fullHookPayload().renders.map(\.seq) == [1, 2])
 
         // Enable hideOnWidgets -> neither book title nor saved line appears
         settings.hideOnWidgets = true
@@ -161,15 +172,61 @@ struct ReadingStoreTests {
             currentBook: book,
             settings: settings,
             nowISO: "2026-10-18T21:05:00+09:00",
-            cause: "settings.hideOnWidgets",
+            cause: "settings.save",
             recordReload: true
         )
-        let data2 = try JSONEncoder().encode(snapStore.fullHookPayload())
+        let payload2 = snapStore.fullHookPayload()
+        #expect(payload2.renders.map(\.seq) == [3, 4])
+        #expect(payload2.renders.allSatisfy { $0.state == .hidden && $0.composition == nil })
+        #expect(payload2.renders.first?.texts["messageKey"] == "widget.hidden")
+        #expect(payload2.reloadRequests.byCause == ["mark.save": 1, "settings.save": 1])
+        let data2 = try JSONEncoder().encode(payload2)
         let json2 = String(data: data2, encoding: .utf8) ?? ""
         #expect(!json2.contains("羅生門"))
         #expect(!json2.contains("下人の行方は"))
         #expect(json2.contains("p.61"))
         #expect(json2.contains("しおり"))
+    }
+
+    @Test("H22：差し替え（@missing、壊れた写し）は unavailable、枠の誤りは返す、写しを変えない保存は再読み込みしない")
+    func snapshotStoreUnavailableAndReloadPolicy() throws {
+        let dir = try makeTempDir()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let snapStore = SnapshotStore(containerDirectory: dir)
+
+        #expect(snapStore.configureSpecs(from: "accessoryRectangular:172x76,systemSmall:0x170") == "systemSmall:0x170")
+        #expect(snapStore.configureSpecs(from: "w1:172x76") == "w1:172x76")
+        #expect(snapStore.configureSpecs(from: "accessoryRectangular:153x68,systemSmall:148x148") == nil)
+        #expect(snapStore.requestedSpecs == [
+            WidgetRenderSpec(family: .accessoryRectangular, width: 153, height: 68),
+            WidgetRenderSpec(family: .systemSmall, width: 148, height: 148)
+        ])
+
+        // ファイルがまだない
+        let missingFile = snapStore.fullHookPayload()
+        #expect(missingFile.renders.allSatisfy { $0.state == .unavailable && $0.unavailableReason == .missing && $0.snapshotSource == "file" })
+
+        let settings = SettingsSnapshot(hideOnWidgets: false, appearanceID: .default, isPlusPurchased: false)
+        _ = try snapStore.writeSnapshot(currentBook: nil, settings: settings, nowISO: "2026-10-18T21:00:00+09:00", cause: nil, recordReload: false)
+        let empty = snapStore.fullHookPayload()
+        #expect(empty.renders.allSatisfy { $0.state == .empty && $0.texts == ["messageKey": "widget.empty", "message": WidgetSpokenStrings.japanese.empty] })
+
+        snapStore.snapshotOverride = .missing
+        let overridden = snapStore.fullHookPayload()
+        #expect(overridden.renders.allSatisfy { $0.state == .unavailable && $0.unavailableReason == .missing && $0.snapshotSource == "override" })
+        #expect(overridden.renders.first?.accessibility.label == WidgetSpokenStrings.japanese.unavailable)
+        #expect(overridden.renders.first?.texts["messageKey"] == "widget.unavailable")
+        snapStore.snapshotOverride = .contents("not json")
+        #expect(snapStore.fullHookPayload().renders.first?.unavailableReason == .malformed)
+        snapStore.snapshotOverride = nil
+
+        // 購入・復元のように写しを変えない保存は、reloadOnlyIfChanged で再読み込みを求めない
+        _ = try snapStore.writeSnapshot(currentBook: nil, settings: settings, nowISO: "2026-10-18T21:01:00+09:00", cause: "settings.save", recordReload: true, reloadOnlyIfChanged: true)
+        #expect(snapStore.reloadTimelineCount == 0)
+        var kinari = settings
+        kinari.appearanceID = .kinari
+        _ = try snapStore.writeSnapshot(currentBook: nil, settings: kinari, nowISO: "2026-10-18T21:02:00+09:00", cause: "settings.save", recordReload: true, reloadOnlyIfChanged: true)
+        #expect(snapStore.reloadsByCause == ["settings.save": 1])
     }
 
     @Test("ReadingDataStore book CRUD, title-pending book, and H7 failSave rollback across all 10 points")

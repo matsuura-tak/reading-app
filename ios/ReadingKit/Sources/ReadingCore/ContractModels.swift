@@ -936,12 +936,6 @@ public struct H20NDLStubConfig: Codable, Sendable, Equatable {
 
 // MARK: - H22 Widget Readout (contracts/hooks/h22-widget.schema.json)
 
-public enum H22Orientation: String, Codable, Sendable, Equatable {
-    case vertical
-    case horizontal
-    case empty
-}
-
 public struct H22GlyphCell: Codable, Sendable, Equatable {
     public var column: Int
     public var row: Int
@@ -967,53 +961,6 @@ public struct H22GlyphCell: Codable, Sendable, Equatable {
         self.rotation = rotation
         self.dx = dx
         self.dy = dy
-    }
-}
-
-public struct H22WidgetComposition: Codable, Sendable, Equatable {
-    public var orientation: H22Orientation
-    public var displayedLine: String?
-    public var shortened: Bool
-    public var columnCount: Int
-    public var rowsPerColumn: Int
-    public var accessibilityLabel: String
-    public var cells: [H22GlyphCell]
-
-    public nonisolated init(
-        orientation: H22Orientation,
-        displayedLine: String?,
-        shortened: Bool,
-        columnCount: Int,
-        rowsPerColumn: Int,
-        accessibilityLabel: String,
-        cells: [H22GlyphCell]
-    ) {
-        self.orientation = orientation
-        self.displayedLine = displayedLine
-        self.shortened = shortened
-        self.columnCount = columnCount
-        self.rowsPerColumn = rowsPerColumn
-        self.accessibilityLabel = accessibilityLabel
-        self.cells = cells
-    }
-}
-
-public struct H22WidgetReadout: Codable, Sendable, Equatable {
-    public var snapshot: WidgetSnapshot
-    public var composition: H22WidgetComposition
-    public var reloadTimelineCount: Int
-    public var lastReloadAt: String?
-
-    public nonisolated init(
-        snapshot: WidgetSnapshot,
-        composition: H22WidgetComposition,
-        reloadTimelineCount: Int = 0,
-        lastReloadAt: String? = nil
-    ) {
-        self.snapshot = snapshot
-        self.composition = composition
-        self.reloadTimelineCount = reloadTimelineCount
-        self.lastReloadAt = lastReloadAt
     }
 }
 

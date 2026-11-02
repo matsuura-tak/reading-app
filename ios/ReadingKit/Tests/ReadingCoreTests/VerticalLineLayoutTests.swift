@@ -94,7 +94,7 @@ struct VerticalLineLayoutTests {
     }
 
     @Test("Horizontal fallback when line has no Hiragana, Katakana, or Han (AC-30)")
-    func horizontalFallbackForLatinAndDigits() {
+    func horizontalFallbackForLatinAndDigits() throws {
         let englishLine = "It is a truth universally"
         #expect(VerticalLineLayout.containsJapaneseScript(englishLine) == false)
 
@@ -117,10 +117,15 @@ struct VerticalLineLayoutTests {
                 latestLineId: UUID()
             )
         )
-        let comp = VerticalLineLayout.composeWidget(snapshot: snapshot)
+        let comp = WidgetLineComposer.compose(
+            family: .accessoryRectangular,
+            width: 172,
+            height: 76,
+            rawLine: try #require(snapshot.currentBook?.latestLine),
+            pageText: snapshot.currentBook?.progressDisplay
+        )
         #expect(comp.orientation == .horizontal)
-        #expect(comp.cells.isEmpty)
-        #expect(comp.columnCount == 0)
+        #expect(comp.grid == nil)
         #expect(comp.displayedLine == englishLine)
     }
 
@@ -142,12 +147,11 @@ struct VerticalLineLayoutTests {
                 latestLineId: UUID()
             )
         )
-        let comp = VerticalLineLayout.composeWidget(snapshot: snapshot)
-        #expect(comp.orientation == .vertical)
+        let label = VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: snapshot)
         // 書名、場所、一行（著者は入れない。design/ 6 の W-1・W-2、AC-99）
-        #expect(comp.accessibilityLabel == "コンビニ人間、142ページ。「世界の部品になることで、わたしはようやく…」")
-        #expect(!comp.accessibilityLabel.contains("村田沙耶香"))
-        for scalar in comp.accessibilityLabel.unicodeScalars {
+        #expect(label == "コンビニ人間、142ページ。「世界の部品になることで、わたしはようやく…」")
+        #expect(!label.contains("村田沙耶香"))
+        for scalar in label.unicodeScalars {
             #expect(!(0xFE10...0xFE4F).contains(scalar.value))
         }
     }

@@ -78,3 +78,36 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 - S-1 の AX5
   - 下端の帯を `VStack` の下から `safeAreaBar(edge: .bottom)`（iOS 26）に替え、帯の自作の背景をやめた。帯の裏に入る中身は OS の端の効果でぼける。
   - design/ 9 の S-1「伏せる案内はスクロール領域の一番下に移す」に合わせ、AX1 以上では `bookmark.flipHint` と `bookmark.flipHint.ebook` をスクロールの一番下に置き、帯は「読み始める」だけにした。
+
+## 8. 5体目（BASE d95c86b）で足したこと
+正本は docs/reviews/001-reading-session-G3-tech-lead-contracts-r4.md の「ios-engineer に頼むこと」1〜8 と、最後の「指揮役の裁定」。
+
+### 組み方の関数（H22 の組み方）
+- `ReadingCore` の `WidgetLineComposer.compose(family:width:height:rawLine:pageText:)`（ios/ReadingKit/Sources/ReadingCore/WidgetComposition.swift）。nonisolated の純粋な関数で、SwiftUI と WidgetKit は import しない。
+- 記号の値（i、B、g、R、字の大きさの始めと下限、列の間 0.25s、場所の行 16）は `WidgetCompositionConstants.of(_:)` の1か所だけ。アプリの `ReadingWidgetMetrics` はそれを `EdgeInsets`、`CGFloat` に直すだけ。
+- 手順は契約の1〜5どおり。送ったあとの列の数で入るかを見る。列の数に上限を付けない。下限でも入らなければ送らずに組んで `kinsokuRelaxed = true`。`feedCount` は1字送るごとに1。`referenceL` はかな「あ」25字を同じ枠で組んだ L。
+- 横書き（AC-30）は手順1だけで、`composition` は `orientation`、`displayedLine`、`shortened`（と `page`）だけを書く（`WidgetLineComposition.encode(to:)` が升目の9項目をキーごと書かない）。
+- 前の `VerticalLineLayout.composeWidget`、`H22WidgetComposition`、`H22WidgetReadout`、`H22Orientation`、既定の4列×8字（`defaultWidgetMaxColumns`、`defaultWidgetRowsPerColumn`）と、使われていなかった `UITestHookReadoutBuilder.verticalJSON` は消した。`layoutVerticalCells` はアプリの中の帯（BannerNoticeView）用に残し、既定の値を外した。
+
+### View（W-1、W-2）
+- `ReadingWidgetSurfaceViews.swift` の `composeFitted` と `ReadingVerticalFit` を消した。W-1・W-2 の View は描く大きさで `WidgetLineComposer.compose` を呼び、結果の `cells[].x`・`y`・`fontSize` を `ReadingVerticalGlyphLayer` でそのまま描く（枠の左上に重ねる overlay。View の側で字の大きさや列を決め直さない）。
+- 状態は `WidgetRenderStateResolver`（ReadingCore）で決める。拡張と見本は同じ関数を使う。
+
+### 写しを読めないとき（unavailable）
+- `WidgetSnapshotReader.read(fileURL:)`／`read(data:)`（ReadingCore）で読む。ファイルなし `missing`、開けない `unopenable`、JSON・型の誤り `malformed`、版 `version`、範囲の外 `range`、隠す設定なのに一行がある `hiddenConflict`。
+- 拡張は `ReadingSharedContainer.readWidgetSnapshot()` を使い、`ReadingWidgetTimelineEntry.unavailableReason` を View に渡して `widget.unavailable` を出す（読み上げも同じ文）。これまでは読めない写しも `widget.empty` にしていた。
+- `UITEST_WIDGET_SNAPSHOT`（`@missing` か写しの文字列）を実装した。`UITestHookCoordinator` が読み、`SnapshotStore.snapshotOverride` に入れる。読み出しの `snapshotSource` は `override` になる。
+
+### hook.widget の読み出し（h22 スキーマ）
+- トップは `outputVersion`、`renders`、`reloadRequests`（と `-uitest-widget-show` のときの `showcase`）だけ。
+- render は `request{family,width,height}`、`seq`、`producedAt`、`snapshotSource`、`state`、（unavailable のとき）`unavailableReason`、`url`、`appearanceID`、`accessibility{identifier,label,groupCount}`、`texts`、`timeline{entries,policy,elapsedMs}`、（normal のとき）`composition`。
+- `renders[]` ごとに、その request の枠で組む。入力（読んだ写し、request、再読み込みの回数、読み上げの文）が前と同じなら組み直さず、`seq` と `producedAt` は前の値のまま。
+- `timeline` は拡張と同じ `WidgetTimelinePlan.make(now:)`（いまの1件、`never`）。`elapsedMs` は写しを読んでから render を返すまでの実時間（ContinuousClock）。
+- `-uitest-widget` の1つが読めない（ファミリーが2つ以外、幅や高さが 0 以下か数でない）ときは `hook.error`（`H22:<その1つ>`）。
+
+### 再読み込みの出どころ（指揮役の裁定 (B)）
+- `book.switch`・`book.finish` → `book.status`、`book.setTitle` → `book.update`、`settings.appearance`・`settings.hideOnWidgets` → `settings.save`。
+- `store.purchase`、`store.restore`、`store.entitlement`、`store.refund` は `settings.save` で、`reloadOnlyIfChanged: true` を付けた。写し（updatedAt を除く）が変わらないときは再読み込みを求めない。購入・復元で見本の見た目（`previewAppearanceID`）が設定に入るときと、返金で見た目を標準に戻すときだけ数える。
+
+### 受け入れテストで落ちたもの（テストは直していない）
+- AC-99 と AC-140 は、`readHookJSON("hook.widget")` で読んだ辞書を `"\(widget)"` で文字列にしてから書名を探す。Foundation の辞書の説明では、入れ子の辞書の中の日本語は `\U7f85` の形に書き換わる。そのため、トップの `title` がなくなると、書名が `renders[].accessibility.label` と `texts` にあっても見つからない。h22 のトップは `additionalProperties: false` なので、アプリの側でトップに書名を戻せない。verifier が `readHookString` で読む形にする必要がある。

@@ -19,6 +19,11 @@ public enum ReadingSharedContainer {
             .appendingPathComponent("widget-snapshot.json", isDirectory: false)
     }
 
+    /// 拡張の読み方（contracts/widget-snapshot.schema.json の読む側の決まり）。読めなければ理由を返す。
+    public nonisolated static func readWidgetSnapshot() -> WidgetSnapshotReadResult {
+        WidgetSnapshotReader.read(fileURL: widgetSnapshotFileURL())
+    }
+
     public nonisolated static func loadWidgetSnapshot() -> WidgetSnapshot {
         let url = widgetSnapshotFileURL()
         if let data = try? Data(contentsOf: url) {
@@ -77,7 +82,7 @@ public enum ThemeTypography {
         .custom("HiraMinProN-W6", size: size, relativeTo: .body)
     }
 
-    /// ウィジェットの縦書きの字。枠に収める大きさを ReadingVerticalFit が決めるため、大きさを固定する（screens.md W-1、W-2）。
+    /// ウィジェットの縦書きの字。枠に収める大きさを ReadingCore の WidgetLineComposer が決めるため、大きさを固定する（screens.md W-1、W-2）。
     public static func widgetLineFixed(size: CGFloat) -> Font {
         .custom("HiraMinProN-W6", fixedSize: size)
     }

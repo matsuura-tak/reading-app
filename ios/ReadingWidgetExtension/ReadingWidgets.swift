@@ -8,10 +8,20 @@ import ReadingStore
 public struct ReadingWidgetTimelineEntry: TimelineEntry, Sendable {
     public let date: Date
     public let snapshot: WidgetSnapshot
+    /// 写しを読めなかったとき（widget.unavailable を出す）。
+    public let unavailableReason: WidgetUnavailableReason?
 
-    public init(date: Date, snapshot: WidgetSnapshot) {
+    public init(date: Date, snapshot: WidgetSnapshot, unavailableReason: WidgetUnavailableReason? = nil) {
         self.date = date
         self.snapshot = snapshot
+        self.unavailableReason = unavailableReason
+    }
+
+    /// 写しを読んだ結果から作る。読めないときの写しは空（今の本なし）で、描くのは unavailable。
+    public init(date: Date, result: WidgetSnapshotReadResult) {
+        self.date = date
+        self.snapshot = result.snapshot ?? WidgetSnapshot(updatedAt: "1970-01-01T00:00:00Z")
+        self.unavailableReason = result.unavailableReason
     }
 }
 
@@ -23,14 +33,21 @@ public struct ReadingWidgetTimelineProvider: TimelineProvider {
     }
 
     public func getSnapshot(in context: Context, completion: @escaping @Sendable (ReadingWidgetTimelineEntry) -> Void) {
-        let snapshot = ReadingSharedContainer.loadWidgetSnapshot()
-        completion(ReadingWidgetTimelineEntry(date: Date(), snapshot: snapshot))
+        completion(ReadingWidgetTimelineEntry(date: Date(), result: ReadingSharedContainer.readWidgetSnapshot()))
     }
 
     public func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<ReadingWidgetTimelineEntry>) -> Void) {
-        let snapshot = ReadingSharedContainer.loadWidgetSnapshot()
-        let entry = ReadingWidgetTimelineEntry(date: Date(), snapshot: snapshot)
-        completion(Timeline(entries: [entry], policy: .never))
+        // H22 の timeline と同じ決まり（ReadingCore の WidgetTimelinePlan）。
+        let result = ReadingSharedContainer.readWidgetSnapshot()
+        let plan = WidgetTimelinePlan.make(now: Date())
+        let entries = plan.entryDates.map { ReadingWidgetTimelineEntry(date: $0, result: result) }
+        let policy: TimelineReloadPolicy
+        switch plan.policy {
+        case .never: policy = .never
+        case .atEnd: policy = .atEnd
+        case .after(let date): policy = .after(date)
+        }
+        completion(Timeline(entries: entries, policy: policy))
     }
 }
 
@@ -44,6 +61,7 @@ struct ReadingHomeSmallWidgetEntryView: View {
         GeometryReader { proxy in
             ReadingHomeSmallWidgetView(
                 snapshot: entry.snapshot,
+                unavailableReason: entry.unavailableReason,
                 size: proxy.size,
                 contentMargins: ReadingWidgetMetrics.homeSmallContentMargins
             )
@@ -81,6 +99,7 @@ struct ReadingLockScreenWidgetEntryView: View {
             ReadingLockScreenWidgetView(
                 family: family,
                 snapshot: entry.snapshot,
+                unavailableReason: entry.unavailableReason,
                 size: proxy.size,
                 contentMargins: family == .accessoryRectangular ? ReadingWidgetMetrics.lockScreenContentMargins : systemMargins
             )

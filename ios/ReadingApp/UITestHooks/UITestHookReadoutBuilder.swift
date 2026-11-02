@@ -46,12 +46,6 @@ public enum UITestHookReadoutBuilder {
         return text
     }
 
-    public static func verticalJSON(model: ReadingAppModel) -> String {
-        let snapshot = model.store.snapshotStore.currentSnapshot
-        let comp = VerticalLineLayout.composeWidget(snapshot: snapshot, strings: ReadingWidgetStrings.spoken)
-        return encodeJSON(UITestHookVerticalPayload(composition: comp))
-    }
-
     public static func ocrJSON(model: ReadingAppModel, coordinator: UITestHookCoordinator) -> String {
         let config = model.store.ocrConfiguration
         let payload = UITestHookOCRPayload(

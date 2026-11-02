@@ -286,45 +286,6 @@ struct ContractModelsTests {
         let h20 = try JSONDecoder().decode(H20NDLStubConfig.self, from: Data(h20JSON.utf8))
         #expect(h20.isbnResponses["9784167911300"]?.items.first?.title == "コンビニ人間")
 
-        let h22JSON = """
-        {
-          "snapshot": {
-            "version": 1,
-            "updatedAt": "2026-10-24T13:15:00Z",
-            "appearanceID": "default",
-            "hideOnWidgets": false,
-            "currentBook": {
-              "id": "550e8400-e29b-41d4-a716-446655440000",
-              "title": "コンビニ人間",
-              "author": "村田沙耶香",
-              "isTitlePending": false,
-              "progressUnit": "page",
-              "progressDisplay": "p. 142",
-              "latestLine": "世界の部品になることで、わたしはようやく息ができた",
-              "latestLineId": "770e8400-e29b-41d4-a716-446655440020"
-            }
-          },
-          "composition": {
-            "orientation": "vertical",
-            "displayedLine": "世界の部品になることで、わたしはようやく息ができた",
-            "shortened": false,
-            "columnCount": 4,
-            "rowsPerColumn": 8,
-            "accessibilityLabel": "コンビニ人間、村田沙耶香。p. 142。世界の部品になることで、わたしはようやく息ができた。",
-            "cells": [
-              { "column": 1, "row": 1, "source": "世", "display": "世", "rotation": 0, "dx": 0, "dy": 0 },
-              { "column": 1, "row": 8, "source": "、", "display": "︑", "rotation": 0, "dx": 0, "dy": 0 }
-            ]
-          },
-          "reloadTimelineCount": 2,
-          "lastReloadAt": "2026-10-24T13:15:00Z"
-        }
-        """
-        let h22 = try JSONDecoder().decode(H22WidgetReadout.self, from: Data(h22JSON.utf8))
-        #expect(h22.composition.orientation == .vertical)
-        #expect(h22.composition.cells.count == 2)
-        #expect(h22.reloadTimelineCount == 2)
-
         let h29JSON = """
         {
           "totalCount": 1,
