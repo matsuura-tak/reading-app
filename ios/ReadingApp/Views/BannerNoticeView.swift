@@ -104,45 +104,9 @@ public struct BannerNoticeView: View {
         .accessibilityIdentifier(containerIdentifier)
     }
 
+    /// 知らせと入力誤りの文（design/ 7 の同じ名前のキー）。String Catalog にないキーはキーの名前のまま出る。
     public static func message(forKey key: String) -> String {
-        switch key {
-        case "session.tooShort":
-            return AppL10n.pick("1分未満のため記録しませんでした。", "Under 1 minute, so it was not recorded.")
-        case "session.invalidTime":
-            return AppL10n.pick("時刻が巻き戻ったため記録しませんでした。", "Clock moved backward, so it was not recorded.")
-        case "session.capped":
-            return AppL10n.pick("24時間を上限として記録しました。", "Recorded up to the 24-hour maximum.")
-        case "session.start.error":
-            return AppL10n.pick("読書を始められませんでした。もう一度お試しください。", "Could not start reading. Please try again.")
-        case "session.save.error":
-            return AppL10n.pick("記録を保存できませんでした。もう一度お試しください。", "Could not save your reading record. Please try again.")
-        case "common.save.error":
-            return AppL10n.pick("保存できませんでした。もう一度お試しください。", "Could not save. Please try again.")
-        case "store.load.error":
-            return AppL10n.pick("データを読み込めませんでした。", "Could not load your data.")
-        case "book.title.invalid":
-            return AppL10n.pick("書名を1〜100文字で入力してください。", "Enter a book title between 1 and 100 characters.")
-        case "book.author.invalid":
-            return AppL10n.pick("著者名を100文字以内で入力してください。", "Keep the author name within 100 characters.")
-        case "mark.line.invalid":
-            return AppL10n.pick("一行を1〜60文字で入力してください。", "Enter a line between 1 and 60 characters.")
-        case "mark.page.invalid":
-            return AppL10n.pick("正しい数値を入力してください。", "Enter a valid number.")
-        case "record.minutes.invalid":
-            return AppL10n.pick("1〜1440分の数値を入力してください。", "Enter minutes between 1 and 1440.")
-        case "store.unavailable":
-            return AppL10n.pick("この端末では購入が制限されています。", "Purchases are restricted on this device.")
-        case "store.offline":
-            return AppL10n.pick("オフラインのため価格を取得できません。", "Cannot fetch price while offline.")
-        case "store.purchase.error":
-            return AppL10n.pick("購入を完了できませんでした。", "Could not complete the purchase.")
-        case "store.restore.done":
-            return AppL10n.pick("購入を復元しました。", "Purchases restored.")
-        case "store.restore.none":
-            return AppL10n.pick("復元できる購入が見つかりませんでした。", "No purchases found to restore.")
-        default:
-            return key
-        }
+        String(localized: String.LocalizationValue(key))
     }
 }
 

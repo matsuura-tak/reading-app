@@ -601,6 +601,8 @@ public final class ReadingDataStore {
     public var pendingMarkPreviousProgress: Int?
     public var pendingMarkPreviousUnit: ProgressUnit?
     public var latestResultSummary: String?
+    /// S-4 のまとめの値（読み上げ `result.summary.spoken` をアプリが組むため）。`latestResultSummary` と同時に入れ替える。
+    public var latestResultFigures: SessionResultFigures?
     public var activeErrorKey: String?
     public var isStoreLoadFailed: Bool = false
     public var showWidgetGuide: Bool = false
@@ -747,6 +749,7 @@ public final class ReadingDataStore {
         pendingMarkPreviousProgress = nil
         pendingMarkPreviousUnit = nil
         latestResultSummary = nil
+        latestResultFigures = nil
         activeErrorKey = nil
         isStoreLoadFailed = false
         showWidgetGuide = false
@@ -1981,7 +1984,7 @@ public final class ReadingDataStore {
                 liveActivities[startedIdx].line = nil
                 liveActivities[startedIdx].progressText = nil
                 liveActivities[startedIdx].endButtonIdentifier = "liveActivity.end"
-                liveActivities[startedIdx].endButtonLabel = "終える"
+                liveActivities[startedIdx].endButtonLabel = storeStrings.liveActivityEndLabel
                 liveActivities[startedIdx].endIntentName = "EndReadingFromActivityIntent"
                 activeLAId = liveActivities[startedIdx].id
                 liveActivityRequests.append(
@@ -2016,7 +2019,7 @@ public final class ReadingDataStore {
                         )
                     } else {
                         let newId = "la-reading-\(liveActivityRequests.count + 1)"
-                        let displayTitle = settings.hideOnWidgets ? "しおり" : (book.title.isEmpty ? "しおり" : book.title)
+                        let displayTitle = liveActivityDisplayTitle(for: book)
                         let staleISO = nextFourAMISO(from: clock.now())
                         let item = LiveActivityItemState(
                             id: newId,
@@ -2028,7 +2031,7 @@ public final class ReadingDataStore {
                             progressText: nil,
                             startedAt: nowISO,
                             endButtonIdentifier: "liveActivity.end",
-                            endButtonLabel: "終える",
+                            endButtonLabel: storeStrings.liveActivityEndLabel,
                             endIntentName: "EndReadingFromActivityIntent"
                         )
                         liveActivities.append(item)
@@ -2175,6 +2178,7 @@ public final class ReadingDataStore {
         pendingMarkPreviousProgress = prevProgress
         pendingMarkPreviousUnit = unit
         latestResultSummary = storeStrings.durationMinutes(finalMinutes)
+        latestResultFigures = SessionResultFigures(unit: unit, previous: nil, current: nil, minutes: finalMinutes)
         activeErrorKey = nil
 
         let totalDistinctNights = Set(records.map(\.nightDate)).count
@@ -2206,6 +2210,9 @@ public final class ReadingDataStore {
         if let recId = pendingMarkRecordId,
            let rec = records.first(where: { $0.id == recId }) {
             latestResultSummary = storeStrings.durationMinutes(rec.durationMinutes)
+            latestResultFigures = SessionResultFigures(
+                unit: pendingMarkPreviousUnit ?? .page, previous: nil, current: nil, minutes: rec.durationMinutes
+            )
             updateLiveActivityOnSessionEnd(minutes: rec.durationMinutes, progressText: nil, source: "mark.later")
         }
         pendingMarkRecordId = nil
@@ -2339,6 +2346,7 @@ public final class ReadingDataStore {
             )
 
             var summary: String?
+            var figures: SessionResultFigures?
             if let mins = sessionMinutes {
                 if let validatedProgress, let newDisp = newProgStr {
                     let oldDisp = InputValidator.formatProgressDisplay(
@@ -2350,21 +2358,31 @@ public final class ReadingDataStore {
                     )
                     // 前の値が表示できて、今回の値と違うときだけ「前 → 今」の形（design/ 7 の result.summary.*）。
                     let previous = (oldDisp != nil && oldProgress != validatedProgress) ? oldProgress : nil
-                    summary = storeStrings.resultSummary(
+                    _ = newDisp
+                    let figuresWithPlace = SessionResultFigures(
                         unit: unit,
                         previous: previous,
                         current: newProgressVal ?? validatedProgress,
-                        currentDisplay: newDisp,
+                        minutes: mins
+                    )
+                    figures = figuresWithPlace
+                    summary = storeStrings.resultSummary(
+                        unit: unit,
+                        previous: figuresWithPlace.previous,
+                        current: figuresWithPlace.current,
                         minutes: mins
                     )
                 } else {
+                    figures = SessionResultFigures(unit: unit, previous: nil, current: nil, minutes: mins)
                     summary = storeStrings.durationMinutes(mins)
                 }
                 latestResultSummary = summary
+                latestResultFigures = figures
                 updateLiveActivityOnSessionEnd(minutes: mins, progressText: newProgStr, source: "mark.save")
                 scheduleNextEntryLiveActivityIfNeeded(source: "mark.save")
             } else {
                 latestResultSummary = nil
+        latestResultFigures = nil
             }
 
             pendingMarkRecordId = nil
@@ -2815,7 +2833,7 @@ public final class ReadingDataStore {
         let (scheduledISO, staleISO) = computeNextEntrySchedule(from: now, forceTonight: forceTonightIfBeforeEntry)
         liveActivities.removeAll { $0.state == "scheduled" }
 
-        let displayTitle = settings.hideOnWidgets ? "しおり" : (book.title.isEmpty ? "しおり" : book.title)
+        let displayTitle = liveActivityDisplayTitle(for: book)
         let displayLine = settings.hideOnWidgets ? nil : book.lastSavedLine
         let progressText = InputValidator.formatProgressDisplay(
             unit: book.progressUnit,
@@ -2862,14 +2880,10 @@ public final class ReadingDataStore {
         for idx in liveActivities.indices where liveActivities[idx].state == "reading" || liveActivities[idx].state == "ended" {
             liveActivities[idx].state = "ended"
             // 拡張の ReadingLiveActivityStateFactory.ended と同じ「分数 · 場所」の形（読み上げのラベルが「 · 」で分けて読む）。
-            let duration = storeStrings.durationMinutes(minutes)
-            let summary: String
             if let progressText {
                 liveActivities[idx].progressText = progressText
-                summary = "\(duration) · \(progressText)"
-            } else {
-                summary = duration
             }
+            let summary = storeStrings.liveActivityEndedSummary(minutes: minutes, progressText: progressText)
             liveActivities[idx].summaryText = summary
             syncSystemLiveActivityStartOrUpdate(
                 mode: "ended",
@@ -2877,6 +2891,7 @@ public final class ReadingDataStore {
                 line: nil,
                 progressText: liveActivities[idx].progressText,
                 summaryText: summary,
+                minutes: minutes,
                 staleDateISO: liveActivities[idx].staleDate,
                 bookId: currentBook?.id,
                 startedAt: nil
@@ -2884,14 +2899,22 @@ public final class ReadingDataStore {
         }
     }
 
+    /// W-3 の書名の所の文（隠す設定なら `widget.hidden`、名無しの今の本・書名が空なら `widget.currentBookAsTitle`。AC-34、AC-139）。
+    private func liveActivityDisplayTitle(for book: BookSnapshot) -> String {
+        if settings.hideOnWidgets { return snapshotStore.spokenStrings.hidden }
+        let title = book.title.trimmingCharacters(in: .whitespacesAndNewlines)
+        if book.isTitlePending || title.isEmpty { return snapshotStore.spokenStrings.currentBookAsTitle }
+        return book.title
+    }
+
     private func refreshScheduledLiveActivityPrivacy() {
         guard let book = currentBook else { return }
         for idx in liveActivities.indices {
             if settings.hideOnWidgets {
-                liveActivities[idx].title = "しおり"
+                liveActivities[idx].title = liveActivityDisplayTitle(for: book)
                 liveActivities[idx].line = nil
             } else {
-                liveActivities[idx].title = book.title.isEmpty ? "しおり" : book.title
+                liveActivities[idx].title = liveActivityDisplayTitle(for: book)
                 liveActivities[idx].line = book.lastSavedLine
             }
             syncSystemLiveActivityStartOrUpdate(
@@ -2913,6 +2936,7 @@ public final class ReadingDataStore {
         line: String?,
         progressText: String?,
         summaryText: String? = nil,
+        minutes: Int? = nil,
         staleDateISO: String?,
         bookId: UUID?,
         startedAt: Date?
@@ -2927,7 +2951,8 @@ public final class ReadingDataStore {
             line: line,
             progressText: progressText,
             summaryText: summaryText,
-            hideOnWidgets: settings.hideOnWidgets
+            hideOnWidgets: settings.hideOnWidgets,
+            minutes: minutes
         )
         Task {
             let existingActivities = Activity<ReadingActivityAttributes>.activities
@@ -3081,9 +3106,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "noCurrentBook",
                     dialogKey: "intent.start.noCurrent",
-                    // design/ 7 に文言キーがない（intent.start.noCurrent）。キーが決まるまで前の文のまま（7体目の報告の未解決）。
-                    spokenText: "いま読んでいる本がありません。",
-                    snippetTexts: ["いま読んでいる本がありません。"],
+                    spokenText: storeStrings.intentStartNoCurrent,
+                    snippetTexts: [storeStrings.intentStartNoCurrent],
                     opensApp: true,
                     requestedForeground: true,
                     timestamp: nowISO
@@ -3140,9 +3164,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "ended",
                     dialogKey: "intent.end.completed",
-                    // design/ 7 に文言キーがない（intent.end.completed）。キーが決まるまで前の文のまま（7体目の報告の未解決）。
-                    spokenText: "読書を終えました。",
-                    snippetTexts: ["読書を終えました。"],
+                    spokenText: storeStrings.intentEndCompleted,
+                    snippetTexts: [storeStrings.intentEndCompleted],
                     opensApp: canContinueInForeground,
                     requestedForeground: canContinueInForeground,
                     timestamp: nowISO
@@ -3607,6 +3630,9 @@ public final class ReadingDataStore {
         )
     }
 
+    /// 推薦の理由の文（決定 85）。アプリが String Catalog から組んで入れる（`RecommendationReasonStrings.localized`）。
+    public var recommendationReasonStrings: RecommendationReasonStrings = .keys
+
     public func buildNextBookCandidates(for finishedBookId: UUID) -> [RecommendationCandidate] {
         guard let finished = books.first(where: { $0.id == finishedBookId }) else { return [] }
         let recFinished = asRecommendableBook(finished)
@@ -3620,7 +3646,8 @@ public final class ReadingDataStore {
             cooccurrence: cooc,
             awardsCatalog: activeAwards,
             weights: settings.recommendationWeights.asSeedWeights(),
-            maxCount: 3
+            maxCount: 3,
+            reasonStrings: recommendationReasonStrings
         )
     }
 
@@ -3635,7 +3662,8 @@ public final class ReadingDataStore {
             cooccurrence: cooc,
             awardsCatalog: activeAwards,
             weights: settings.recommendationWeights.asSeedWeights(),
-            maxCount: 5
+            maxCount: 5,
+            reasonStrings: recommendationReasonStrings
         )
     }
 
@@ -3644,7 +3672,8 @@ public final class ReadingDataStore {
         let recs = RecommendationEngine.noCurrentCandidates(
             shelfBooks: shelfPool,
             weights: settings.recommendationWeights.asSeedWeights(),
-            maxCount: 3
+            maxCount: 3,
+            reasonStrings: recommendationReasonStrings
         )
         return recs.compactMap { cand in
             guard let id = cand.bookId else { return nil }

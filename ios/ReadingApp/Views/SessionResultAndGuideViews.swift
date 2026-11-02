@@ -19,18 +19,29 @@ public struct SessionResultSheetView: View {
 
     private var resolvedState: SessionResultSheetState {
         if let previewState { return previewState }
-        let summary = model.store.latestResultSummary ?? "15分"
+        // 仮の値を入れない（screens.md S-4）。S-4 は保存した記録のあとにだけ出るので、まとめは必ずその記録から組まれている。
+        let summary = model.store.latestResultSummary ?? ""
         if model.store.activeNoticeKey == "session.capped" {
             return .capped(summaryText: summary, noticeText: BannerNoticeView.message(forKey: "session.capped"))
         }
         return .standard(summaryText: summary)
     }
 
-    private static func humanReadableSummary(_ raw: String) -> String {
-        raw
-            .replacingOccurrences(of: "p.", with: "ページ")
-            .replacingOccurrences(of: "→", with: "から")
-            .replacingOccurrences(of: "　", with: "、")
+    /// 読み上げ（design/ 6 の S-4）。見える文字を置き換えず、`result.summary.spoken`、`result.summary.first.spoken`、
+    /// `duration.minutes.spoken` で組む（決定 53）。値がない Preview では見える文字のまま。
+    static func spokenSummary(_ figures: SessionResultFigures?, fallback: String) -> String {
+        guard let figures else { return fallback }
+        let minutes = ReadingWidgetStrings.durationMinutesSpoken(figures.minutes)
+        let strings = ReadingWidgetStrings.spoken
+        guard let current = figures.current,
+              let currentSpoken = strings.spokenProgress(unit: figures.unit, display: String(current)) else {
+            return minutes
+        }
+        if let previous = figures.previous,
+           let previousSpoken = strings.spokenProgress(unit: figures.unit, display: String(previous)) {
+            return String(format: String(localized: "result.summary.spoken"), previousSpoken, currentSpoken, minutes)
+        }
+        return String(format: String(localized: "result.summary.first.spoken"), currentSpoken, minutes)
     }
 
     public var body: some View {
@@ -62,16 +73,21 @@ public struct SessionResultSheetView: View {
                         }
                     }()
 
-                    Text(summaryText)
-                        .font(.title.bold().monospacedDigit())
-                        .foregroundStyle(palette.textPrimary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityIdentifier("result.summary")
-                        .accessibilityLabel(Self.humanReadableSummary(summaryText))
-                        .accessibilityValue(summaryText)
+                    if !summaryText.isEmpty {
+                        Text(verbatim: summaryText)
+                            .font(.title.bold().monospacedDigit())
+                            .foregroundStyle(palette.textPrimary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityIdentifier("result.summary")
+                            .accessibilityLabel(Self.spokenSummary(
+                                previewState == nil ? model.store.latestResultFigures : nil,
+                                fallback: summaryText
+                            ))
+                            .accessibilityValue(summaryText)
+                    }
 
-                    Text(AppL10n.pick("記録しました。", "Saved."))
+                    Text(AppL10n.pick("記録しました。", "Session saved."))
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
                         .multilineTextAlignment(.center)

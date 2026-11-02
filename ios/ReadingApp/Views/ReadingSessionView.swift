@@ -39,24 +39,15 @@ public struct ReadingSessionView: View {
             return nowDate
         }()
 
-        var cal = Calendar(identifier: .gregorian)
-        cal.timeZone = tz
-        let comps = cal.dateComponents([.month, .day, .hour, .minute], from: startDate)
-        let hhmm = String(format: "%02d:%02d", comps.hour ?? 21, comps.minute ?? 0)
-
+        // reading.startedAt（「21:04 から数えています。」）。時刻はシステムの短い書式で、手で「21時4分」と組まない（決定 83）。
+        // 晩をまたいだときは、同じキーの %@ に月日つきの時刻を入れる（design/ 7 に別のキーはない）。
         let startNight = NightDateCalculator.nightDate(for: startDate, timeZoneID: tzID)
         let nowNight = NightDateCalculator.nightDate(for: nowDate, timeZoneID: tzID)
-
-        if startNight != nowNight, let m = comps.month, let d = comps.day {
-            return AppL10n.pick(
-                "\(m)月\(d)日 \(hhmm) から数えています。",
-                "Counting since \(m)/\(d) \(hhmm)."
-            )
-        }
-        return AppL10n.pick(
-            "\(hhmm) から数えています。",
-            "Counting since \(hhmm)."
-        )
+        var style = startNight == nowNight
+            ? Date.FormatStyle(date: .omitted, time: .shortened)
+            : Date.FormatStyle.dateTime.month(.defaultDigits).day().hour().minute()
+        style.timeZone = tz
+        return String(format: String(localized: "reading.startedAt"), startDate.formatted(style))
     }
 
     public var body: some View {
@@ -96,7 +87,7 @@ public struct ReadingSessionView: View {
 
                 let noteText = AppL10n.pick(
                     "伏せても、ロックしても、ほかのアプリを使っても数え続けます。",
-                    "Keeps counting when face down, locked, or in another app."
+                    "Keeps counting while iPhone is face down, locked, or in another app."
                 )
                 Text(noteText)
                     .font(.subheadline)

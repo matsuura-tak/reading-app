@@ -1429,6 +1429,8 @@ public struct ReadingActivityAttributes: ActivityAttributes, Codable, Sendable {
         public var progressText: String?
         public var summaryText: String?
         public var hideOnWidgets: Bool
+        /// 終えた直後（ended）の分数。読み上げ `liveActivity.ended.spoken` の `duration.minutes.spoken` に入れる。
+        public var minutes: Int?
 
         public nonisolated init(
             mode: String = "reading",
@@ -1436,7 +1438,8 @@ public struct ReadingActivityAttributes: ActivityAttributes, Codable, Sendable {
             line: String? = nil,
             progressText: String? = nil,
             summaryText: String? = nil,
-            hideOnWidgets: Bool = false
+            hideOnWidgets: Bool = false,
+            minutes: Int? = nil
         ) {
             self.mode = mode
             self.title = title
@@ -1444,6 +1447,7 @@ public struct ReadingActivityAttributes: ActivityAttributes, Codable, Sendable {
             self.progressText = progressText
             self.summaryText = summaryText
             self.hideOnWidgets = hideOnWidgets
+            self.minutes = minutes
         }
     }
 

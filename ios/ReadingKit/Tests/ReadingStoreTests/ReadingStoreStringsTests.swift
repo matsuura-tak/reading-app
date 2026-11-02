@@ -8,7 +8,7 @@ extension ReadingStoreStrings {
     static let testJapanese = ReadingStoreStrings(
         intentStartStarted: "読書を始めました。",
         intentStartAlreadyReading: "すでに読書中です。",
-        sessionStartError: "読み始めを保存できませんでした。もう一度「読み始める」を押してください。",
+        sessionStartError: "読み始めを保存できませんでした。もう一度「読み始める」を試してください。",
         sessionTooShort: "1分未満の読書は記録に残しません。",
         sessionSaveError: "終わりを保存できませんでした。読書は続いています。もう一度「終える」を押してください。",
         whereStoppedPageFormat: "%lldページからです。",
@@ -20,13 +20,20 @@ extension ReadingStoreStrings {
         durationMinutesFormat: "%lld分",
         resultSummaryPagesFormat: "p.%1$lld → p.%2$lld\u{3000}%3$@",
         resultSummaryLocationsFormat: "位置%1$lld → 位置%2$lld\u{3000}%3$@",
-        resultSummaryPercentsFormat: "%1$lld%% → %2$lld%%\u{3000}%3$@"
+        resultSummaryPercentsFormat: "%1$lld%% → %2$lld%%\u{3000}%3$@",
+        resultSummaryPagesFirstFormat: "p.%1$lld\u{3000}%2$@",
+        resultSummaryLocationsFirstFormat: "位置%1$lld\u{3000}%2$@",
+        resultSummaryPercentsFirstFormat: "%1$lld%%\u{3000}%2$@",
+        intentStartNoCurrent: "今の本がありません。よむまを開きます。",
+        intentEndCompleted: "読書を終えました。",
+        liveActivityEndLabel: "読書を終える",
+        liveActivityEndedSummaryFormat: "%1$@ · %2$@"
     )
 
     static let testEnglish = ReadingStoreStrings(
         intentStartStarted: "Started reading.",
         intentStartAlreadyReading: "A reading session is already running.",
-        sessionStartError: "Couldn't start the session. Tap Start Reading again.",
+        sessionStartError: "Couldn't save the start of this session. Try Start Reading again.",
         sessionTooShort: "Sessions shorter than 1 minute aren't saved.",
         sessionSaveError: "Couldn't save the end of this session. It's still running. Tap End Reading again.",
         whereStoppedPageFormat: "From page %lld.",
@@ -38,7 +45,14 @@ extension ReadingStoreStrings {
         durationMinutesFormat: "%lld min",
         resultSummaryPagesFormat: "p.%1$lld → p.%2$lld  %3$@",
         resultSummaryLocationsFormat: "Loc %1$lld → Loc %2$lld  %3$@",
-        resultSummaryPercentsFormat: "%1$lld%% → %2$lld%%  %3$@"
+        resultSummaryPercentsFormat: "%1$lld%% → %2$lld%%  %3$@",
+        resultSummaryPagesFirstFormat: "p.%1$lld  %2$@",
+        resultSummaryLocationsFirstFormat: "Loc %1$lld  %2$@",
+        resultSummaryPercentsFirstFormat: "%1$lld%%  %2$@",
+        intentStartNoCurrent: "There's no current book. Opening Yomuma.",
+        intentEndCompleted: "Reading session ended.",
+        liveActivityEndLabel: "End Reading",
+        liveActivityEndedSummaryFormat: "%1$@ · %2$@"
     )
 }
 
@@ -81,18 +95,8 @@ struct ReadingStoreStringsTests {
         SummaryCase(unit: .percent, previous: nil, current: 52, ja: "52%\u{3000}18分", en: "52%  18 min")
     ])
     func resultSummary(_ c: SummaryCase) {
-        let jaDisplay = c.current.flatMap {
-            InputValidator.formatProgressDisplay(unit: c.unit, page: $0, location: $0, percent: Double($0), strings: .japanese)
-        }
-        let enDisplay = c.current.flatMap {
-            InputValidator.formatProgressDisplay(unit: c.unit, page: $0, location: $0, percent: Double($0), strings: .english)
-        }
-        let ja = ReadingStoreStrings.testJapanese.resultSummary(
-            unit: c.unit, previous: c.previous, current: c.current, currentDisplay: jaDisplay, minutes: 18
-        )
-        let en = ReadingStoreStrings.testEnglish.resultSummary(
-            unit: c.unit, previous: c.previous, current: c.current, currentDisplay: enDisplay, minutes: 18
-        )
+        let ja = ReadingStoreStrings.testJapanese.resultSummary(unit: c.unit, previous: c.previous, current: c.current, minutes: 18)
+        let en = ReadingStoreStrings.testEnglish.resultSummary(unit: c.unit, previous: c.previous, current: c.current, minutes: 18)
         #expect(ja == c.ja)
         #expect(en == c.en)
     }
@@ -132,10 +136,41 @@ struct ReadingStoreStringsTests {
         #expect(!page.spokenText.contains("ある日の暮方の事である。"))
 
         let started = store.handleExternalIntent("StartReadingIntent")
+        #expect(store.liveActivities.allSatisfy { $0.endButtonLabel == nil || $0.endButtonLabel == "End Reading" })
         #expect(started.spokenText == "Started reading.")
         #expect(store.handleExternalIntent("StartReadingIntent").spokenText == "A reading session is already running.")
 
         store.isStoreLoadFailed = true
         #expect(store.handleExternalIntent("WhereStoppedIntent").spokenText == "Couldn't load your bookmark. Open Yomuma to check.")
+    }
+
+    @Test("W-3 の終えた直後の見える文字は liveActivity.ended.summary（場所がなければ分数だけ）")
+    func liveActivityEndedSummary() {
+        #expect(ReadingStoreStrings.testJapanese.liveActivityEndedSummary(minutes: 10, progressText: "p.61") == "10分 · p.61")
+        #expect(ReadingStoreStrings.testEnglish.liveActivityEndedSummary(minutes: 10, progressText: "Loc 1450") == "10 min · Loc 1450")
+        #expect(ReadingStoreStrings.testEnglish.liveActivityEndedSummary(minutes: 90, progressText: nil) == "90 min")
+    }
+
+    @Test("S-4 のまとめの値は、前の値が今と同じなら前の値を持たない")
+    func sessionResultFigures() {
+        #expect(SessionResultFigures(unit: .page, previous: 61, current: 61, minutes: 18).previous == nil)
+        #expect(SessionResultFigures(unit: .page, previous: 43, current: 61, minutes: 18).previous == 43)
+        #expect(SessionResultFigures(unit: .page, previous: 43, current: nil, minutes: 18).previous == nil)
+    }
+
+    @MainActor
+    @Test("今の本がないときの「読み始める」は intent.start.noCurrent の文を返す（決定 84）")
+    func startWithoutCurrentBook() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ReadingStoreStringsTests-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = ReadingDataStore(containerDirectory: dir, clock: ReadingClock(nowISO8601: "2026-10-18T21:00:00+09:00"))
+        store.storeStrings = .testEnglish
+        store.snapshotStore.spokenStrings = .english
+        store.resetAllData()
+        let log = store.handleExternalIntent("StartReadingIntent")
+        #expect(log.spokenText == "There's no current book. Opening Yomuma.")
+        #expect(log.spokenText.range(of: "\\p{Han}|\\p{Hiragana}|\\p{Katakana}", options: .regularExpression) == nil)
     }
 }

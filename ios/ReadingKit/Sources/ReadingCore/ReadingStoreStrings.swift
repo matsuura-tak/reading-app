@@ -35,6 +35,20 @@ public struct ReadingStoreStrings: Sendable, Equatable {
     public var resultSummaryLocationsFormat: String
     /// `result.summary.percents`（%1$lld、%2$lld、%3$@）
     public var resultSummaryPercentsFormat: String
+    /// `result.summary.pages.first`（%1$lld、%2$@）。前の場所がない晩（AC-76）
+    public var resultSummaryPagesFirstFormat: String
+    /// `result.summary.locations.first`（%1$lld、%2$@）
+    public var resultSummaryLocationsFirstFormat: String
+    /// `result.summary.percents.first`（%1$lld、%2$@）
+    public var resultSummaryPercentsFirstFormat: String
+    /// `intent.start.noCurrent`（「読み始める」で今の本がないときの声。決定 84）
+    public var intentStartNoCurrent: String
+    /// `intent.end.completed`（Live Activity の「終える」で保存できたときの声。決定 84）
+    public var intentEndCompleted: String
+    /// `liveActivity.end.label`（H23 の `endButtonLabel`。AC-114）
+    public var liveActivityEndLabel: String
+    /// `liveActivity.ended.summary`（%1$@ 分数、%2$@ 場所）。W-3 の終えた直後
+    public var liveActivityEndedSummaryFormat: String
 
     public nonisolated init(
         intentStartStarted: String,
@@ -51,7 +65,14 @@ public struct ReadingStoreStrings: Sendable, Equatable {
         durationMinutesFormat: String,
         resultSummaryPagesFormat: String,
         resultSummaryLocationsFormat: String,
-        resultSummaryPercentsFormat: String
+        resultSummaryPercentsFormat: String,
+        resultSummaryPagesFirstFormat: String = "result.summary.pages.first",
+        resultSummaryLocationsFirstFormat: String = "result.summary.locations.first",
+        resultSummaryPercentsFirstFormat: String = "result.summary.percents.first",
+        intentStartNoCurrent: String = "intent.start.noCurrent",
+        intentEndCompleted: String = "intent.end.completed",
+        liveActivityEndLabel: String = "liveActivity.end.label",
+        liveActivityEndedSummaryFormat: String = "liveActivity.ended.summary"
     ) {
         self.intentStartStarted = intentStartStarted
         self.intentStartAlreadyReading = intentStartAlreadyReading
@@ -68,6 +89,13 @@ public struct ReadingStoreStrings: Sendable, Equatable {
         self.resultSummaryPagesFormat = resultSummaryPagesFormat
         self.resultSummaryLocationsFormat = resultSummaryLocationsFormat
         self.resultSummaryPercentsFormat = resultSummaryPercentsFormat
+        self.resultSummaryPagesFirstFormat = resultSummaryPagesFirstFormat
+        self.resultSummaryLocationsFirstFormat = resultSummaryLocationsFirstFormat
+        self.resultSummaryPercentsFirstFormat = resultSummaryPercentsFirstFormat
+        self.intentStartNoCurrent = intentStartNoCurrent
+        self.intentEndCompleted = intentEndCompleted
+        self.liveActivityEndLabel = liveActivityEndLabel
+        self.liveActivityEndedSummaryFormat = liveActivityEndedSummaryFormat
     }
 
     /// 文言キーの名前そのもの（アプリが文を渡す前の既定値）。String Catalog にないキーを引いたときと同じく、キーが見える。
@@ -106,43 +134,55 @@ public struct ReadingStoreStrings: Sendable, Equatable {
     }
 
     /// S-4 の `result.summary`（AC-75、AC-76、AC-141）。
-    /// - 進み具合がない（あとで挟む、場所を変えない）：分数だけ（「18分」）。
+    /// - 進み具合がない（あとで挟む、場所を変えない）：分数だけ（`duration.minutes`。「18分」）。
     /// - 前の値があって変わった：`result.summary.pages` / `locations` / `percents`（「p.43 → p.61　18分」）。
-    /// - 前の値がない、または変わらない：今の値と分数（「p.61　18分」）。design/ 7 にこの形のキーはないため、
-    ///   同じ単位の `result.summary.*` の「%2$lld の後ろから %3$@ の前まで」を区切りとして使う（ja は全角の空白、en は空白2つ）。
-    /// - Parameter currentDisplay: 今の値の短い形（`InputValidator.formatProgressDisplay` の文。「p.61」「Loc 1450」）。
+    /// - 前の値がない、または変わらない：`result.summary.*.first`（「p.61　18分」）。
     public nonisolated func resultSummary(
         unit: ProgressUnit,
         previous: Int?,
         current: Int?,
-        currentDisplay: String?,
         minutes: Int
     ) -> String {
         let duration = durationMinutes(minutes)
-        guard let current, let currentDisplay else { return duration }
-        let format: String
-        switch unit {
-        case .page: format = resultSummaryPagesFormat
-        case .location: format = resultSummaryLocationsFormat
-        case .percent: format = resultSummaryPercentsFormat
-        }
+        guard let current else { return duration }
         if let previous, previous != current {
+            let format: String
+            switch unit {
+            case .page: format = resultSummaryPagesFormat
+            case .location: format = resultSummaryLocationsFormat
+            case .percent: format = resultSummaryPercentsFormat
+            }
             return String(format: format, locale: nil, Int64(previous), Int64(current), duration)
         }
-        return currentDisplay + Self.separator(in: format) + duration
+        let firstFormat: String
+        switch unit {
+        case .page: firstFormat = resultSummaryPagesFirstFormat
+        case .location: firstFormat = resultSummaryLocationsFirstFormat
+        case .percent: firstFormat = resultSummaryPercentsFirstFormat
+        }
+        return String(format: firstFormat, locale: nil, Int64(current), duration)
     }
 
-    /// `result.summary.*` の書式から、場所と分数の間の区切りを取り出す。見つからなければ空白1つ。
-    static func separator(in format: String) -> String {
-        guard let afterCurrent = format.range(of: "%2$lld"),
-              let durationRange = format.range(of: "%3$@", range: afterCurrent.upperBound..<format.endIndex) else {
-            return " "
-        }
-        var between = String(format[afterCurrent.upperBound..<durationRange.lowerBound])
-        // 「%2$lld%%　%3$@」（％）のように、値の後ろに単位が付く形は、区切りの前の単位の印を除く。
-        if between.hasPrefix("%%") {
-            between.removeFirst(2)
-        }
-        return between.isEmpty ? " " : between
+    /// W-3 の終えた直後の見える文字（`liveActivity.ended.summary`「10分 · p.61」）。場所がなければ分数だけ。
+    public nonisolated func liveActivityEndedSummary(minutes: Int, progressText: String?) -> String {
+        let duration = durationMinutes(minutes)
+        guard let progressText, !progressText.isEmpty else { return duration }
+        return String(format: liveActivityEndedSummaryFormat, locale: nil, duration, progressText)
+    }
+}
+
+/// S-4 のまとめの値（見える文字 `result.summary` と読み上げ `result.summary.spoken` を同じ値から組むため）。
+/// `previous` は前の値があって今の値と違うときだけ入る。`current` が nil なら分数だけの晩（あとで挟む、場所を変えない）。
+public struct SessionResultFigures: Sendable, Equatable {
+    public var unit: ProgressUnit
+    public var previous: Int?
+    public var current: Int?
+    public var minutes: Int
+
+    public nonisolated init(unit: ProgressUnit, previous: Int?, current: Int?, minutes: Int) {
+        self.unit = unit
+        self.current = current
+        self.previous = (previous != nil && previous != current && current != nil) ? previous : nil
+        self.minutes = minutes
     }
 }

@@ -249,7 +249,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Set Book Title"
+            "value": "Add Book Title"
           }
         }
       }
@@ -285,7 +285,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Finished Reading"
+            "value": "Mark as Finished"
           }
         }
       }
@@ -303,7 +303,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add Book"
+            "value": "Add a Book"
           }
         }
       }
@@ -333,13 +333,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "次に読む本を選びましょう"
+            "value": "今の本がありません"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose Your Next Book"
+            "value": "No Current Book"
           }
         }
       }
@@ -405,13 +405,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "これを読む"
+            "value": "この本を読む"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Read This"
+            "value": "Read This Book"
           }
         }
       }
@@ -423,13 +423,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "読んでいる本を1冊、しおりに挟みましょう"
+            "value": "まだ本がありません"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tuck Your First Book into the Bookmark"
+            "value": "No Books Yet"
           }
         }
       }
@@ -483,7 +483,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shelf"
+            "value": "Bookshelf"
           }
         }
       }
@@ -693,13 +693,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ページ番号（1〜9999）"
+            "value": "例 61"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Page number (1–9999)"
+            "value": "e.g. 61"
           }
         }
       }
@@ -729,13 +729,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "残す一行（140字まで）"
+            "value": "一行"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Line to Keep (up to 140 chars)"
+            "value": "Line"
           }
         }
       }
@@ -747,13 +747,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "心に残った一行を、自分の言葉や引用で残せます"
+            "value": "止めた行を、本のとおりに"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Write or capture a line to remember"
+            "value": "Type the line as printed"
           }
         }
       }
@@ -969,7 +969,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Book Finished"
+            "value": "Finished"
           }
         }
       }
@@ -1071,13 +1071,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "一枚のカードにする"
+            "value": "読み終えのカードを共有"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Share as a Card"
+            "value": "Share Finish Card"
           }
         }
       }
@@ -1467,13 +1467,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "バーコードを読む"
+            "value": "バーコードを続けて読む"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scan Barcode"
+            "value": "Scan Barcodes"
           }
         }
       }
@@ -1485,13 +1485,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "表紙や背表紙を撮る"
+            "value": "表紙・背表紙を撮る"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Snap Cover or Spine"
+            "value": "Scan Cover or Spine"
           }
         }
       }
@@ -1503,13 +1503,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "手で入れる"
+            "value": "手で入れる・書名で探す"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter Manually"
+            "value": "Enter or Search by Title"
           }
         }
       }
@@ -1521,13 +1521,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あとで入れる（すぐ読み始める）"
+            "value": "あとで（すぐ読み始める）"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Add Later (Start Reading Now)"
+            "value": "Add Title Later (Start Now)"
           }
         }
       }
@@ -2511,13 +2511,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "読んだ晩の記録"
+            "value": "記録"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reading Nights"
+            "value": "Reading Log"
           }
         }
       }
@@ -2529,13 +2529,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "まだ読んだ記録はありません"
+            "value": "まだ記録がありません。読み始めて終えると、ここに残ります。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No reading sessions recorded yet"
+            "value": "No sessions yet. They appear here after you start and end reading."
           }
         }
       }
@@ -2673,13 +2673,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "「%@」を本棚から消しますか？"
+            "value": "「%@」を消します。元に戻せません。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Delete “%@” from your shelf?"
+            "value": "Delete “%@”? This can't be undone."
           }
         }
       }
@@ -2871,7 +2871,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "書誌データベース"
+            "value": "書誌データ"
           }
         },
         "en": {
@@ -3519,13 +3519,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "1分未満のため記録しませんでした。"
+            "value": "1分未満の読書は記録に残しません。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not recorded because the session was under 1 minute."
+            "value": "Sessions shorter than 1 minute aren't saved."
           }
         }
       }
@@ -3537,13 +3537,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "時刻が巻き戻ったため記録しませんでした。"
+            "value": "端末の時刻が読み始めより前になっていたので、この読書は記録に残しませんでした。「設定」で日付と時刻を確かめてから、もう一度読み始めてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not recorded because the system clock moved backward."
+            "value": "This session wasn't saved because the device's time was set earlier than when you started. Check the date and time in Settings, then start again."
           }
         }
       }
@@ -3555,13 +3555,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "24時間を上限として記録しました。"
+            "value": "24時間で数えるのを止めました。分数は、本の画面の記録で直せます。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Recorded up to the 24-hour maximum."
+            "value": "Counting stopped at 24 hours. You can edit the minutes in the book's reading log."
           }
         }
       }
@@ -3573,13 +3573,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "読書を始められませんでした。もう一度お試しください。"
+            "value": "読み始めを保存できませんでした。もう一度「読み始める」を試してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Could not start reading. Please try again."
+            "value": "Couldn't save the start of this session. Try Start Reading again."
           }
         }
       }
@@ -3591,13 +3591,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "記録を保存できませんでした。もう一度お試しください。"
+            "value": "終わりを保存できませんでした。読書は続いています。もう一度「終える」を押してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Could not save the reading record. Please try again."
+            "value": "Couldn't save the end of this session. It's still running. Tap End Reading again."
           }
         }
       }
@@ -3609,13 +3609,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "保存できませんでした。もう一度お試しください。"
+            "value": "保存できませんでした。変更は反映されていません。もう一度試してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Could not save. Please try again."
+            "value": "Couldn't save. Nothing was changed. Please try again."
           }
         }
       }
@@ -3627,13 +3627,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "データを読み込めませんでした。"
+            "value": "もう一度読み込んでください。続くときは、アプリを終了して開き直してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Could not load your data."
+            "value": "Try loading again. If it keeps happening, quit Yomuma and open it again."
           }
         }
       }
@@ -3645,13 +3645,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "書名を1〜100文字で入力してください。"
+            "value": "書名は1〜100字で入れてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter a book title between 1 and 100 characters."
+            "value": "Enter a title of 1 to 100 characters."
           }
         }
       }
@@ -3663,13 +3663,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "著者名を100文字以内で入力してください。"
+            "value": "著者は100字までで入れてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep the author name within 100 characters."
+            "value": "Enter an author name of up to 100 characters."
           }
         }
       }
@@ -3681,13 +3681,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "一行を1〜60文字で入力してください。"
+            "value": "一行は1〜60字で入れてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter a line between 1 and 60 characters."
+            "value": "Enter a line of 1 to 60 characters."
           }
         }
       }
@@ -3699,13 +3699,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "正しい数値を入力してください。"
+            "value": "ページは1〜9999（位置は1〜999999、％は0〜100）の整数の数字で入れてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter a valid number."
+            "value": "Enter a whole number: 1–9999 for page, 1–999999 for location, or 0–100 for %."
           }
         }
       }
@@ -3717,13 +3717,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "1〜1440分の数値を入力してください。"
+            "value": "分は1〜1440の数字で入れてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Enter a duration between 1 and 1440 minutes."
+            "value": "Enter minutes from 1 to 1,440."
           }
         }
       }
@@ -3735,13 +3735,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "この端末では購入が制限されています。"
+            "value": "この iPhone では App Store での購入が制限されているため、購入できません。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Purchases are restricted on this device."
+            "value": "In-app purchases are restricted on this iPhone."
           }
         }
       }
@@ -3753,13 +3753,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "オフラインのため価格を取得できません。"
+            "value": "通信できないため、商品の情報を読み込めませんでした。通信が戻ってから試してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cannot fetch price while offline."
+            "value": "You're offline, so product details couldn't be loaded. Try again when connected."
           }
         }
       }
@@ -3771,13 +3771,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "購入を完了できませんでした。"
+            "value": "購入を完了できませんでした。支払いは行われていません。もう一度試してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Could not complete the purchase."
+            "value": "Couldn't complete the purchase. You weren't charged. Please try again."
           }
         }
       }
@@ -3789,13 +3789,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "購入を復元しました。"
+            "value": "購入を復元しました。「よむま＋」の見た目を選べます。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Purchases restored."
+            "value": "Purchases restored. Yomuma+ appearances are now available."
           }
         }
       }
@@ -3807,13 +3807,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "復元できる購入が見つかりませんでした。"
+            "value": "この Apple Account で購入された記録が見つかりませんでした。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No purchases found to restore."
+            "value": "No previous purchases were found for this Apple Account."
           }
         }
       }
@@ -4305,7 +4305,7 @@
       }
     },
     "duration.minutes": {
-      "comment": "60分未満の時間。S-4 の result.summary と W-3 の終えた直後の分数に使う。%lld は分数",
+      "comment": "画面に出す読書時間はすべてこの形（1〜1440分。60分以上も「85分」「1440分」のまま）。S-4 の `result.summary`、W-3（`ended`）、S-7 の記録の行と `book.total`、S-9 の `finish.reflection.*` の分の値。PRD が分で指定している（AC-22 の合計「85分」、AC-57 の「1440分」、AC-127 の「142分」）ため、時間に直さない（2026-11-02 に「60分未満」の限定を外した。決定 82）。足した",
       "extractionState": "manual",
       "localizations": {
         "ja": {
@@ -4372,6 +4372,624 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$lld%% → %2$lld%%  %3$@"
+          }
+        }
+      }
+    },
+    "intent.start.noCurrent": {
+      "comment": "W-5（「読み始める」で今の本が0冊のときの声の文。インテントの結果は「アプリを前に出す」で、前面は S-1。小窓は出さない。「よむまで」と続けない）。足した（2026-11-02、決定 84）。PRD（AC-117）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本がありません。よむまを開きます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There's no current book. Opening Yomuma."
+          }
+        }
+      }
+    },
+    "intent.end.completed": {
+      "comment": "W-5（Live Activity の「終える」で終わりを保存できたときの声の文。分数・場所・書名・一行は入れず、続きはアプリが前に出て S-3 で見せる。1分未満のときは `session.tooShort`、保存に失敗したときは `session.save.error` の文）。足した（2026-11-02、決定 84）。PRD（AC-116、AC-132）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を終えました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading session ended."
+          }
+        }
+      }
+    },
+    "result.summary.pages.first": {
+      "comment": "S-4 の `result.summary`（前の場所がない本で初めてページを入れた晩。`%2$@` は `duration.minutes`）。足した（2026-11-02）。PRD（AC-76 の (2)）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%1$lld　%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%1$lld  %2$@"
+          }
+        }
+      }
+    },
+    "result.summary.locations.first": {
+      "comment": "S-4 の `result.summary`（前の場所がない本で初めて位置番号を入れた晩）。足した（2026-11-02）。PRD（AC-76、AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置%1$lld　%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loc %1$lld  %2$@"
+          }
+        }
+      }
+    },
+    "result.summary.percents.first": {
+      "comment": "S-4 の `result.summary`（前の場所がない本で初めて％を入れた晩）。足した（2026-11-02）。PRD（AC-76、AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld%%　%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld%%  %2$@"
+          }
+        }
+      }
+    },
+    "result.summary.spoken": {
+      "comment": "S-4 の `result.summary` の読み上げ（`%1$@`・`%2$@` は `page.spoken` / `location.spoken` / `percent.spoken` の文、`%3$@` は `duration.minutes.spoken`）。例「43ページから61ページ、18分」／\"page 43 to page 61, 18 minutes\"。見える文字の「p.」を置き換えて作らない（決定 53）。足した（2026-11-02）。PRD（AC-75、AC-76、AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@から%2$@、%3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ to %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "result.summary.first.spoken": {
+      "comment": "S-4 の `result.summary` の読み上げ（前の場所がない晩。例「61ページ、18分」）。`mark.later` の晩は `duration.minutes.spoken` だけを読む。足した（2026-11-02）。PRD（AC-75、AC-76）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "liveActivity.ended.summary": {
+      "comment": "W-3（`ended`）の見える文字（`%1$@` は `duration.minutes`、`%2$@` は `page.short` / `location.short` / `percent.short`）。例「10分 · p.61」。場所がなければ `duration.minutes` だけ。足した（2026-11-02）。PRD（AC-41、AC-114）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "liveActivity.ended.spoken": {
+      "comment": "W-3（`ended`）の読み上げ（書名または `widget.hidden`、`duration.minutes.spoken`、`page.spoken` / `location.spoken` / `percent.spoken`）。例「羅生門、10分、61ページ」／\"Rashomon, 10 minutes, page 61\"。場所がなければ `widget.spoken.noLine`（書名、分）。足した（2026-11-02）。PRD（AC-41）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、%2$@、%3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "duration.hoursMinutes": {
+      "comment": "`finish.reflection.multi` の括弧の中（`%3$@`。「142分（2時間22分）」）だけに使う。分が0なら `duration.hours`。ほかの画面の読書時間には使わない（決定 82）。PRD（AC-127、AC-128）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld時間%2$lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld hr %2$lld min"
+          }
+        }
+      }
+    },
+    "duration.hours": {
+      "comment": "`finish.reflection.multi` の括弧の中で分が0のとき（「120分（2時間）」）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld時間"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld hr"
+          }
+        }
+      }
+    },
+    "next.reason.tsundoku": {
+      "comment": "S-9、S-1（noCurrent）の理由。PRD（AC-80）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your pile"
+          }
+        }
+      }
+    },
+    "next.reason.sameAuthor": {
+      "comment": "S-9、S-1 の理由。PRD（AC-79）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・同じ著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your pile · Same author"
+          }
+        }
+      }
+    },
+    "next.reason.sameAward": {
+      "comment": "S-9、S-1 の理由。PRD（AC-79）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・同じ賞（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your pile · Same award (%@)"
+          }
+        }
+      }
+    },
+    "next.reason.sameLabel": {
+      "comment": "S-9、S-1 の理由。PRD",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・同じレーベル（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your pile · Same imprint (%@)"
+          }
+        }
+      }
+    },
+    "next.reason.readers": {
+      "comment": "S-9、S-1 の理由（積読にある本が共起の表にも当たったとき。人数は出さない）。足した（2026-11-02）。PRD（AC-80、AC-148）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・この本を読み終えた人が、次に読んだ本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your pile · Read next by people who finished this book"
+          }
+        }
+      }
+    },
+    "next.reason.nextVolume": {
+      "comment": "S-9、S-1 の理由（積読にある本が読み終えた本の次の巻のとき）。足した（2026-11-02）。PRD（AC-80、AC-87）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読から・シリーズの次の巻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From your pile · Next volume in the series"
+          }
+        }
+      }
+    },
+    "rec.reason.readers": {
+      "comment": "S-9（`next.reason`）、S-7（`after.reason`）の共起の理由（人数は出さない）。PRD（AC-148）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を読み終えた人が、次に読んだ本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read next by people who finished this book"
+          }
+        }
+      }
+    },
+    "rec.reason.nextVolume": {
+      "comment": "S-9、S-7 の未所有の候補の理由。PRD（AC-87）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シリーズの次の巻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next volume in the series"
+          }
+        }
+      }
+    },
+    "rec.reason.sameAuthor": {
+      "comment": "S-9、S-7 の未所有の候補の理由。PRD（AC-87、AC-146、AC-147）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ著者の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By the same author"
+          }
+        }
+      }
+    },
+    "rec.reason.sameAward": {
+      "comment": "S-9、S-7 の未所有の候補の理由（例：「同じ賞（第157回 直木三十五賞）」。`%@` は受賞一覧の表示名で、回・年を含む1つの文字列。画面の側で「第157回」と賞の名前をつながない）。PRD（AC-79、AC-146、AC-147）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ賞（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same award (%@)"
+          }
+        }
+      }
+    },
+    "rec.reason.sameLabel": {
+      "comment": "S-9、S-7 の未所有の候補の理由（書誌 DB で同じレーベルの本）。足した（2026-11-02）。PRD（AC-146）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じレーベル（%@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same imprint (%@)"
+          }
+        }
+      }
+    },
+    "book.total": {
+      "comment": "S-7（`%@` は `duration.minutes`。例「合計 85分」。AC-22 のとおり分のまま）。PRD（AC-22）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "合計 %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total %@"
+          }
+        }
+      }
+    },
+    "reading.startedAt": {
+      "comment": "S-2。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ から数えています。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Counting since %@."
+          }
+        }
+      }
+    },
+    "colophon.capture": {
+      "comment": "S-7（`colophon.capture` / `book.captureColophon`）、S-9（`colophon.capture`）。英語は動詞で始める短い形のまま。\"Scan Colophon to Complete\" のような目的の付け足しはしない（B-2。2026-11-02 に見直し、値は変えない）。PRD（AC-77、AC-113）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付を撮って補う"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Colophon"
+          }
+        }
+      }
+    },
+    "duration.minutes.spoken": {
+      "comment": "`duration.minutes` の読み上げ（S-4 の `result.summary.spoken`、W-3 の `liveActivity.ended.spoken`、S-7 の `book.record.spoken` と `book.total`）。足した（2026-11-02）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld分"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minute"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld minutes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "duration.hours.spoken": {
+      "comment": "`duration.hours` の読み上げ。足した（2026-11-02）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld時間"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld hour"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld hours"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "book.nights": {
+      "comment": "S-7、S-9（カード）。PRD（AC-22、AC-84、AC-85）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld晩"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld night"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nights"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "duration.hoursMinutes.spoken": {
+      "comment": "`duration.hoursMinutes` の読み上げ（`finish.reflection` の括弧の中）。足した（2026-11-02）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld時間%2$lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%#@hours@ %#@minutes@"
+          },
+          "substitutions": {
+            "hours": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg hour"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg hours"
+                    }
+                  }
+                }
+              }
+            },
+            "minutes": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg minute"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg minutes"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

@@ -124,7 +124,7 @@ public struct FinishNightView: View {
     }
 
     private func headerSection(title: String, author: String, summary: String, reflection: String?) -> some View {
-        let displayTitle = title.isEmpty ? AppL10n.pick("今の本", "Current Book") : title
+        let displayTitle = title.isEmpty ? ReadingWidgetStrings.currentBookAsTitle : title
         let formattedPublisher: String? = {
             let pub = book?.publisher?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             let lbl = book?.label?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -237,7 +237,7 @@ public struct FinishNightView: View {
                 showColophonSheet = true
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("奥付を写して補う", "Scan Colophon to Complete"))
+                Text("colophon.capture")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -320,7 +320,7 @@ public struct FinishNightView: View {
 
     private func candidatesSection(candidates: [RecommendationCandidate]) -> some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-            Text(AppL10n.pick("次の1冊", "Next Book"))
+            Text(AppL10n.pick("次の1冊", "Your Next Book"))
                 .font(.headline)
                 .foregroundStyle(palette.textPrimary)
 
@@ -492,7 +492,7 @@ public struct FinishNightView: View {
         publisher: "新潮社",
         label: "新潮文庫",
         axis: .readers,
-        reason: "積読から・この本を読み終えた人が、次に読んだ本",
+        reason: RecommendationReasonStrings.localized.nextReaders,
         isOwnedTsundoku: true
     )
     FinishNightView(

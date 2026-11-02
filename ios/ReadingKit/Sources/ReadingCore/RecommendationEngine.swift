@@ -149,61 +149,39 @@ public enum RecommendationEngine: Sendable {
     }
 
     /// Formats the 1-line recommendation reason (never includes headcount numbers for `.readers`, AC-79, AC-80, AC-87, AC-148).
+    /// 軸と「積読にある本か」の組ごとに1つの文言キーの文（design/ 7「推薦の理由のキーの選び方」、決定 85）。
+    /// 賞やレーベルの名前が空のときは nil を返し、その軸を使わない。
     public nonisolated static func formatReason(
         axis: RecommendationAxis,
         isOwnedTsundoku: Bool = false,
-        baseBookTitle: String? = nil,
-        seriesTitle: String? = nil,
-        volumeNumber: Int? = nil,
-        author: String? = nil,
         award: String? = nil,
         awardSessionOrYear: String? = nil,
-        label: String? = nil
-    ) -> String {
-        _ = baseBookTitle
-        _ = seriesTitle
-        _ = volumeNumber
-        _ = author
-        if isOwnedTsundoku {
-            switch axis {
-            case .readers:
-                return "積読から・この本を読み終えた人が、次に読んだ本"
-            case .nextVolume:
-                return "積読から・シリーズの次の巻"
-            case .sameAuthor:
-                return "積読から・同じ著者"
-            case .sameAward:
-                if let award, !award.isEmpty {
-                    return "積読から・同じ賞（\(award)）"
-                }
-                return "積読から・同じ賞"
-            case .sameLabel:
-                if let label, !label.isEmpty {
-                    return "積読から・同じレーベル（\(label)）"
-                }
-                return "積読から・同じレーベル"
-            }
-        } else {
-            switch axis {
-            case .readers:
-                return "この本を読み終えた人が、次に読んだ本"
-            case .nextVolume:
-                return "シリーズの次の巻"
-            case .sameAuthor:
-                return "同じ著者の本"
-            case .sameAward:
-                let awardName = (award?.isEmpty == false) ? award ?? "文学賞" : "文学賞"
-                if let session = awardSessionOrYear, !session.isEmpty, !awardName.contains(session) {
-                    return "同じ賞（\(session) \(awardName)）"
-                }
-                return "同じ賞（\(awardName)）"
-            case .sameLabel:
-                if let label, !label.isEmpty {
-                    return "同じレーベル（\(label)）"
-                }
-                return "同じレーベルの本"
-            }
+        label: String? = nil,
+        strings: RecommendationReasonStrings = .keys
+    ) -> String? {
+        switch axis {
+        case .readers, .nextVolume, .sameAuthor:
+            return strings.reason(axis: axis, isOwnedTsundoku: isOwnedTsundoku)
+        case .sameAward:
+            return strings.reason(
+                axis: .sameAward,
+                isOwnedTsundoku: isOwnedTsundoku,
+                name: awardDisplayName(award: award, sessionOrYear: isOwnedTsundoku ? nil : awardSessionOrYear)
+            )
+        case .sameLabel:
+            return strings.reason(axis: .sameLabel, isOwnedTsundoku: isOwnedTsundoku, name: label)
         }
+    }
+
+    /// 賞の表示名（「直木三十五賞」、回や年があれば「第157回 直木三十五賞」）。賞の名前が空なら nil。
+    public nonisolated static func awardDisplayName(award: String?, sessionOrYear: String?) -> String? {
+        let name = award?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !name.isEmpty else { return nil }
+        let session = sessionOrYear?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !session.isEmpty, !name.contains(session) {
+            return "\(session) \(name)"
+        }
+        return name
     }
 
     /// Extracts series title and volume number if not explicitly set, or uses explicit properties.
@@ -264,24 +242,18 @@ public enum RecommendationEngine: Sendable {
         baseBook: RecommendableBook,
         isOwnedTsundoku: Bool = false,
         validCooccurrenceISBNs: Set<String> = [],
-        awardsCatalog: [H25AwardItem]? = nil
+        awardsCatalog: [H25AwardItem]? = nil,
+        strings: RecommendationReasonStrings = .keys
     ) -> String? {
         switch axis {
         case .readers:
             if let isbn = candidate.isbn13, validCooccurrenceISBNs.contains(isbn) {
-                return formatReason(axis: .readers, isOwnedTsundoku: isOwnedTsundoku, baseBookTitle: baseBook.title)
+                return formatReason(axis: .readers, isOwnedTsundoku: isOwnedTsundoku, strings: strings)
             }
             return nil
         case .nextVolume:
             guard isNextVolume(candidate: candidate, of: baseBook) else { return nil }
-            let sv = resolveSeriesAndVolume(for: candidate)
-            return formatReason(
-                axis: .nextVolume,
-                isOwnedTsundoku: isOwnedTsundoku,
-                baseBookTitle: baseBook.title,
-                seriesTitle: sv?.series ?? baseBook.seriesTitle,
-                volumeNumber: sv?.volume ?? candidate.volumeNumber
-            )
+            return formatReason(axis: .nextVolume, isOwnedTsundoku: isOwnedTsundoku, strings: strings)
         case .sameAuthor:
             let baseAuthor = AwardsCatalog.normalizeAuthor(baseBook.author)
             let candAuthor = AwardsCatalog.normalizeAuthor(candidate.author)
@@ -290,11 +262,7 @@ public enum RecommendationEngine: Sendable {
             guard AwardsCatalog.normalizeTitle(baseBook.title) != AwardsCatalog.normalizeTitle(candidate.title) else {
                 return nil
             }
-            return formatReason(
-                axis: .sameAuthor,
-                isOwnedTsundoku: isOwnedTsundoku,
-                author: AuthorNameFormatter.format(candidate.author ?? baseBook.author)
-            )
+            return formatReason(axis: .sameAuthor, isOwnedTsundoku: isOwnedTsundoku, strings: strings)
         case .sameAward:
             let catalog = awardsCatalog ?? AwardsCatalog.allBundledAwards()
             let baseAward = (baseBook.award ?? AwardsCatalog.matchAwardName(title: baseBook.title, author: baseBook.author, catalog: catalog))?
@@ -309,7 +277,8 @@ public enum RecommendationEngine: Sendable {
                 axis: .sameAward,
                 isOwnedTsundoku: isOwnedTsundoku,
                 award: candAward,
-                awardSessionOrYear: candidate.awardSessionOrYear
+                awardSessionOrYear: candidate.awardSessionOrYear,
+                strings: strings
             )
         case .sameLabel:
             let baseLabel = baseBook.label?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -318,7 +287,7 @@ public enum RecommendationEngine: Sendable {
             guard AwardsCatalog.normalizeTitle(baseBook.title) != AwardsCatalog.normalizeTitle(candidate.title) else {
                 return nil
             }
-            return formatReason(axis: .sameLabel, isOwnedTsundoku: isOwnedTsundoku, label: candLabel)
+            return formatReason(axis: .sameLabel, isOwnedTsundoku: isOwnedTsundoku, label: candLabel, strings: strings)
         }
     }
 
@@ -332,7 +301,8 @@ public enum RecommendationEngine: Sendable {
         cooccurrence: [H24CooccurrenceCandidate] = [],
         awardsCatalog: [H25AwardItem]? = nil,
         weights: [H02SeedRecommendationWeight] = [],
-        maxCount: Int = 3
+        maxCount: Int = 3,
+        reasonStrings: RecommendationReasonStrings = .keys
     ) -> [RecommendationCandidate] {
         guard maxCount > 0 else { return [] }
         let axes = orderedAxes(from: weights)
@@ -355,7 +325,8 @@ public enum RecommendationEngine: Sendable {
             externalPool: externalPool,
             filteredCooccurrence: filteredCooc,
             awardsCatalog: resolvedCatalog,
-            seenKeys: unownedSeenKeys
+            seenKeys: unownedSeenKeys,
+            reasonStrings: reasonStrings
         )
         var availableUnowned: [RecommendationCandidate] = []
         for axis in axes {
@@ -385,7 +356,8 @@ public enum RecommendationEngine: Sendable {
                     baseBook: justFinishedBook,
                     isOwnedTsundoku: true,
                     validCooccurrenceISBNs: coocISBNs,
-                    awardsCatalog: resolvedCatalog
+                    awardsCatalog: resolvedCatalog,
+                    strings: reasonStrings
                 ) {
                     seenKeys.insert(key)
                     results.append(makeCandidate(from: book, axis: axis, reason: reason, isOwnedTsundoku: true))
@@ -408,7 +380,7 @@ public enum RecommendationEngine: Sendable {
             guard results.count < maxCount else { break }
             if let bid = book.id, includedBookIDs.contains(bid) { continue }
             if results.contains(where: { $0.title == book.title }) { continue }
-            results.append(makeCandidate(from: book, axis: .sameAuthor, reason: "積読から", isOwnedTsundoku: true))
+            results.append(makeCandidate(from: book, axis: .sameAuthor, reason: reasonStrings.tsundoku, isOwnedTsundoku: true))
         }
 
         return results
@@ -422,7 +394,8 @@ public enum RecommendationEngine: Sendable {
         cooccurrence: [H24CooccurrenceCandidate] = [],
         awardsCatalog: [H25AwardItem]? = nil,
         weights: [H02SeedRecommendationWeight] = [],
-        maxCount: Int = 5
+        maxCount: Int = 5,
+        reasonStrings: RecommendationReasonStrings = .keys
     ) -> [RecommendationCandidate] {
         guard maxCount > 0 else { return [] }
         let axes = orderedAxes(from: weights)
@@ -452,7 +425,8 @@ public enum RecommendationEngine: Sendable {
             externalPool: externalPool,
             filteredCooccurrence: filteredCooc,
             awardsCatalog: awardsCatalog ?? AwardsCatalog.allBundledAwards(),
-            seenKeys: seenKeys
+            seenKeys: seenKeys,
+            reasonStrings: reasonStrings
         )
 
         var results: [RecommendationCandidate] = []
@@ -494,7 +468,8 @@ public enum RecommendationEngine: Sendable {
     public nonisolated static func noCurrentCandidates(
         shelfBooks: [RecommendableBook],
         weights: [H02SeedRecommendationWeight] = [],
-        maxCount: Int = 3
+        maxCount: Int = 3,
+        reasonStrings: RecommendationReasonStrings = .keys
     ) -> [RecommendationCandidate] {
         guard maxCount > 0 else { return [] }
         let tsundokuBooks = shelfBooks
@@ -518,7 +493,7 @@ public enum RecommendationEngine: Sendable {
                     let key = dedupKey(for: tsundoku)
                     guard !usedKeys.contains(key) else { continue }
                     for ref in referenceBooks {
-                        if let reason = matchAxis(axis, candidate: tsundoku, baseBook: ref, isOwnedTsundoku: true) {
+                        if let reason = matchAxis(axis, candidate: tsundoku, baseBook: ref, isOwnedTsundoku: true, strings: reasonStrings) {
                             usedKeys.insert(key)
                             results.append(makeCandidate(from: tsundoku, axis: axis, reason: reason, isOwnedTsundoku: true))
                             break
@@ -533,7 +508,7 @@ public enum RecommendationEngine: Sendable {
             let key = dedupKey(for: tsundoku)
             guard !usedKeys.contains(key) else { continue }
             usedKeys.insert(key)
-            results.append(makeCandidate(from: tsundoku, axis: .sameAuthor, reason: "積読から", isOwnedTsundoku: true))
+            results.append(makeCandidate(from: tsundoku, axis: .sameAuthor, reason: reasonStrings.tsundoku, isOwnedTsundoku: true))
         }
 
         return results
@@ -595,10 +570,10 @@ public enum RecommendationEngine: Sendable {
         externalPool: [RecommendableBook],
         filteredCooccurrence: [H24CooccurrenceCandidate],
         awardsCatalog: [H25AwardItem],
-        seenKeys: Set<String>
+        seenKeys: Set<String>,
+        reasonStrings: RecommendationReasonStrings
     ) -> [RecommendationAxis: [RecommendationCandidate]] {
         var result: [RecommendationAxis: [RecommendationCandidate]] = [:]
-        let primaryBase = baseBooks.first
 
         // 1. .readers from filtered cooccurrence
         var readersList: [RecommendationCandidate] = []
@@ -606,7 +581,7 @@ public enum RecommendationEngine: Sendable {
             let key = dedupKey(title: item.title, author: item.author, isbn13: item.isbn13)
             guard !seenKeys.contains(key) else { continue }
             let extMatch = externalPool.first { $0.isbn13 == item.isbn13 }
-            let reason = formatReason(axis: .readers, baseBookTitle: primaryBase?.title)
+            guard let reason = formatReason(axis: .readers, strings: reasonStrings) else { continue }
             readersList.append(
                 RecommendationCandidate(
                     id: item.isbn13,
@@ -639,25 +614,25 @@ public enum RecommendationEngine: Sendable {
             let key = dedupKey(for: ext)
             guard !seenKeys.contains(key) else { continue }
             for base in baseBooks {
-                if let r = matchAxis(.nextVolume, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog) {
+                if let r = matchAxis(.nextVolume, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog, strings: reasonStrings) {
                     nextVolList.append(makeCandidate(from: ext, axis: .nextVolume, reason: r, isOwnedTsundoku: false))
                     break
                 }
             }
             for base in baseBooks {
-                if let r = matchAxis(.sameAuthor, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog) {
+                if let r = matchAxis(.sameAuthor, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog, strings: reasonStrings) {
                     sameAuthorList.append(makeCandidate(from: ext, axis: .sameAuthor, reason: r, isOwnedTsundoku: false))
                     break
                 }
             }
             for base in baseBooks {
-                if let r = matchAxis(.sameLabel, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog) {
+                if let r = matchAxis(.sameLabel, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog, strings: reasonStrings) {
                     sameLabelList.append(makeCandidate(from: ext, axis: .sameLabel, reason: r, isOwnedTsundoku: false))
                     break
                 }
             }
             for base in baseBooks {
-                if let r = matchAxis(.sameAward, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog) {
+                if let r = matchAxis(.sameAward, candidate: ext, baseBook: base, awardsCatalog: awardsCatalog, strings: reasonStrings) {
                     sameAwardList.append(makeCandidate(from: ext, axis: .sameAward, reason: r, isOwnedTsundoku: false))
                     break
                 }
@@ -675,7 +650,7 @@ public enum RecommendationEngine: Sendable {
                 awardSessionOrYear: awardItem.sessionOrYear
             )
             for base in baseBooks {
-                if let r = matchAxis(.sameAuthor, candidate: bookRep, baseBook: base, awardsCatalog: awardsCatalog) {
+                if let r = matchAxis(.sameAuthor, candidate: bookRep, baseBook: base, awardsCatalog: awardsCatalog, strings: reasonStrings) {
                     sameAuthorList.append(
                         RecommendationCandidate(
                             id: awardItem.id ?? "award-\(awardItem.award)-\(awardItem.order)",
@@ -691,7 +666,7 @@ public enum RecommendationEngine: Sendable {
                 }
             }
             for base in baseBooks {
-                if let r = matchAxis(.sameAward, candidate: bookRep, baseBook: base, awardsCatalog: awardsCatalog) {
+                if let r = matchAxis(.sameAward, candidate: bookRep, baseBook: base, awardsCatalog: awardsCatalog, strings: reasonStrings) {
                     sameAwardList.append(
                         RecommendationCandidate(
                             id: awardItem.id ?? "award-\(awardItem.award)-\(awardItem.order)",

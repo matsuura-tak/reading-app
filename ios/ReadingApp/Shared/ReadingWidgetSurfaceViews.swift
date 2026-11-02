@@ -89,13 +89,15 @@ public enum ReadingWidgetStrings {
             guard let startedAt = attributes.startedAt else { return title }
             return strings.spokenLabel(title: title, place: readingSince(startedAt), line: nil)
         case "ended":
-            // summaryText は「10分 · p.61」（ReadingLiveActivityStateFactory.ended）。先頭の分数だけを取り、場所は読み上げの形にする。
-            let minutesText = state.summaryText?.components(separatedBy: " · ").first
-            guard let minutes = minutesText, !minutes.isEmpty, minutes != state.progressText else {
+            // 見える文字（liveActivity.ended.summary）を置き換えず、liveActivity.ended.spoken で組む（決定 53）。
+            guard let minutes = state.minutes else {
                 return strings.spokenLabel(title: title, place: place, line: nil)
             }
-            let titleAndMinutes = strings.spokenLabel(title: title, place: minutes, line: nil)
-            return strings.spokenLabel(title: titleAndMinutes, place: place, line: nil)
+            let spokenMinutes = durationMinutesSpoken(minutes)
+            guard let place else {
+                return strings.spokenLabel(title: title, place: spokenMinutes, line: nil)
+            }
+            return String(format: String(localized: "liveActivity.ended.spoken"), title, spokenMinutes, place)
         default:
             var line: String?
             if !state.hideOnWidgets, let raw = state.line {
@@ -112,6 +114,16 @@ public enum ReadingWidgetStrings {
         if !book.isTitlePending, let title = book.title?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty { return title }
         // 書名の所は、title がなければ widget.currentBookAsTitle（contracts/widget-snapshot.schema.json の「出し方」）。
         return currentBookAsTitle
+    }
+
+    /// 分数の読み上げ（`duration.minutes.spoken`。英語は複数形 "1 minute" / "10 minutes"）。
+    public static func durationMinutesSpoken(_ minutes: Int) -> String {
+        String.localizedStringWithFormat(NSLocalizedString("duration.minutes.spoken", comment: ""), minutes)
+    }
+
+    /// 分数の見える文字（`duration.minutes`。60分以上も分のまま。決定 82）。
+    public static func durationMinutes(_ minutes: Int) -> String {
+        String(format: String(localized: "duration.minutes"), minutes)
     }
 
     public static func readingSince(_ startedAt: Date) -> String {
@@ -418,15 +430,21 @@ public enum ReadingLiveActivityStateFactory {
 
     public static func ended(from snapshot: WidgetSnapshot, minutes: Int, progressText: String?) -> ReadingActivityAttributes.ContentState? {
         guard let book = snapshot.currentBook else { return nil }
-        let duration = Duration.seconds(minutes * 60).formatted(.units(allowed: [.minutes], width: .abbreviated))
-        let summary = [duration, progressText].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+        let duration = ReadingWidgetStrings.durationMinutes(minutes)
+        let summary: String
+        if let progressText, !progressText.isEmpty {
+            summary = String(format: String(localized: "liveActivity.ended.summary"), duration, progressText)
+        } else {
+            summary = duration
+        }
         return ReadingActivityAttributes.ContentState(
             mode: "ended",
             title: ReadingWidgetStrings.displayTitle(for: book, hideOnWidgets: snapshot.hideOnWidgets),
             line: nil,
             progressText: progressText,
             summaryText: summary,
-            hideOnWidgets: snapshot.hideOnWidgets
+            hideOnWidgets: snapshot.hideOnWidgets,
+            minutes: minutes
         )
     }
 }

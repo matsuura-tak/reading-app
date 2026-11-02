@@ -71,6 +71,7 @@ public final class ReadingAppModel {
         self.store.snapshotStore.spokenStrings = ReadingWidgetStrings.spoken
         // Siri・ショートカットの答え、S-4 の result.summary、W-3 の分数を、String Catalog の今の言語の文で組む（design/ 7）。
         self.store.storeStrings = ReadingStoreStrings.localized
+        self.store.recommendationReasonStrings = RecommendationReasonStrings.localized
     }
 
     public func updateScreenStateFlags() {

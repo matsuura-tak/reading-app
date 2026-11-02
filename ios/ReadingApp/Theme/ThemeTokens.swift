@@ -36,7 +36,7 @@ public enum ReadingSharedContainer {
 public enum AppL10n {
     public static var isEnglish: Bool {
         let args = ProcessInfo.processInfo.arguments
-        if let idx = args.firstIndex(of: "-AppleLanguages"), idx + 1 < args.count {
+        if let idx = args.lastIndex(of: "-AppleLanguages"), idx + 1 < args.count {
             let val = args[idx + 1].lowercased()
             if val.contains("en") { return true }
             if val.contains("ja") { return false }

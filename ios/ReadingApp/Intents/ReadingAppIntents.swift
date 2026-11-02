@@ -23,7 +23,33 @@ extension ReadingStoreStrings {
             durationMinutesFormat: String(localized: "duration.minutes"),
             resultSummaryPagesFormat: String(localized: "result.summary.pages"),
             resultSummaryLocationsFormat: String(localized: "result.summary.locations"),
-            resultSummaryPercentsFormat: String(localized: "result.summary.percents")
+            resultSummaryPercentsFormat: String(localized: "result.summary.percents"),
+            resultSummaryPagesFirstFormat: String(localized: "result.summary.pages.first"),
+            resultSummaryLocationsFirstFormat: String(localized: "result.summary.locations.first"),
+            resultSummaryPercentsFirstFormat: String(localized: "result.summary.percents.first"),
+            intentStartNoCurrent: String(localized: "intent.start.noCurrent"),
+            intentEndCompleted: String(localized: "intent.end.completed"),
+            liveActivityEndLabel: String(localized: "liveActivity.end.label"),
+            liveActivityEndedSummaryFormat: String(localized: "liveActivity.ended.summary")
+        )
+    }
+}
+
+extension RecommendationReasonStrings {
+    /// 推薦の理由の文（design/ 7「推薦の理由のキーの選び方」、決定 85）を今の言語で渡す。
+    public static var localized: RecommendationReasonStrings {
+        RecommendationReasonStrings(
+            nextTsundoku: String(localized: "next.reason.tsundoku"),
+            nextReaders: String(localized: "next.reason.readers"),
+            nextNextVolume: String(localized: "next.reason.nextVolume"),
+            nextSameAuthor: String(localized: "next.reason.sameAuthor"),
+            nextSameAwardFormat: String(localized: "next.reason.sameAward"),
+            nextSameLabelFormat: String(localized: "next.reason.sameLabel"),
+            recReaders: String(localized: "rec.reason.readers"),
+            recNextVolume: String(localized: "rec.reason.nextVolume"),
+            recSameAuthor: String(localized: "rec.reason.sameAuthor"),
+            recSameAwardFormat: String(localized: "rec.reason.sameAward"),
+            recSameLabelFormat: String(localized: "rec.reason.sameLabel")
         )
     }
 }

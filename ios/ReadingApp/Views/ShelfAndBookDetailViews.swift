@@ -382,8 +382,10 @@ public struct BookDetailView: View {
         let displayTitle = book.isTitlePending ? AppL10n.pick("今の本", "Reading Now") : book.title
         let nights = model.store.distinctNightCount(for: book.id)
         let mins = model.store.totalMinutes(for: book.id)
-        let nightsText = "\(nights)晩"
-        let totalText = "\(mins)分"
+        // book.nights（英語は複数形）と book.total（分のまま。決定 82）。読み上げの分数は duration.minutes.spoken。
+        let nightsText = String.localizedStringWithFormat(NSLocalizedString("book.nights", comment: ""), nights)
+        let totalText = String(format: String(localized: "book.total"), ReadingWidgetStrings.durationMinutes(mins))
+        let totalSpoken = String(format: String(localized: "book.total"), ReadingWidgetStrings.durationMinutesSpoken(mins))
         let reflection = (book.status == .finished) ? model.store.buildFinishReflection(for: book.id) : nil
 
         let formattedPublisher: String? = {
@@ -487,7 +489,7 @@ public struct BookDetailView: View {
                     .font(.subheadline.monospacedDigit())
                     .foregroundStyle(palette.textSecondary)
                     .accessibilityIdentifier("book.total")
-                    .accessibilityLabel(totalText)
+                    .accessibilityLabel(totalSpoken)
                     .accessibilityValue(totalText)
             }
 
@@ -683,7 +685,7 @@ public struct BookDetailView: View {
                 detailSheet = .colophonOCR
                 model.notifyHookChanged()
             } label: {
-                Label(AppL10n.pick("奥付を撮って補う", "Scan Colophon to Complete"), systemImage: "text.viewfinder")
+                Label("colophon.capture", systemImage: "text.viewfinder")
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("colophon.capture")

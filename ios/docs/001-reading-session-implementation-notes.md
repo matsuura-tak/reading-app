@@ -163,3 +163,35 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 - `endButtonLabel` の「終える」：受け入れテストの読み出し（hook.liveActivity）にだけ入り、描く側は `liveActivity.end.label` を使うので出ない。契約（hook-config.schema.json）は `liveActivity.end.label` の文と決めているので、値は契約と違う。
 - `recordShareCard` の既定の「晩」「分」：`renderedTexts` が渡されない時だけの記録（hook の `shareCards`）で、画面には出ない。
 - ショートカットの言い方（`ReadingDataStore.swift` の `${applicationName} …`）、H20 の書誌と出典（`CatalogDatabase.swift`）、AuthorNameFormatter・AwardsCatalog・OCRPipeline・VerticalLineLayout の日本語の照合用の文字：書誌のデータ、出典、照合の規則なので訳さない。
+
+## 11. 8体目（BASE ad13217）で足したこと
+designer が決めた文言キー（design/ 7、決定 82〜86）をアプリに入れ、英語のときに日本語が出る残りを直した（docs/reviews/001-reading-session-G3-designer-keys.md）。
+
+### String Catalog
+- design/ 7 で足したキー29個を足した：`intent.start.noCurrent`、`intent.end.completed`、`result.summary.{pages,locations,percents}.first`、`result.summary.spoken`、`result.summary.first.spoken`、`liveActivity.ended.summary`、`liveActivity.ended.spoken`、`duration.hoursMinutes`、`duration.hours`、`next.reason.*`（6）、`rec.reason.*`（5）、`book.total`、`reading.startedAt`、`colophon.capture`、複数形の `duration.minutes.spoken`、`duration.hours.spoken`、`book.nights`、置き換え（substitutions）で時と分をそれぞれ複数形にする `duration.hoursMinutes.spoken`。
+- 値を design/ 7 にそろえたキー17個：`session.tooShort`、`session.invalidTime`、`session.capped`、`session.start.error`、`session.save.error`、`common.save.error`、`store.load.error`、`book.title.invalid`、`book.author.invalid`、`mark.line.invalid`、`mark.page.invalid`、`record.minutes.invalid`、`store.unavailable`、`store.offline`、`store.purchase.error`、`store.restore.done`、`store.restore.none`。
+- 知らせの文（`BannerNoticeView.message(forKey:)`）は、`AppL10n.pick` の直書きをやめ、同じ名前のキーを String Catalog から引く。
+
+### 推薦の理由（決定 85）
+- `ReadingCore/RecommendationReasonStrings.swift` を足した。軸と「積読にある本か」の組ごとに1つの書式を持ち、`reason(axis:isOwnedTsundoku:name:)` で文にする。賞やレーベルの名前が空なら nil を返し、その軸を使わない。パッケージの中には ja・en の文を持たず、既定値は `keys`。
+- `RecommendationEngine.formatReason` は `String?` を返す。`nextCandidates`、`afterCandidates`、`noCurrentCandidates` に `reasonStrings` を足し、どの軸にも当たらない積読の本は `next.reason.tsundoku`。
+- 賞の表示名（`awardDisplayName`）：未所有の本は回や年を前に付ける（「第157回 直木三十五賞」）。積読の本は賞の名前だけ（前と同じ）。
+- アプリは `RecommendationReasonStrings.localized`（ReadingAppIntents.swift）を `ReadingDataStore.recommendationReasonStrings` に入れる（ReadingAppModel.init）。
+
+### インテントの声（決定 84）
+- `ReadingStoreStrings` に `intentStartNoCurrent`、`intentEndCompleted`、`liveActivityEndLabel`、`liveActivityEndedSummaryFormat`、`resultSummary*FirstFormat` を足した（足した引数は既定値がキーの名前）。日本語の直書きの2か所（今の本なしの「読み始める」、Live Activity の「終える」）はなくなった。
+
+### S-4
+- 前の場所がない晩は `result.summary.*.first`（前の版の「区切りを取り出す」作りはやめた）。
+- 読み上げは `result.summary.spoken`・`result.summary.first.spoken`・`duration.minutes.spoken` で組む。値は店の `latestResultFigures`（`SessionResultFigures`。見える文字と同時に入れ替える）。「p.」を「ページ」に置き換える作りはやめた。
+- `latestResultSummary ?? "15分"` の仮の値をやめた。まとめがなければ `result.summary` を出さない。
+
+### W-3（Live Activity）
+- 終えた直後の見える文字は `liveActivity.ended.summary`（店と拡張の `ReadingLiveActivityStateFactory.ended` の両方）。読み上げは `liveActivity.ended.spoken`。そのため `ContentState` に `minutes`（省略可）を足した。
+- 書名の所：隠す設定なら `widget.hidden`、名無しの今の本と書名が空の本は `widget.currentBookAsTitle`（前は「しおり」）。H23 の `endButtonLabel` は `liveActivity.end.label` の文。
+- 読書中の `liveActivity.readingSince` は前から短い時刻の書式（変えていない）。
+
+### S-2、S-7
+- S-2 の `reading.startedAt`：システムの短い時刻の書式。晩をまたいだときは同じキーの `%@` に月日つきの時刻を入れる（design/ 7 に別のキーがないため）。
+- S-7 の `book.nights`（複数形）と `book.total`（分のまま）。`book.total` の読み上げの分数は `duration.minutes.spoken`。
+- `colophon.capture`（S-7、S-9）はキーで出す（ja「奥付を撮って補う」、en「Scan Colophon」）。

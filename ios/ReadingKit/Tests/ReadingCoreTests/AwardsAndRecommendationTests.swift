@@ -95,9 +95,9 @@ struct AwardsAndRecommendationTests {
         #expect(filteredCooc.count == 1)
         #expect(filteredCooc.first?.title == "合格する文学の本")
 
-        let reason = RecommendationEngine.formatReason(axis: .readers, baseBookTitle: "コンビニ人間")
+        let reason = RecommendationEngine.formatReason(axis: .readers, strings: .testJapanese)
         #expect(reason == "この本を読み終えた人が、次に読んだ本")
-        #expect(!reason.contains("18"))
+        #expect(reason?.contains("18") == false)
 
         // 3. Next volume matching (volumeNumber + 1 only, AC-87)
         let vol1 = RecommendableBook(title: "坂の上の雲 1", author: "司馬遼太郎", seriesTitle: "坂の上の雲", volumeNumber: 1)
