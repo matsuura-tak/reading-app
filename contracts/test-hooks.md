@@ -1,6 +1,6 @@
 # テストのつなぎ口（H1〜H33）
 
-- 書いた役：tech-lead　日付：2026-10-20（G1 の 7-4a。裁定 27、28）。2026-10-25 に更新（G1 の 7-A：これまで選択肢だった H19、H23、H24、H25、H27、H30、H32 をすべて v1.0 標準仕様に昇格し、H20 を端末内の書誌 SQLite DB および共起テーブルの差し替えに、H29 を外部 HTTP 通信 0 件の検証用に更新。全149 AC に対応）。2026-11-02 に更新（G3 r2 の verifier の指摘：H22 の撮影用の見本を細かく決め、H33 を足し、H8 と H30 の復元の通信なしを決め、8 に画面×状態の撮り方を足した）。同日に G3 の契約の reviewer の要修正を受けて、1-1 の置き場所、H22 の「終える」の操作と余白、H33 の止める門の置き場所を直した。同日に G3 のコードの reviewer の要修正（docs/reviews/001-reading-session-G3-reviewer-code-r1.md）と指揮役の裁定を受けて、H22 の `composition` の組み方（枠から字の大きさと列を決め直す。「H22 の組み方」）を決め、H33 の門の置き場所を「読み込みの関数の中、または読み込んだ結果を画面に渡す所」に広げた
+- 書いた役：tech-lead　日付：2026-10-20（G1 の 7-4a。裁定 27、28）。2026-10-25 に更新（G1 の 7-A：これまで選択肢だった H19、H23、H24、H25、H27、H30、H32 をすべて v1.0 標準仕様に昇格し、H20 を端末内の書誌 SQLite DB および共起テーブルの差し替えに、H29 を外部 HTTP 通信 0 件の検証用に更新。全149 AC に対応）。2026-11-02 に更新（G3 r2 の verifier の指摘：H22 の撮影用の見本を細かく決め、H33 を足し、H8 と H30 の復元の通信なしを決め、8 に画面×状態の撮り方を足した）。同日に G3 の契約の reviewer の要修正を受けて、1-1 の置き場所、H22 の「終える」の操作と余白、H33 の止める門の置き場所を直した。同日に G3 のコードの reviewer の要修正（docs/reviews/001-reading-session-G3-reviewer-code-r1.md）と指揮役の裁定を受けて、H22 の `composition` の組み方（枠から字の大きさと列を決め直す。「H22 の組み方」）を決め、H33 の門の置き場所を「読み込みの関数の中、または読み込んだ結果を画面に渡す所」に広げた。同日に G3 の契約 r3 の reviewer の要修正と指揮役の裁定（docs/reviews/001-reading-session-G3-contracts-reviewer-r2.md）を受けて、横書きの `composition` の形（縦書きの升目の項目を `orientation` が `vertical` のときだけ必須に）、`state` と `texts` の組、1-1 の門の置き場所を H33 (b) にそろえる直し、2度押しの印、7 の読み出しの全体の検査を決めた
 - 大きな版：1。同じ大きな版の中では足すことだけをする（引数、環境変数、通知、要素の名前と、値の意味と範囲を変えない、消さない）。
 - 範囲：v1.0 の全149 AC（AC-1〜AC-149）が使う30個（H1、H2、H4〜H10、H12〜H32。H3 と H11 は欠番）と、G3 の画面×状態の証拠のための H33（AC の判定には使わない）の、計31個。
 - 関係：PRD 11 の冒頭（H1〜H32 と読み方の決まり）、設計メモ 2 と 5、ADR 0001〜0005、contracts/entry-urls.md、contracts/widget-snapshot.schema.json、contracts/hooks/ の JSON Schema、design/001-reading-session.md の 6 と 7。
@@ -17,7 +17,7 @@
 | Release | 入らない（os_signpost のみ残す） | -O | TestFlight、App Store、G4 |
 
 - つなぎ口の型と関数は、アプリのターゲットの `UITestHooks/` の下だけに置き、ファイルごと `#if UITEST_HOOKS` で包む。ローカルのパッケージとウィジェットの拡張には、つなぎ口の入口（引数、環境変数、設定のファイル、Darwin の通知を読んで設定する側、`hook.*` の読み出し）を置かない。
-  - 例外は「実行時の門」だけ。保存や読み込みの関数の中（H33 は、読み込んだ結果を画面に渡す所でもよい）で「止めるか、失敗させるか」を聞く小さな関数で、既定は素通り（何もしない）。H7 の `ReadingDataStore.consumeFailSave(for:)` と H33 の止める門がこれに当たる。
+  - 例外は「実行時の門」だけ。保存や読み込みの関数の中、または（H33 だけは）View の側で、読み込みを呼ぶ所か読み込んだ結果を画面に渡す所（H33 の「本番」の (a)・(b)）で「止めるか、失敗させるか」を聞く小さな関数で、既定は素通り（何もしない）。H7 の `ReadingDataStore.consumeFailSave(for:)` と H33 の止める門がこれに当たる。
   - 門はローカルのパッケージ `ReadingStore` に `#if` なしで置いてよい。パッケージには `UITEST_HOOKS` を定義しない（SwiftPM の `define` は構成を問わず効くので、Release でも有効になってしまうため）。
   - 門の値を変えてよいのは、アプリの `#if UITEST_HOOKS` の中のつなぎ口（`UITestHooks/` の下）だけ。Release は門を設定する入口を持たないので、門は常に素通りする。
   - 門の型と関数の名前は `UITestHook` で始めない（1-2 の nm の検査は Release に入らないものの目印なので、Release に残る門は対象の外にする）。ADR 0005 の追記。
@@ -396,6 +396,18 @@
   - 進み具合の文字列（`texts["widget.page"]` と `composition.page.text`）：紙の本（`page`）は `p.61`、電子書籍の位置番号（`location`）は `位置1450`（英語は `Loc 1450`）、パーセント（`percent`）は `52%`（AC-141）。
   - 名無しの今の本（`isTitlePending = true`、AC-139）：状態は書名のある本と同じ（一行があれば `normal`、一行がなく進み具合があれば `noLine`、どちらもなければ `noLineNoPage`）。一行がなければ `texts["widget.title"]` に文言キー `widget.currentBookAsTitle` の文（「今の本」／英語 "Reading Now"）が入り、読み上げのラベルの書名の所も同じ文になる。
   - 組み方の結果（`renders[].composition`）：`renders[]` の1つずつについて、その `request` の枠で、拡張と見本が実際に描くのと同じ組み方で組んだ結果（下の「H22 の組み方」）。
+  - 値の全体はスキーマのとおりで、スキーマにないキーを書かない（トップも `renders[]` も `additionalProperties: false`）。`state` と `texts` の組（2026-11-02、G3 の契約 r3 の reviewer の 4(a) と提案9を受けて書き足した。名前・型・enum は変えていない。上から順に当てはまった最初の行）：
+
+    | 当てはまる時 | `state` | `texts` に書くキー | `composition` |
+    |---|---|---|---|
+    | 写しを読めない（widget-snapshot.schema.json の読む側の決まり (1)〜(6)） | `unavailable`（`unavailableReason` も書く） | `messageKey`＝`widget.unavailable`、`message` | 書かない |
+    | 今の本がない | `empty` | `messageKey`＝`widget.empty`、`message` | 書かない |
+    | `settings.hideOnWidgets` がオン | `hidden` | `messageKey`＝`widget.hidden`、`message`（「しおり」）、進み具合があれば `widget.page` | 書かない |
+    | 一行がある | `normal` | `widget.line`、進み具合があれば `widget.page` | 書く |
+    | 一行がなく、進み具合がある | `noLine` | `widget.title`、`widget.page` | 書かない |
+    | 一行も進み具合もない | `noLineNoPage` | `widget.title` | 書かない |
+
+    - 書名は、一行があるときは `texts` に書かず、`accessibility.label`（AC-99 の形）にだけ入る。`timeline.entries[].state` も同じ enum。
 - 失敗：ファミリーか枠が読めなければ `hook.error`（`H22:<値>`）。
 - 本番：Release に入らない。拡張には何も足さない。
 
@@ -425,16 +437,22 @@
   2. s を始めの値にする。
   3. 1列の字数を L＝⌊A_h÷s⌋ にし、先頭から L 字ずつ列に分ける。次の列の先頭が行頭禁則の字（いまの `prohibitedLineStartCharacters`）なら、前の列の終わりの字を次の列へ送る。送ったあとも次の列の先頭が禁則の字なら、もう1字送る。前の列が1字になっても満たせないときは、それ以上送らない。このとき列の数に上限を付けず、n 字すべてをどれかの列に入れる（字を落とさない）。
   4. 列の数を C として、C×s＋(C−1)×0.25s ≤ A_w なら入る。入れば、この s、L、列で決める。
-  5. 入らなければ s を 1 下げて 3 に戻る。s が下限より小さくなったら、下限の s で、送りをせずに L 字ずつ列に分けて決め、`kinsokuRelaxed` を真にする（25字以下では、W-1 と W-2 のどの枠でも、ここまで来ない。下の表）。
+  5. 入らなければ s を 1 下げて 3 に戻る。s が下限より小さくなったら、下限の s で、送りをせずに L 字ずつ列に分けて決め、`kinsokuRelaxed` を真にする。送らなければ C＝⌈n÷L⌉ で、25字以下なら W-1 と W-2 のどの枠でも入るので、字は落ちない。
+     - ここまで来るのは、行頭禁則の字が多く、送りで列が増える一行だけ。下の表の一行（AC-27 の14字、かな25字、「歩行祭は、…」）は来ない。25字以下でも来る例（検算）：「あ」＋「ー」×24（どの列も1字まで送っても先頭が「ー」のまま。W-1 の両方の枠で 13pt、L 5、C 5）、「あいうーーーー」のくり返しの25字（列が1字にはならないが、153×68 では 13pt でも C が7になる）。AC-28 の一行はこういう並びで作らない。
+  - 手順3で送りを止めたとき（前の列が1字になっても次の列の先頭が禁則の字のまま）の値：`feedCount` はそれまでに実際に送った字を数える（同じ字が続けて2つの列を越えて送られたら2と数える）。`kinsokuRelaxed` は手順5の終わりに来たときだけ真で、ここでは偽のまま。列の先頭に禁則の字が残ったかは `cells`（`row`＝1 で `column`≥2 の字）で見る。
   - 入るかは「送ったあとの列の数」で見る。G3 r2 の `ReadingVerticalFit.fit` は送る前の列の数（⌈n÷L⌉）で入るかを見てから列の上限（`maxColumns`）を付けて組むので、送りが多い一行では最後の列で字が落ちうる。この手順に合わせる。
 - 項目の値（`h22-widget.schema.json` の `$defs/render/properties/composition`。項目は足さない）
   - `frame`：上の記号の値。`fontSize`：決めた s。`L`：決めた L（この一行の1列の字数）。`columnCount`：C。`feedCount`：3 で字を送った回数（1字送るごとに1）。`kinsokuRelaxed`：5 の終わりに来たら真。
   - `referenceL`：同じ枠で、禁則の字のない25字（かな「あ」25字）をこの手順で組んだときの L（AC-28 の L）。一行の字の数によって `L` は `referenceL` と違うことがある（下の表の14字は L＝4、25字は L＝5）。
   - `slack.horizontal`＝A_w−(C×s＋(C−1)×0.25s)、`slack.vertical`＝A_h−L×s。
-  - `cells[]`：出した字ごとに1つ、列の順（右から）、列の中は上からの順。`column` は右から 1、2、…、`row` は列の中の上から 1、2、…。`x`＝(W−i)−k×1.25s−s（k＝`column`−1）、`y`＝i＋(`row`−1)×s（升目の左上）。`dx`、`dy` は字の大きさに対する割合（em。描くときは s を掛けた pt だけずらす）。
+  - `cells[]`：出した字ごとに1つ、列の順（右から）、列の中は上からの順（スキーマの examples の `cells` は抜粋で、全升目を並べていない）。`column` は右から 1、2、…、`row` は列の中の上から 1、2、…。`x`＝(W−i)−k×1.25s−s（k＝`column`−1）、`y`＝i＋(`row`−1)×s（升目の左上）。`dx`、`dy` は字の大きさに対する割合（em。描くときは s を掛けた pt だけずらす）。
   - `page`：場所の文字の左上の名目の位置。`x`＝i、`y`＝H−i−16。AC の判定には使わない（画像の位置と合うかは比べない）。
   - `displayedLine`、`shortened`、`orientation`、`cells[].source`・`display`・`rotation` の意味は変えない。`composition` は `state` が `normal` のときだけ出す（スキーマのとおり。一行がないときの書名は横書きで描くので組み方の結果はない）。
-  - 横書き（`orientation` が `horizontal`。AC-30）のときの組みの値は、この決まりの範囲の外（いまのまま）。
+- 横書きの一行（2026-11-02、G3 の契約 r3 の reviewer の要修正1）
+  - いまの `VerticalLineLayout` の決め方で縦にしない一行（ひらがな・カタカナ・漢字を1字も含まない一行。AC-30）は、上の手順1の縮め方（AC-29）だけをして、手順2〜5を通らない。`state` は縦書きと同じ `normal`。
+  - `composition` に必ず書く項目：`orientation`（`horizontal`）、`displayedLine`（縮め方のあとの字の並び。`texts["widget.line"]` と同じ）、`shortened`。場所を描いたときは `page` も書く（縦書きと同じ名目の位置。`x`＝i、`y`＝H−i−16）。
+  - 縦書きの升目の項目（`frame`、`fontSize`、`L`、`referenceL`、`columnCount`、`feedCount`、`kinsokuRelaxed`、`slack`、`cells`）は、キーごと書かない。`columnCount: 0` や `cells: []` のように書くとスキーマ違反（`columnCount` の minimum 1、`cells` の minItems 1）。スキーマはこの9項目を `orientation` が `vertical` のときだけ必須にしている（`composition` の `allOf`）。
+  - 例：スキーマの4つ目の examples（「It was raining.」、172×76）。
 - この手順の結果（検算。リポジトリの外で同じ手順を Python で計算した値）
 
   | 枠 | 一行 | s | L | C | 送り | `referenceL` | `slack.horizontal` |
@@ -633,7 +651,7 @@
 - 目的：design/ 5 の「読み込み中」の形（0.3秒を超えたら灰の帯、または ProgressView）を、時間に頼らずに出して撮る。端末内の読み込みはふだん 0.3秒より速く、この形はふつうの起動では出ないため（G3 r2 の verifier の 13 章）。
 - 使う AC：なし（AC の判定には使わない。G3 の画面×状態の証拠と、design/ 5 の「空の状態を先に出さない」の確かめに使う）。
 - 動かし方：起動の引数 `-uitest-hold-load <対象>[,<対象>…]`。テストの起動のときだけ効く（設定のファイルに書かない。引数なしの開き直しとシステムが起こしたプロセスでは止めない）。
-  - 書いた対象ごとに、そのプロセスで最初の1回の読み込みだけを止める。止める所は、読み込みに入った所か、読み込んだ結果を画面に渡す所（下の「本番」）。どちらでも、放すまで画面は結果を受け取らない。放したあとの読み込み（再試行、画面の開き直し）は止めない。
+  - 書いた対象ごとに、そのプロセスで最初の1回の読み込みだけを止める。止める所は、読み込みの関数の中か、View の側で読み込みを呼ぶ所か読み込んだ結果を画面に渡す所（下の「本番」の (a)・(b)）。どちらでも、放すまで画面は結果を受け取らない。放したあとの読み込み（再試行、画面の開き直し）は止めない。
   - 放す：Darwin の通知 `yomuma.uitest.load.release`（1-4）。状態に下の表の番号を書いてから知らせる。0 は止めているものをすべて放す。
   - 放すと、止めていた読み込みはそのまま続く（結果は本物と同じ。H7 の失敗を同じ対象に付けていれば、放したあとに失敗する。例：`-uitest-hold-load store.load` と `-uitest-fail-save store.load:1` で、読み込み中の形のあとに S-1 のエラーを出せる）。
 - 入力：対象（下の表）。
@@ -662,10 +680,12 @@
   - 門の型（止める対象、相、放すまで待つ関数）は `ReadingStore` に、実行時の門として1つだけ置く。`consumeFailSave(for:)` と同じく `#if UITEST_HOOKS` では包まない（パッケージには定義がないため）。
   - 門を通す所（門に「止めるか」を聞いて、止めるなら放すまで待つ所）は、次のどちらかに置く。対象ごとにどちらでもよい（2026-11-02 に広げた。G3 のコードの reviewer の要修正2と指揮役の裁定）。
     - (a) 読み込みの関数の中（`ReadingStore` の読み込みの関数の入口など）。
-    - (b) 読み込んだ結果を画面に渡す所（View の側。例：読み込み中の形と中身を切り替える入れ物の View、ボタンの action、端末内書誌 DB の検索を呼ぶ所）。読み込みが起動のときに同期で終わる対象（`store.load`）は、読み込みのあとに (b) で止める。(b) では、門を通るまで結果を画面に出さない。読み込みの前に門を通す対象（`catalog.lookup`、`storekit.purchase`、`storekit.restore` など）は、門を通ってから本物の読み込みを呼ぶ。
+    - (b) View の側で、読み込みを呼ぶ所か、読み込んだ結果を画面に渡す所（例：読み込み中の形と中身を切り替える入れ物の View、ボタンの action、端末内書誌 DB の検索を呼ぶ所）。読み込みが起動のときに同期で終わる対象（`store.load`）は、読み込みのあとに (b) で止める。(b) では、門を通るまで結果を画面に出さない。読み込みの前に門を通す対象（`catalog.lookup`、`storekit.purchase`、`storekit.restore` など）は、門を通ってから本物の読み込みを呼ぶ。
     - どちらでも、観察できる振る舞いは同じにする：`hold.<対象>` の相（`waiting`→`held`→`shown`→`released`）、`store.load` を止めている間の `hook.store` が空、本物の時計で 0.3秒を超えてからの読み込み中の形、放したあとの結果（H7 の失敗を付けていれば、そのエラー）。
   - 既定は素通り（止める対象の一覧が空）。止めないときは、(a) でも (b) でも時間の待ち（`sleep`、0.3秒の待ち）と読み込み中の形を足さず、(b) の画面は最初の描画から中身を出す（読み込み中の形や空の枠を1コマも挟まない）。
     - ボタンの action を `Task` で包んで門を待つこと（main actor の上での1回の切り替え）は許す。包むときは、`Task` が走る前の2度押しで読み込み（購入、復元など）が2回呼ばれないようにする（押したらすぐ押せなくするか、進行中の印で弾く。G3 のコードの reviewer の提案で、指揮役の裁定 4 により次の直しに入れたもの）。
+      - 押せなくする印・進行中の印は、action の中で `Task` を作る前に同期で立てる（`Task` の中で立てない）。こうすると、`Task` が走る前の2度押しも、門で止めている間の2度押し（門は対象ごとに最初の1回しか止めないので、2回目は素通りして本物の処理が走る）も、同じ印で弾ける。印は本物の処理が終わったとき（成功・失敗・取り消しのどれでも）に下ろす。
+      - この条件はボタンの action だけが対象。`catalog.lookup` を止めている間に2つ目のバーコードを読んだとき（G3 のコードの reviewer r1 の提案）は、ボタンでないのでこの条件の外に残る（2つ目の検索をどう扱うかは H21 と S-8a の決まりのまま）。
   - 門を通す呼び出し（止めるかを聞く、放すまで待つ、読み込み中の形を出したと知らせる）は、製品のコード（`#if UITEST_HOOKS` の外。アプリの View を含む）に置いてよい。止める対象を設定する口は持たない。
   - 門に止める対象を設定し、`yomuma.uitest.load.release` を受けて放し、`hook.state` に `hold.<対象>` を書き、`store.load` を止めている間の `hook.store` を空にするのは、アプリの `#if UITEST_HOOKS` の中（`UITestHooks/` の下のコーディネータと読み出し）だけ。門の型は (a) でも (b) でも同じ1つを使い、対象ごとに別の門を作らない。
   - Release は門を設定する入口を持たないので、門は常に素通りし、止まらない。門の関数は Release のバイナリに残るが、型と関数の名前は `UITestHook` で始めず、nm の検査の対象の外（ADR 0005 の追記）。
@@ -706,6 +726,8 @@
 | H8、H30（2026-11-02） | 通信なしは課金シートの商品の取得（AC-110）だけ | 購入の復元も、通信なしなら `restoreOutcome` より先に通信の誤りにし、`store.offline` を出す | G3 r2 の verifier：S-10 の復元を通信なしで押しても知らせが出なかった（design/ 5 の S-10 のオフライン） |
 | H33（2026-11-02、新規） | なし | 読み込みを止めて、読み込み中の形を撮る | G3 r2 の verifier の 13 章（読み込み中の各画面、復元の途中） |
 | H22（2026-11-02、G3 のコードの判定のあと） | `composition` の組み方は「ADR 0003 の組みの結果」とだけ書き、枠から決め直すかを決めていなかった | `renders[]` ごとに `request` の枠から、拡張と見本が描くのと同じ手順（「H22 の組み方」）で字の大きさ・L・列を決め直す。計算は `ReadingCore` の純粋な関数1つ。スキーマの項目は足さず、説明と例（`fontSize` 17、`L` 4、`columnCount` 4 など）を手順の値に直した | G3 のコードの reviewer の要修正1：拡張と見本は 172×76 の14字を 4列×4字で描くのに、読み出しは既定の 2列×8字だった。AC-27、AC-28、AC-35 |
+| H22（2026-11-02、G3 の契約 r3 の判定のあと） | `composition` の12項目をいつも必須にし、横書き（AC-30）の組みの値は「範囲の外（いまのまま）」としていた。横書きはスキーマを満たせなかった | 縦書きの升目の9項目（`frame`、`fontSize`、`L`、`referenceL`、`columnCount`、`feedCount`、`kinsokuRelaxed`、`slack`、`cells`）を `orientation` が `vertical` のときだけ必須にした（必須を減らす向き。名前・型・意味は変えない）。横書きは `orientation`、`displayedLine`、`shortened`（と描いたときの `page`）だけを書く。横書きの例を足した。`state` と `texts` の組を表にした。手順3で送りを止めたときの `feedCount`・`kinsokuRelaxed` の意味を決めた | G3 の契約 r3 の reviewer の要修正1、提案3・7、4(a)・提案9。AC-28、AC-30 |
+| H33（2026-11-02、G3 の契約 r3 の判定のあと） | 1-1 の例外は「読み込んだ結果を画面に渡す所」だけで、(b) の「読み込みの前に門を通す」より狭かった。2度押しの印をいつ立てるかを決めていなかった | 1-1 と (b) を「View の側で、読み込みを呼ぶ所か、読み込んだ結果を画面に渡す所」にそろえた。印は `Task` を作る前に同期で立てる。`catalog.lookup` を止めている間の2つ目のバーコードはこの条件の外 | G3 の契約 r3 の reviewer の要修正2、提案4 |
 | H33（2026-11-02、G3 のコードの判定のあと） | 門は `ReadingStore` の読み込みの関数の入口に置く | 門の型は `ReadingStore` に1つ。門を通す所は (a) 読み込みの関数の中か (b) 読み込んだ結果を画面に渡す所（View の側）。観察できる振る舞いと、既定は素通り・`#if` の外・名前・設定は入口だけ、の決まりは変えない | G3 のコードの reviewer の要修正2と指揮役の裁定 2：G3 r2 の実装は (b)。観察できる振る舞いは契約どおりだったため、文を実装に合わせて広げた |
 
 ## 6. 確かめたこと
@@ -723,10 +745,17 @@
 
 - H22 の組み方の検算（2026-11-02）：「H22 の組み方」の手順を Python で書き（リポジトリの外のスクラッチパッド、`python3 -I fit.py`）、W-1 の 172×76・153×68、W-2 の 170×170・148×148 で、AC-27 の14字、かな25字、「歩行祭は、いつも同じ道を歩く。」を組んだ。結果は「H22 の組み方」の表のとおりで、かな25字の値は G1 の ADR 0003（6c46e54 版）の「25字のときの結果」と同じ（W-1 は 15pt・13pt、W-2 は 20pt・19pt、L＝5）。G3 r2 の `ReadingVerticalFit.fit` でも AC-27 の14字は 172×76 で 17pt・4列×4字になる（コードを読んで手で計算。ビルドはしていない）。
 - JSON Schema（2026-11-02、H22 の組み方のあと）：`h22-widget.schema.json` の説明と例を直したあと、`make check-contracts` を通した（出力は報告に書いた）。
+- JSON Schema（2026-11-02、横書きの `composition` のあと）：`make check-contracts` で `ALL PASSED: 8 schemas, 29 examples validated with 0 errors.`（横書きの例を1つ足して 28→29）。7 の全体の検査の1行を、スキーマの examples 4つ（すべて OK、終了コード 0）と、わざと壊した3つ（横書きに `columnCount: 0`・`cells: []`、縦書きから `L`・`cells` を抜く、`state: "hasLine"`・`entryURL`・トップの `title`）で試し、壊した3つはすべてエラーを出して終了コード 1 になった。
+- 手順5に来る並びの検算（2026-11-02、同じ Python）：「あ」＋「ー」×24 は W-1 の両方の枠で 13pt・L 5・C 5・`kinsokuRelaxed` 真。「あいうーーーー」のくり返しの25字は 153×68 で 13pt でも送りのあと C 7 で、`kinsokuRelaxed` 真（172×76 は 14pt・C 7 で入る）。「そして」＋「…」×6 は 172×76 で 17pt・C 5・`feedCount` 11・`kinsokuRelaxed` 偽（手順3で送りを止めた列が残る）。
 
 ## 7. 照合のしかた（G2 で verifier と reviewer が使う）
 - 全149 AC が使うつなぎ口（H1、H2、H4〜H10、H12〜H32 の計30個）が、すべてこの契約の第2章にあること。
 - JSON Schema：`make check-contracts`（リポジトリの外の `~/.cache/reading-app/contracts-schema-venv` の `jsonschema`。初めての時は自動で作る）で `contracts/hooks/*.schema.json` と `contracts/widget-snapshot.schema.json` の metaschema 検査と examples 検査を行い、エラー0件であること。
+- H22 の読み出しの全体（2026-11-02、G3 の契約 r3 の指揮役の裁定 4。verifier が使う）：`hook.widget` の値（`accessibilityValue` の JSON の文字列）をそのままファイルに保存し、`make check-contracts` と同じ venv の Python で、`h22-widget.schema.json` の全体に照らす。エラーがあれば全部を出して終了コード 1、なければ `hook.widget OK: <renders の数> renders` を出して終了コード 0。保存は W-1・W-2 の枠（`-uitest-widget accessoryRectangular:153x68,accessoryRectangular:172x76,systemSmall:148x148,systemSmall:170x170`）で、少なくとも `state` が `normal`（縦書きと横書き）、`noLine`、`noLineNoPage`、`hidden`、`empty`、`unavailable` になる投入のそれぞれについて行う。`-uitest-widget-show` を付けた起動では `showcase` も同じ1行で検査される。
+  ```
+  ~/.cache/reading-app/contracts-schema-venv/bin/python -I -c 'import json,sys; from jsonschema import Draft202012Validator as V; s=json.load(open(sys.argv[1],encoding="utf-8")); d=json.load(open(sys.argv[2],encoding="utf-8")); E=sorted(V(s).iter_errors(d),key=lambda e:[str(x) for x in e.absolute_path]); [print("/".join(map(str,e.absolute_path)) or "(root)", ":", e.message) for e in E]; n=len(d.get("renders",[])); sys.exit(1) if E else print(f"hook.widget OK: {n} renders")' contracts/hooks/h22-widget.schema.json <hook.widget を保存した JSON>
+  ```
+  - `make check-contracts SCHEMA_PYTHON=<python>` で別の Python を使うときは、先頭の Python をそれに置き換える。
 - G2 の受け入れテストは、ここにない引数、環境変数、通知、`hook.*` の識別子を使わない（`grep -rhoE -- '-uitest-[a-z-]+|UITEST_[A-Z_]+|yomuma\.uitest\.[a-z.]+|hook\.[a-zA-Z.]+' ios/AcceptanceTests | sort -u` の結果が、この文書にあるものだけ）。
 
 ## 8. 画面×状態の撮り方（G3 の証拠。2026-11-02、G3 r2 の verifier の 9 章と 13 章への答え）

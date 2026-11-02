@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:reading-app:contracts:hooks:h22-widget:1",
   "title": "H22 ウィジェットの中身（要素 hook.widget の accessibilityValue の JSON）大きな版 1",
-  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0003、ADR 0005、PRD 11 の冒頭のつなぎ口（AC-14、AC-16、AC-27〜AC-35、AC-40、AC-62、AC-64、AC-73、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139〜AC-141）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：電子書籍の進み具合表示と名無しの今の本を反映）。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[進み具合と名無しの今の本（AC-139〜AC-141）] 進み具合の短い表示文字列（texts[\"widget.page\"] および composition.page.text）は、紙の本のページなら「p.61」、電子書籍の位置番号（location）なら「位置1450」（英語は \"Loc 1450\"）、パーセント（percent）なら「52%」が入る。名無しの今の本（isTitlePending が真。register.later）で一行がないときは texts[\"widget.title\"] に文言キー widget.currentBookAsTitle の文（「今の本」／英語 \"Reading Now\"）が入り、accessibility.label の書名の位置も同じ文になる。\n\n[撮影用の見本（2026-11-02 に足した）] -uitest-widget-show で起動したときは showcase に見本の大きさと、使った View の型を書く。見本は拡張と同じ View の型を requestedWidth×requestedHeight pt の枠で描く（contracts/test-hooks.md の H22）。\n\n[組み方（2026-11-02 に決めた）] renders[].composition は、renders[] の1つずつについて、その request の family と width×height の枠から、拡張（W-1、W-2）と撮影用の見本が実際に描くのと同じ組み方（contracts/test-hooks.md の「H22 の組み方」）で、字の大きさ、1列の字数、列を決め直して組んだ結果。枠を使わない既定の値で組んだ結果を出さない。計算は ReadingCore の純粋な関数1つにあり、View と読み出しの両方がそれを呼ぶ。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
+  "description": "アプリの中で、ウィジェットの拡張と同じ関数（タイムライン、組み）と同じ View（W-1、W-2）で組んだ結果。@testable import を使わない。関係：contracts/test-hooks.md、ADR 0003、ADR 0005、PRD 11 の冒頭のつなぎ口（AC-14、AC-16、AC-27〜AC-35、AC-40、AC-62、AC-64、AC-73、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139〜AC-141）、設計メモ 5。書いた役：tech-lead、2026-10-20（G1 の 7-4a）、2026-10-25 に更新（G1 の 7-A：電子書籍の進み具合表示と名無しの今の本を反映）。\n\n[組む時] 起動したときと、アプリが再読み込みを求めるたびに、-uitest-widget で頼んだファミリーと枠のすべてを組み直し、renders を最新の1回分に置き換える。\n\n[進み具合と名無しの今の本（AC-139〜AC-141）] 進み具合の短い表示文字列（texts[\"widget.page\"] および composition.page.text）は、紙の本のページなら「p.61」、電子書籍の位置番号（location）なら「位置1450」（英語は \"Loc 1450\"）、パーセント（percent）なら「52%」が入る。名無しの今の本（isTitlePending が真。register.later）で一行がないときは texts[\"widget.title\"] に文言キー widget.currentBookAsTitle の文（「今の本」／英語 \"Reading Now\"）が入り、accessibility.label の書名の位置も同じ文になる。\n\n[撮影用の見本（2026-11-02 に足した）] -uitest-widget-show で起動したときは showcase に見本の大きさと、使った View の型を書く。見本は拡張と同じ View の型を requestedWidth×requestedHeight pt の枠で描く（contracts/test-hooks.md の H22）。\n\n[組み方（2026-11-02 に決めた）] renders[].composition は、renders[] の1つずつについて、その request の family と width×height の枠から、拡張（W-1、W-2）と撮影用の見本が実際に描くのと同じ組み方（contracts/test-hooks.md の「H22 の組み方」）で、字の大きさ、1列の字数、列を決め直して組んだ結果。枠を使わない既定の値で組んだ結果を出さない。計算は ReadingCore の純粋な関数1つにあり、View と読み出しの両方がそれを呼ぶ。\n\n[examples] 1つ目と3つ目の composition.cells は抜粋（14字・15字のうち3升目だけ）。4つ目は横書き（AC-30）の例。\n\n[版] 同じ大きな版の中では、省ける項目と enum の値を足すことだけをする（名前、型、意味、範囲を変えない。必須を足さない）。",
   "type": "object",
   "required": [
     "outputVersion",
@@ -280,21 +280,12 @@
         "composition": {
           "type": "object",
           "required": [
-            "frame",
-            "fontSize",
-            "L",
-            "referenceL",
-            "columnCount",
-            "feedCount",
-            "kinsokuRelaxed",
-            "slack",
             "orientation",
             "displayedLine",
-            "shortened",
-            "cells"
+            "shortened"
           ],
           "additionalProperties": false,
-          "description": "組みの結果（contracts/test-hooks.md の「H22 の組み方」と ADR 0003 の 2026-11-02 の追記の記号）。この render の request の枠で、拡張と見本が描くのと同じ手順で組む。座標は枠の左上を原点とする pt。state が normal のときだけ出す。",
+          "description": "組みの結果（contracts/test-hooks.md の「H22 の組み方」と ADR 0003 の 2026-11-02 の追記の記号）。この render の request の枠で、拡張と見本が描くのと同じ手順で組む。座標は枠の左上を原点とする pt。state が normal のときだけ出す。\n\n[縦書きと横書き（2026-11-02、G3 の契約 r3 の reviewer の要修正1）] orientation、displayedLine、shortened はいつも書く。frame、fontSize、L、referenceL、columnCount、feedCount、kinsokuRelaxed、slack、cells は縦書きの升目の値なので、orientation が vertical のときだけ必須（下の allOf）。横書き（horizontal。AC-30）のときは、これらのキーを書かない（0 や空の配列でも書かない。columnCount の minimum 1、cells の minItems 1 に反する）。page は縦書きと同じく、場所を描いたときだけ書く。",
           "properties": {
             "frame": {
               "type": "object",
@@ -364,11 +355,11 @@
             "feedCount": {
               "type": "integer",
               "minimum": 0,
-              "description": "禁則で前の列の終わりの字を次の列へ送った回数（1字ごとに1）。"
+              "description": "禁則で前の列の終わりの字を次の列へ送った回数（1字送るごとに1。同じ字が続けて2つの列を越えて送られたら2と数える）。手順3で列が1字になって送りを止めた列でも、それまでに送った字は数える。"
             },
             "kinsokuRelaxed": {
               "type": "boolean",
-              "description": "下限の s でも入らず、送りをせずに組んだとき真。"
+              "description": "下限の s でも入らず、送りをせずに組んだとき（手順5の終わり）だけ真。手順3で送りを止めて列の先頭に禁則の字が残ったときは偽のまま（残ったかは cells の row 1・column 2 以上の字で見る）。"
             },
             "slack": {
               "type": "object",
@@ -462,7 +453,8 @@
                     "description": "升目の左上の y。i＋(row−1)×s。"
                   }
                 }
-              }
+              },
+              "description": "出した字ごとに1つ（縦書きのときだけ）。列の順（右から）、列の中は上からの順。examples の cells は抜粋（全升目でない）。"
             },
             "page": {
               "type": "object",
@@ -487,7 +479,34 @@
               },
               "description": "場所の文字の左上の名目の位置（x＝i、y＝H−i−16）。AC の判定には使わない。"
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "orientation": {
+                    "const": "vertical"
+                  }
+                },
+                "required": [
+                  "orientation"
+                ]
+              },
+              "then": {
+                "required": [
+                  "frame",
+                  "fontSize",
+                  "L",
+                  "referenceL",
+                  "columnCount",
+                  "feedCount",
+                  "kinsokuRelaxed",
+                  "slack",
+                  "cells"
+                ]
+              }
+            }
+          ]
         }
       },
       "allOf": [
@@ -976,6 +995,59 @@
         "byCause": {
           "launch": 1,
           "mark.save": 1
+        }
+      }
+    },
+    {
+      "outputVersion": 1,
+      "renders": [
+        {
+          "request": {
+            "family": "accessoryRectangular",
+            "width": 172,
+            "height": 76
+          },
+          "seq": 1,
+          "producedAt": "2026-10-20T13:00:00.000Z",
+          "snapshotSource": "file",
+          "state": "normal",
+          "url": "yomuma://open?entry=lock_widget",
+          "appearanceID": "default",
+          "accessibility": {
+            "identifier": "widget.rectangular",
+            "label": "Rain、61ページ。It was raining.",
+            "groupCount": 1
+          },
+          "texts": {
+            "widget.line": "It was raining.",
+            "widget.page": "p.61"
+          },
+          "timeline": {
+            "entries": [
+              {
+                "date": "2026-10-20T13:00:00.000Z",
+                "state": "normal"
+              }
+            ],
+            "policy": "never",
+            "elapsedMs": 1.9
+          },
+          "composition": {
+            "orientation": "horizontal",
+            "displayedLine": "It was raining.",
+            "shortened": false,
+            "page": {
+              "text": "p.61",
+              "x": 0,
+              "y": 60
+            }
+          }
+        }
+      ],
+      "reloadRequests": {
+        "total": 1,
+        "byCause": {
+          "launch": 1
         }
       }
     }

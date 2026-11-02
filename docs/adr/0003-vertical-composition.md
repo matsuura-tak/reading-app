@@ -109,6 +109,8 @@ G3 のコードの reviewer の要修正1（`docs/reviews/001-reading-session-G3
   - G3 r2 の実装は、W-1・W-2 の View が枠から字の大きさと列を決め直して描き（design/ の screens.md と tokens.md どおり、17pt・20pt から 1pt ずつ下げる）、H22 の読み出しだけが枠を使わない既定の値（4列×8字）で組んでいた。
 - 決めたこと
   - W-1・W-2 の字の大きさ、1列の字数、列は、`contracts/test-hooks.md` の「H22 の組み方」の手順と記号の値で決める（6c46e54 版の手順と同じ。入るかは禁則の送りのあとの列の数で見る）。上の「決定 1」の W-1・W-2 の字の大きさと字数（12pt・15pt の固定）は、この手順で置き換える。25字・縮め方・置き換え・禁則の字・読み上げの決まりは変えない。
+  - 「決定 1」の W-1・W-2 の配置の記述（W-1 の「左端に縦1列の書名（10pt、最大6字）」、W-2 の「下部に横書きの書名＋ページ」）も、design/001-reading-session/screens.md の W-1・W-2 で置き換える（W-1 は左端の帯に場所だけ、W-2 は列の場所の下に場所だけを置き、一行があるときは書名を描かない）。G3 の契約 r3 の reviewer の提案5。
+  - 横書きの一行（「決定 1」の 2、AC-30）は、縮め方だけをしてこの手順を通らない。H22 の `composition` には縦書きの升目の項目を書かず、`orientation`、`displayedLine`、`shortened` だけを書く（`contracts/test-hooks.md` の「横書きの一行」。スキーマはその9項目を `orientation` が `vertical` のときだけ必須にした。G3 の契約 r3 の reviewer の要修正1）。
   - 計算は `ReadingCore` の純粋な関数1つに置き、W-1・W-2 の View と H22 の読み出し（`SnapshotStore`）の両方がそれを呼ぶ。記号の値（W-1：余白 0、帯 43、間 4、s 17→13。W-2：余白 16、場所の行 20、s 20→13。列の間 0.25s）もその1か所に置く。
 - 比べた案
   | 案 | 良い点 | 悪い点 | 選ばなかった理由 |
@@ -125,3 +127,4 @@ G3 のコードの reviewer の要修正1（`docs/reviews/001-reading-session-G3
 - 確かめたこと
   - 手順を Python で書いて計算した値（`contracts/test-hooks.md` の「H22 の組み方」の表）。かな25字の値は 6c46e54 版の「25字のときの結果」と同じ。
   - `make check-contracts` → `ALL PASSED: 8 schemas, 28 examples validated with 0 errors.`（2026-11-02）。ビルドはしていない（ios/ は書かない）。
+  - 横書きの例を足し、縦書きの升目の項目を `orientation` が `vertical` のときだけ必須にしたあと：`make check-contracts` → `ALL PASSED: 8 schemas, 29 examples validated with 0 errors.`（2026-11-02、終了コード 0）。
