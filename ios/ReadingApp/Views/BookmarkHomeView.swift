@@ -67,7 +67,7 @@ public struct BookmarkHomeView: View {
         .background(palette.bgPrimary.ignoresSafeArea())
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.bookmark")
-        .navigationTitle(AppL10n.pick("しおり", "Bookmark"))
+        .navigationTitle(String(localized: "bookmark.navTitle"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -78,7 +78,7 @@ public struct BookmarkHomeView: View {
                     model.navigationPath.append(.shelf)
                     model.notifyHookChanged()
                 } label: {
-                    Label(AppL10n.pick("本棚", "Shelf"), systemImage: "books.vertical")
+                    Label(String(localized: "toolbar.shelf"), systemImage: "books.vertical")
                         .foregroundStyle(palette.actionTint)
                 }
                 .accessibilityIdentifier("toolbar.shelf")
@@ -90,7 +90,7 @@ public struct BookmarkHomeView: View {
                     model.navigationPath.append(.settings)
                     model.notifyHookChanged()
                 } label: {
-                    Label(AppL10n.pick("設定", "Settings"), systemImage: "gearshape")
+                    Label(String(localized: "toolbar.settings"), systemImage: "gearshape")
                         .foregroundStyle(palette.actionTint)
                 }
                 .accessibilityIdentifier("toolbar.settings")
@@ -107,13 +107,10 @@ public struct BookmarkHomeView: View {
     }
 
     private var storeLoadFailedSection: some View {
-        let errorMsg = AppL10n.pick(
-            "データを読み込めませんでした。端末の空き容量を確かめて、もう一度お試しください。",
-            "Could not load your data. Check available storage and try again."
-        )
+        let errorMsg = String(localized: "store.load.error")
         return ContentUnavailableView {
             Label(
-                AppL10n.pick("データの読み込みに失敗しました", "Could Not Load Data"),
+                String(localized: "store.load.error.title"),
                 systemImage: "exclamationmark.triangle"
             )
             .foregroundStyle(palette.textPrimary)
@@ -129,7 +126,7 @@ public struct BookmarkHomeView: View {
                 model.store.loadFromDisk()
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("もう一度読み込む", "Try Again"))
+                Text(String(localized: "store.retry"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("store.retry")
@@ -138,13 +135,10 @@ public struct BookmarkHomeView: View {
     }
 
     private var noBooksSection: some View {
-        let emptyDesc = AppL10n.pick(
-            "いま読んでいる本を1冊置くと、ここから1タップで読み始められます。",
-            "Add the book you are reading to start with a single tap."
-        )
+        let emptyDesc = String(localized: "bookmark.empty.message")
         return ContentUnavailableView {
             Label(
-                AppL10n.pick("まだ本が置かれていません", "No Books Yet"),
+                String(localized: "bookmark.empty.title"),
                 systemImage: "book.closed"
             )
             .foregroundStyle(palette.textPrimary)
@@ -161,7 +155,7 @@ public struct BookmarkHomeView: View {
                 model.activeSheet = .addBook(titlePendingMode: false)
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("本を加える", "Add a Book"))
+                Text(String(localized: "bookmark.addBook"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("bookmark.addBook")
@@ -170,14 +164,8 @@ public struct BookmarkHomeView: View {
     }
 
     private func noCurrentWithTsundokuSection(candidates: [BookSnapshot]) -> some View {
-        let msg = AppL10n.pick(
-            "いま読む本が選ばれていません",
-            "No Current Book Selected"
-        )
-        let subMsg = AppL10n.pick(
-            "積読から選ぶか、新しい本を加えられます。",
-            "Choose from your stack or add a new book."
-        )
+        let msg = String(localized: "bookmark.noCurrent.title")
+        let subMsg = String(localized: "bookmark.noCurrent.message")
         return VStack(alignment: .leading, spacing: ThemeSpace.s16) {
             VStack(spacing: ThemeSpace.s8) {
                 Image(systemName: "books.vertical")
@@ -227,7 +215,7 @@ public struct BookmarkHomeView: View {
                             }
                             model.notifyHookChanged()
                         } label: {
-                            Text(AppL10n.pick("これを読む", "Read This"))
+                            Text(String(localized: "bookmark.noCurrent.choose"))
                         }
                         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                         .accessibilityIdentifier("bookmark.noCurrent.choose")
@@ -255,7 +243,7 @@ public struct BookmarkHomeView: View {
                     model.navigationPath.append(.shelf)
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("本棚を開く", "Open Shelf"))
+                    Text(String(localized: "bookmark.openShelf"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("bookmark.openShelf")
@@ -265,7 +253,7 @@ public struct BookmarkHomeView: View {
                     model.activeSheet = .addBook(titlePendingMode: false)
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("本を加える", "Add a Book"))
+                    Text(String(localized: "bookmark.addBook"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("bookmark.addBook")
@@ -275,7 +263,7 @@ public struct BookmarkHomeView: View {
     }
 
     private func activeBookSection(book: BookSnapshot) -> some View {
-        let displayTitle = book.isTitlePending ? AppL10n.pick("今の本", "Reading Now") : book.title
+        let displayTitle = book.isTitlePending ? String(localized: "widget.currentBookAsTitle") : book.title
         let progressStr = InputValidator.formatProgressDisplay(
             unit: book.progressUnit,
             page: book.currentPage,
@@ -350,7 +338,7 @@ public struct BookmarkHomeView: View {
             if UITestHookCoordinator.shared.areReadoutsEnabled {
                 InvisibleAccessibleButtonRepresentable(
                     identifier: "bookmark.addBook",
-                    label: AppL10n.pick("本を加える", "Add a Book")
+                    label: String(localized: "bookmark.addBook")
                 ) {
                     model.currentScreen = .bookAddActionSheet
                     model.activeSheet = .addBook(titlePendingMode: false)
@@ -391,7 +379,7 @@ public struct BookmarkHomeView: View {
             model.activeSheet = .addBook(titlePendingMode: true)
             model.notifyHookChanged()
         } label: {
-            Text(AppL10n.pick("書名を入れる", "Set Book Title"))
+            Text(String(localized: "bookmark.setBookTitle"))
         }
         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
         .accessibilityIdentifier("bookmark.setBookTitle")
@@ -404,7 +392,7 @@ public struct BookmarkHomeView: View {
             model.activeSheet = .markFlow
             model.notifyHookChanged()
         } label: {
-            Text(AppL10n.pick("しおりを挟む", "Place Bookmark"))
+            Text(String(localized: "bookmark.setMark"))
         }
         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
         .accessibilityIdentifier("bookmark.setMark")
@@ -418,7 +406,7 @@ public struct BookmarkHomeView: View {
             }
             model.notifyHookChanged()
         } label: {
-            Text(AppL10n.pick("読み終えた", "Finish Book"))
+            Text(String(localized: "bookmark.finish"))
         }
         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
         .accessibilityIdentifier("bookmark.finish")
@@ -435,7 +423,7 @@ public struct BookmarkHomeView: View {
                 }
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("読み始める", "Start Reading"))
+                Text(String(localized: "bookmark.start"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("bookmark.start")
@@ -455,10 +443,7 @@ public struct BookmarkHomeView: View {
     private func flipHints(book: BookSnapshot) -> some View {
         if book.isEbook {
             Text(
-                AppL10n.pick(
-                    "電子書籍アプリへ移っても数え続けます。終えるときはロック画面の『終える』を押してください。",
-                    "Keeps counting while you read in your e-book app. Tap End Reading on the Lock Screen when done."
-                )
+                String(localized: "bookmark.flipHint.ebook")
             )
             .font(.footnote)
             .foregroundStyle(palette.textSecondary)
@@ -468,7 +453,7 @@ public struct BookmarkHomeView: View {
         }
 
         if model.store.isFlipAvailable && model.store.settings.flipToStartEnabled {
-            Text(AppL10n.pick("伏せても始まります", "Or place iPhone face down to start"))
+            Text(String(localized: "bookmark.flipHint"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .multilineTextAlignment(.center)

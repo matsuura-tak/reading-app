@@ -278,10 +278,10 @@ public struct FinishCardCanvasView: View {
                 .padding(.vertical, ThemeSpace.s8)
 
             HStack(spacing: ThemeSpace.s24) {
-                Text("\(nightsCount)晩")
+                Text(BookTextFormat.nights(nightsCount))
                     .font(.headline.monospacedDigit())
                     .foregroundStyle(palette.textPrimary)
-                Text("\(totalMinutes)分")
+                Text(ReadingWidgetStrings.durationMinutes(totalMinutes))
                     .font(.headline.monospacedDigit())
                     .foregroundStyle(palette.textPrimary)
             }
@@ -325,6 +325,7 @@ public enum FinishCardRenderer {
             minHeight: cardHeightPt,
             maxHeight: cardHeightPt
         )
+        .japaneseTextTypesetting()
 
         let renderer = ImageRenderer(content: content)
         renderer.scale = renderScale
@@ -334,8 +335,9 @@ public enum FinishCardRenderer {
         if !author.isEmpty {
             texts.append(author)
         }
-        texts.append("\(nightsCount)晩")
-        texts.append("\(totalMinutes)分")
+        // design/ 7 の `book.nights` と `duration.minutes`（H24 の記録も画像と同じ文字）。
+        texts.append(BookTextFormat.nights(nightsCount))
+        texts.append(ReadingWidgetStrings.durationMinutes(totalMinutes))
 
         if let uiImage = renderer.uiImage,
            let pngData = uiImage.pngData() {

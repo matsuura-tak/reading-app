@@ -35,9 +35,10 @@ public struct FinishNightView: View {
         let author = book?.author ?? ""
         let nights = model.store.distinctNightCount(for: bookId)
         let mins = model.store.totalMinutes(for: bookId)
-        let summary = "\(nights)晩・\(mins)分"
+        let summary = BookTextFormat.nightsAndMinutes(nights: nights, minutes: mins)
         let candidates = cachedCandidates ?? model.store.buildNextBookCandidates(for: bookId)
-        if let reflection = model.store.buildFinishReflection(for: bookId) {
+        if let reflectionSummary = model.store.buildFinishReflectionSummary(for: bookId) {
+            let reflection = BookTextFormat.finishReflection(reflectionSummary)
             return .withReflection(title: title, author: author, summary: summary, reflection: reflection, candidates: candidates)
         }
         return .withoutReflection(title: title, author: author, summary: summary, candidates: candidates)
@@ -55,8 +56,8 @@ public struct FinishNightView: View {
     public var body: some View {
         VStack(spacing: 0) {
             SheetHeaderBar(
-                title: AppL10n.pick("読了の夜", "Finished Reading"),
-                leftTitle: AppL10n.pick("閉じる", "Close"),
+                title: String(localized: "finish.title"),
+                leftTitle: String(localized: "finish.close"),
                 leftId: "finish.close",
                 onLeft: {
                     closeFinishNight(candidates: resolvedCandidates)
@@ -125,18 +126,7 @@ public struct FinishNightView: View {
 
     private func headerSection(title: String, author: String, summary: String, reflection: String?) -> some View {
         let displayTitle = title.isEmpty ? ReadingWidgetStrings.currentBookAsTitle : title
-        let formattedPublisher: String? = {
-            let pub = book?.publisher?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            let lbl = book?.label?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            if !pub.isEmpty && !lbl.isEmpty {
-                return "\(pub)（\(lbl)）"
-            } else if !pub.isEmpty {
-                return pub
-            } else if !lbl.isEmpty {
-                return lbl
-            }
-            return nil
-        }()
+        let formattedPublisher = BookTextFormat.publisherWithLabel(publisher: book?.publisher, label: book?.label)
         let matchedAwards = AwardsCatalog.matchAwards(
             title: title,
             author: author,
@@ -150,13 +140,13 @@ public struct FinishNightView: View {
             var parts: [String] = [displayTitle]
             if !author.isEmpty { parts.append(author) }
             if let formattedPublisher { parts.append(formattedPublisher) }
-            if let yr = book?.publishedYear { parts.append("\(yr)年") }
+            if let yr = book?.publishedYear { parts.append(BookTextFormat.publishedYear(yr)) }
             if let awardDisplay { parts.append(awardDisplay) }
             return parts.joined(separator: " ")
         }()
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s16) {
-            Text(AppL10n.pick("読み終えました", "Finished Reading"))
+            Text(String(localized: "finish.title"))
                 .font(.largeTitle.bold())
                 .foregroundStyle(palette.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -185,14 +175,14 @@ public struct FinishNightView: View {
                     .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1)
 
                 colophonRow(
-                    key: AppL10n.pick("書名", "Title"),
+                    key: String(localized: "colophon.title.label"),
                     value: displayTitle,
                     id: "colophon.title"
                 )
 
                 if !author.isEmpty {
                     colophonRow(
-                        key: AppL10n.pick("著者", "Author"),
+                        key: String(localized: "colophon.author.label"),
                         value: author,
                         id: "colophon.author"
                     )
@@ -200,7 +190,7 @@ public struct FinishNightView: View {
 
                 if let formattedPublisher {
                     colophonRow(
-                        key: AppL10n.pick("出版社・レーベル", "Publisher"),
+                        key: String(localized: "colophon.publisher.label"),
                         value: formattedPublisher,
                         id: "colophon.publisher"
                     )
@@ -208,8 +198,8 @@ public struct FinishNightView: View {
 
                 if let yr = book?.publishedYear {
                     colophonRow(
-                        key: AppL10n.pick("出版年", "Published"),
-                        value: "\(yr)年",
+                        key: String(localized: "colophon.year.label"),
+                        value: BookTextFormat.publishedYear(yr),
                         id: "colophon.year",
                         monospaced: true
                     )
@@ -217,7 +207,7 @@ public struct FinishNightView: View {
 
                 if let awardDisplay {
                     colophonRow(
-                        key: AppL10n.pick("受賞", "Award"),
+                        key: String(localized: "colophon.award.label"),
                         value: awardDisplay,
                         id: "colophon.award"
                     )
@@ -302,7 +292,7 @@ public struct FinishNightView: View {
             showShareCardSheet = true
             model.notifyHookChanged()
         } label: {
-            Text(AppL10n.pick("読了カードを共有", "Share Finish Card"))
+            Text(String(localized: "finish.card.share"))
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -320,13 +310,13 @@ public struct FinishNightView: View {
 
     private func candidatesSection(candidates: [RecommendationCandidate]) -> some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-            Text(AppL10n.pick("次の1冊", "Your Next Book"))
+            Text(String(localized: "next.header"))
                 .font(.headline)
                 .foregroundStyle(palette.textPrimary)
 
             if candidates.isEmpty {
                 VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-                    Text(AppL10n.pick("本棚から次の本を選ぶか、新しく登録できます。", "Choose your next book from the shelf or add a new one."))
+                    Text(String(localized: "next.empty.message"))
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -337,7 +327,7 @@ public struct FinishNightView: View {
                         model.activeSheet = .addBook(titlePendingMode: false)
                         model.notifyHookChanged()
                     } label: {
-                        Text(AppL10n.pick("新しい本を加える", "Add a New Book"))
+                        Text(String(localized: "next.addBook"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -402,13 +392,13 @@ public struct FinishNightView: View {
                                 }
                                 model.notifyHookChanged()
                             } label: {
-                                Text(AppL10n.pick("これを今の本にする", "Make Current Book"))
+                                Text(String(localized: "next.choose"))
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                             .accessibilityIdentifier("next.choose")
                         } else if isAdded {
-                            Text(AppL10n.pick("積読に置きました", "Added to Tsundoku"))
+                            Text(String(localized: "next.added"))
                                 .font(.footnote.bold())
                                 .foregroundStyle(palette.textSecondary)
                                 .accessibilityIdentifier("next.added")
@@ -436,7 +426,7 @@ public struct FinishNightView: View {
                                 }
                                 model.notifyHookChanged()
                             } label: {
-                                Text(AppL10n.pick("積読に置く", "Add to Tsundoku"))
+                                Text(String(localized: "next.addToShelf"))
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -466,13 +456,13 @@ public struct FinishNightView: View {
             Button {
                 closeFinishNight(candidates: candidates)
             } label: {
-                Text(AppL10n.pick("今は読まない", "Skip for Now"))
+                Text(String(localized: "next.skip"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("next.skip")
 
-            Text(AppL10n.pick("本棚からいつでも『今の本』に戻せます。", "You can switch it back to Current Book anytime from the Shelf."))
+            Text(String(localized: "finish.undoNote"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -501,7 +491,7 @@ public struct FinishNightView: View {
         previewState: .withReflection(
             title: "羅生門",
             author: "芥川龍之介",
-            summary: "4晩・85分",
+            summary: BookTextFormat.nightsAndMinutes(nights: 4, minutes: 85),
             reflection: "4晩、合計85分（1時間25分）。いちばん長かったのは10月18日の晩の30分でした。",
             candidates: [c1]
         )
@@ -516,7 +506,7 @@ public struct FinishNightView: View {
         previewState: .withoutReflection(
             title: "羅生門",
             author: "芥川龍之介",
-            summary: "1晩・20分",
+            summary: BookTextFormat.nightsAndMinutes(nights: 1, minutes: 20),
             candidates: []
         )
     )

@@ -195,3 +195,31 @@ designer が決めた文言キー（design/ 7、決定 82〜86）をアプリに
 - S-2 の `reading.startedAt`：システムの短い時刻の書式。晩をまたいだときは同じキーの `%@` に月日つきの時刻を入れる（design/ 7 に別のキーがないため）。
 - S-7 の `book.nights`（複数形）と `book.total`（分のまま）。`book.total` の読み上げの分数は `duration.minutes.spoken`。
 - `colophon.capture`（S-7、S-9）はキーで出す（ja「奥付を撮って補う」、en「Scan Colophon」）。
+
+## 12. 9体目と10体目（BASE 1b5d441 → 49fea4c）で足したこと
+9体目が途中で止まった作業の木を、10体目が続けて終えた（docs/reviews/001-reading-session-G3-ios-fix-r2i-partial.md）。
+
+### 英語だけの端末で和文が□になる（豆腐）
+- 起きていたこと：端末の言語が英語だけのとき、システムの書体（SF Pro）で描く和文（本のデータの書名・著者・出版社と、アプリの文に残っていた「晩」「分」「年」「（）」）が□になった。明朝の custom フォント（`HiraMinProN-W3`、縦書きの一行）は名前で指しているので正しく描けていた。
+- 原因：システムの書体の置き換えの一覧（cascade list）が英語の一覧になり、このシミュレーターでは和文に当たる書体がなかった。実機では中国語の書体（PingFang SC）の字形になる見込み［推測。G4 の実機で見る］。どちらも、組みの言語を日本語にすればヒラギノ角ゴに当たる。
+- 直し方（書体は同梱しない。文言の言語は変えない）
+  - SwiftUI の Text：画面の根（`ReadingApp.swift`）、ウィジェット・Live Activity の View（拡張は別のプロセスなので View ごと）、読み終えのカード（`ImageRenderer`）に `.japaneseTextTypesetting()`（`typesettingLanguage(ja)`、iOS 17）。
+  - UIKit が描く文字（`TextField` の中、確認ダイアログ）には SwiftUI の修飾子が届かない。S-7a の欄が□のままだったので、窓の trait（`window.traitOverrides.typesettingLanguage`、`UIMutableTraits`、iOS 17）を日本語にする `JapaneseWindowTypesettingInstaller`（`ReadingApp.swift`）を足した。シートと確認ダイアログは同じ窓に出るので受け継ぐ。上書きしていない trait を読むと UIKit の assert で落ちるので、読まずに入れる。
+  - ナビゲーションバーの題には窓の trait も届かなかった（S-7 の題「羅生門」が□のまま）。S-7 だけは題が本のデータなので、`ToolbarItem(placement: .principal)` に SwiftUI の `Text` を置いて和文の組みを当てた（`navigationTitle` は戻るボタンと読み上げのために残す）。ほかの画面の題はアプリの文で、本のデータを入れていない。
+- 撮影：Japanese のデータ（`G3_VARIANT=light`）を English (en) の構成で撮る（10体目の scratchpad r10）。
+
+### 本のデータを言語ごとの文に（`BookTextFormat`、ThemeTokens.swift）
+- `publisherWithLabel`（`colophon.publisher.withLabel`）、`publishedYear`（`colophon.year.value`）、`nights`（`book.nights`）、`finishReflection`（`finish.reflection.single` / `.multi`、括弧の中は `duration.hoursMinutes` / `duration.hours`）、`nightDayText`（晩の月日。読み上げと S-7b は「10月16日」、S-7 の見える行は「10/16」。決定 60）。
+- `ReadingDataStore.buildFinishReflection` は `buildFinishReflectionSummary`（数だけを返す）に替えた。文は S-9・S-7 が組む。
+- S-9 の `finish.summary`（「3晩、83分」）：design/ 7 に組み合わせのキーがないので、`book.nights` と `duration.minutes` をシステムの並べ方の書式（`.list(type: .and, width: .narrow)`）で並べる。
+- S-7 の記録の行：見える文字は「10/16」と `duration.minutes`、読み上げは `book.record.spoken` と `duration.minutes.spoken`、`accessibilityInputLabels` に見える文字（決定 60）。前は「2026-10-16」と「18分」の直書きだった。
+- S-7b：`record.night`（「10月16日の晩」）。前は「読んだ晩」と「2026-10-16」。
+- S-7 の題：名無しの今の本は `widget.currentBookAsTitle`、本が読めないときは空（前は「本」の直書き）。
+- 読み終えのカード（画像と H24 の記録）：`book.nights` と `duration.minutes`。
+- S-8c の書誌候補の補足（著者・出版社・レーベル）：「・」の直書きをやめ、システムの並べ方の書式。
+
+### 推薦（8体目の未解決7）
+- `RecommendationEngine.afterCandidates` は、本棚が空のとき「コンビニ人間」を起点の本にしていた。S-7 は本棚にある本からしか開かないので画面には出ないが、決まった本を起点にした候補を作らないよう、本棚が空なら候補0件にした（単体テスト `afterCandidatesEmptyShelfReturnsNothing`）。
+
+### `AppL10n.pick` の残り
+- design/ 7 に文がある所は移した（S-9 の11か所は9体目、S-7 の題と S-7b の晩は10体目）。残りは design/ 7 に文がないので移していない（文は作らない）。一覧は10体目の報告の「未解決」。

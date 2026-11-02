@@ -97,25 +97,25 @@ public struct BookAddFlowSheetView: View {
         switch step {
         case .menu, .barcodeCameraDenied:
             return titlePendingMode
-                ? AppL10n.pick("書名を入れる", "Add Title")
-                : AppL10n.pick("本を加える", "Add Book")
+                ? String(localized: "bookmark.setBookTitle")
+                : String(localized: "register.navTitle")
         case .barcodeScanner:
-            return AppL10n.pick("バーコード読み取り", "Scan Barcode")
+            return String(localized: "scan.navTitle")
         case .coverCandidates, .coverEmpty:
-            return AppL10n.pick("表紙から選ぶ", "Pick from Cover")
+            return String(localized: "cover.navTitle")
         case .manualInput:
-            return AppL10n.pick("書名・著者を入れる", "Enter Title & Author")
+            return String(localized: "register.manual")
         case .bookshelfCandidates:
-            return AppL10n.pick("積読に置く本を選ぶ", "Select Books for Shelf")
+            return String(localized: "bookshelf.navTitle")
         }
     }
 
     private var headerCancelTitle: String {
         switch step {
         case .menu, .barcodeCameraDenied:
-            return AppL10n.pick("閉じる", "Close")
+            return String(localized: "register.cancel")
         default:
-            return AppL10n.pick("キャンセル", "Cancel")
+            return String(localized: "manual.cancel")
         }
     }
 
@@ -222,8 +222,8 @@ public struct BookAddFlowSheetView: View {
                 } label: {
                     let count = scannedItems.count
                     let titleText = count > 0
-                        ? AppL10n.pick("この\(count)冊を本棚に加える", "Add \(count) to Shelf")
-                        : AppL10n.pick("本棚に加える", "Add to Shelf")
+                        ? String.localizedStringWithFormat(NSLocalizedString("scan.addToShelf", comment: ""), count)
+                        : String(localized: "scan.addToShelf.none")
                     Text(titleText)
                         .frame(maxWidth: .infinity)
                 }
@@ -269,7 +269,7 @@ public struct BookAddFlowSheetView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("この内容で登録", "Save with These Details"))
+                    Text(String(localized: "cover.save"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -284,7 +284,7 @@ public struct BookAddFlowSheetView: View {
                 Button {
                     saveManualInput()
                 } label: {
-                    Text(AppL10n.pick("保存", "Save"))
+                    Text(String(localized: "manual.save"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -315,9 +315,7 @@ public struct BookAddFlowSheetView: View {
                     model.notifyHookChanged()
                 } label: {
                     let count = selectedIds.count
-                    let label = count > 0
-                        ? AppL10n.pick("選んだ\(count)冊を積読に置く", "Add \(count) Selected to Tsundoku")
-                        : AppL10n.pick("選んだ本を積読に置く", "Add Selected to Tsundoku")
+                    let label = String.localizedStringWithFormat(NSLocalizedString("bookshelf.addSelected", comment: ""), count)
                     Text(label)
                         .frame(maxWidth: .infinity)
                 }
@@ -386,7 +384,7 @@ public struct BookAddFlowSheetView: View {
                 model.currentScreen = .barcodeScan
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("裏表紙のバーコードを読む", "Scan Back-Cover Barcode"))
+                Text(String(localized: "register.barcode"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -396,7 +394,7 @@ public struct BookAddFlowSheetView: View {
                 model.store.activeErrorKey = nil
                 openCoverOCRFlow(isbn13: nil)
             } label: {
-                Text(AppL10n.pick("表紙を写して登録", "Capture Cover to Add"))
+                Text(String(localized: "register.cover"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -407,14 +405,14 @@ public struct BookAddFlowSheetView: View {
                     model.store.activeErrorKey = nil
                     openCoverOCRFlow(isbn13: nil)
                 } label: {
-                    Text(AppL10n.pick("スクリーンショットから登録", "Add from Screenshot"))
+                    Text(String(localized: "register.screenshot"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("register.screenshot")
             } else {
                 let screenshotLabel = PhotosPickerThemedLabel(
-                    text: AppL10n.pick("スクリーンショットから登録", "Add from Screenshot"),
+                    text: String(localized: "register.screenshot"),
                     palette: palette
                 )
                 PhotosPicker(
@@ -438,14 +436,14 @@ public struct BookAddFlowSheetView: View {
                         model.currentScreen = .bookshelfScan
                         model.notifyHookChanged()
                     } label: {
-                        Text(AppL10n.pick("本棚をまとめて写す", "Scan Bookshelf Spines"))
+                        Text(String(localized: "register.bookshelf"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("register.bookshelf")
                 } else {
                     let bookshelfLabel = PhotosPickerThemedLabel(
-                        text: AppL10n.pick("本棚をまとめて写す", "Scan Bookshelf Spines"),
+                        text: String(localized: "register.bookshelf"),
                         palette: palette
                     )
                     PhotosPicker(
@@ -473,7 +471,7 @@ public struct BookAddFlowSheetView: View {
                 model.currentScreen = .bookManualInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("書名・著者を入れる", "Enter Title & Author"))
+                Text(String(localized: "register.manual"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -488,7 +486,7 @@ public struct BookAddFlowSheetView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("書名はあとで、今すぐ読み始める", "Add Title Later & Start Reading"))
+                    Text(String(localized: "register.later"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -546,7 +544,7 @@ public struct BookAddFlowSheetView: View {
                 }
                 .clipShape(RoundedRectangle(cornerRadius: ThemeRadius.card))
 
-                Text(AppL10n.pick("上段のバーコード（978…）を枠に入れてください。", "Align the top ISBN barcode (978…) inside the frame."))
+                Text(String(localized: "scan.hint"))
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
                     .multilineTextAlignment(.center)
@@ -563,22 +561,16 @@ public struct BookAddFlowSheetView: View {
             )
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("scan.camera")
-            .accessibilityLabel(AppL10n.pick("上段のバーコード（978…）を枠に入れてください。", "Align the top ISBN barcode (978…) inside the frame."))
+            .accessibilityLabel(String(localized: "scan.hint"))
 
             if hasDBNotReady {
-                Text(AppL10n.pick(
-                    "書誌データの準備ができていません。書名を1行入れるか、表紙を写して加えられます。",
-                    "The catalog database is not ready yet. Enter a title below or capture the cover."
-                ))
+                Text(String(localized: "scan.dbNotReady"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("scan.dbNotReady")
             } else if hasNotFound {
-                Text(AppL10n.pick(
-                    "書誌データに見つかりませんでした。書名を入れるか、表紙を写して加えられます。",
-                    "Not found in catalog. Enter the title below or capture the cover."
-                ))
+                Text(String(localized: "scan.notFound"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -590,10 +582,7 @@ public struct BookAddFlowSheetView: View {
                 catalogLookupPlaceholder(rowCount: 1)
             } else if scannedItems.isEmpty {
                 // S-8a の「まだ読んでいない」（design 5）：一覧の所に scan.hint。
-                Text(AppL10n.pick(
-                    "本の裏のバーコード（2段あるときは両方）を写してください。続けて読めます。",
-                    "Point the camera at the barcode on the back of a book. You can scan one after another."
-                ))
+                Text(String(localized: "scan.hint"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -627,14 +616,14 @@ public struct BookAddFlowSheetView: View {
             if needsInlineTitle {
                 let targetISBN = scannedItems.last?.isbn13
                 VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                    Text(AppL10n.pick("書名を入力", "Enter Title"))
+                    Text(String(localized: "scan.row.editTitle"))
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
 
-                    TextField(AppL10n.pick("書名を入力", "Enter Title"), text: $inlineScanTitle)
+                    TextField(String(localized: "scan.row.editTitle"), text: $inlineScanTitle)
                         .themeField(palette)
                         .accessibilityIdentifier("scan.row.editTitle")
-                        .accessibilityLabel(AppL10n.pick("書名を入力", "Enter Title"))
+                        .accessibilityLabel(String(localized: "scan.row.editTitle"))
                         .accessibilityValue(inlineScanTitle)
                         .onChange(of: inlineScanTitle) { _, newValue in
                             if let lastIdx = scannedItems.indices.last {
@@ -645,7 +634,7 @@ public struct BookAddFlowSheetView: View {
                     Button {
                         openCoverOCRFlow(isbn13: targetISBN)
                     } label: {
-                        Text(AppL10n.pick("表紙を写す", "Capture Cover"))
+                        Text(String(localized: "scan.row.captureCover"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -655,7 +644,7 @@ public struct BookAddFlowSheetView: View {
 
             if showDiscardScanConfirm {
                 VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                    Text(AppL10n.pick("読み取った本を破棄して閉じますか？", "Discard scanned books and close?"))
+                    Text(String.localizedStringWithFormat(NSLocalizedString("scan.discard.confirm", comment: ""), scannedItems.count))
                         .font(.footnote)
                         .foregroundStyle(palette.textSecondary)
 
@@ -669,7 +658,7 @@ public struct BookAddFlowSheetView: View {
                         HStack(spacing: ThemeSpace.s8) {
                             Image(systemName: "trash")
                                 .foregroundStyle(palette.destructive)
-                            Text(AppL10n.pick("破棄して閉じる", "Discard and Close"))
+                            Text(String(localized: "scan.discard.confirmButton"))
                                 .foregroundStyle(palette.textPrimary)
                         }
                         .frame(maxWidth: .infinity)
@@ -890,10 +879,7 @@ public struct BookAddFlowSheetView: View {
 
     private var barcodeCameraDeniedContent: some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s16) {
-            Text(AppL10n.pick(
-                "カメラが許可されていません。設定で許可するか、スクリーンショットや手入力から登録できます。",
-                "Camera access is not allowed. Enable it in Settings, or add from a screenshot or manual entry."
-            ))
+            Text(String(localized: "camera.denied"))
             .font(.body)
             .foregroundStyle(palette.textPrimary)
             .fixedSize(horizontal: false, vertical: true)
@@ -903,7 +889,7 @@ public struct BookAddFlowSheetView: View {
                 model.store.openExternalURL("app-settings:")
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("設定を開く", "Open Settings"))
+                Text(String(localized: "camera.openSettings"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -912,7 +898,7 @@ public struct BookAddFlowSheetView: View {
             Button {
                 openCoverOCRFlow(isbn13: nil)
             } label: {
-                Text(AppL10n.pick("スクリーンショットから登録", "Add from Screenshot"))
+                Text(String(localized: "register.screenshot"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -931,7 +917,7 @@ public struct BookAddFlowSheetView: View {
                 model.currentScreen = .bookManualInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("書名・著者を入れる", "Enter Title & Author"))
+                Text(String(localized: "register.manual"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -945,7 +931,7 @@ public struct BookAddFlowSheetView: View {
 
     private func coverCandidatesContent(isbn13: String?, candidates: [String]) -> some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-            Text(AppL10n.pick("書名と著者の順にタップしてください（著者がないときは書名だけで登録できます）。", "Tap the title first, then the author (or save with title only)."))
+            Text(String(localized: "cover.hint"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -970,7 +956,7 @@ public struct BookAddFlowSheetView: View {
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer()
                         if isTitle {
-                            Text(AppL10n.pick("書名", "Title"))
+                            Text(String(localized: "cover.selectTitle"))
                                 .font(.caption.bold())
                                 .foregroundStyle(palette.ocrBadgeLabel)
                                 .padding(.horizontal, ThemeSpace.s8)
@@ -980,7 +966,7 @@ public struct BookAddFlowSheetView: View {
                                         .fill(palette.ocrBadgeBg)
                                 )
                         } else if isAuthor {
-                            Text(AppL10n.pick("著者", "Author"))
+                            Text(String(localized: "cover.selectAuthor"))
                                 .font(.caption.bold())
                                 .foregroundStyle(palette.ocrBadgeLabel)
                                 .padding(.horizontal, ThemeSpace.s8)
@@ -1026,16 +1012,13 @@ public struct BookAddFlowSheetView: View {
                 systemImage: "text.viewfinder"
             )
         } description: {
-            Text(AppL10n.pick(
-                "文字を読み取れませんでした。明るい所で撮り直すか、手で入れてください。",
-                "No text was found. Retake the photo in better light, or enter it manually."
-            ))
+            Text(String(localized: "mark.ocr.none"))
             .accessibilityIdentifier("mark.ocr.none")
         } actions: {
             Button {
                 openCoverOCRFlow(isbn13: isbn13)
             } label: {
-                Text(AppL10n.pick("撮り直す", "Retake"))
+                Text(String(localized: "mark.retake"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -1055,7 +1038,7 @@ public struct BookAddFlowSheetView: View {
                 model.currentScreen = .bookManualInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("手で入れる", "Enter Manually"))
+                Text(String(localized: "register.manual"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -1079,7 +1062,7 @@ public struct BookAddFlowSheetView: View {
         let trimmedQuery = manualTitle.trimmingCharacters(in: .whitespacesAndNewlines)
         return VStack(alignment: .leading, spacing: ThemeSpace.s16) {
             if model.store.catalogDB.status != .ready {
-                Text(AppL10n.pick("書誌データの準備ができていません。そのまま手入力で登録できます。", "Catalog data is not ready. You can save manually as entered."))
+                Text(String(localized: "scan.dbNotReady"))
                     .font(.footnote)
                     .foregroundStyle(palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -1087,13 +1070,13 @@ public struct BookAddFlowSheetView: View {
             }
 
             VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                Text(AppL10n.pick("書名（必須）", "Title (Required)"))
+                Text(String(localized: "manual.title"))
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
-                TextField(AppL10n.pick("書名を入力", "Enter Title"), text: $manualTitle)
+                TextField(String(localized: "manual.title"), text: $manualTitle)
                     .themeField(palette)
                     .accessibilityIdentifier("manual.title")
-                    .accessibilityLabel(AppL10n.pick("書名（必須）", "Title (Required)"))
+                    .accessibilityLabel(String(localized: "manual.title"))
                     .accessibilityValue(manualTitle)
                     .onChange(of: manualTitle) { _, newValue in
                         let q = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1114,13 +1097,13 @@ public struct BookAddFlowSheetView: View {
             }
 
             VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                Text(AppL10n.pick("著者（任意）", "Author (Optional)"))
+                Text(String(localized: "manual.author"))
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
-                TextField(AppL10n.pick("著者名を入力", "Enter Author"), text: $manualAuthor)
+                TextField(String(localized: "manual.author"), text: $manualAuthor)
                     .themeField(palette)
                     .accessibilityIdentifier("manual.author")
-                    .accessibilityLabel(AppL10n.pick("著者（任意）", "Author (Optional)"))
+                    .accessibilityLabel(String(localized: "manual.author"))
                     .accessibilityValue(manualAuthor)
             }
 
@@ -1129,7 +1112,7 @@ public struct BookAddFlowSheetView: View {
                 catalogLookupPlaceholder(rowCount: 3)
             } else if trimmedQuery.count >= 3 && model.store.catalogDB.status == .ready {
                 if searchResults.isEmpty {
-                    Text(AppL10n.pick("書誌データに一致する本はありません。入力した内容でそのまま登録できます。", "No matching book in catalog. You can save the title as entered."))
+                    Text(String(format: String(localized: "search.noResults"), trimmedQuery))
                         .font(.footnote)
                         .foregroundStyle(palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -1154,7 +1137,7 @@ public struct BookAddFlowSheetView: View {
                                     guard let item, !item.isEmpty else { return nil }
                                     return item
                                 }
-                                .joined(separator: "・")
+                                .formatted(.list(type: .and, width: .narrow))
                             Button {
                                 selectedSearchEntry = entry
                                 manualISBN = entry.isbn13
@@ -1263,7 +1246,7 @@ public struct BookAddFlowSheetView: View {
 
     private func bookshelfCandidatesContent(spines: [BookshelfSpineCandidate], selectedIds: Set<String>) -> some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-            Text(AppL10n.pick("積読に置く背表紙を選んでください。", "Select the book spines to add to Tsundoku."))
+            Text(String(localized: "bookshelf.hint"))
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)

@@ -20,7 +20,7 @@ public struct ReadingSessionView: View {
     private var resolvedState: ReadingSessionViewState {
         if let previewState { return previewState }
         let book = model.store.currentBook
-        let title = (book?.isTitlePending == true) ? AppL10n.pick("今の本", "Reading Now") : (book?.title ?? AppL10n.pick("今の本", "Reading Now"))
+        let title = (book?.isTitlePending == true) ? String(localized: "widget.currentBookAsTitle") : (book?.title ?? String(localized: "widget.currentBookAsTitle"))
         if let errKey = model.store.activeErrorKey {
             return .saveError(title: title, errorText: BannerNoticeView.message(forKey: errKey))
         }
@@ -85,10 +85,7 @@ public struct ReadingSessionView: View {
                     .accessibilityLabel(startedText)
                     .accessibilityValue(startedText)
 
-                let noteText = AppL10n.pick(
-                    "伏せても、ロックしても、ほかのアプリを使っても数え続けます。",
-                    "Keeps counting while iPhone is face down, locked, or in another app."
-                )
+                let noteText = String(localized: "reading.note")
                 Text(noteText)
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
@@ -98,10 +95,7 @@ public struct ReadingSessionView: View {
                     .accessibilityLabel(noteText)
 
                 if model.store.currentBook?.isEbook == true {
-                    let ebookText = AppL10n.pick(
-                        "このまま電子書籍アプリへ移って読めます。終えるときはロック画面の『終える』を押してください。",
-                        "Switch to your e-book app to read. Tap End Reading on the Lock Screen when done."
-                    )
+                    let ebookText = String(localized: "reading.ebookNote")
                     Text(ebookText)
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
@@ -131,7 +125,7 @@ public struct ReadingSessionView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("終える", "End Reading"))
+                    Text(String(localized: "reading.end"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("reading.end")

@@ -46,7 +46,7 @@ public struct SessionResultSheetView: View {
 
     public var body: some View {
         let book = model.store.currentBook
-        let bookTitle = (book?.isTitlePending == true) ? AppL10n.pick("今の本", "Reading Now") : (book?.title ?? "")
+        let bookTitle = (book?.isTitlePending == true) ? String(localized: "widget.currentBookAsTitle") : (book?.title ?? "")
 
         return VStack(spacing: 0) {
             SheetHeaderBar(title: AppL10n.pick("今夜の記録", "Tonight’s Reading"))
@@ -87,7 +87,7 @@ public struct SessionResultSheetView: View {
                             .accessibilityValue(summaryText)
                     }
 
-                    Text(AppL10n.pick("記録しました。", "Session saved."))
+                    Text(String(localized: "result.saved"))
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
                         .multilineTextAlignment(.center)
@@ -107,7 +107,7 @@ public struct SessionResultSheetView: View {
                     model.activeSheet = nil
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("閉じる", "Close"))
+                    Text(String(localized: "result.close"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("result.close")
@@ -144,17 +144,14 @@ public struct WidgetGuideSheetView: View {
     public var body: some View {
         let book = model.store.currentBook
         let sampleLine = book?.lastSavedLine ?? "下人の行方は、誰も知らない。"
-        let stepsText = AppL10n.pick(
-            "1. ロック画面を長押しして「カスタマイズ」を選びます。\n2. 時計の下の枠をタップして「よむま」を選びます。\n3. 残した一行とページがロック画面に並びます。",
-            "1. Touch and hold the Lock Screen and tap Customize.\n2. Tap the widget area below the clock and choose Yomuma.\n3. Your saved line and page will appear on the Lock Screen."
-        )
+        let stepsText = String(localized: "widgetGuide.body")
 
         return VStack(spacing: 0) {
-            SheetHeaderBar(title: AppL10n.pick("ロック画面に置く", "Add to Lock Screen"))
+            SheetHeaderBar(title: String(localized: "widgetGuide.title"))
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s24) {
-                    Text(AppL10n.pick("ロック画面にしおりを置けます", "Place Your Bookmark on the Lock Screen"))
+                    Text(String(localized: "widgetGuide.title"))
                         .font(.title3.bold())
                         .foregroundStyle(palette.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -183,7 +180,7 @@ public struct WidgetGuideSheetView: View {
                     model.activeSheet = nil
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("閉じる", "Close"))
+                    Text(String(localized: "widgetGuide.close"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("widgetGuide.close")

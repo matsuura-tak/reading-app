@@ -416,12 +416,11 @@ public enum RecommendationEngine: Sendable {
             return (lhs.finishedAt ?? lhs.addedAt ?? "") > (rhs.finishedAt ?? rhs.addedAt ?? "")
         }
 
-        let EffectiveBaseBooks = baseBooks.isEmpty
-            ? [RecommendableBook(title: "コンビニ人間", author: "村田沙耶香", award: "芥川龍之介賞")]
-            : baseBooks
+        // 本棚が空なら起点の本がないので、候補も出さない（決まった本を起点にした作りの候補を出さない）。
+        guard !baseBooks.isEmpty else { return [] }
 
         var queuesByAxis = buildUnownedCandidatesByAxis(
-            baseBooks: EffectiveBaseBooks,
+            baseBooks: baseBooks,
             externalPool: externalPool,
             filteredCooccurrence: filteredCooc,
             awardsCatalog: awardsCatalog ?? AwardsCatalog.allBundledAwards(),

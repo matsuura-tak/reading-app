@@ -34,7 +34,7 @@ public struct SettingsView: View {
         }
         .background(palette.bgGrouped.ignoresSafeArea())
         .accessibilityIdentifier("screen.settings")
-        .navigationTitle(AppL10n.pick("設定", "Settings"))
+        .navigationTitle(String(localized: "settings.navTitle"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: Binding(
             get: { model.store.previewAppearanceID != nil },
@@ -60,7 +60,7 @@ public struct SettingsView: View {
 
     private var readingAndEntrySection: some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-            Text(AppL10n.pick("読み始めと夜の入口", "Reading Start & Evening Entry"))
+            Text(String(localized: "settings.section.start"))
                 .font(.subheadline.bold())
                 .foregroundStyle(palette.textSecondary)
                 .padding(.horizontal, ThemeSpace.s4)
@@ -68,11 +68,11 @@ public struct SettingsView: View {
             VStack(alignment: .leading, spacing: ThemeSpace.s12) {
                 if model.store.isFlipAvailable {
                     HStack {
-                        Text(AppL10n.pick("伏せて読み始める", "Flip Face-Down to Start"))
+                        Text(String(localized: "settings.flipToStart"))
                             .font(.body)
                             .foregroundStyle(palette.textPrimary)
                         Spacer()
-                        Toggle(AppL10n.pick("伏せて読み始める", "Flip Face-Down to Start"), isOn: Binding(
+                        Toggle(String(localized: "settings.flipToStart"), isOn: Binding(
                             get: { model.store.settings.flipToStartEnabled },
                             set: { newVal in
                                 model.store.setFlipToStartEnabled(newVal)
@@ -82,11 +82,11 @@ public struct SettingsView: View {
                         .labelsHidden()
                         .tint(palette.actionTint)
                         .accessibilityIdentifier("settings.flipToStart")
-                        .accessibilityLabel(AppL10n.pick("伏せて読み始める", "Flip Face-Down to Start"))
+                        .accessibilityLabel(String(localized: "settings.flipToStart"))
                     }
                     .frame(minHeight: 44)
                 } else {
-                    Text(AppL10n.pick("この端末では伏せて読み始めるを使えません。", "Flip Face-Down to Start is not available on this device."))
+                    Text(String(localized: "settings.flipToStart.unavailable"))
                         .font(.footnote)
                         .foregroundStyle(palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -98,7 +98,7 @@ public struct SettingsView: View {
                     .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1)
 
                 HStack {
-                    Text(AppL10n.pick("夜の入口の時刻", "Evening Entry Time"))
+                    Text(String(localized: "settings.entryTime"))
                         .font(.body)
                         .foregroundStyle(palette.textPrimary)
                     Spacer()
@@ -124,7 +124,7 @@ public struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("settings.entryTime")
-                    .accessibilityLabel(AppL10n.pick("夜の入口の時刻", "Evening Entry Time"))
+                    .accessibilityLabel(String(localized: "settings.entryTime"))
                     .accessibilityValue(model.store.settings.entryTime)
                 }
 
@@ -168,10 +168,7 @@ public struct SettingsView: View {
                 }
 
                 if !model.store.areActivitiesEnabled {
-                    Text(AppL10n.pick(
-                        "端末の設定でライブアクティビティがオフになっています。設定アプリでオンにできます。",
-                        "Live Activities are turned off in system settings. You can enable them in the Settings app."
-                    ))
+                    Text(String(localized: "settings.liveActivity.off"))
                     .font(.footnote)
                     .foregroundStyle(palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -205,17 +202,17 @@ public struct SettingsView: View {
 
     private var lockScreenSection: some View {
         VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-            Text(AppL10n.pick("ロック画面", "Lock Screen"))
+            Text(String(localized: "settings.section.lockScreen"))
                 .font(.subheadline.bold())
                 .foregroundStyle(palette.textSecondary)
                 .padding(.horizontal, ThemeSpace.s4)
 
             HStack {
-                Text(AppL10n.pick("ロック画面で書名と一行を隠す", "Hide Title & Line on Lock Screen"))
+                Text(String(localized: "settings.hideOnWidgets"))
                     .font(.body)
                     .foregroundStyle(palette.textPrimary)
                 Spacer()
-                Toggle(AppL10n.pick("ロック画面で書名と一行を隠す", "Hide Title & Line on Lock Screen"), isOn: Binding(
+                Toggle(String(localized: "settings.hideOnWidgets"), isOn: Binding(
                     get: { model.store.settings.hideOnWidgets },
                     set: { newVal in
                         model.store.setHideOnWidgets(newVal)
@@ -225,7 +222,7 @@ public struct SettingsView: View {
                 .labelsHidden()
                 .tint(palette.actionTint)
                 .accessibilityIdentifier("settings.hideOnWidgets")
-                .accessibilityLabel(AppL10n.pick("ロック画面で書名と一行を隠す", "Hide Title & Line on Lock Screen"))
+                .accessibilityLabel(String(localized: "settings.hideOnWidgets"))
             }
             .frame(minHeight: 44)
             .padding(ThemeSpace.s16)
@@ -246,7 +243,7 @@ public struct SettingsView: View {
     private var appearanceAndPurchaseSection: some View {
         let supportedAppearances: [AppearanceID] = [.default, .kinari, .sumi, .shu]
         return VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-            Text(AppL10n.pick("見た目と購入", "Appearance & Purchase"))
+            Text(String(localized: "settings.section.appearance"))
                 .font(.subheadline.bold())
                 .foregroundStyle(palette.textSecondary)
                 .padding(.horizontal, ThemeSpace.s4)
@@ -256,7 +253,7 @@ public struct SettingsView: View {
                     model.notifyHookChanged()
                 } label: {
                     HStack {
-                        Text(AppL10n.pick("見た目（しおりの佇まい）", "Appearance (Bookmark Theme)"))
+                        Text(String(localized: "settings.appearance"))
                             .font(.body)
                             .foregroundStyle(palette.textPrimary)
                         Spacer()
@@ -344,7 +341,7 @@ public struct SettingsView: View {
                             model.notifyHookChanged()
                         }
                     } label: {
-                        Text(AppL10n.pick("購入を復元", "Restore Purchases"))
+                        Text(String(localized: "settings.restorePurchases"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -370,10 +367,10 @@ public struct SettingsView: View {
     private var catalogSection: some View {
         let isReady = (model.store.catalogDB.status == .ready)
         let statusCopy = isReady
-            ? AppL10n.pick("書誌データ（国立国会図書館サーチ・文学・端末内）：利用できます", "Catalog Data (NDL Search, Literature, On-Device): Ready")
-            : AppL10n.pick("書誌データ：準備できていません（手入力・表紙撮影はいつでも使えます）", "Catalog Data: Not Ready (Manual entry and cover scan are always available)")
+            ? String(format: String(localized: "catalog.status.ready"), model.store.catalogDB.metadata.version)
+            : String(localized: "catalog.status.notDownloaded")
         return VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-            Text(AppL10n.pick("書誌データ", "Catalog Database"))
+            Text(String(localized: "settings.section.catalog"))
                 .font(.subheadline.bold())
                 .foregroundStyle(palette.textSecondary)
                 .padding(.horizontal, ThemeSpace.s4)
@@ -389,7 +386,7 @@ public struct SettingsView: View {
                     Button {
                         model.notifyHookChanged()
                     } label: {
-                        Text(AppL10n.pick("書誌データの取得をやり直す", "Retry Catalog Download"))
+                        Text(String(localized: "catalog.retry"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -410,13 +407,10 @@ public struct SettingsView: View {
     }
 
     private var aboutAndLicensesSection: some View {
-        let attributionJa = "書誌データは国立国会図書館サーチの書誌データ（CC BY 4.0）を加工して作成しています。オンラインAPIには接続せず、国立国会図書館とは無関係です。"
-        let attributionDisplay = AppL10n.pick(
-            attributionJa,
-            "Bibliographic data is adapted from National Diet Library Search (CC BY 4.0). Does not connect to online APIs and is not affiliated with NDL."
-        )
+        // design/ 7 の `settings.dataSources`（%1$@ は書誌データの版。design/ 7 の文のとおり1つの引数で入れる）。
+        let attributionDisplay = String(format: String(localized: "settings.dataSources"), model.store.catalogDB.metadata.version)
         return VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-            Text(AppL10n.pick("情報", "About"))
+            Text(String(localized: "settings.section.info"))
                 .font(.subheadline.bold())
                 .foregroundStyle(palette.textSecondary)
                 .padding(.horizontal, ThemeSpace.s4)
@@ -427,7 +421,7 @@ public struct SettingsView: View {
                     model.store.openExternalURL(urlString)
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("プライバシーポリシー", "Privacy Policy"))
+                    Text(String(localized: "settings.privacyPolicy"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -439,13 +433,13 @@ public struct SettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("settings.dataSources")
                     .accessibilityLabel(attributionDisplay)
-                    .accessibilityValue(attributionJa)
+                    .accessibilityValue(attributionDisplay)
 
                 Button {
                     model.store.openExternalURL("https://creativecommons.org/licenses/by/4.0/deed.ja")
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("CC BY 4.0 ライセンスを見る", "View CC BY 4.0 License"))
+                    Text(String(localized: "settings.dataSources.license"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
@@ -466,12 +460,12 @@ public struct SettingsView: View {
 
     public static func appearanceDisplayName(_ id: AppearanceID) -> String {
         switch id {
-        case .default: return AppL10n.pick("標準（夜と紙）", "Default (Night & Paper)")
+        case .default: return String(localized: "appearance.default")
         case .dark: return AppL10n.pick("夜（ダーク）", "Dark")
         case .light: return AppL10n.pick("昼（ライト）", "Light")
-        case .kinari: return AppL10n.pick("生成り", "Kinari (Warm Paper)")
-        case .sumi: return AppL10n.pick("墨", "Sumi (Ink)")
-        case .shu: return AppL10n.pick("朱", "Shu (Vermilion)")
+        case .kinari: return String(localized: "appearance.kinari")
+        case .sumi: return String(localized: "appearance.sumi")
+        case .shu: return String(localized: "appearance.shu")
         }
     }
 }
@@ -511,7 +505,7 @@ public struct StorePurchasePreviewSheetView: View {
         return VStack(spacing: 0) {
             SheetHeaderBar(
                 title: AppL10n.pick("よむま＋", "Yomuma+"),
-                leftTitle: AppL10n.pick("閉じる", "Close"),
+                leftTitle: String(localized: "store.close"),
                 leftId: "store.close",
                 onLeft: {
                     model.store.closeStorePreview()
@@ -621,16 +615,13 @@ public struct StorePurchasePreviewSheetView: View {
                     }
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                        Text(AppL10n.pick("よむま＋（買い切り ¥980）", "Yomuma+ (One-time ¥980)"))
+                        Text(String(localized: "store.product.title"))
                             .font(.headline)
                             .foregroundStyle(palette.textPrimary)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier("store.product.title")
 
-                        Text(AppL10n.pick(
-                            "しおりの紙色（生成り・墨・朱）を選べるようになります。記録・しおり・ウィジェット・次の1冊はすべて無料のまま使えます。",
-                            "Unlock bookmark paper themes (Kinari, Sumi, Shu). All reading records, bookmarks, widgets, and recommendations remain completely free."
-                        ))
+                        Text(String(localized: "store.product.description"))
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -670,7 +661,7 @@ public struct StorePurchasePreviewSheetView: View {
                                     model.notifyHookChanged()
                                 }
                             } label: {
-                                Text(AppL10n.pick("よむま＋を購入（¥980）", "Buy Yomuma+ (¥980)"))
+                                Text(String(localized: "store.buy"))
                                     .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
@@ -689,7 +680,7 @@ public struct StorePurchasePreviewSheetView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("購入を復元", "Restore Purchases"))
+                    Text(String(localized: "store.restore"))
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))

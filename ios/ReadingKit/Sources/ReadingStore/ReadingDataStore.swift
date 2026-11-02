@@ -3576,7 +3576,8 @@ public final class ReadingDataStore {
         }
     }
 
-    public func buildFinishReflection(for bookId: UUID) -> String? {
+    /// S-9・S-7 のふりかえりの1行の数（文はアプリが design/ 7 の `finish.reflection.*` で組む）。記録が0件なら nil（AC-129）。
+    public func buildFinishReflectionSummary(for bookId: UUID) -> FinishReflectionSummary? {
         let bookRecords = records.filter { $0.bookId == bookId }
         guard !bookRecords.isEmpty else { return nil }
         let inputs: [NightRecordInput] = bookRecords.map { rec in
@@ -3591,7 +3592,7 @@ public final class ReadingDataStore {
               summary.uniqueNights >= 1 else {
             return nil
         }
-        return summary.japaneseText
+        return summary
     }
 
     private func asRecommendableBook(_ b: BookSnapshot) -> RecommendableBook {

@@ -66,6 +66,7 @@ struct ReadingHomeSmallWidgetEntryView: View {
                 contentMargins: ReadingWidgetMetrics.homeSmallContentMargins
             )
         }
+        .japaneseTextTypesetting()
         .widgetURL(URL(string: "yomuma://open?entry=small_widget"))
         .containerBackground(ThemePalette(appearanceID: entry.snapshot.appearanceID).bgPrimary, for: .widget)
     }
@@ -104,6 +105,7 @@ struct ReadingLockScreenWidgetEntryView: View {
                 contentMargins: family == .accessoryRectangular ? ReadingWidgetMetrics.lockScreenContentMargins : systemMargins
             )
         }
+        .japaneseTextTypesetting()
         .widgetURL(URL(string: "yomuma://open?entry=lock_widget"))
         .containerBackground(.fill.tertiary, for: .widget)
     }
@@ -156,6 +158,7 @@ public struct ReadingLiveActivityWidget: Widget {
             ReadingLiveActivityLockScreenView(attributes: context.attributes, state: context.state) { label in
                 Button(intent: EndReadingFromActivityIntent()) { label }
             }
+            .japaneseTextTypesetting()
             .widgetURL(liveActivityURL)
             .activityBackgroundTint(Color("DefaultBackgroundSecondary"))
         } dynamicIsland: { context in
@@ -165,6 +168,7 @@ public struct ReadingLiveActivityWidget: Widget {
                     Label(displayTitle, systemImage: "book")
                         .font(.headline)
                         .lineLimit(1)
+                        .japaneseTextTypesetting()
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     if context.state.mode == "reading" {
@@ -186,6 +190,7 @@ public struct ReadingLiveActivityWidget: Widget {
                         Text(verbatim: line)
                             .font(.subheadline)
                             .lineLimit(1)
+                            .japaneseTextTypesetting()
                     }
                 }
             } compactLeading: {

@@ -45,10 +45,7 @@ public struct ShelfListView: View {
 
     // S-6 の「読めない」（design 5）：shelf.load.error と shelf.retry。
     private var shelfLoadErrorSection: some View {
-        let message = AppL10n.pick(
-            "本棚を読み込めませんでした。もう一度読み込んでください。",
-            "Couldn't load your bookshelf. Try loading again."
-        )
+        let message = String(localized: "shelf.load.error")
         return ContentUnavailableView {
             Label(
                 AppL10n.pick("本棚を読み込めませんでした", "Couldn't Load Bookshelf"),
@@ -62,7 +59,7 @@ public struct ShelfListView: View {
                 model.store.loadFromDisk()
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("もう一度読み込む", "Try Again"))
+                Text(String(localized: "shelf.retry"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("shelf.retry")
@@ -83,7 +80,7 @@ public struct ShelfListView: View {
                 case .populated(let current, let tsundoku, let finished):
                     if let current {
                         VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                            Text(AppL10n.pick("今の本", "Reading Now"))
+                            Text(String(localized: "shelf.current"))
                                 .font(.subheadline.bold())
                                 .foregroundStyle(palette.textSecondary)
                                 .accessibilityIdentifier("shelf.current")
@@ -93,7 +90,7 @@ public struct ShelfListView: View {
                     }
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                        Text(AppL10n.pick("積読（\(tsundoku.count)）", "Stack (\(tsundoku.count))"))
+                        Text(String(localized: "shelf.tsundoku"))
                             .font(.subheadline.bold())
                             .foregroundStyle(palette.textSecondary)
                             .accessibilityIdentifier("shelf.tsundoku")
@@ -111,7 +108,7 @@ public struct ShelfListView: View {
                     }
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                        Text(AppL10n.pick("読み終えた本（\(finished.count)）", "Finished (\(finished.count))"))
+                        Text(String(localized: "shelf.finished"))
                             .font(.subheadline.bold())
                             .foregroundStyle(palette.textSecondary)
                             .accessibilityIdentifier("shelf.finished")
@@ -134,7 +131,7 @@ public struct ShelfListView: View {
         }
         .background(palette.bgPrimary.ignoresSafeArea())
         .accessibilityIdentifier("screen.shelf")
-        .navigationTitle(AppL10n.pick("本棚", "Shelf"))
+        .navigationTitle(String(localized: "shelf.navTitle"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -143,7 +140,7 @@ public struct ShelfListView: View {
                     model.activeSheet = .addBook(titlePendingMode: false)
                     model.notifyHookChanged()
                 } label: {
-                    Label(AppL10n.pick("本を加える", "Add a Book"), systemImage: "plus")
+                    Label(String(localized: "shelf.addBook"), systemImage: "plus")
                         .foregroundStyle(palette.actionTint)
                 }
                 .accessibilityIdentifier("shelf.addBook")
@@ -158,13 +155,10 @@ public struct ShelfListView: View {
     }
 
     private var emptyShelfSection: some View {
-        let msg = AppL10n.pick(
-            "読んでいる本や積読の本を加えると、ここに並びます。",
-            "Books you are reading or stacking will appear here."
-        )
+        let msg = String(localized: "shelf.empty.message")
         return ContentUnavailableView {
             Label(
-                AppL10n.pick("まだ本が置かれていません", "No Books on Your Shelf"),
+                String(localized: "shelf.empty.title"),
                 systemImage: "books.vertical"
             )
             .foregroundStyle(palette.textPrimary)
@@ -179,7 +173,7 @@ public struct ShelfListView: View {
                 model.activeSheet = .addBook(titlePendingMode: false)
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("本を加える", "Add a Book"))
+                Text(String(localized: "shelf.addBook"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("shelf.empty.addBook")
@@ -188,7 +182,7 @@ public struct ShelfListView: View {
     }
 
     private func shelfBookButton(book: BookSnapshot) -> some View {
-        let displayTitle = book.isTitlePending ? AppL10n.pick("今の本", "Reading Now") : book.title
+        let displayTitle = book.isTitlePending ? String(localized: "widget.currentBookAsTitle") : book.title
         let rowId = "shelf.row.\(book.id.uuidString.lowercased())"
         let progressText = InputValidator.formatProgressDisplay(
             unit: book.progressUnit,
@@ -282,6 +276,12 @@ public struct BookDetailView: View {
         model.store.books.first { $0.id == bookId }
     }
 
+    /// S-7 の題（名無しの今の本は `widget.currentBookAsTitle`。design/ 5 の S-7）。
+    private var navigationTitleText: String {
+        guard let book else { return "" }
+        return book.isTitlePending ? String(localized: "widget.currentBookAsTitle") : book.title
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -314,7 +314,7 @@ public struct BookDetailView: View {
                         }
                         model.notifyHookChanged()
                     } label: {
-                        Text(AppL10n.pick("この本を読む", "Read This Book"))
+                        Text(String(localized: "book.readThis"))
                     }
                     .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("book.readThis")
@@ -328,8 +328,19 @@ public struct BookDetailView: View {
         .background(palette.bgPrimary.ignoresSafeArea())
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("screen.bookDetail")
-        .navigationTitle(book?.title ?? AppL10n.pick("本", "Book"))
+        .navigationTitle(navigationTitleText)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            // ナビゲーションバーの題は UIKit が描き、SwiftUI の `typesettingLanguage` も窓の trait も届かない。
+            // 英語だけの端末で和文の書名が□になったため、題を SwiftUI の Text で描き、和文の組みを当てる（tokens.md 3）。
+            ToolbarItem(placement: .principal) {
+                Text(verbatim: navigationTitleText)
+                    .font(.headline)
+                    .lineLimit(1)
+                    .japaneseTextTypesetting()
+                    .accessibilityAddTraits(.isHeader)
+            }
+        }
         .sheet(item: $detailSheet) { sheet in
             switch sheet {
             case .editBook:
@@ -379,28 +390,18 @@ public struct BookDetailView: View {
     }
 
     private func bookHeaderSection(book: BookSnapshot) -> some View {
-        let displayTitle = book.isTitlePending ? AppL10n.pick("今の本", "Reading Now") : book.title
+        let displayTitle = book.isTitlePending ? String(localized: "widget.currentBookAsTitle") : book.title
         let nights = model.store.distinctNightCount(for: book.id)
         let mins = model.store.totalMinutes(for: book.id)
         // book.nights（英語は複数形）と book.total（分のまま。決定 82）。読み上げの分数は duration.minutes.spoken。
         let nightsText = String.localizedStringWithFormat(NSLocalizedString("book.nights", comment: ""), nights)
         let totalText = String(format: String(localized: "book.total"), ReadingWidgetStrings.durationMinutes(mins))
         let totalSpoken = String(format: String(localized: "book.total"), ReadingWidgetStrings.durationMinutesSpoken(mins))
-        let reflection = (book.status == .finished) ? model.store.buildFinishReflection(for: book.id) : nil
+        let reflection = (book.status == .finished)
+            ? model.store.buildFinishReflectionSummary(for: book.id).map(BookTextFormat.finishReflection)
+            : nil
 
-        let formattedPublisher: String? = {
-            let pub = (book.publisher ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-            let lbl = (book.label ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-            if !pub.isEmpty && !lbl.isEmpty {
-                return "\(pub)（\(lbl)）"
-            } else if !pub.isEmpty {
-                return pub
-            } else if !lbl.isEmpty {
-                return lbl
-            } else {
-                return nil
-            }
-        }()
+        let formattedPublisher = BookTextFormat.publisherWithLabel(publisher: book.publisher, label: book.label)
 
         let matchedAwards = AwardsCatalog.matchAwards(
             title: book.title,
@@ -416,7 +417,7 @@ public struct BookDetailView: View {
             var parts: [String] = [displayTitle]
             if !book.author.isEmpty { parts.append(book.author) }
             if let formattedPublisher { parts.append(formattedPublisher) }
-            if let yr = book.publishedYear { parts.append("\(yr)年") }
+            if let yr = book.publishedYear { parts.append(BookTextFormat.publishedYear(yr)) }
             if let awardDisplay { parts.append(awardDisplay) }
             return parts.joined(separator: " ")
         }()
@@ -429,7 +430,7 @@ public struct BookDetailView: View {
                     .accessibilityHidden(true)
 
                 colophonRow(
-                    key: AppL10n.pick("書名", "Title"),
+                    key: String(localized: "colophon.title.label"),
                     value: displayTitle,
                     id: "colophon.title",
                     isTitle: true
@@ -437,7 +438,7 @@ public struct BookDetailView: View {
 
                 if !book.author.isEmpty {
                     colophonRow(
-                        key: AppL10n.pick("著者", "Author"),
+                        key: String(localized: "colophon.author.label"),
                         value: book.author,
                         id: "colophon.author"
                     )
@@ -445,16 +446,16 @@ public struct BookDetailView: View {
 
                 if let formattedPublisher {
                     colophonRow(
-                        key: AppL10n.pick("出版社", "Publisher"),
+                        key: String(localized: "colophon.publisher.label"),
                         value: formattedPublisher,
                         id: "colophon.publisher"
                     )
                 }
 
                 if let yr = book.publishedYear {
-                    let yrText = "\(yr)年"
+                    let yrText = BookTextFormat.publishedYear(yr)
                     colophonRow(
-                        key: AppL10n.pick("出版年", "Published"),
+                        key: String(localized: "colophon.year.label"),
                         value: yrText,
                         id: "colophon.year"
                     )
@@ -462,7 +463,7 @@ public struct BookDetailView: View {
 
                 if let awardDisplay {
                     colophonRow(
-                        key: AppL10n.pick("受賞", "Awards"),
+                        key: String(localized: "colophon.award.label"),
                         value: awardDisplay,
                         id: "colophon.award"
                     )
@@ -504,11 +505,11 @@ public struct BookDetailView: View {
             }
 
             HStack(spacing: ThemeSpace.s12) {
-                Text(AppL10n.pick("電子書籍", "E-book"))
+                Text(String(localized: "book.edit.isEbook"))
                     .font(.subheadline)
                     .foregroundStyle(palette.textPrimary)
                 Spacer()
-                Toggle(AppL10n.pick("電子書籍", "E-book"), isOn: Binding(
+                Toggle(String(localized: "book.edit.isEbook"), isOn: Binding(
                     get: { book.isEbook },
                     set: { newVal in
                         let newUnit: ProgressUnit = newVal ? (book.progressUnit == .page ? .location : book.progressUnit) : .page
@@ -528,7 +529,7 @@ public struct BookDetailView: View {
             }
 
             HStack(spacing: ThemeSpace.s8) {
-                unitButton(book: book, unit: .page, title: AppL10n.pick("ページ", "Page"), id: "book.unit.page")
+                unitButton(book: book, unit: .page, title: String(localized: "mark.progressUnit.page"), id: "book.unit.page")
                 unitButton(book: book, unit: .location, title: "Loc", id: "book.unit.location")
                 unitButton(book: book, unit: .percent, title: "%", id: "book.unit.percent")
             }
@@ -620,10 +621,10 @@ public struct BookDetailView: View {
 
     private func bookActionsSection(book: BookSnapshot) -> some View {
         let bookRecordCount = model.store.records(for: book.id).count
-        let confirmMessage = AppL10n.pick(
-            "この本と\(bookRecordCount)件の記録を削除しますか？",
-            "Delete this book and \(bookRecordCount) reading records?"
-        )
+        let deleteTitle = book.title.isEmpty ? ReadingWidgetStrings.currentBookAsTitle : book.title
+        let confirmMessage = bookRecordCount > 0
+            ? String.localizedStringWithFormat(NSLocalizedString("book.delete.confirm", comment: ""), deleteTitle, bookRecordCount)
+            : String(format: String(localized: "book.delete.confirm.noRecords"), deleteTitle)
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s12) {
             if book.status != .finished {
@@ -636,7 +637,7 @@ public struct BookDetailView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("読み終えたにする", "Mark as Finished"))
+                    Text(String(localized: "bookmark.finish"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("book.markFinished")
@@ -662,7 +663,7 @@ public struct BookDetailView: View {
                     detailSheet = .shareCard
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("一枚のカードにする", "Share as a Card"))
+                    Text(String(localized: "finish.card.share"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("book.shareCard")
@@ -674,7 +675,7 @@ public struct BookDetailView: View {
                 detailSheet = .editBook
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("直す", "Edit"))
+                Text(String(localized: "book.edit"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("book.edit")
@@ -698,7 +699,7 @@ public struct BookDetailView: View {
                     Image(systemName: "trash")
                         .foregroundStyle(palette.destructive)
                         .accessibilityHidden(true)
-                    Text(AppL10n.pick("この本を本棚から消す", "Remove from Shelf"))
+                    Text(String(localized: "book.delete"))
                         .foregroundStyle(palette.textPrimary)
                 }
             }
@@ -726,7 +727,7 @@ public struct BookDetailView: View {
                             }
                             model.notifyHookChanged()
                         } label: {
-                            Text(AppL10n.pick("本棚から消す", "Delete"))
+                            Text(String(localized: "book.delete.confirmButton"))
                         }
                         .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                         .accessibilityIdentifier("book.delete.confirmButton")
@@ -735,7 +736,7 @@ public struct BookDetailView: View {
                             showDeleteBookConfirm = false
                             model.notifyHookChanged()
                         } label: {
-                            Text(AppL10n.pick("やめる", "Cancel"))
+                            Text(String(localized: "book.edit.cancel"))
                         }
                         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                         .accessibilityIdentifier("book.delete.cancel")
@@ -760,7 +761,7 @@ public struct BookDetailView: View {
             let candidates = cachedAfterCandidates ?? model.store.buildAfterBookCandidates(for: book.id)
             if !candidates.isEmpty {
                 VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-                    Text(AppL10n.pick("この本のあとに", "After This Book"))
+                    Text(String(localized: "after.header"))
                         .font(.headline)
                         .foregroundStyle(palette.textPrimary)
                         .accessibilityIdentifier("after.header")
@@ -804,12 +805,12 @@ public struct BookDetailView: View {
                                     }
                                     model.notifyHookChanged()
                                 } label: {
-                                    Text(AppL10n.pick("これを読む", "Read This"))
+                                    Text(String(localized: "book.readThis"))
                                 }
                                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                                 .accessibilityIdentifier("after.readThis")
                             } else if isAlreadyInShelf {
-                                Text(AppL10n.pick("積読に加えました", "Added to Stack"))
+                                Text(String(localized: "after.added"))
                                     .font(.caption.bold())
                                     .foregroundStyle(palette.textSecondary)
                                     .accessibilityIdentifier("after.added")
@@ -837,7 +838,7 @@ public struct BookDetailView: View {
                                     }
                                     model.notifyHookChanged()
                                 } label: {
-                                    Text(AppL10n.pick("積読に加える", "Add to Stack"))
+                                    Text(String(localized: "after.addToShelf"))
                                 }
                                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                                 .accessibilityIdentifier("after.addToShelf")
@@ -865,25 +866,26 @@ public struct BookDetailView: View {
     private func recordsSection(book: BookSnapshot) -> some View {
         let bookRecords = model.store.records(for: book.id)
         return VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-            Text(AppL10n.pick("読んだ晩の記録", "Reading Nights"))
+            Text(String(localized: "book.records.header"))
                 .font(.headline)
                 .foregroundStyle(palette.textPrimary)
 
             if bookRecords.isEmpty {
-                Text(AppL10n.pick("まだ記録はありません", "No reading sessions recorded yet"))
+                Text(String(localized: "book.records.empty"))
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
                     .accessibilityIdentifier("book.records.empty")
             } else {
                 ForEach(bookRecords) { rec in
                     let rowId = "book.record.row.\(rec.id.uuidString.lowercased())"
-                    let rowLabel: String = {
-                        var parts = [rec.nightDate, "\(rec.durationMinutes)分"]
-                        if let line = rec.savedLine, !line.isEmpty {
-                            parts.append(line)
-                        }
-                        return parts.joined(separator: " ")
-                    }()
+                    // design/ 6 の S-7：読み上げは `book.record.spoken`（「10月17日の晩、10分」）、見える文字は「10/17」と `duration.minutes`（決定 60、82）。
+                    let rowDayShort = BookTextFormat.nightDayText(rec.nightDate, wide: false)
+                    let rowMinutes = ReadingWidgetStrings.durationMinutes(rec.durationMinutes)
+                    let rowLabel = String(
+                        format: String(localized: "book.record.spoken"),
+                        BookTextFormat.nightDayText(rec.nightDate),
+                        ReadingWidgetStrings.durationMinutesSpoken(rec.durationMinutes)
+                    )
 
                     Button {
                         model.store.activeErrorKey = nil
@@ -893,11 +895,11 @@ public struct BookDetailView: View {
                     } label: {
                         VStack(alignment: .leading, spacing: ThemeSpace.s4) {
                             HStack {
-                                Text(rec.nightDate)
+                                Text(rowDayShort)
                                     .font(.subheadline.monospacedDigit())
                                     .foregroundStyle(palette.textSecondary)
                                 Spacer()
-                                Text("\(rec.durationMinutes)分")
+                                Text(rowMinutes)
                                     .font(.subheadline.bold().monospacedDigit())
                                     .foregroundStyle(palette.textPrimary)
                             }
@@ -925,6 +927,7 @@ public struct BookDetailView: View {
                     .accessibilityIdentifier(rowId)
                     .accessibilityLabel(rowLabel)
                     .accessibilityValue(rowLabel)
+                    .accessibilityInputLabels([Text(verbatim: rowDayShort), Text(verbatim: rowLabel)])
                 }
             }
         }
@@ -961,13 +964,13 @@ public struct BookEditSheetView: View {
     }
 
     public var body: some View {
-        let titleLabel = AppL10n.pick("書名（必須）", "Title (Required)")
-        let authorLabel = AppL10n.pick("著者（任意）", "Author (Optional)")
+        let titleLabel = String(localized: "book.edit.title")
+        let authorLabel = String(localized: "book.edit.author")
 
         return VStack(spacing: 0) {
             SheetHeaderBar(
-                title: AppL10n.pick("書誌を直す", "Edit Book Details"),
-                cancelTitle: AppL10n.pick("やめる", "Cancel"),
+                title: String(localized: "book.edit.navTitle"),
+                cancelTitle: String(localized: "book.edit.cancel"),
                 cancelIdentifier: "book.edit.cancel",
                 onCancel: onClose
             )
@@ -993,7 +996,7 @@ public struct BookEditSheetView: View {
                         Text(authorLabel)
                             .font(.subheadline)
                             .foregroundStyle(palette.textSecondary)
-                        TextField(book.author.isEmpty ? AppL10n.pick("著者名", "Author") : book.author, text: $editedAuthor, onEditingChanged: { editing in
+                        TextField(book.author.isEmpty ? String(localized: "book.edit.author") : book.author, text: $editedAuthor, onEditingChanged: { editing in
                             if editing { didTouchAuthor = true }
                         })
                         .themeField(palette)
@@ -1003,11 +1006,11 @@ public struct BookEditSheetView: View {
                     }
 
                     HStack {
-                        Text(AppL10n.pick("電子書籍", "E-book"))
+                        Text(String(localized: "book.edit.isEbook"))
                             .font(.body)
                             .foregroundStyle(palette.textPrimary)
                         Spacer()
-                        Toggle(AppL10n.pick("電子書籍", "E-book"), isOn: $editedIsEbook)
+                        Toggle(String(localized: "book.edit.isEbook"), isOn: $editedIsEbook)
                             .labelsHidden()
                             .tint(palette.actionTint)
                             .accessibilityIdentifier("book.edit.isEbook")
@@ -1022,9 +1025,9 @@ public struct BookEditSheetView: View {
                             .stroke(palette.hairline, lineWidth: 1)
                     )
 
-                    Picker(AppL10n.pick("進み方の単位", "Progress Unit"), selection: $editedUnit) {
-                        Text(AppL10n.pick("ページ", "Page")).tag(ProgressUnit.page)
-                        Text(AppL10n.pick("位置番号", "Location")).tag(ProgressUnit.location)
+                    Picker(String(localized: "mark.progressUnit.label"), selection: $editedUnit) {
+                        Text(String(localized: "mark.progressUnit.page")).tag(ProgressUnit.page)
+                        Text(String(localized: "mark.progressUnit.location")).tag(ProgressUnit.location)
                         Text("%").tag(ProgressUnit.percent)
                     }
                     .pickerStyle(.segmented)
@@ -1049,7 +1052,7 @@ public struct BookEditSheetView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("保存", "Save"))
+                    Text(String(localized: "book.edit.save"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("book.edit.save")
@@ -1081,12 +1084,12 @@ public struct RecordEditSheetView: View {
     }
 
     public var body: some View {
-        let minutesLabel = AppL10n.pick("読んだ時間（1〜1440分）", "Minutes Read (1–1440)")
+        let minutesLabel = String(localized: "record.minutes.label")
 
         return VStack(spacing: 0) {
             SheetHeaderBar(
-                title: AppL10n.pick("記録を直す", "Edit Session"),
-                cancelTitle: AppL10n.pick("やめる", "Cancel"),
+                title: String(localized: "record.navTitle"),
+                cancelTitle: String(localized: "record.cancel"),
                 cancelIdentifier: "record.cancel",
                 onCancel: onClose
             )
@@ -1096,14 +1099,12 @@ public struct RecordEditSheetView: View {
                     BannerNoticeView(model: model)
 
                     HStack {
-                        Text(AppL10n.pick("読んだ晩", "Reading Night"))
-                            .font(.subheadline)
-                            .foregroundStyle(palette.textSecondary)
-                        Spacer()
-                        Text(record.nightDate)
+                        // design/ 6 の S-7b：`record.night`「10月16日の晩」（読むだけ）。
+                        Text(String(format: String(localized: "record.night"), BookTextFormat.nightDayText(record.nightDate)))
                             .font(.body.monospacedDigit())
                             .foregroundStyle(palette.textPrimary)
                             .accessibilityIdentifier("record.night")
+                        Spacer(minLength: 0)
                     }
                     .padding(ThemeSpace.s12)
                     .background(
@@ -1136,7 +1137,7 @@ public struct RecordEditSheetView: View {
                             Image(systemName: "trash")
                                 .foregroundStyle(palette.destructive)
                                 .accessibilityHidden(true)
-                            Text(AppL10n.pick("この記録を消す", "Delete This Session"))
+                            Text(String(localized: "record.delete"))
                                 .foregroundStyle(palette.textPrimary)
                         }
                     }
@@ -1145,7 +1146,7 @@ public struct RecordEditSheetView: View {
 
                     if showDeleteConfirm {
                         VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-                            Text(AppL10n.pick("この記録を削除しますか？", "Delete this reading session?"))
+                            Text(String(format: String(localized: "record.delete.confirm"), record.nightDate))
                                 .font(.subheadline)
                                 .foregroundStyle(palette.textPrimary)
                                 .accessibilityIdentifier("record.delete.confirm")
@@ -1158,7 +1159,7 @@ public struct RecordEditSheetView: View {
                                     }
                                     model.notifyHookChanged()
                                 } label: {
-                                    Text(AppL10n.pick("記録を消す", "Delete"))
+                                    Text(String(localized: "record.delete.confirmButton"))
                                 }
                                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                                 .accessibilityIdentifier("record.delete.confirmButton")
@@ -1167,7 +1168,7 @@ public struct RecordEditSheetView: View {
                                     showDeleteConfirm = false
                                     model.notifyHookChanged()
                                 } label: {
-                                    Text(AppL10n.pick("やめる", "Cancel"))
+                                    Text(String(localized: "record.cancel"))
                                 }
                                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                                 .accessibilityIdentifier("record.delete.cancel")
@@ -1195,7 +1196,7 @@ public struct RecordEditSheetView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("保存", "Save"))
+                    Text(String(localized: "record.save"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("record.save")
@@ -1232,7 +1233,7 @@ public struct ShareCardPreviewSheetView: View {
         return VStack(spacing: 0) {
             SheetHeaderBar(
                 title: AppL10n.pick("読了カード", "Finish Card"),
-                cancelTitle: AppL10n.pick("閉じる", "Close"),
+                cancelTitle: String(localized: "mark.cancel"),
                 cancelIdentifier: "shareCard.close",
                 onCancel: onClose
             )
@@ -1308,15 +1309,15 @@ public struct ColophonOCRSheetView: View {
     }
 
     public var body: some View {
-        let authorFieldLabel = AppL10n.pick("著者", "Author")
-        let publisherFieldLabel = AppL10n.pick("出版社", "Publisher")
-        let yearFieldLabel = AppL10n.pick("出版年", "Published Year")
+        let authorFieldLabel = String(localized: "colophon.author.label")
+        let publisherFieldLabel = String(localized: "colophon.publisher.label")
+        let yearFieldLabel = String(localized: "colophon.year.label")
         let isbnFieldLabel = "ISBN-13"
 
         return VStack(spacing: 0) {
             SheetHeaderBar(
-                title: AppL10n.pick("奥付を撮る", "Snap Colophon"),
-                cancelTitle: AppL10n.pick("やめる", "Cancel"),
+                title: String(localized: "colophon.capture"),
+                cancelTitle: String(localized: "book.edit.cancel"),
                 cancelIdentifier: "colophon.cancel",
                 onCancel: onClose
             )
@@ -1329,10 +1330,7 @@ public struct ColophonOCRSheetView: View {
                         // S-7c の「カメラ許可が拒否」（design 5）：camera.denied と camera.openSettings。
                         VStack(alignment: .leading, spacing: ThemeSpace.s8) {
                             Label {
-                                Text(AppL10n.pick(
-                                    "カメラの使用が許可されていません。「設定」で許可するか、スクリーンショットから選ぶか、手で入れてください。",
-                                    "Camera access is off. Allow it in Settings, choose from screenshots, or enter the text manually."
-                                ))
+                                Text(String(localized: "camera.denied"))
                                 .fixedSize(horizontal: false, vertical: true)
                             } icon: {
                                 Image(systemName: "exclamationmark.circle")
@@ -1347,7 +1345,7 @@ public struct ColophonOCRSheetView: View {
                                 model.store.openExternalURL("app-settings:")
                                 model.notifyHookChanged()
                             } label: {
-                                Text(AppL10n.pick("設定を開く", "Open Settings"))
+                                Text(String(localized: "camera.openSettings"))
                             }
                             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                             .accessibilityIdentifier("camera.openSettings")
@@ -1442,7 +1440,7 @@ public struct ColophonOCRSheetView: View {
                     }
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("この内容で補完する", "Save Details"))
+                    Text(String(localized: "colophon.save"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("colophon.save")

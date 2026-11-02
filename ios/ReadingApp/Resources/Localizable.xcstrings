@@ -4993,6 +4993,3232 @@
           }
         }
       }
+    },
+    "bookmark.navTitle": {
+      "comment": "S-1 のナビゲーションタイトル。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおり"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookmark"
+          }
+        }
+      }
+    },
+    "bookmark.setMark": {
+      "comment": "S-1。PRD",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "どこまで読んだかを入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark Your Place"
+          }
+        }
+      }
+    },
+    "bookmark.finish.hint": {
+      "comment": "S-1 の `bookmark.finish` の VoiceOver ヒント。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付と次の1冊を出します。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the colophon and your next book."
+          }
+        }
+      }
+    },
+    "bookmark.flipHint": {
+      "comment": "S-1（紙の本、伏せる道オン）。PRD（AC-50）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この画面で iPhone を伏せて置いても、読み始めます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can also start by placing iPhone face down on this screen."
+          }
+        }
+      }
+    },
+    "bookmark.flipHint.ebook": {
+      "comment": "S-1（電子書籍 `isEbook = true`）。PRD（AC-144）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "別の端末で読むなら伏せて置いても、この iPhone で読むなら「読み始める」を押して他のアプリに移っても数えられます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place iPhone face down if reading on another device, or tap Start Reading and switch apps on this iPhone."
+          }
+        }
+      }
+    },
+    "bookmark.empty.message": {
+      "comment": "S-1（本0冊の文）。PRD（AC-1）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読んでいる本を1冊加えると、ここに続きの一行が出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a book you're reading, and the line where you stopped will appear here."
+          }
+        }
+      }
+    },
+    "bookmark.noCurrent.message": {
+      "comment": "S-1（今の本なしの文）。PRD（AC-16、AC-145）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次に読む1冊を選んでください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose the next book to read."
+          }
+        }
+      }
+    },
+    "bookmark.openShelf": {
+      "comment": "S-1（今の本なしの補助ボタン）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚から選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose from Bookshelf"
+          }
+        }
+      }
+    },
+    "bookmark.noMark.message": {
+      "comment": "S-1（一行も場所もないとき）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "どこまで読んだかを入れると、ここに続きの一行が出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark your place, and the line will appear here."
+          }
+        }
+      }
+    },
+    "book.isbnAsTitle": {
+      "comment": "書名が空で ISBN があるときの表示用。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISBN %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISBN %@"
+          }
+        }
+      }
+    },
+    "book.pendingTitleGuard.title": {
+      "comment": "名無しの今の本があるときに別の本を `current` にしようとしたときの確認（verifier 提案2）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本にまだ書名が入っていません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Book Has No Title Yet"
+          }
+        }
+      }
+    },
+    "book.pendingTitleGuard.message": {
+      "comment": "同上。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先に今の本の書名を入れるか、そのまま「今の本」として積読に移すかを選んでください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a title for your current book first, or move it to your pile as “Reading Now”."
+          }
+        }
+      }
+    },
+    "book.pendingTitleGuard.setTitle": {
+      "comment": "同上。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本の書名を入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter Title First"
+          }
+        }
+      }
+    },
+    "book.pendingTitleGuard.continueAnyway": {
+      "comment": "同上。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "そのまま切り替える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch Anyway"
+          }
+        }
+      }
+    },
+    "store.load.error.title": {
+      "comment": "S-1（保存先読込失敗の見出し）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を読み込めませんでした"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't Load Your Books"
+          }
+        }
+      }
+    },
+    "store.retry": {
+      "comment": "S-1。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もう一度読み込む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
+          }
+        }
+      }
+    },
+    "notice.close": {
+      "comment": "部品 N。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismiss"
+          }
+        }
+      }
+    },
+    "notice.close.hint": {
+      "comment": "部品 N のヒント。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "知らせを閉じます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dismisses the notice."
+          }
+        }
+      }
+    },
+    "session.flipStarted.announcement": {
+      "comment": "伏せて始まったときの読み上げ。PRD（AC-49）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「%@」を読み始めました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Started reading %@."
+          }
+        }
+      }
+    },
+    "reading.note": {
+      "comment": "S-2（紙の本）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "伏せても、ロックしても、ほかのアプリを使っても数え続けます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeps counting while iPhone is face down, locked, or in another app."
+          }
+        }
+      }
+    },
+    "reading.ebookNote": {
+      "comment": "S-2（電子書籍 `isEbook = true`）。PRD（AC-144）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この iPhone で電子書籍を読むときも、アプリを閉じたままで数え続けます。読み終えたらロック画面やダイナミックアイランドの「終える」でも終えられます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeps counting while you read in your e-book app on this iPhone. When you finish, you can also tap End Reading on the Lock Screen or Dynamic Island."
+          }
+        }
+      }
+    },
+    "mark.navTitle": {
+      "comment": "S-3 のナビゲーションタイトル。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりを挟む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark Your Place"
+          }
+        }
+      }
+    },
+    "mark.question": {
+      "comment": "S-3。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "どこまで読みましたか。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where did you stop?"
+          }
+        }
+      }
+    },
+    "mark.photo": {
+      "comment": "S-3（記号 `camera.viewfinder`）。PRD（AC-63、AC-65）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページを撮る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture Page"
+          }
+        }
+      }
+    },
+    "mark.screenshot": {
+      "comment": "S-3（記号 `photo.on.rectangle`）。PRD（AC-63、AC-142）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スクリーンショットから選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose from Screenshots"
+          }
+        }
+      }
+    },
+    "mark.manual": {
+      "comment": "S-3、S-3c。PRD（AC-63、AC-71、AC-94）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一行を入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the Line"
+          }
+        }
+      }
+    },
+    "mark.later": {
+      "comment": "S-3。PRD（AC-63、AC-75）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あとで挟む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark Later"
+          }
+        }
+      }
+    },
+    "mark.later.note": {
+      "comment": "S-3。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりは前のまま残ります。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your bookmark stays where it was."
+          }
+        }
+      }
+    },
+    "mark.later.note.empty": {
+      "comment": "S-3（前のしおりがないとき）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりは空のままです。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your bookmark stays empty."
+          }
+        }
+      }
+    },
+    "mark.cancel": {
+      "comment": "S-3（読まずに挟むシートの閉じる）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "mark.progressUnit.label": {
+      "comment": "S-3a、S-3b、S-3c、S-7a、S-8c の `mark.progressUnit`。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "単位"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unit"
+          }
+        }
+      }
+    },
+    "mark.progressUnit.page": {
+      "comment": "`mark.progressUnit` の選択肢（`page`）。PRD（AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page"
+          }
+        }
+      }
+    },
+    "mark.progressUnit.location": {
+      "comment": "`mark.progressUnit` の選択肢（`location`）。PRD（AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location"
+          }
+        }
+      }
+    },
+    "mark.progressUnit.percent": {
+      "comment": "`mark.progressUnit` の選択肢（`percent`）。PRD（AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "％"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%"
+          }
+        }
+      }
+    },
+    "mark.line.footer": {
+      "comment": "S-3a、S-3c。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1〜60字。ロック画面には25字まで出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1–60 characters. Up to 25 appear on the Lock Screen."
+          }
+        }
+      }
+    },
+    "mark.page.label": {
+      "comment": "S-3a、S-3b、S-3c（位置のときは「位置番号」、％のときは「％」）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ページ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page"
+          }
+        }
+      }
+    },
+    "mark.page.footer.keep": {
+      "comment": "S-3a、S-3c の `mark.page.previous`。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前の値は%1$@です。空のまま保存すると、%1$@のまま残ります。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous: %1$@. If you leave this blank, it stays at %1$@."
+          }
+        }
+      }
+    },
+    "mark.page.footer.optional": {
+      "comment": "S-3a、S-3c（前の値がないとき）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空のままでも保存できます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can leave this blank."
+          }
+        }
+      }
+    },
+    "mark.page.previous": {
+      "comment": "S-3b の `mark.page.previous`（位置なら「前の位置は位置%lldです。」、％なら「前の値は%lld%です。」）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前のページは%lldです。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous page: %lld."
+          }
+        }
+      }
+    },
+    "mark.pageOnly.footer": {
+      "comment": "S-3b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存すると一行は消え、ロック画面には書名と場所が出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving clears the line. The Lock Screen will show the title and place."
+          }
+        }
+      }
+    },
+    "mark.save": {
+      "comment": "S-3a、S-3b、S-3c。PRD（AC-65、AC-71、AC-73）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "mark.ocr.hint": {
+      "comment": "S-3c。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "止めた行の枠を押すと、下の欄に入ります。文字はそのまま手で直せます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the box for the line where you stopped. You can edit the text below."
+          }
+        }
+      }
+    },
+    "mark.ocr.none": {
+      "comment": "S-3c、S-7c、S-8b、S-8d。PRD（AC-68）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字を読み取れませんでした。明るい所で撮り直すか、手で入れてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No text was found. Retake the photo in better light, or enter it manually."
+          }
+        }
+      }
+    },
+    "mark.retake": {
+      "comment": "S-3c（スクショのときは「選び直す」／「Choose Another」）。PRD（AC-68）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撮り直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retake"
+          }
+        }
+      }
+    },
+    "result.saved": {
+      "comment": "S-4。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録しました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session saved."
+          }
+        }
+      }
+    },
+    "result.close": {
+      "comment": "S-4 の主操作。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "widgetGuide.title": {
+      "comment": "S-5（`widgetGuide`）。PRD（AC-96）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面に置く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Your Lock Screen"
+          }
+        }
+      }
+    },
+    "widgetGuide.body": {
+      "comment": "S-5。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面を長押しして「カスタマイズ」を選び、時計の下の枠に「よむま」を加えると、iPhone を手に取るたびに、この一行が出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch and hold the Lock Screen, tap Customize, and add Yomuma below the clock. This line will appear each time you pick up iPhone."
+          }
+        }
+      }
+    },
+    "widgetGuide.close": {
+      "comment": "S-5 の主操作。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "widget.displayName": {
+      "comment": "ウィジェットギャラリーの表示名。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "続きの一行"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where You Stopped"
+          }
+        }
+      }
+    },
+    "widget.description": {
+      "comment": "ウィジェットギャラリーの説明。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本の、止めた一行と場所を出します。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the line and place where you stopped in your current book."
+          }
+        }
+      }
+    },
+    "shelf.navTitle": {
+      "comment": "S-6 の題。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bookshelf"
+          }
+        }
+      }
+    },
+    "shelf.current": {
+      "comment": "S-6 の区分。PRD（AC-13）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今の本"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading Now"
+          }
+        }
+      }
+    },
+    "shelf.tsundoku": {
+      "comment": "S-6 の区分。PRD（AC-13）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To Read"
+          }
+        }
+      }
+    },
+    "shelf.finished": {
+      "comment": "S-6 の区分。PRD（AC-13）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えた"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished"
+          }
+        }
+      }
+    },
+    "shelf.addBook": {
+      "comment": "S-6 のツールバーと空状態。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本を加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a Book"
+          }
+        }
+      }
+    },
+    "shelf.empty.title": {
+      "comment": "S-6。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚に本がありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Books on Your Bookshelf"
+          }
+        }
+      }
+    },
+    "shelf.empty.message": {
+      "comment": "S-6。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読んでいる本と、積んである本を加えてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add the book you're reading and the ones waiting in your pile."
+          }
+        }
+      }
+    },
+    "shelf.load.error": {
+      "comment": "S-6。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚を読み込めませんでした。もう一度読み込んでください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load your bookshelf. Try loading again."
+          }
+        }
+      }
+    },
+    "shelf.retry": {
+      "comment": "S-6、S-7。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もう一度読み込む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
+          }
+        }
+      }
+    },
+    "book.retry": {
+      "comment": "S-6、S-7。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もう一度読み込む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
+          }
+        }
+      }
+    },
+    "colophon.header": {
+      "comment": "S-7（`book.colophon`）、S-9（`finish.colophon`）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥付"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colophon"
+          }
+        }
+      }
+    },
+    "colophon.title.label": {
+      "comment": "奥付（`colophon.title`）。PRD（AC-17）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "colophon.author.label": {
+      "comment": "奥付（`colophon.author`）。PRD（AC-17）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author"
+          }
+        }
+      }
+    },
+    "colophon.publisher.label": {
+      "comment": "奥付（`colophon.publisher`）。PRD（AC-17）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版社"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Publisher"
+          }
+        }
+      }
+    },
+    "colophon.publisher.withLabel": {
+      "comment": "奥付（出版社とレーベル）。PRD（AC-17）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@（%2$@）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "colophon.year.label": {
+      "comment": "奥付（`colophon.year`）。PRD（AC-17）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出版年"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Published"
+          }
+        }
+      }
+    },
+    "colophon.year.value": {
+      "comment": "奥付（出版年の値）。PRD（AC-17）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld年"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "colophon.award.label": {
+      "comment": "奥付（`colophon.award`）。PRD（AC-17、AC-19〜AC-21）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "受賞"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Awards"
+          }
+        }
+      }
+    },
+    "colophon.save": {
+      "comment": "S-7c の保存ボタン。PRD（AC-113）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "book.record.spoken": {
+      "comment": "S-7 の `book.record.row.<id>` の読み上げ。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@の晩、%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night of %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "after.header": {
+      "comment": "S-7（読み終えた本 `finished` のおすすめ節の見出し）。PRD（AC-146）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本のあとに"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After This Book"
+          }
+        }
+      }
+    },
+    "after.addToShelf": {
+      "comment": "S-7 の `after.candidate` のボタン。PRD（AC-146）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Pile"
+          }
+        }
+      }
+    },
+    "after.added": {
+      "comment": "S-7 で `after.addToShelf` を押したあとの表示。PRD（AC-146）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加えました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to Pile"
+          }
+        }
+      }
+    },
+    "book.isCurrent": {
+      "comment": "S-7（`current` の本のとき）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今読んでいる本です。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're reading this book."
+          }
+        }
+      }
+    },
+    "book.edit": {
+      "comment": "S-7 のツールバー。PRD（AC-15）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit"
+          }
+        }
+      }
+    },
+    "book.delete": {
+      "comment": "S-7。PRD（AC-16）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete This Book"
+          }
+        }
+      }
+    },
+    "book.delete.confirm": {
+      "comment": "S-7 の確認（記録1件以上）。PRD（AC-16）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「%1$@」と、この本の記録%2$lld件を消します。元に戻せません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete “%1$@” and its %#@sessions@? This can't be undone."
+          },
+          "substitutions": {
+            "sessions": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg session"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg sessions"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "book.delete.confirmButton": {
+      "comment": "確認ダイアログの破壊ボタン。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "record.delete.confirmButton": {
+      "comment": "確認ダイアログの破壊ボタン。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "book.load.error": {
+      "comment": "S-7。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を読み込めませんでした。もう一度読み込んでください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't load this book. Try loading again."
+          }
+        }
+      }
+    },
+    "book.edit.navTitle": {
+      "comment": "S-7a。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本を直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Book"
+          }
+        }
+      }
+    },
+    "book.edit.title": {
+      "comment": "S-7a、S-8b、S-8c。PRD（AC-4、AC-7）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "manual.title": {
+      "comment": "S-7a、S-8b、S-8c。PRD（AC-4、AC-7）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "book.edit.author": {
+      "comment": "S-7a、S-8b、S-8c。PRD（AC-7）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author"
+          }
+        }
+      }
+    },
+    "manual.author": {
+      "comment": "S-7a、S-8b、S-8c。PRD（AC-7）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author"
+          }
+        }
+      }
+    },
+    "book.edit.isEbook": {
+      "comment": "S-7a、S-8c の Toggle。PRD（AC-141、AC-144）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電子書籍"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-Book"
+          }
+        }
+      }
+    },
+    "manual.isEbook": {
+      "comment": "S-7a、S-8c の Toggle。PRD（AC-141、AC-144）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "電子書籍"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-Book"
+          }
+        }
+      }
+    },
+    "book.edit.footer": {
+      "comment": "S-7a、S-8c。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名は1〜100字、著者は100字まで（空でもかまいません）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title: 1–100 characters. Author: up to 100 (optional)."
+          }
+        }
+      }
+    },
+    "manual.footer": {
+      "comment": "S-7a、S-8c。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名は1〜100字、著者は100字まで（空でもかまいません）。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title: 1–100 characters. Author: up to 100 (optional)."
+          }
+        }
+      }
+    },
+    "book.edit.save": {
+      "comment": "S-7a、S-8c、S-7b、S-8b。PRD（AC-4、AC-7、AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "manual.save": {
+      "comment": "S-7a、S-8c、S-7b、S-8b。PRD（AC-4、AC-7、AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "record.save": {
+      "comment": "S-7a、S-8c、S-7b、S-8b。PRD（AC-4、AC-7、AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "cover.save": {
+      "comment": "S-7a、S-8c、S-7b、S-8b。PRD（AC-4、AC-7、AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "book.edit.cancel": {
+      "comment": "S-7a、S-8c、S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取り消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "manual.cancel": {
+      "comment": "S-7a、S-8c、S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取り消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "record.cancel": {
+      "comment": "S-7a、S-8c、S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取り消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "record.navTitle": {
+      "comment": "S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を直す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Session"
+          }
+        }
+      }
+    },
+    "record.night": {
+      "comment": "S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@の晩"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night of %@"
+          }
+        }
+      }
+    },
+    "record.minutes.label": {
+      "comment": "S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutes"
+          }
+        }
+      }
+    },
+    "record.minutes.footer": {
+      "comment": "S-7b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1〜1440分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 to 1,440 minutes"
+          }
+        }
+      }
+    },
+    "record.delete": {
+      "comment": "S-7b。PRD（AC-26）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この記録を消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete This Session"
+          }
+        }
+      }
+    },
+    "record.delete.confirm": {
+      "comment": "S-7b の確認。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この記録（%@）を消します。元に戻せません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this session (%@)? This can't be undone."
+          }
+        }
+      }
+    },
+    "register.navTitle": {
+      "comment": "S-8。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本を加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a Book"
+          }
+        }
+      }
+    },
+    "register.screenshot": {
+      "comment": "S-8（記号 `photo.on.rectangle`、`register.photo` も同じ）。PRD（AC-12、AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スクリーンショットから選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose from Screenshots"
+          }
+        }
+      }
+    },
+    "register.bookshelf": {
+      "comment": "S-8（記号 `books.vertical`）。PRD（AC-138）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚・積読をまとめて撮る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Bookshelf or Pile"
+          }
+        }
+      }
+    },
+    "register.cancel": {
+      "comment": "シートの閉じる。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "scan.cancel": {
+      "comment": "シートの閉じる。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "finish.close": {
+      "comment": "シートの閉じる。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "camera.denied": {
+      "comment": "S-3、S-7c、S-8。PRD（AC-12、AC-70）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラの使用が許可されていません。「設定」で許可するか、スクリーンショットから選ぶか、手で入れてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera access is off. Allow it in Settings, choose from screenshots, or enter the text manually."
+          }
+        }
+      }
+    },
+    "camera.openSettings": {
+      "comment": "S-3、S-7c、S-8。PRD（AC-12、AC-70）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定を開く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        }
+      }
+    },
+    "camera.restricted": {
+      "comment": "S-8。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この iPhone ではカメラが制限されています。スクリーンショットから選ぶか、手で入れてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The camera is restricted on this iPhone. Choose from screenshots or enter the details manually."
+          }
+        }
+      }
+    },
+    "register.scanUnavailable": {
+      "comment": "S-8。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この端末ではカメラの読み取りを使えません。スクリーンショットから選ぶか、手で入れてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera scanning isn't available on this device. Choose from screenshots or enter the details manually."
+          }
+        }
+      }
+    },
+    "scan.navTitle": {
+      "comment": "S-8a。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バーコードを続けて読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Barcodes"
+          }
+        }
+      }
+    },
+    "scan.hint": {
+      "comment": "S-8a。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本の裏のバーコード（2段あるときは両方）を写してください。続けて読めます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point the camera at the barcode on the back of a book. You can scan one after another."
+          }
+        }
+      }
+    },
+    "scan.dbNotReady": {
+      "comment": "S-8a の行（H20 が `notDownloaded` のとき）。PRD（AC-9）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末内の書誌データを準備中です。この場で書名を入れるか、表紙を撮って加えられます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device book data is still downloading. Enter the title here or scan the cover."
+          }
+        }
+      }
+    },
+    "scan.notFound": {
+      "comment": "S-8a の行（H20 にない ISBN のとき）。PRD（AC-10）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末内の書誌データにない本です。この場で書名を入れるか、表紙を撮って加えられます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not found in on-device book data. Enter the title here or scan the cover."
+          }
+        }
+      }
+    },
+    "scan.row.captureCover": {
+      "comment": "S-8a の行内ボタン。PRD（AC-9、AC-10）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "表紙・背表紙を撮る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Cover"
+          }
+        }
+      }
+    },
+    "scan.row.editTitle": {
+      "comment": "S-8a の行内入力欄のラベル・プレースホルダ。PRD（AC-9、AC-10、AC-11）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名を入れる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter Title"
+          }
+        }
+      }
+    },
+    "scan.duplicate": {
+      "comment": "S-8a の知らせ。PRD（AC-3）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「%@」はもう本棚にあります。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“%@” is already on your bookshelf."
+          }
+        }
+      }
+    },
+    "scan.addToShelf": {
+      "comment": "S-8a の主操作。PRD（AC-2、AC-3）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld冊を本棚に加える"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld Book to Bookshelf"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld Books to Bookshelf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "scan.addToShelf.none": {
+      "comment": "S-8a（0冊のとき、無効状態）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Bookshelf"
+          }
+        }
+      }
+    },
+    "scan.discard.confirm": {
+      "comment": "S-8a の破棄確認。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "読んだ%lld冊を加えずに閉じます。"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Close without adding %lld scanned book?"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Close without adding %lld scanned books?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "scan.discard.confirmButton": {
+      "comment": "S-8a の破棄確認。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加えずに閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close Without Adding"
+          }
+        }
+      }
+    },
+    "cover.navTitle": {
+      "comment": "S-8b。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "表紙・背表紙から選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select Title and Author"
+          }
+        }
+      }
+    },
+    "cover.hint": {
+      "comment": "S-8b（AC-137）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1回目に押した行が「書名」、2回目に押した行が「著者」に入ります。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First tap sets the title; second tap sets the author."
+          }
+        }
+      }
+    },
+    "cover.selectTitle": {
+      "comment": "S-8b の1タップ目の役割札。PRD（AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書名"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        }
+      }
+    },
+    "cover.selectAuthor": {
+      "comment": "S-8b の2タップ目の役割札。PRD（AC-137）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "著者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author"
+          }
+        }
+      }
+    },
+    "bookshelf.navTitle": {
+      "comment": "S-8d。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚・積読から選ぶ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select Books from Photo"
+          }
+        }
+      }
+    },
+    "bookshelf.hint": {
+      "comment": "S-8d（AC-138）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加えたい本の背表紙の枠を押してください。何冊でも選べます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap the spine boxes for the books you want to add."
+          }
+        }
+      }
+    },
+    "bookshelf.addSelected": {
+      "comment": "S-8d の主操作。PRD（AC-138）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "variations": {
+            "plural": {
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "選んだ%lld冊を積読に加える"
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld Selected Book to Pile"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Add %lld Selected Books to Pile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "search.noResults": {
+      "comment": "S-8c（`manual.title` の候補が0件のとき）。PRD（AC-5）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「%@」に合う候補は書誌データにありませんでした。このまま保存できます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matches for “%@” in book data. You can save it as entered."
+          }
+        }
+      }
+    },
+    "finish.reflection.multi": {
+      "comment": "S-9 の `finish.reflection`（2晩以上）。PRD（AC-127、AC-128）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld晩、合計%2$lld分（%3$@）。いちばん長かったのは%4$@の晩の%5$lld分でした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld nights, %2$lld min (%3$@) in total. Your longest night was %4$@, at %5$lld min."
+          }
+        }
+      }
+    },
+    "finish.reflection.single": {
+      "comment": "S-9 の `finish.reflection`（1晩だけ）。PRD（AC-128）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1晩、%lld分で読み終えました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished in 1 night, %lld min."
+          }
+        }
+      }
+    },
+    "next.header": {
+      "comment": "S-9。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の1冊"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Next Book"
+          }
+        }
+      }
+    },
+    "next.subheader": {
+      "comment": "S-9。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読と、この本につながる本から選んでいます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picked from your pile and books connected to this one."
+          }
+        }
+      }
+    },
+    "next.choose": {
+      "comment": "S-9 の積読候補のボタン。PRD（AC-82）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を読む"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read This Book"
+          }
+        }
+      }
+    },
+    "next.addToShelf": {
+      "comment": "S-9 の未所有候補のボタン。PRD（AC-83、AC-87）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to Pile"
+          }
+        }
+      }
+    },
+    "next.added": {
+      "comment": "S-9 で `next.addToShelf` を押したあとの表示。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読に加えました"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to Pile"
+          }
+        }
+      }
+    },
+    "next.skip": {
+      "comment": "S-9 の下部で候補を見送って閉じるボタン。PRD（AC-147）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今は読まない"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not Right Now"
+          }
+        }
+      }
+    },
+    "next.empty.title": {
+      "comment": "S-9（空状態の見出し）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の候補がありません"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Next Book Yet"
+          }
+        }
+      }
+    },
+    "next.empty.message": {
+      "comment": "S-9。PRD（AC-81）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "積読の本がありません。次に読む本を加えてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There are no books in your pile. Add the book you'll read next."
+          }
+        }
+      }
+    },
+    "next.addBook": {
+      "comment": "S-9。PRD（AC-81）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本を加える"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a Book"
+          }
+        }
+      }
+    },
+    "finish.undoNote": {
+      "comment": "S-9 の一番下。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ読み終えていなかったときは、本棚でこの本を開き、「この本を読む」を押すと戻せます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not finished after all? Open this book in your bookshelf and tap Read This Book."
+          }
+        }
+      }
+    },
+    "settings.navTitle": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "settings.section.start": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み始めと夜の入口"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting a Session"
+          }
+        }
+      }
+    },
+    "settings.flipToStart": {
+      "comment": "S-10。PRD（AC-51）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "伏せて始める"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start When Face Down"
+          }
+        }
+      }
+    },
+    "settings.flipToStart.footer": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しおりの画面で iPhone を伏せて置くと、読書が始まります。オフにすると、「読み始める」ボタンだけで始めます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Placing iPhone face down on the bookmark screen starts a session. When this is off, use the Start Reading button."
+          }
+        }
+      }
+    },
+    "settings.flipToStart.unavailable": {
+      "comment": "S-10（H18）。PRD（AC-51）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この端末では、伏せて始める道を使えません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starting face down isn't available on this device."
+          }
+        }
+      }
+    },
+    "settings.entryTime": {
+      "comment": "S-10（15分刻みの時刻選択）。PRD（AC-38）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "夜の入口の時刻"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evening Entry Time"
+          }
+        }
+      }
+    },
+    "settings.entryTime.footer": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この時刻になると、ロック画面に今の本の続きの一行が出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At this time each evening, the Lock Screen shows the line where you stopped."
+          }
+        }
+      }
+    },
+    "settings.liveActivity.off": {
+      "comment": "S-10（`areActivitiesEnabled == false` のとき）。PRD（AC-37）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面の「ライブアクティビティ」がオフになっているため、夜の入口の時刻の表示は出ません。iPhone の「設定」＞「アプリ」＞「よむま」でオンにできます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live Activities are turned off, so the evening entry won't appear on the Lock Screen. You can turn them on in iPhone Settings > Apps > Yomuma."
+          }
+        }
+      }
+    },
+    "settings.section.lockScreen": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lock Screen"
+          }
+        }
+      }
+    },
+    "settings.hideOnWidgets": {
+      "comment": "S-10。PRD（AC-34）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一行と書名を隠す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide Line and Title"
+          }
+        }
+      }
+    },
+    "settings.hideOnWidgets.footer": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面とホーム画面のウィジェット、およびライブアクティビティに一行と書名を出さず、「しおり」と場所だけを出します。アプリの中には出ます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widgets and Live Activities show only “Bookmark” and your place. The line and title still appear in the app."
+          }
+        }
+      }
+    },
+    "settings.section.appearance": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見た目と購入"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance & Purchases"
+          }
+        }
+      }
+    },
+    "settings.appearance": {
+      "comment": "S-10。PRD（AC-105）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見た目"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance"
+          }
+        }
+      }
+    },
+    "settings.restorePurchases": {
+      "comment": "S-10。PRD（AC-108）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Purchases"
+          }
+        }
+      }
+    },
+    "appearance.default": {
+      "comment": "S-10a（`default`）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準（白と黒）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default (Paper & Ink)"
+          }
+        }
+      }
+    },
+    "appearance.kinari": {
+      "comment": "S-10a（`kinari`、よむま＋）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成り"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kinari (Warm Cream)"
+          }
+        }
+      }
+    },
+    "appearance.sumi": {
+      "comment": "S-10a（`sumi`、よむま＋）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "墨"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sumi (Deep Charcoal)"
+          }
+        }
+      }
+    },
+    "appearance.shu": {
+      "comment": "S-10a（`shu`、よむま＋）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "朱"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shu (Vermilion Seal)"
+          }
+        }
+      }
+    },
+    "store.product.title": {
+      "comment": "S-10a の購入シート。PRD（AC-105）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま＋（買い切り）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yomuma+ (One-Time Purchase)"
+          }
+        }
+      }
+    },
+    "store.product.description": {
+      "comment": "S-10a の購入シート。PRD（AC-105）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成り・墨・朱の3つの見た目を、しおりの画面、ウィジェット、読み終えのカードで使えます。1回の購入でずっと使えます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock three paper-and-ink appearances (Kinari, Sumi, Shu) for your bookmark screen, widgets, and finish cards. Pay once, keep forever."
+          }
+        }
+      }
+    },
+    "store.buy": {
+      "comment": "S-10a の購入シートの主操作（`Product.displayPrice` を併記。基準価格 ¥980）。PRD（AC-105、AC-106）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま＋を買う（¥980）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy Yomuma+"
+          }
+        }
+      }
+    },
+    "store.restore": {
+      "comment": "S-10a の購入シート。PRD（AC-105）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "購入を復元する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Purchases"
+          }
+        }
+      }
+    },
+    "store.close": {
+      "comment": "S-10a の購入シート。PRD（AC-105）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "catalog.status.ready": {
+      "comment": "S-10（AC-11）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末内の書誌データ（%@版）は準備できています。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device book catalog (version %@) is ready."
+          }
+        }
+      }
+    },
+    "catalog.status.notDownloaded": {
+      "comment": "S-10、S-8c（AC-11）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "端末内の書誌データをまだ取得していません。通信できるときに取得します。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On-device book catalog hasn't been downloaded yet."
+          }
+        }
+      }
+    },
+    "catalog.retry": {
+      "comment": "S-10、S-8c（AC-11）。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌データを今すぐ取得する"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download Book Catalog Now"
+          }
+        }
+      }
+    },
+    "settings.section.info": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "情報"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        }
+      }
+    },
+    "settings.privacyPolicy": {
+      "comment": "S-10。PRD（AC-88）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プライバシーポリシー"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy Policy"
+          }
+        }
+      }
+    },
+    "settings.dataSources.header": {
+      "comment": "S-10。足した",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌の出どころ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book Data"
+          }
+        }
+      }
+    },
+    "settings.dataSources": {
+      "comment": "S-10（AC-93 の3条件＋版＋共起データの注記をすべて含む）。PRD（AC-93）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌（書名、著者、出版社など）は、国立国会図書館書誌データ（「国立国会図書館蔵書」「国立国会図書館新着書誌情報」「全国書誌情報」、データ提供機関：国立国会図書館、取得日：%1$@）を出典とし、国立国会図書館サーチの API を用いて取得したデータをこのアプリで加工して端末内の書誌データベース（版：%1$@）を作成しています。ライセンスはクリエイティブ・コモンズ 表示 4.0 国際 パブリック・ライセンス（CC BY 4.0）です。なお、「この本を読み終えた人が、次に読んだ本」の候補は、利用者の同意のもとで集計した読書順序データに基づくもので、国立国会図書館のデータとは無関係です。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book details (title, author, publisher, and so on) derive from National Diet Library bibliographic data (“National Diet Library Catalog” 国立国会図書館蔵書, “NDL newly acquired bibliographic data” 国立国会図書館新着書誌情報, and “Japanese National Bibliography” 全国書誌情報; provided by the National Diet Library, Japan 国立国会図書館; retrieved on %1$@). This app retrieved the data using the NDL Search API and processed it to create the on-device book database (version %1$@) under the Creative Commons Attribution 4.0 International Public License (CC BY 4.0). Note: “Read next by people who finished this book” recommendations are based on reading-order data aggregated with user consent and are unrelated to National Diet Library data."
+          }
+        }
+      }
+    },
+    "settings.dataSources.license": {
+      "comment": "S-10（`https://creativecommons.org/licenses/by/4.0/deed.ja` / `https://creativecommons.org/licenses/by/4.0/` を開く）。PRD（AC-93）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライセンス（CC BY 4.0）"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "License (CC BY 4.0)"
+          }
+        }
+      }
     }
   }
 }

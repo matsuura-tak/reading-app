@@ -157,4 +157,11 @@ struct AwardsAndRecommendationTests {
         #expect(s1.first?.title == "消滅世界")
         #expect(s1.first?.isOwnedTsundoku == true)
     }
+
+    @Test("S-7 の「この本のあとに」は、本棚が空なら起点の本がないので候補を出さない（決まった本を起点にしない）")
+    func afterCandidatesEmptyShelfReturnsNothing() {
+        let ext = RecommendableBook(isbn13: "9784167999999", title: "未所有作", author: "村田沙耶香", label: "文春文庫")
+        let s7 = RecommendationEngine.afterCandidates(shelfBooks: [], externalPool: [ext])
+        #expect(s7.isEmpty)
+    }
 }

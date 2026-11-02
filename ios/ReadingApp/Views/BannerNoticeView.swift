@@ -85,7 +85,7 @@ public struct BannerNoticeView: View {
 
             if let onDismiss {
                 Button(action: onDismiss) {
-                    Text(AppL10n.pick("閉じる", "Close"))
+                    Text(String(localized: "notice.close"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette, fullWidth: false))
                 .accessibilityIdentifier("notice.close")
@@ -135,7 +135,7 @@ public struct VerticalBookmarkTextView: View {
     public var body: some View {
         switch state {
         case .empty:
-            let emptyLabel = AppL10n.pick("まだ一行はありません", "No saved line yet")
+            let emptyLabel = String(localized: "bookmark.noMark.message")
             Text(emptyLabel)
                 .font(.subheadline)
                 .foregroundStyle(palette.textSecondary)

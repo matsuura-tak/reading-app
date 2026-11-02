@@ -52,6 +52,87 @@ public enum AppL10n {
     }
 }
 
+/// 本のデータを design/ 7 の書式のキーで文にする（言語ごとの文は String Catalog が持つ）。
+public enum BookTextFormat {
+    /// `colophon.publisher.withLabel`。出版社とレーベルの片方だけなら、その値だけ。
+    public static func publisherWithLabel(publisher: String?, label: String?) -> String? {
+        let pub = publisher?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let lbl = label?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if !pub.isEmpty && !lbl.isEmpty {
+            return String(format: String(localized: "colophon.publisher.withLabel"), pub, lbl)
+        }
+        if !pub.isEmpty { return pub }
+        if !lbl.isEmpty { return lbl }
+        return nil
+    }
+
+    /// `colophon.year.value`（桁区切りのカンマを入れない）。
+    public static func publishedYear(_ year: Int) -> String {
+        String(format: String(localized: "colophon.year.value"), year)
+    }
+
+    /// `book.nights`（英語は複数形）。
+    public static func nights(_ count: Int) -> String {
+        String.localizedStringWithFormat(NSLocalizedString("book.nights", comment: ""), count)
+    }
+
+    /// S-9 の `finish.summary`（design/ 7 に組み合わせのキーがないため、`book.nights` と `duration.minutes` を
+    /// システムの並べ方の書式で並べる。日本語「3晩、83分」、英語「3 nights, 83 min」）。
+    public static func nightsAndMinutes(nights count: Int, minutes: Int) -> String {
+        [nights(count), String(format: String(localized: "duration.minutes"), minutes)]
+            .formatted(.list(type: .and, width: .narrow))
+    }
+
+    /// `finish.reflection.single` / `finish.reflection.multi`。括弧の中は `duration.hoursMinutes`（分が0なら `duration.hours`）。
+    public static func finishReflection(_ summary: FinishReflectionSummary) -> String {
+        if summary.uniqueNights <= 1 {
+            return String(format: String(localized: "finish.reflection.single"), summary.totalMinutes)
+        }
+        let longest = summary.longestNight
+        return String(
+            format: String(localized: "finish.reflection.multi"),
+            summary.uniqueNights,
+            summary.totalMinutes,
+            hoursAndMinutes(summary.totalMinutes),
+            nightDayText(longest),
+            longest.totalMinutes
+        )
+    }
+
+    static func hoursAndMinutes(_ totalMinutes: Int) -> String {
+        let hours = totalMinutes / 60
+        let minutes = totalMinutes % 60
+        if hours == 0 {
+            return String(format: String(localized: "duration.minutes"), totalMinutes)
+        }
+        if minutes == 0 {
+            return String(format: String(localized: "duration.hours"), hours)
+        }
+        return String(format: String(localized: "duration.hoursMinutes"), hours, minutes)
+    }
+
+    /// 晩の月日（決定 56：端末の言語の書式。日本語は「10月15日」）。
+    static func nightDayText(_ night: NightTotal) -> String {
+        nightDayText(night.nightDate)
+    }
+
+    /// 晩の日付（`yyyy-MM-dd`）を月日にする。`wide` は読み上げと S-7b の「10月16日」、そうでなければ見える行の「10/16」（決定 60）。
+    /// 読めない値はそのまま返す。
+    public static func nightDayText(_ nightDate: String, wide: Bool = true) -> String {
+        let parts = nightDate.split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3 else { return nightDate }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .gmt
+        guard let date = calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])) else {
+            return nightDate
+        }
+        var style = Date.FormatStyle.dateTime.day()
+        style = wide ? style.month(.wide) : style.month(.defaultDigits)
+        style.timeZone = .gmt
+        return date.formatted(style)
+    }
+}
+
 public enum ThemeSpace {
     public static let s4: CGFloat = 4
     public static let s8: CGFloat = 8
@@ -83,6 +164,18 @@ public enum ThemeTypography {
 
     public static func finishCardTitle(size: CGFloat = 28) -> Font {
         .custom("HiraMinProN-W6", size: size, relativeTo: .title)
+    }
+
+    /// 和文の組みの言語（tokens.md 3「本文と操作はシステムの書体（SF Pro / ヒラギノ角ゴ）」）。
+    /// 端末の言語が英語だけのとき、システムの書体の置き換え（cascade list）は漢字・かなを中国語の書体（PingFang SC）へ回す。
+    /// 組みの言語を日本語にすると、置き換えがヒラギノ角ゴになる（ラテン文字は SF Pro のまま）。文言の言語は変えない。
+    public static let japaneseTypesettingLanguage = Locale.Language(identifier: "ja")
+}
+
+public extension View {
+    /// 書名・著者・一行・出版社など本のデータに和文が入る画面の根に付ける（ThemeTypography.japaneseTypesettingLanguage）。
+    func japaneseTextTypesetting() -> some View {
+        typesettingLanguage(ThemeTypography.japaneseTypesettingLanguage)
     }
 }
 

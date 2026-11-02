@@ -32,13 +32,13 @@ public struct BookmarkMarkFlowSheet: View {
     private var headerTitle: String {
         switch step {
         case .select, .ocrCameraDenied:
-            return AppL10n.pick("しおりを挟む", "Place Bookmark")
+            return String(localized: "mark.navTitle")
         case .lineInput:
-            return AppL10n.pick("手で書く", "Write by Hand")
+            return String(localized: "mark.manual")
         case .pageOnlyInput:
-            return AppL10n.pick("ページだけ残す", "Save Page Only")
+            return String(localized: "mark.pageOnly")
         case .ocrCamera, .ocrProcessing, .ocrEmpty, .ocrCandidates:
-            return AppL10n.pick("一行を選ぶ", "Choose a Line")
+            return String(localized: "mark.navTitle")
         }
     }
 
@@ -46,7 +46,7 @@ public struct BookmarkMarkFlowSheet: View {
         VStack(spacing: 0) {
             SheetHeaderBar(
                 title: headerTitle,
-                cancelTitle: AppL10n.pick("やめる", "Cancel"),
+                cancelTitle: String(localized: "mark.cancel"),
                 cancelIdentifier: "mark.cancel"
             ) {
                 model.store.activeErrorKey = nil
@@ -108,7 +108,7 @@ public struct BookmarkMarkFlowSheet: View {
                 Button {
                     handleSaveBookmark(mode: "line", rawLine: lineText, rawProgress: pageText)
                 } label: {
-                    Text(AppL10n.pick("保存", "Save"))
+                    Text(String(localized: "mark.save"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.save")
@@ -122,7 +122,7 @@ public struct BookmarkMarkFlowSheet: View {
                 Button {
                     handleSaveBookmark(mode: "pageOnly", rawLine: nil, rawProgress: pageText)
                 } label: {
-                    Text(AppL10n.pick("保存", "Save"))
+                    Text(String(localized: "mark.save"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.save")
@@ -138,7 +138,7 @@ public struct BookmarkMarkFlowSheet: View {
                 Button {
                     handleSaveBookmark(mode: "ocr", rawLine: effectiveLineValue, rawProgress: pageText)
                 } label: {
-                    Text(AppL10n.pick("保存", "Save"))
+                    Text(String(localized: "mark.save"))
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.save")
@@ -156,15 +156,15 @@ public struct BookmarkMarkFlowSheet: View {
 
     private func markSelectContent(showCameraDenied: Bool) -> some View {
         let book = model.store.currentBook
-        let displayTitle = (book?.isTitlePending == true) ? AppL10n.pick("今の本", "Reading Now") : (book?.title ?? "")
+        let displayTitle = (book?.isTitlePending == true) ? String(localized: "widget.currentBookAsTitle") : (book?.title ?? "")
         let hasPreviousMark = (book?.lastSavedLine != nil) || (book?.currentPage != nil) || (book?.currentLocation != nil) || (book?.currentPercent != nil)
         let laterNoteText = hasPreviousMark
-            ? AppL10n.pick("しおりは前のまま残ります。", "Your bookmark stays where it was.")
-            : AppL10n.pick("しおりは空のままです。", "Your bookmark stays empty.")
+            ? String(localized: "mark.later.note")
+            : String(localized: "mark.later.note.empty")
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s12) {
             VStack(alignment: .leading, spacing: ThemeSpace.s4) {
-                Text(AppL10n.pick("どこまで読みましたか。", "Where did you stop?"))
+                Text(String(localized: "mark.question"))
                     .font(.title3.bold())
                     .foregroundStyle(palette.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -185,10 +185,7 @@ public struct BookmarkMarkFlowSheet: View {
                         Image(systemName: "exclamationmark.circle")
                             .foregroundStyle(palette.stateError)
                             .accessibilityHidden(true)
-                        Text(AppL10n.pick(
-                            "カメラが許可されていません。設定から許可するか、スクリーンショット・手入力をお使いください。",
-                            "Camera access is not allowed. Enable it in Settings or use a screenshot or manual input."
-                        ))
+                        Text(String(localized: "camera.denied"))
                         .font(.subheadline)
                         .foregroundStyle(palette.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -199,7 +196,7 @@ public struct BookmarkMarkFlowSheet: View {
                         model.store.openExternalURL("app-settings:")
                         model.notifyHookChanged()
                     } label: {
-                        Text(AppL10n.pick("設定を開く", "Open Settings"))
+                        Text(String(localized: "camera.openSettings"))
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("camera.openSettings")
@@ -225,7 +222,7 @@ public struct BookmarkMarkFlowSheet: View {
                 }
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("一行を撮る", "Snap a Line"))
+                Text(String(localized: "mark.photo"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.photo")
@@ -236,7 +233,7 @@ public struct BookmarkMarkFlowSheet: View {
                     triggerPageOCR()
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("スクリーンショットから選ぶ", "Pick from Screenshot"))
+                    Text(String(localized: "mark.screenshot"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.screenshot")
@@ -245,7 +242,7 @@ public struct BookmarkMarkFlowSheet: View {
                     selection: $selectedScreenshotItem,
                     matching: .screenshots
                 ) {
-                    Text(AppL10n.pick("スクリーンショットから選ぶ", "Pick from Screenshot"))
+                    Text(String(localized: "mark.screenshot"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.screenshot")
@@ -259,7 +256,7 @@ public struct BookmarkMarkFlowSheet: View {
                 model.currentScreen = .bookmarkMarkLineInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("手で書く", "Write by Hand"))
+                Text(String(localized: "mark.manual"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.manual")
@@ -272,7 +269,7 @@ public struct BookmarkMarkFlowSheet: View {
                 model.currentScreen = .bookmarkMarkPageInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("ページだけ残す", "Save Page Only"))
+                Text(String(localized: "mark.pageOnly"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.pageOnly")
@@ -290,7 +287,7 @@ public struct BookmarkMarkFlowSheet: View {
                 }
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("あとで", "Later"))
+                Text(String(localized: "mark.later"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.later")
@@ -315,7 +312,7 @@ public struct BookmarkMarkFlowSheet: View {
     // MARK: - S-3a Manual Line Input
 
     private var markLineInputContent: some View {
-        let lineFieldLabel = AppL10n.pick("残す一行（60文字まで）", "Line to Save (up to 60 chars)")
+        let lineFieldLabel = String(localized: "mark.line.label")
         return VStack(alignment: .leading, spacing: ThemeSpace.s16) {
             VStack(alignment: .leading, spacing: ThemeSpace.s8) {
                 HStack {
@@ -330,7 +327,7 @@ public struct BookmarkMarkFlowSheet: View {
                 }
 
                 // 大きい文字で欄の幅を超える一行とプレースホルダーを折り返す（1行の欄だと横に切れる。監査の Text clipped）。
-                TextField(AppL10n.pick("心に残った一行", "Enter a line"), text: $lineText, axis: .vertical)
+                TextField(String(localized: "mark.line.placeholder"), text: $lineText, axis: .vertical)
                     .lineLimit(1...6)
                     .onChange(of: lineText) { _, value in
                         // 縦に伸びる欄でも改行は受けない（一行と場所は1行の値）。
@@ -407,7 +404,7 @@ public struct BookmarkMarkFlowSheet: View {
                 _ = model.store.clock.endInterval(.markWait)
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("手で書く", "Write by Hand"))
+                Text(String(localized: "mark.manual"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.manual")
@@ -421,7 +418,7 @@ public struct BookmarkMarkFlowSheet: View {
                 _ = model.store.clock.endInterval(.markWait)
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("ページだけ残す", "Save Page Only"))
+                Text(String(localized: "mark.pageOnly"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.pageOnly")
@@ -438,10 +435,7 @@ public struct BookmarkMarkFlowSheet: View {
                 Image(systemName: "info.circle")
                     .foregroundStyle(palette.textSecondary)
                     .accessibilityHidden(true)
-                Text(AppL10n.pick(
-                    "文字を見つけられませんでした。撮り直すか、手で書けます。",
-                    "No text was found. Retake the photo or write by hand."
-                ))
+                Text(String(localized: "mark.ocr.none"))
                 .font(.subheadline)
                 .foregroundStyle(palette.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -463,7 +457,7 @@ public struct BookmarkMarkFlowSheet: View {
                 model.currentScreen = .bookmarkMarkCamera
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("撮り直す", "Retake"))
+                Text(String(localized: "mark.retake"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.retake")
@@ -475,7 +469,7 @@ public struct BookmarkMarkFlowSheet: View {
                 model.currentScreen = .bookmarkMarkLineInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("手で書く", "Write by Hand"))
+                Text(String(localized: "mark.manual"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.manual")
@@ -487,10 +481,10 @@ public struct BookmarkMarkFlowSheet: View {
     private func markOCRCandidatesContent(columns: [OCRPageColumnItem], selectedIndices: [Int]) -> some View {
         let selectedColumnText = OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices)
         let effectiveLineValue = lineText.isEmpty ? selectedColumnText : lineText
-        let lineFieldLabel = AppL10n.pick("選んだ一行（60文字まで）", "Selected Line (up to 60 chars)")
+        let lineFieldLabel = String(localized: "mark.line.label")
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s12) {
-            Text(AppL10n.pick("残す行をタップして選んでください（複数選べます）", "Tap lines to select (multiple allowed)"))
+            Text(String(localized: "mark.ocr.hint"))
                 .font(.subheadline)
                 .foregroundStyle(palette.textSecondary)
 
@@ -571,7 +565,7 @@ public struct BookmarkMarkFlowSheet: View {
                     model.currentScreen = .bookmarkMarkCamera
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("撮り直す", "Retake"))
+                    Text(String(localized: "mark.retake"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.retake")
@@ -583,7 +577,7 @@ public struct BookmarkMarkFlowSheet: View {
                     model.currentScreen = .bookmarkMarkLineInput
                     model.notifyHookChanged()
                 } label: {
-                    Text(AppL10n.pick("手で書く", "Write by Hand"))
+                    Text(String(localized: "mark.manual"))
                 }
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("mark.manual")
@@ -602,7 +596,7 @@ public struct BookmarkMarkFlowSheet: View {
                 }
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("あとで", "Later"))
+                Text(String(localized: "mark.later"))
             }
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.later")
@@ -680,9 +674,9 @@ public struct BookmarkMarkFlowSheet: View {
         let unit = book?.progressUnit ?? .page
         let labelText: String = {
             switch unit {
-            case .page: return AppL10n.pick("ページ数（1〜9999）", "Page (1–9999)")
-            case .location: return AppL10n.pick("位置番号（1〜999999）", "Location (1–999999)")
-            case .percent: return AppL10n.pick("パーセント（0〜100%）", "Percent (0–100%)")
+            case .page: return String(localized: "mark.page.label")
+            case .location: return String(localized: "mark.progressUnit.location")
+            case .percent: return String(localized: "mark.progressUnit.percent")
             }
         }()
         let previousValue: Int? = {
@@ -695,7 +689,7 @@ public struct BookmarkMarkFlowSheet: View {
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s8) {
             if let book {
-                Picker(AppL10n.pick("進み方の単位", "Progress Unit"), selection: Binding(
+                Picker(String(localized: "mark.progressUnit.label"), selection: Binding(
                     get: { book.progressUnit },
                     set: { newUnit in
                         _ = model.store.updateBook(
@@ -708,8 +702,8 @@ public struct BookmarkMarkFlowSheet: View {
                         model.notifyHookChanged()
                     }
                 )) {
-                    Text(AppL10n.pick("ページ", "Page")).tag(ProgressUnit.page)
-                    Text(AppL10n.pick("位置番号", "Location")).tag(ProgressUnit.location)
+                    Text(String(localized: "mark.progressUnit.page")).tag(ProgressUnit.page)
+                    Text(String(localized: "mark.progressUnit.location")).tag(ProgressUnit.location)
                     Text("%").tag(ProgressUnit.percent)
                 }
                 .pickerStyle(.segmented)
@@ -733,25 +727,18 @@ public struct BookmarkMarkFlowSheet: View {
                 .accessibilityValue(pageText)
 
             if let prev = previousValue {
-                let prevText: String = {
+                // design/ 7 の `mark.page.footer.keep`。%1$@ は場所の見える形（`page.short`、`location.short`、`percent.short`）。
+                let prevPlace: String = {
                     switch unit {
                     case .page:
-                        return AppL10n.pick(
-                            "前のページは\(prev)です。空のまま保存すると、\(prev)のまま残ります。",
-                            "Previous page: \(prev). Leave blank to keep \(prev)."
-                        )
+                        return String(format: String(localized: "page.short"), prev)
                     case .location:
-                        return AppL10n.pick(
-                            "前の位置番号は\(prev)です。空のまま保存すると、\(prev)のまま残ります。",
-                            "Previous location: \(prev). Leave blank to keep \(prev)."
-                        )
+                        return String(format: String(localized: "location.short"), prev)
                     case .percent:
-                        return AppL10n.pick(
-                            "前のパーセントは\(prev)%です。空のまま保存すると、\(prev)%のまま残ります。",
-                            "Previous: \(prev)%. Leave blank to keep \(prev)%."
-                        )
+                        return String(format: String(localized: "percent.short"), prev)
                     }
                 }()
+                let prevText = String(format: String(localized: "mark.page.footer.keep"), prevPlace)
                 Text(prevText)
                     .font(.footnote)
                     .foregroundStyle(palette.textSecondary)
