@@ -194,7 +194,8 @@ public struct ShelfListView: View {
             unit: book.progressUnit,
             page: book.currentPage,
             location: book.currentLocation,
-            percent: book.currentPercent.map(Double.init)
+            percent: book.currentPercent.map(Double.init),
+            strings: ReadingWidgetStrings.spoken
         )
 
         return Button {

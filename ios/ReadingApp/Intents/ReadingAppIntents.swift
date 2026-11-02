@@ -4,6 +4,30 @@ import AppIntents
 import ReadingCore
 import ReadingStore
 
+extension ReadingStoreStrings {
+    /// ReadingStore が組む文を、design/ 7 の文言キーで今の言語の文にして渡す（Siri・ショートカットの答え、S-4、W-3）。
+    /// アプリ（ReadingAppModel）と、アプリが動いていないときにインテントが作る ReadingDataStore の両方で使う。
+    public static var localized: ReadingStoreStrings {
+        ReadingStoreStrings(
+            intentStartStarted: String(localized: "intent.start.started"),
+            intentStartAlreadyReading: String(localized: "intent.start.alreadyReading"),
+            sessionStartError: String(localized: "session.start.error"),
+            sessionTooShort: String(localized: "session.tooShort"),
+            sessionSaveError: String(localized: "session.save.error"),
+            whereStoppedPageFormat: String(localized: "intent.whereStopped.page"),
+            whereStoppedLocationFormat: String(localized: "intent.whereStopped.location"),
+            whereStoppedPercentFormat: String(localized: "intent.whereStopped.percent"),
+            whereStoppedNoPage: String(localized: "intent.whereStopped.noPage"),
+            whereStoppedNoCurrent: String(localized: "intent.whereStopped.noCurrent"),
+            whereStoppedError: String(localized: "intent.whereStopped.error"),
+            durationMinutesFormat: String(localized: "duration.minutes"),
+            resultSummaryPagesFormat: String(localized: "result.summary.pages"),
+            resultSummaryLocationsFormat: String(localized: "result.summary.locations"),
+            resultSummaryPercentsFormat: String(localized: "result.summary.percents")
+        )
+    }
+}
+
 public struct StartReadingIntent: LiveActivityIntent {
     public static let title: LocalizedStringResource = "今夜の読書を始める"
     public static let description = IntentDescription("今夜の読書とLive Activityを始めます。")
@@ -19,6 +43,8 @@ public struct StartReadingIntent: LiveActivityIntent {
             store = shared
         } else {
             let created = ReadingDataStore(containerDirectory: ReadingSharedContainer.containerDirectoryURL())
+            created.storeStrings = ReadingStoreStrings.localized
+            created.snapshotStore.spokenStrings = ReadingWidgetStrings.spoken
             created.loadFromDisk()
             store = created
         }
@@ -42,6 +68,8 @@ public struct EndReadingFromActivityIntent: LiveActivityIntent {
             store = shared
         } else {
             let created = ReadingDataStore(containerDirectory: ReadingSharedContainer.containerDirectoryURL())
+            created.storeStrings = ReadingStoreStrings.localized
+            created.snapshotStore.spokenStrings = ReadingWidgetStrings.spoken
             created.loadFromDisk()
             store = created
         }
@@ -109,6 +137,8 @@ public struct ContinueReadingIntent: AppIntent {
             _ = shared.handleExternalIntent("ContinueReadingIntent:fg=1")
         } else {
             let created = ReadingDataStore(containerDirectory: ReadingSharedContainer.containerDirectoryURL())
+            created.storeStrings = ReadingStoreStrings.localized
+            created.snapshotStore.spokenStrings = ReadingWidgetStrings.spoken
             created.loadFromDisk()
             _ = created.handleExternalIntent("ContinueReadingIntent:fg=1")
         }

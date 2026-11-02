@@ -69,6 +69,8 @@ public final class ReadingAppModel {
         }
         // H22 の読み上げのラベルを、拡張の View と同じ String Catalog の文で組む（AC-99）。
         self.store.snapshotStore.spokenStrings = ReadingWidgetStrings.spoken
+        // Siri・ショートカットの答え、S-4 の result.summary、W-3 の分数を、String Catalog の今の言語の文で組む（design/ 7）。
+        self.store.storeStrings = ReadingStoreStrings.localized
     }
 
     public func updateScreenStateFlags() {

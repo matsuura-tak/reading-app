@@ -128,12 +128,6 @@ public struct WidgetGuideSheetView: View {
     public var body: some View {
         let book = model.store.currentBook
         let sampleLine = book?.lastSavedLine ?? "下人の行方は、誰も知らない。"
-        let samplePage = InputValidator.formatProgressDisplay(
-            unit: book?.progressUnit ?? .page,
-            page: book?.currentPage ?? 61,
-            location: book?.currentLocation,
-            percent: book?.currentPercent.map(Double.init)
-        ) ?? "p.61"
         let stepsText = AppL10n.pick(
             "1. ロック画面を長押しして「カスタマイズ」を選びます。\n2. 時計の下の枠をタップして「よむま」を選びます。\n3. 残した一行とページがロック画面に並びます。",
             "1. Touch and hold the Lock Screen and tap Customize.\n2. Tap the widget area below the clock and choose Yomuma.\n3. Your saved line and page will appear on the Lock Screen."
@@ -152,7 +146,7 @@ public struct WidgetGuideSheetView: View {
 
                     HStack {
                         Spacer()
-                        lockWidgetPreview(line: sampleLine, progress: samplePage)
+                        lockWidgetPreview(line: sampleLine)
                         Spacer()
                     }
 
@@ -193,8 +187,8 @@ public struct WidgetGuideSheetView: View {
     }
 
     /// 見本の写し。保存の直後に書いた W-1 の写し（widget-snapshot.json）を使い、隠す設定や場所なしも W-1 と同じに見せる（design/ 5 の S-5）。
-    /// 写しに今の本がない時だけ、画面の一行とページから作る。
-    private func guideSnapshot(line: String, progress: String) -> WidgetSnapshot {
+    /// 写しに今の本がない時だけ、画面の一行と今の本の場所から作る。
+    private func guideSnapshot(line: String) -> WidgetSnapshot {
         let current = model.store.snapshotStore.currentSnapshot
         if current.currentBook != nil { return current }
         let book = model.store.currentBook
@@ -211,8 +205,8 @@ public struct WidgetGuideSheetView: View {
     }
 
     /// 172×76 pt の W-1 と同じ縦書き描画（拡張と同じ `ReadingLockScreenWidgetView`）を角丸枠の中に見せる（design/ 3 の S-5）。
-    private func lockWidgetPreview(line: String, progress: String) -> some View {
-        let snapshot = guideSnapshot(line: line, progress: progress)
+    private func lockWidgetPreview(line: String) -> some View {
+        let snapshot = guideSnapshot(line: line)
         let widgetLabel = ReadingWidgetStrings.widgetLabel(for: snapshot)
         let size = CGSize(width: 172, height: 76)
         return ReadingLockScreenWidgetView(

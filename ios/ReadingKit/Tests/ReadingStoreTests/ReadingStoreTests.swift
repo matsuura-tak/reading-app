@@ -376,6 +376,7 @@ struct ReadingStoreTests {
 
         let clock = ReadingClock(nowISO8601: "2026-10-18T21:00:00+09:00")
         let store = ReadingDataStore(containerDirectory: dir, clock: clock)
+        store.storeStrings = .testJapanese
         store.resetAllData()
 
         // 1. book.add failSave -> rollback, then retry succeeds
@@ -473,6 +474,7 @@ struct ReadingStoreTests {
 
         let clock = ReadingClock(nowISO8601: "2026-10-18T20:30:00+09:00", timeZoneID: "Asia/Tokyo")
         let store = ReadingDataStore(containerDirectory: dir, clock: clock)
+        store.storeStrings = .testJapanese
         store.resetAllData()
         _ = store.addBook(id: ReadingDataStore.uuidBookA, title: "羅生門", author: "芥川龍之介")
         _ = store.saveBookmark(mode: "pageOnly", rawLine: nil, rawProgress: "43")

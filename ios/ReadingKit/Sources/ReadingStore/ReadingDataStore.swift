@@ -582,6 +582,9 @@ public final class ReadingDataStore {
     public let snapshotStore: SnapshotStore
     public let catalogDB: CatalogDatabase
     public private(set) var modelContainer: ModelContainer?
+    /// Siri・ショートカットの答え、S-4 の `result.summary`、W-3 の分数に使う文（design/ 7）。
+    /// アプリと拡張が String Catalog から組んで入れる（`ReadingStoreStrings.localized`）。入れる前はキーの名前が出る。
+    public var storeStrings: ReadingStoreStrings = .keys
 
     // Core persisted data
     public var books: [BookSnapshot] = []
@@ -2171,7 +2174,7 @@ public final class ReadingDataStore {
         pendingMarkRecordId = record.id
         pendingMarkPreviousProgress = prevProgress
         pendingMarkPreviousUnit = unit
-        latestResultSummary = "\(finalMinutes)分"
+        latestResultSummary = storeStrings.durationMinutes(finalMinutes)
         activeErrorKey = nil
 
         let totalDistinctNights = Set(records.map(\.nightDate)).count
@@ -2202,7 +2205,7 @@ public final class ReadingDataStore {
     public func completeMarkLater() {
         if let recId = pendingMarkRecordId,
            let rec = records.first(where: { $0.id == recId }) {
-            latestResultSummary = "\(rec.durationMinutes)分"
+            latestResultSummary = storeStrings.durationMinutes(rec.durationMinutes)
             updateLiveActivityOnSessionEnd(minutes: rec.durationMinutes, progressText: nil, source: "mark.later")
         }
         pendingMarkRecordId = nil
@@ -2331,7 +2334,8 @@ public final class ReadingDataStore {
                 unit: unit,
                 page: unit == .page ? newProgressVal : nil,
                 location: unit == .location ? newProgressVal : nil,
-                percent: unit == .percent ? newProgressVal.map(Double.init) : nil
+                percent: unit == .percent ? newProgressVal.map(Double.init) : nil,
+                strings: snapshotStore.spokenStrings
             )
 
             var summary: String?
@@ -2341,15 +2345,20 @@ public final class ReadingDataStore {
                         unit: unit,
                         page: unit == .page ? oldProgress : nil,
                         location: unit == .location ? oldProgress : nil,
-                        percent: unit == .percent ? oldProgress.map(Double.init) : nil
+                        percent: unit == .percent ? oldProgress.map(Double.init) : nil,
+                        strings: snapshotStore.spokenStrings
                     )
-                    if let oldDisp, oldProgress != validatedProgress {
-                        summary = "\(oldDisp) → \(newDisp)　\(mins)分"
-                    } else {
-                        summary = "\(newDisp)　\(mins)分"
-                    }
+                    // 前の値が表示できて、今回の値と違うときだけ「前 → 今」の形（design/ 7 の result.summary.*）。
+                    let previous = (oldDisp != nil && oldProgress != validatedProgress) ? oldProgress : nil
+                    summary = storeStrings.resultSummary(
+                        unit: unit,
+                        previous: previous,
+                        current: newProgressVal ?? validatedProgress,
+                        currentDisplay: newDisp,
+                        minutes: mins
+                    )
                 } else {
-                    summary = "\(mins)分"
+                    summary = storeStrings.durationMinutes(mins)
                 }
                 latestResultSummary = summary
                 updateLiveActivityOnSessionEnd(minutes: mins, progressText: newProgStr, source: "mark.save")
@@ -2812,7 +2821,8 @@ public final class ReadingDataStore {
             unit: book.progressUnit,
             page: book.currentPage,
             location: book.currentLocation,
-            percent: book.currentPercent.map(Double.init)
+            percent: book.currentPercent.map(Double.init),
+            strings: snapshotStore.spokenStrings
         )
 
         let item = LiveActivityItemState(
@@ -2851,12 +2861,14 @@ public final class ReadingDataStore {
         guard areActivitiesEnabled else { return }
         for idx in liveActivities.indices where liveActivities[idx].state == "reading" || liveActivities[idx].state == "ended" {
             liveActivities[idx].state = "ended"
+            // 拡張の ReadingLiveActivityStateFactory.ended と同じ「分数 · 場所」の形（読み上げのラベルが「 · 」で分けて読む）。
+            let duration = storeStrings.durationMinutes(minutes)
             let summary: String
             if let progressText {
                 liveActivities[idx].progressText = progressText
-                summary = "\(progressText)　\(minutes)分"
+                summary = "\(duration) · \(progressText)"
             } else {
-                summary = "\(minutes)分"
+                summary = duration
             }
             liveActivities[idx].summaryText = summary
             syncSystemLiveActivityStartOrUpdate(
@@ -3054,8 +3066,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "alreadyReading",
                     dialogKey: "intent.start.alreadyReading",
-                    spokenText: "すでに読書中です。",
-                    snippetTexts: ["すでに読書中です。"],
+                    spokenText: storeStrings.intentStartAlreadyReading,
+                    snippetTexts: [storeStrings.intentStartAlreadyReading],
                     opensApp: false,
                     requestedForeground: false,
                     timestamp: nowISO
@@ -3069,6 +3081,7 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "noCurrentBook",
                     dialogKey: "intent.start.noCurrent",
+                    // design/ 7 に文言キーがない（intent.start.noCurrent）。キーが決まるまで前の文のまま（7体目の報告の未解決）。
                     spokenText: "いま読んでいる本がありません。",
                     snippetTexts: ["いま読んでいる本がありません。"],
                     opensApp: true,
@@ -3086,8 +3099,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "error",
                     dialogKey: "session.start.error",
-                    spokenText: "読書を始められませんでした。",
-                    snippetTexts: ["読書を始められませんでした。"],
+                    spokenText: storeStrings.sessionStartError,
+                    snippetTexts: [storeStrings.sessionStartError],
                     opensApp: false,
                     requestedForeground: false,
                     timestamp: nowISO
@@ -3106,8 +3119,8 @@ public final class ReadingDataStore {
                 intent: intentName,
                 outcome: "started",
                 dialogKey: "intent.start.started",
-                spokenText: "読書を始めました。",
-                snippetTexts: ["読書を始めました。"],
+                spokenText: storeStrings.intentStartStarted,
+                snippetTexts: [storeStrings.intentStartStarted],
                 opensApp: opensApp,
                 requestedForeground: requestedFG,
                 timestamp: nowISO
@@ -3127,6 +3140,7 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "ended",
                     dialogKey: "intent.end.completed",
+                    // design/ 7 に文言キーがない（intent.end.completed）。キーが決まるまで前の文のまま（7体目の報告の未解決）。
                     spokenText: "読書を終えました。",
                     snippetTexts: ["読書を終えました。"],
                     opensApp: canContinueInForeground,
@@ -3141,8 +3155,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "tooShort",
                     dialogKey: "session.tooShort",
-                    spokenText: "1分未満のため記録しませんでした。",
-                    snippetTexts: ["1分未満のため記録しませんでした。"],
+                    spokenText: storeStrings.sessionTooShort,
+                    snippetTexts: [storeStrings.sessionTooShort],
                     opensApp: canContinueInForeground,
                     requestedForeground: canContinueInForeground,
                     timestamp: nowISO
@@ -3155,8 +3169,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "error",
                     dialogKey: "session.save.error",
-                    spokenText: "保存できませんでした。",
-                    snippetTexts: ["保存できませんでした。"],
+                    spokenText: storeStrings.sessionSaveError,
+                    snippetTexts: [storeStrings.sessionSaveError],
                     opensApp: canContinueInForeground,
                     requestedForeground: canContinueInForeground,
                     timestamp: nowISO
@@ -3184,8 +3198,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "error",
                     dialogKey: "intent.whereStopped.error",
-                    spokenText: "しおりを読み込めませんでした。",
-                    snippetTexts: ["しおりを読み込めませんでした。"],
+                    spokenText: storeStrings.whereStoppedError,
+                    snippetTexts: [storeStrings.whereStoppedError],
                     opensApp: false,
                     requestedForeground: false,
                     authenticationPolicy: "alwaysAllowed",
@@ -3199,8 +3213,8 @@ public final class ReadingDataStore {
                     intent: intentName,
                     outcome: "noCurrent",
                     dialogKey: "intent.whereStopped.noCurrent",
-                    spokenText: "いま読んでいる本はまだありません。",
-                    snippetTexts: ["いま読んでいる本はまだありません。"],
+                    spokenText: storeStrings.whereStoppedNoCurrent,
+                    snippetTexts: [storeStrings.whereStoppedNoCurrent],
                     opensApp: false,
                     requestedForeground: false,
                     authenticationPolicy: "alwaysAllowed",
@@ -3213,7 +3227,7 @@ public final class ReadingDataStore {
             switch book.progressUnit {
             case .page:
                 if let page = book.currentPage {
-                    let spoken = "\(page)ページからです。"
+                    let spoken = storeStrings.whereStopped(unit: .page, value: page)
                     let log = IntentInvocationLog(
                         intent: intentName,
                         outcome: "page",
@@ -3230,7 +3244,7 @@ public final class ReadingDataStore {
                 }
             case .location:
                 if let loc = book.currentLocation {
-                    let spoken = "位置\(loc)からです。"
+                    let spoken = storeStrings.whereStopped(unit: .location, value: loc)
                     let log = IntentInvocationLog(
                         intent: intentName,
                         outcome: "location",
@@ -3247,7 +3261,7 @@ public final class ReadingDataStore {
                 }
             case .percent:
                 if let pct = book.currentPercent {
-                    let spoken = "\(pct)パーセントからです。"
+                    let spoken = storeStrings.whereStopped(unit: .percent, value: pct)
                     let log = IntentInvocationLog(
                         intent: intentName,
                         outcome: "percent",
@@ -3268,8 +3282,8 @@ public final class ReadingDataStore {
                 intent: intentName,
                 outcome: "noPage",
                 dialogKey: "intent.whereStopped.noPage",
-                spokenText: "まだページが記録されていません。",
-                snippetTexts: ["まだページが記録されていません。"],
+                spokenText: storeStrings.whereStoppedNoPage,
+                snippetTexts: [storeStrings.whereStoppedNoPage],
                 opensApp: false,
                 requestedForeground: false,
                 authenticationPolicy: "alwaysAllowed",

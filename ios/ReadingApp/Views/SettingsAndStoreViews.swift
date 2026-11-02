@@ -502,7 +502,8 @@ public struct StorePurchasePreviewSheetView: View {
                 unit: book.progressUnit,
                 page: book.currentPage,
                 location: book.currentLocation,
-                percent: book.currentPercent.map(Double.init)
+                percent: book.currentPercent.map(Double.init),
+                strings: ReadingWidgetStrings.spoken
             ) ?? "p.61"
         }()
         let supportedAppearances: [AppearanceID] = [.default, .kinari, .sumi, .shu]

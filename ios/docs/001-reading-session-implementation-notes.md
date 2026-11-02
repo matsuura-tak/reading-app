@@ -139,3 +139,27 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 ### 受け入れテストで落ちたもの（テストは直していない）
 - AC-99、AC-140（ja・en）：8 に書いたテストの読み方の不具合のまま。
 - AC-141（en だけ。ja は通る）：536行目で `readHookString("hook.widget").contains("位置1450")` を確かめている。契約 H22 は英語の `texts["widget.page"]` を `Loc 1450`、design/ 7 の `location.short` の en も `Loc %lld` と決めている。前は写しに「位置1450」を直書きしていたため、英語でも通っていた。アプリは契約どおりにしたので、テストを言語ごとの値にする直しが要る（verifier）。
+
+## 10. 7体目（BASE 76ff911）で足したこと
+英語の設定で日本語が出る所を直した（docs/reviews/001-reading-session-G3-ios-fix-r2f.md の「3.」と指揮役の裁定 4）。
+
+### ReadingStore が組む文をアプリから渡す形に
+- `ReadingCore/ReadingStoreStrings.swift` を足した。Siri・ショートカットの答え（`intent.start.started`、`intent.start.alreadyReading`、`session.start.error`、`session.tooShort`、`session.save.error`、`intent.whereStopped.page`/`location`/`percent`/`noPage`/`noCurrent`/`error`）、`duration.minutes`、`result.summary.pages`/`locations`/`percents` の文を持つ。
+- パッケージの中には ja・en の文を持たない。既定値は `ReadingStoreStrings.keys`（文言キーの名前そのもの）で、渡し忘れると画面や答えにキーの名前が出る。
+- アプリと拡張は `ReadingStoreStrings.localized`（`ReadingApp/Intents/ReadingAppIntents.swift`、両方のターゲットに入る）で String Catalog から組み、`ReadingAppModel.init` とインテントが自分で作る `ReadingDataStore` に入れる。インテントが作る店には `snapshotStore.spokenStrings` も入れる。
+- 単体テストの ja・en の写しはテストのターゲットの中だけに置く（`ReadingStoreStringsTests.swift` の `testJapanese`、`testEnglish`）。
+
+### 直した所
+- `handleExternalIntent` の `spokenText` と `snippetTexts`：design/ 7 のキーの文にした。答えには書名と一行を入れない（AC-121、決まり 79）。
+- `InputValidator.formatProgressDisplay`：`strings: WidgetSpokenStrings` を受け、`page.short`、`location.short`、`percent.short` の書式で組む。英語では `Loc 1450`。アプリの画面（S-1、S-7、S-10a）は `ReadingWidgetStrings.spoken`、店の中は `snapshotStore.spokenStrings` を渡す。
+- S-4 の `result.summary`（`latestResultSummary`）：分数は `duration.minutes`、場所の進みは `result.summary.*`。前の場所がない晩の「p.61　18分」の形は design/ 7 にキーがないので、同じ単位の `result.summary.*` の「%2$lld と %3$@ の間」を区切りに使う（ja は全角の空白、en は空白2つ）。
+- W-3 の終えた直後の `summaryText`：`duration.minutes` で組み、拡張の `ReadingLiveActivityStateFactory.ended` と同じ「分数 · 場所」の形にした（読み上げのラベルが「 · 」で分けて読むため）。
+- String Catalog に design/ 7 のキーを6つ足した：`intent.start.started`、`intent.start.alreadyReading`、`duration.minutes`、`result.summary.pages`、`result.summary.locations`、`result.summary.percents`。
+- `WidgetGuideSheetView` の `guideSnapshot(line:)` と `lockWidgetPreview(line:)` から使われない `progress` の引数を消した（それに伴い、使われなくなった `samplePage` も消した）。
+
+### 直していない所（理由）
+- `intent.start.noCurrent`（「いま読んでいる本がありません。」）と `intent.end.completed`（「読書を終えました。」）：design/ 7 にキーがないので、前の文のまま。
+- Live Activity の `title` の「しおり」：隠す設定のときは、描く側（`ReadingLiveActivityLockScreenView`）が `widget.hidden` に置き換えるので出ない。ただし書名が空の本（名無しの今の本）で隠す設定がオフのときは、本物の Live Activity に「しおり」がそのまま出る（ja でも design/ の `widget.currentBookAsTitle` と違う）。
+- `endButtonLabel` の「終える」：受け入れテストの読み出し（hook.liveActivity）にだけ入り、描く側は `liveActivity.end.label` を使うので出ない。契約（hook-config.schema.json）は `liveActivity.end.label` の文と決めているので、値は契約と違う。
+- `recordShareCard` の既定の「晩」「分」：`renderedTexts` が渡されない時だけの記録（hook の `shareCards`）で、画面には出ない。
+- ショートカットの言い方（`ReadingDataStore.swift` の `${applicationName} …`）、H20 の書誌と出典（`CatalogDatabase.swift`）、AuthorNameFormatter・AwardsCatalog・OCRPipeline・VerticalLineLayout の日本語の照合用の文字：書誌のデータ、出典、照合の規則なので訳さない。

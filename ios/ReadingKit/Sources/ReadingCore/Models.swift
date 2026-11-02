@@ -274,22 +274,25 @@ public enum InputValidator: Sendable {
         parseInteger(raw, range: 1800...2100)
     }
 
+    /// 進み具合の短い形（design/ 7 の `page.short`、`location.short`、`percent.short`。「p.61」「位置1450」「Loc 1450」「52%」）。
+    /// 書式は `strings`（アプリが String Catalog から組んで渡す `ReadingWidgetStrings.spoken`）から取る。範囲の外なら nil。
     public nonisolated static func formatProgressDisplay(
         unit: ProgressUnit,
         page: Int?,
         location: Int?,
-        percent: Double?
+        percent: Double?,
+        strings: WidgetSpokenStrings
     ) -> String? {
         switch unit {
         case .page:
             guard let page, (1...9999).contains(page) else { return nil }
-            return "p.\(page)"
+            return String(format: strings.pageShortFormat, locale: nil, Int64(page))
         case .location:
             guard let location, (1...999999).contains(location) else { return nil }
-            return "位置\(location)"
+            return String(format: strings.locationShortFormat, locale: nil, Int64(location))
         case .percent:
             guard let percent, (0.0...100.0).contains(percent) else { return nil }
-            return "\(Int(percent.rounded()))%"
+            return String(format: strings.percentShortFormat, locale: nil, Int64(percent.rounded()))
         }
     }
 }

@@ -4267,6 +4267,114 @@
           }
         }
       }
+    },
+    "intent.start.started": {
+      "comment": "「読み始める」インテントで読書を始めたときの声の文（W-5、AC-114）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読書を始めました。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Started reading."
+          }
+        }
+      }
+    },
+    "intent.start.alreadyReading": {
+      "comment": "読書中に「読み始める」インテントを動かしたときの声の文（W-5、AC-115）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すでに読書中です。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A reading session is already running."
+          }
+        }
+      }
+    },
+    "duration.minutes": {
+      "comment": "60分未満の時間。S-4 の result.summary と W-3 の終えた直後の分数に使う。%lld は分数",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld分"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    "result.summary.pages": {
+      "comment": "S-4 の result.summary（ページ）。%1$lld は前のページ、%2$lld は今のページ、%3$@ は duration.minutes の文（AC-76）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%1$lld → p.%2$lld　%3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%1$lld → p.%2$lld  %3$@"
+          }
+        }
+      }
+    },
+    "result.summary.locations": {
+      "comment": "S-4 の result.summary（電子書籍の位置No.）。%1$lld は前の位置、%2$lld は今の位置、%3$@ は duration.minutes の文（AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置%1$lld → 位置%2$lld　%3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loc %1$lld → Loc %2$lld  %3$@"
+          }
+        }
+      }
+    },
+    "result.summary.percents": {
+      "comment": "S-4 の result.summary（電子書籍の％）。%1$lld は前の％、%2$lld は今の％、%3$@ は duration.minutes の文（AC-141）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld%% → %2$lld%%　%3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld%% → %2$lld%%  %3$@"
+          }
+        }
+      }
     }
   }
 }
