@@ -6,6 +6,7 @@ import ReadingStore
 
 public enum ShelfListViewState: Equatable, Sendable {
     case empty
+    case loadError
     case populated(current: BookSnapshot?, tsundoku: [BookSnapshot], finished: [BookSnapshot])
 }
 
@@ -21,6 +22,9 @@ public struct ShelfListView: View {
 
     private var resolvedState: ShelfListViewState {
         if let previewState { return previewState }
+        if model.store.isStoreLoadFailed {
+            return .loadError
+        }
         if model.store.books.isEmpty {
             return .empty
         }
@@ -39,6 +43,33 @@ public struct ShelfListView: View {
         }
     }
 
+    // S-6 の「読めない」（design 5）：shelf.load.error と shelf.retry。
+    private var shelfLoadErrorSection: some View {
+        let message = AppL10n.pick(
+            "本棚を読み込めませんでした。もう一度読み込んでください。",
+            "Couldn't load your bookshelf. Try loading again."
+        )
+        return ContentUnavailableView {
+            Label(
+                AppL10n.pick("本棚を読み込めませんでした", "Couldn't Load Bookshelf"),
+                systemImage: "exclamationmark.triangle"
+            )
+        } description: {
+            Text(message)
+                .accessibilityIdentifier("shelf.load.error")
+        } actions: {
+            Button {
+                model.store.loadFromDisk()
+                model.notifyHookChanged()
+            } label: {
+                Text(AppL10n.pick("もう一度読み込む", "Try Again"))
+            }
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("shelf.retry")
+        }
+        .padding(.vertical, ThemeSpace.s32)
+    }
+
     private var shelfContent: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: ThemeSpace.s24) {
@@ -47,6 +78,8 @@ public struct ShelfListView: View {
                 switch resolvedState {
                 case .empty:
                     emptyShelfSection
+                case .loadError:
+                    shelfLoadErrorSection
                 case .populated(let current, let tsundoku, let finished):
                     if let current {
                         VStack(alignment: .leading, spacing: ThemeSpace.s8) {
@@ -258,7 +291,12 @@ public struct BookDetailView: View {
                         bookHeaderSection(book: book)
                         bookActionsSection(book: book)
                         afterCandidatesSection(book: book)
-                        recordsSection(book: book)
+                        // H33 book.load：0.3秒を超えたら記録の行の形の灰の帯（design 5 の S-7）。
+                        GatedLoadView(gate: model.store.loadGate, point: .bookLoad) {
+                            recordsSection(book: book)
+                        } placeholder: {
+                            RedactedRowsPlaceholderView(rowCount: 3)
+                        }
                     }
                 }
                 .padding(.horizontal, ThemeSpace.s24)
@@ -638,17 +676,16 @@ public struct BookDetailView: View {
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("book.edit")
 
-            if book.author.isEmpty || book.publisher == nil || book.isbn13 == nil {
-                Button {
-                    model.currentScreen = .colophonScan
-                    detailSheet = .colophonOCR
-                    model.notifyHookChanged()
-                } label: {
-                    Text(AppL10n.pick("奥付を撮って補完する", "Snap Colophon to Fill Details"))
-                }
-                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                .accessibilityIdentifier("colophon.capture")
+            // design 5 と screens.md の S-7：奥付がそろった本でも「奥付を撮って補う」は常に出す。
+            Button {
+                model.currentScreen = .colophonScan
+                detailSheet = .colophonOCR
+                model.notifyHookChanged()
+            } label: {
+                Label(AppL10n.pick("奥付を撮って補う", "Scan Colophon to Complete"), systemImage: "text.viewfinder")
             }
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("colophon.capture")
 
             Button(role: .destructive) {
                 showDeleteBookConfirm = true
@@ -1262,6 +1299,11 @@ public struct ColophonOCRSheetView: View {
         self.onClose = onClose
     }
 
+    private var isCameraDenied: Bool {
+        let status = CameraAndOCRService.currentCameraAuthorizationStatus(overrideStatus: model.store.cameraAuthorization)
+        return status == "denied" || status == "restricted"
+    }
+
     public var body: some View {
         let authorFieldLabel = AppL10n.pick("著者", "Author")
         let publisherFieldLabel = AppL10n.pick("出版社", "Publisher")
@@ -1279,6 +1321,35 @@ public struct ColophonOCRSheetView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s16) {
                     BannerNoticeView(model: model)
+
+                    if isCameraDenied {
+                        // S-7c の「カメラ許可が拒否」（design 5）：camera.denied と camera.openSettings。
+                        VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                            Label {
+                                Text(AppL10n.pick(
+                                    "カメラの使用が許可されていません。「設定」で許可するか、スクリーンショットから選ぶか、手で入れてください。",
+                                    "Camera access is off. Allow it in Settings, choose from screenshots, or enter the text manually."
+                                ))
+                                .fixedSize(horizontal: false, vertical: true)
+                            } icon: {
+                                Image(systemName: "exclamationmark.circle")
+                                    .foregroundStyle(palette.stateError)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(palette.textPrimary)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityIdentifier("camera.denied")
+
+                            Button {
+                                model.store.openExternalURL("app-settings:")
+                                model.notifyHookChanged()
+                            } label: {
+                                Text(AppL10n.pick("設定を開く", "Open Settings"))
+                            }
+                            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+                            .accessibilityIdentifier("camera.openSettings")
+                        }
+                    }
 
                     PhotosPicker(
                         selection: $selectedPhotoItem,
@@ -1400,6 +1471,18 @@ public struct ColophonOCRSheetView: View {
     let b3 = BookSnapshot(title: "銀河鉄道の夜", author: "宮沢賢治", status: .finished)
     NavigationStack {
         ShelfListView(model: model, previewState: .populated(current: b1, tsundoku: [b2], finished: [b3]))
+    }
+}
+
+#Preview("S-6/empty") {
+    NavigationStack {
+        ShelfListView(model: ReadingAppModel(), previewState: .empty)
+    }
+}
+
+#Preview("S-6/loadError") {
+    NavigationStack {
+        ShelfListView(model: ReadingAppModel(), previewState: .loadError)
     }
 }
 

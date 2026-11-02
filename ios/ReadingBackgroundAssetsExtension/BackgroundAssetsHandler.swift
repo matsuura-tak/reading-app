@@ -1,4 +1,5 @@
 import BackgroundAssets
+import ExtensionFoundation
 import Foundation
 
 @main

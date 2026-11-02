@@ -32,7 +32,11 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 | `store.load` | 置いた。`ContentView.gatedMainAppContent`。読み込みのデータは起動の時点で読み終えており、門は「画面に渡す所」で止める（下の注意）。止めている間 `hook.store` は空 |
 | `shelf.load` | 置いた。`ShelfView.body` を `GatedLoadView` で包み、灰の帯5行 |
 | `storekit.restore` | 置いた。S-10 の `settings.restorePurchases` の押下で `pass` を待ち、横に ProgressView |
-| `book.load`、`recommend.load`、`catalog.lookup`、`storekit.products`、`storekit.purchase` | 未実装。`-uitest-hold-load` に書くと `waiting` のまま進まない |
+| `book.load` | 置いた（2体目）。S-7 の記録の節を `GatedLoadView` で包み、行の形の灰の帯3行 |
+| `recommend.load` | 置いた（2体目）。S-9 の候補の節（`gatedCandidatesSection`）を包み、行の形の灰の帯3行 |
+| `storekit.products` | 置いた（2体目）。S-10a の `store.buy` の位置を包み、ProgressView |
+| `storekit.purchase` | 置いた（2体目）。`store.buy` の押下で `pass` を待ち、止めている間はボタンの位置に ProgressView |
+| `catalog.lookup` | 未実装。`-uitest-hold-load` に書くと `waiting` のまま進まない（S-8a の行の灰の帯と S-8c の候補の待ちが要る） |
 
 注意：`store.load` の読み込み本体（`loadFromDisk()`、`seedFromJSON`）は起動の `init` で同期に動くため、門はその後の画面の切り替えで止めている。H7 `store.load` を一緒に付けた場合は、放したあとに S-1 のエラーが出る（見た目は契約どおり）が、「読み込みに入った所で止める」の厳密な形ではない。reviewer に判断を頼む。
 
@@ -43,3 +47,9 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 
 ## 4. hook.error
 契約 1-6 の `hook.error` は、これまで実装がなかった。H22（見本の指定の誤り、`liveActivity.ended.noRecord`、今の本がないときの `waiting`/`reading`）と H33（知らない対象）だけ、`UITestHookCoordinator.hookErrorValue` と `UITestHookErrorView` で出す。ほかのつなぎ口（H2、H7、H30 など）の `hook.error` はまだない。
+
+## 5. 2体目（BASE 14737ca）で足したこと
+- AC-142 の約17,498秒の停止：原因は Mac の眠り。`pmset -g log` に `2026-11-02 02:34:23 Sleep Entering Sleep state due to 'Low Power Sleep'` と `07:25:04 Wake from Hibernate ... due to acattach/UserActivity` があり、AC-142 の起動（02:34:21）と失敗（起動から17,469秒＝07:25頃）に重なる。単独で `-test-iterations 3` を ja・en で動かして6回とも成功（ログ：スクラッチパッドの g3fix/ac142-iter.log）。長いテストは `caffeinate -dims` を付け、電源につないで動かす。
+- 警告：`BookRegistrationViews.swift` の PhotosPicker のラベル（Sendable の閉包で main actor の `palette` を読んでいた）を、閉包の外で作る `PhotosPickerThemedLabel` にした。プロジェクトの3つの構成に `COPY_PHASE_STRIP = NO`（Xcode のひな形と同じ。拡張の埋め込みの「not stripping binary」警告）。`BackgroundAssetsHandler.swift` に `import ExtensionFoundation`。Background Assets 拡張の埋め込み先が `ReadingApp.app/ReadingApp.app/Extensions` と二重になっていたのを、`dstSubfolderSpec = 16`（Products Directory）で `ReadingApp.app/Extensions` に直した。
+- 残る1行：`appintentsmetadataprocessor ... warning: Metadata extraction skipped, no AppIntents.framework dependency found`（ReadingBackgroundAssetsExtension の ExtractAppIntentsMetadata の道具のログ）。コンパイラの警告ではないが、消す設定は確かめていない。
+- design 5 との食い違い：S-3 の `mark.later.note.empty`（識別子を前のしおりの有無で切り替え、en の文を design 7 に）、S-6 の `shelf.load.error`／`shelf.retry`（`ShelfListViewState.loadError`、Preview「S-6/loadError」「S-6/empty」）、S-8a の `scan.hint`、S-8b の保存で書名が空・101字以上なら `book.title.invalid`（先頭の候補で黙って埋めるのをやめた）、S-8b の0件を `ContentUnavailableView`（`mark.ocr.none`、`cover.retake`、`register.manual`）、S-7 の `colophon.capture` を常に出す（screens.md の S-7 の例は奥付がそろった本でもボタンを出している）、S-7c にカメラ拒否の `camera.denied`／`camera.openSettings`（S-7 と S-9 の両方から開く）。

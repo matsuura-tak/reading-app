@@ -159,7 +159,7 @@ public struct BookmarkMarkFlowSheet: View {
         let displayTitle = (book?.isTitlePending == true) ? AppL10n.pick("今の本", "Reading Now") : (book?.title ?? "")
         let hasPreviousMark = (book?.lastSavedLine != nil) || (book?.currentPage != nil) || (book?.currentLocation != nil) || (book?.currentPercent != nil)
         let laterNoteText = hasPreviousMark
-            ? AppL10n.pick("しおりは前のまま残ります。", "Your previous bookmark stays as is.")
+            ? AppL10n.pick("しおりは前のまま残ります。", "Your bookmark stays where it was.")
             : AppL10n.pick("しおりは空のままです。", "Your bookmark stays empty.")
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s12) {
@@ -300,7 +300,7 @@ public struct BookmarkMarkFlowSheet: View {
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, ThemeSpace.s4)
-                .accessibilityIdentifier("mark.later.note")
+                .accessibilityIdentifier(hasPreviousMark ? "mark.later.note" : "mark.later.note.empty")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(showCameraDenied ? "sheet.mark.camera" : "sheet.mark")

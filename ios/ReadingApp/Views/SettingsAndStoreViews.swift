@@ -646,18 +646,37 @@ public struct StorePurchasePreviewSheetView: View {
 
             VStack(spacing: ThemeSpace.s8) {
                 if canBuy {
-                    Button {
-                        let res = model.store.purchasePlus()
-                        if res == .success {
-                            model.currentScreen = .settingsMain
+                    // H33 storekit.products：商品の情報を取るまで、ボタンの位置に ProgressView（design 5 の S-10a）。
+                    GatedLoadView(gate: model.store.loadGate, point: .storekitProducts) {
+                        if model.store.loadGate.isHolding(.storekitPurchase) {
+                            // H33 storekit.purchase：購入の処理の間、ボタンの位置に ProgressView。
+                            ProgressView()
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                                .task {
+                                    try? await ContinuousClock().sleep(for: .milliseconds(300))
+                                    model.store.loadGate.markShown(.storekitPurchase)
+                                }
+                        } else {
+                            Button {
+                                Task {
+                                    await model.store.loadGate.pass(.storekitPurchase)
+                                    let res = model.store.purchasePlus()
+                                    if res == .success {
+                                        model.currentScreen = .settingsMain
+                                    }
+                                    model.notifyHookChanged()
+                                }
+                            } label: {
+                                Text(AppL10n.pick("よむま＋を購入（¥980）", "Buy Yomuma+ (¥980)"))
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+                            .accessibilityIdentifier("store.buy")
                         }
-                        model.notifyHookChanged()
-                    } label: {
-                        Text(AppL10n.pick("よむま＋を購入（¥980）", "Buy Yomuma+ (¥980)"))
-                            .frame(maxWidth: .infinity)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, minHeight: 44)
                     }
-                    .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
-                    .accessibilityIdentifier("store.buy")
                 }
 
                 Button {

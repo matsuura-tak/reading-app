@@ -230,11 +230,16 @@ public struct BookAddFlowSheetView: View {
             .padding(.vertical, ThemeSpace.s12)
             .background(palette.bgPrimary)
 
-        case .coverCandidates(let isbn13, let candidates):
+        case .coverCandidates(let isbn13, _):
             VStack(spacing: ThemeSpace.s8) {
                 Button {
                     let pubEntry = isbn13.flatMap { ISBNAndCCodeParser.lookupPublisherEntry(isbn13: $0) }
-                    let finalTitle = coverPickedTitle.isEmpty ? (candidates.first ?? "") : coverPickedTitle
+                    // design 5 の S-8b：書名が空・101字以上で保存を押したら book.title.invalid を出して保存しない。
+                    guard case .success(let finalTitle) = InputValidator.validateTitle(coverPickedTitle) else {
+                        model.store.activeErrorKey = "book.title.invalid"
+                        model.notifyHookChanged()
+                        return
+                    }
                     if titlePendingMode {
                         if model.store.populateTitlePendingBook(
                             isbn13: isbn13,
@@ -263,7 +268,6 @@ public struct BookAddFlowSheetView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
-                .disabled(coverPickedTitle.isEmpty && candidates.isEmpty)
                 .accessibilityIdentifier("cover.save")
             }
             .padding(.horizontal, ThemeSpace.s24)
@@ -404,24 +408,15 @@ public struct BookAddFlowSheetView: View {
                 .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("register.screenshot")
             } else {
+                let screenshotLabel = PhotosPickerThemedLabel(
+                    text: AppL10n.pick("スクリーンショットから登録", "Add from Screenshot"),
+                    palette: palette
+                )
                 PhotosPicker(
                     selection: $selectedCoverPhotoItem,
                     matching: .screenshots
                 ) {
-                    Text(AppL10n.pick("スクリーンショットから登録", "Add from Screenshot"))
-                        .font(.body)
-                        .foregroundStyle(palette.actionTint)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .padding(.horizontal, ThemeSpace.s16)
-                        .padding(.vertical, ThemeSpace.s12)
-                        .background(
-                            RoundedRectangle(cornerRadius: ThemeRadius.control)
-                                .fill(palette.groupedRow)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: ThemeRadius.control)
-                                .strokeBorder(palette.hairline, lineWidth: 1)
-                        )
+                    screenshotLabel
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("register.screenshot")
@@ -444,24 +439,15 @@ public struct BookAddFlowSheetView: View {
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("register.bookshelf")
                 } else {
+                    let bookshelfLabel = PhotosPickerThemedLabel(
+                        text: AppL10n.pick("本棚をまとめて写す", "Scan Bookshelf Spines"),
+                        palette: palette
+                    )
                     PhotosPicker(
                         selection: $selectedBookshelfPhotoItem,
                         matching: .images
                     ) {
-                        Text(AppL10n.pick("本棚をまとめて写す", "Scan Bookshelf Spines"))
-                            .font(.body)
-                            .foregroundStyle(palette.actionTint)
-                            .frame(maxWidth: .infinity, minHeight: 44)
-                            .padding(.horizontal, ThemeSpace.s16)
-                            .padding(.vertical, ThemeSpace.s12)
-                            .background(
-                                RoundedRectangle(cornerRadius: ThemeRadius.control)
-                                    .fill(palette.groupedRow)
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: ThemeRadius.control)
-                                    .strokeBorder(palette.hairline, lineWidth: 1)
-                            )
+                        bookshelfLabel
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("register.bookshelf")
@@ -592,6 +578,18 @@ public struct BookAddFlowSheetView: View {
                 .foregroundStyle(palette.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("scan.notFound")
+            }
+
+            if scannedItems.isEmpty {
+                // S-8a の「まだ読んでいない」（design 5）：一覧の所に scan.hint。
+                Text(AppL10n.pick(
+                    "本の裏のバーコード（2段あるときは両方）を写してください。続けて読めます。",
+                    "Point the camera at the barcode on the back of a book. You can scan one after another."
+                ))
+                .font(.footnote)
+                .foregroundStyle(palette.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("scan.hint")
             }
 
             ForEach(scannedItems) { item in
@@ -968,11 +966,29 @@ public struct BookAddFlowSheetView: View {
         .accessibilityIdentifier("sheet.cover.candidates")
     }
 
+    // S-8b の「読み取れた行が0個」（design 5）：ContentUnavailableView で mark.ocr.none、
+    // 撮り直す（cover.retake）、手で入れる（register.manual → S-8c）。
     private func coverEmptyContent(isbn13: String?) -> some View {
-        VStack(alignment: .leading, spacing: ThemeSpace.s16) {
-            Text(AppL10n.pick("表紙から文字を読み取れませんでした", "Could not read text from the cover"))
-                .font(.headline)
-                .foregroundStyle(palette.textPrimary)
+        ContentUnavailableView {
+            Label(
+                AppL10n.pick("文字を読み取れませんでした", "No Text Found"),
+                systemImage: "text.viewfinder"
+            )
+        } description: {
+            Text(AppL10n.pick(
+                "文字を読み取れませんでした。明るい所で撮り直すか、手で入れてください。",
+                "No text was found. Retake the photo in better light, or enter it manually."
+            ))
+            .accessibilityIdentifier("mark.ocr.none")
+        } actions: {
+            Button {
+                openCoverOCRFlow(isbn13: isbn13)
+            } label: {
+                Text(AppL10n.pick("撮り直す", "Retake"))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("cover.retake")
 
             Button {
                 let pubEntry = isbn13.flatMap { ISBNAndCCodeParser.lookupPublisherEntry(isbn13: $0) }
@@ -988,11 +1004,11 @@ public struct BookAddFlowSheetView: View {
                 model.currentScreen = .bookManualInput
                 model.notifyHookChanged()
             } label: {
-                Text(AppL10n.pick("手入力する", "Enter Manually"))
+                Text(AppL10n.pick("手で入れる", "Enter Manually"))
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
-            .accessibilityIdentifier("cover.toManual")
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("register.manual")
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.cover.empty")
@@ -1256,4 +1272,27 @@ public struct BookAddFlowSheetView: View {
     BookAddFlowSheetView(model: model, initialStep: .bookshelfCandidates(spines: spines, selectedIds: ["s1"]))
         .environment(\.dynamicTypeSize, .accessibility5)
         .preferredColorScheme(.dark)
+}
+
+/// PhotosPicker のラベル（Sendable な閉包の外で作り、main actor の値を閉包の中で読まない）。
+struct PhotosPickerThemedLabel: View {
+    let text: String
+    let palette: ThemePalette
+
+    var body: some View {
+        Text(text)
+            .font(.body)
+            .foregroundStyle(palette.actionTint)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .padding(.horizontal, ThemeSpace.s16)
+            .padding(.vertical, ThemeSpace.s12)
+            .background(
+                RoundedRectangle(cornerRadius: ThemeRadius.control)
+                    .fill(palette.groupedRow)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: ThemeRadius.control)
+                    .strokeBorder(palette.hairline, lineWidth: 1)
+            )
+    }
 }

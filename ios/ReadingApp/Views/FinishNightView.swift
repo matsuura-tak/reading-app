@@ -71,12 +71,12 @@ public struct FinishNightView: View {
                     case .withReflection(let title, let author, let summary, let reflection, let candidates):
                         headerSection(title: title, author: author, summary: summary, reflection: reflection)
                         shareCardButtonSection
-                        candidatesSection(candidates: candidates)
+                        gatedCandidatesSection(candidates: candidates)
                         skipButtonSection(candidates: candidates)
                     case .withoutReflection(let title, let author, let summary, let candidates):
                         headerSection(title: title, author: author, summary: summary, reflection: nil)
                         shareCardButtonSection
-                        candidatesSection(candidates: candidates)
+                        gatedCandidatesSection(candidates: candidates)
                         skipButtonSection(candidates: candidates)
                     }
                 }
@@ -307,6 +307,15 @@ public struct FinishNightView: View {
         }
         .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
         .accessibilityIdentifier("finish.card.share")
+    }
+
+    // H33 recommend.load：0.3秒を超えたら候補の行の形の灰の帯（design 5 の S-9）。
+    private func gatedCandidatesSection(candidates: [RecommendationCandidate]) -> some View {
+        GatedLoadView(gate: model.store.loadGate, point: .recommendLoad) {
+            candidatesSection(candidates: candidates)
+        } placeholder: {
+            RedactedRowsPlaceholderView(rowCount: 3)
+        }
     }
 
     private func candidatesSection(candidates: [RecommendationCandidate]) -> some View {
