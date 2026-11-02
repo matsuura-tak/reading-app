@@ -197,21 +197,16 @@ public struct WidgetGuideSheetView: View {
     private func guideSnapshot(line: String, progress: String) -> WidgetSnapshot {
         let current = model.store.snapshotStore.currentSnapshot
         if current.currentBook != nil { return current }
+        let book = model.store.currentBook
+        let sampleProgress = book.flatMap {
+            WidgetSnapshotProgress.make(unit: $0.progressUnit, page: $0.currentPage, location: $0.currentLocation, percent: $0.currentPercent)
+        } ?? WidgetSnapshotProgress(unit: .page, value: 61)
         return WidgetSnapshot(
-            version: current.version,
-            updatedAt: current.updatedAt,
             appearanceID: current.appearanceID,
             hideOnWidgets: current.hideOnWidgets,
-            currentBook: WidgetSnapshotBook(
-                id: model.store.currentBook?.id ?? UUID(),
-                title: model.store.currentBook?.title,
-                author: nil,
-                isTitlePending: false,
-                progressUnit: model.store.currentBook?.progressUnit ?? .page,
-                progressDisplay: progress,
-                latestLine: line,
-                latestLineId: nil
-            )
+            currentBook: current.hideOnWidgets
+                ? WidgetSnapshotBook(progress: sampleProgress)
+                : WidgetSnapshotBook(title: book?.title, line: line, progress: sampleProgress)
         )
     }
 

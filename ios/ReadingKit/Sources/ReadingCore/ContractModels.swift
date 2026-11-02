@@ -3,71 +3,144 @@ import Foundation
 import ActivityKit
 #endif
 
-// MARK: - WidgetSnapshot (contracts/widget-snapshot.schema.json)
+// MARK: - WidgetSnapshot (contracts/widget-snapshot.schema.json、大きな版 1)
 
+/// 写しを読めない理由の元（読む側の決まりの (3)〜(7)）。`WidgetSnapshotReader` が h22 の `unavailableReason` に直す。
 public enum WidgetSnapshotValidationError: Error, Sendable, Equatable {
+    /// (3) JSON でない、型が違う、必須の項目がない。名無しなのに書名がある（7）もここ（h22 の enum に (7) がないため）。
     case malformedJSON(String)
-    case unsupportedVersion(Int)
+    /// (4) schemaVersion が 1 でない。前の版の形（`version`/`updatedAt` を持ち `schemaVersion` がない）も `nil` でここ。
+    case unsupportedVersion(Int?)
+    /// (6) hideOnWidgets が真なのに書名か一行か isTitlePending がある。
     case privacyInvariantViolation
+    /// (7) isTitlePending が真なのに title がある。
     case titlePendingInvariantViolation
+    /// (5) 値が範囲の外、知らない単位。
     case fieldConstraintViolation(String)
 }
 
-public struct WidgetSnapshotBook: Codable, Sendable, Equatable {
-    public var id: UUID
-    public var title: String?
-    public var author: String?
-    public var isTitlePending: Bool
-    public var progressUnit: ProgressUnit
-    public var progressDisplay: String?
-    public var latestLine: String?
-    public var latestLineId: UUID?
+/// しおりの進み具合（`$defs/progress`）。
+public struct WidgetSnapshotProgress: Codable, Sendable, Equatable {
+    public var unit: ProgressUnit
+    public var value: Int
 
-    public nonisolated init(
-        id: UUID,
-        title: String?,
-        author: String?,
-        isTitlePending: Bool,
-        progressUnit: ProgressUnit,
-        progressDisplay: String?,
-        latestLine: String?,
-        latestLineId: UUID?
-    ) {
-        self.id = id
-        self.title = title
-        self.author = author
-        self.isTitlePending = isTitlePending
-        self.progressUnit = progressUnit
-        self.progressDisplay = progressDisplay
-        self.latestLine = latestLine
-        self.latestLineId = latestLineId
+    public nonisolated init(unit: ProgressUnit, value: Int) {
+        self.unit = unit
+        self.value = value
+    }
+
+    /// 単位ごとの範囲（page 1〜9999、location 1〜999999、percent 0〜100）。
+    public nonisolated static func range(for unit: ProgressUnit) -> ClosedRange<Int> {
+        switch unit {
+        case .page: return 1...9999
+        case .location: return 1...999999
+        case .percent: return 0...100
+        }
+    }
+
+    public nonisolated var isInRange: Bool { Self.range(for: unit).contains(value) }
+
+    /// 本の今の単位の値から作る。今の単位の値がない、または範囲の外なら nil（違う単位の数字を混ぜない）。
+    public nonisolated static func make(unit: ProgressUnit, page: Int?, location: Int?, percent: Int?) -> WidgetSnapshotProgress? {
+        let value: Int?
+        switch unit {
+        case .page: value = page
+        case .location: value = location
+        case .percent: value = percent
+        }
+        guard let value else { return nil }
+        let progress = WidgetSnapshotProgress(unit: unit, value: value)
+        return progress.isInRange ? progress : nil
+    }
+
+    private enum CodingKeys: String, CodingKey { case unit, value }
+
+    public nonisolated init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let rawUnit = try container.decode(String.self, forKey: .unit)
+        let value = try container.decode(Int.self, forKey: .value)
+        guard let unit = ProgressUnit(rawValue: rawUnit) else {
+            // 知らない単位は (5)。
+            throw WidgetSnapshotValidationError.fieldConstraintViolation("unknown progress unit")
+        }
+        self.unit = unit
+        self.value = value
     }
 }
 
+/// 今の本（`$defs/visibleBook` と `$defs/hiddenBook`）。書くのは契約の項目だけ（ISBN、著者、本の id、日時を書かない。PRD 12）。
+public struct WidgetSnapshotBook: Codable, Sendable, Equatable {
+    /// 書名。隠す設定のときと名無しの今の本のときは nil（キーを書かない）。
+    public var title: String?
+    /// 名無しの今の本の印。偽のときはキーを書かない。
+    public var isTitlePending: Bool
+    /// 続きの一行の全文（縮めない。ウィジェットの25字への縮め方は描くときに行う）。
+    public var line: String?
+    public var progress: WidgetSnapshotProgress?
+
+    public nonisolated init(
+        title: String? = nil,
+        isTitlePending: Bool = false,
+        line: String? = nil,
+        progress: WidgetSnapshotProgress? = nil
+    ) {
+        self.title = title
+        self.isTitlePending = isTitlePending
+        self.line = line
+        self.progress = progress
+    }
+
+    private enum CodingKeys: String, CodingKey { case title, isTitlePending, line, progress }
+
+    public nonisolated init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.title = try container.decodeIfPresent(String.self, forKey: .title)
+        if let pending = try container.decodeIfPresent(Bool.self, forKey: .isTitlePending) {
+            // const true。偽を書くのは型の誤り（3）。
+            guard pending else {
+                throw DecodingError.dataCorruptedError(forKey: .isTitlePending, in: container, debugDescription: "isTitlePending must be true when present")
+            }
+            self.isTitlePending = true
+        } else {
+            self.isTitlePending = false
+        }
+        self.line = try container.decodeIfPresent(String.self, forKey: .line)
+        self.progress = try container.decodeIfPresent(WidgetSnapshotProgress.self, forKey: .progress)
+    }
+
+    public nonisolated func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(title, forKey: .title)
+        if isTitlePending { try container.encode(true, forKey: .isTitlePending) }
+        try container.encodeIfPresent(line, forKey: .line)
+        try container.encodeIfPresent(progress, forKey: .progress)
+    }
+
+    public nonisolated var progressUnit: ProgressUnit? { progress?.unit }
+}
+
 public struct WidgetSnapshot: Codable, Sendable, Equatable {
-    public var version: Int
-    public var updatedAt: String
+    public nonisolated static let currentSchemaVersion = 1
+
+    public var schemaVersion: Int
     public var appearanceID: AppearanceID
     public var hideOnWidgets: Bool
     public var currentBook: WidgetSnapshotBook?
 
     public nonisolated init(
-        version: Int = 1,
-        updatedAt: String,
+        schemaVersion: Int = WidgetSnapshot.currentSchemaVersion,
         appearanceID: AppearanceID = .default,
         hideOnWidgets: Bool = false,
         currentBook: WidgetSnapshotBook? = nil
     ) {
-        self.version = version
-        self.updatedAt = updatedAt
+        self.schemaVersion = schemaVersion
         self.appearanceID = appearanceID
         self.hideOnWidgets = hideOnWidgets
         self.currentBook = currentBook
     }
 
     enum CodingKeys: String, CodingKey {
-        case version
-        case updatedAt
+        case schemaVersion
         case appearanceID
         case hideOnWidgets
         case currentBook
@@ -75,89 +148,77 @@ public struct WidgetSnapshot: Codable, Sendable, Equatable {
 
     public nonisolated init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.version = try container.decode(Int.self, forKey: .version)
-        self.updatedAt = try container.decode(String.self, forKey: .updatedAt)
-        let rawAppearance = try container.decode(String.self, forKey: .appearanceID)
-        // Unknown appearanceID values fall back to .default in the widget renderer per contract
+        self.schemaVersion = try container.decode(Int.self, forKey: .schemaVersion)
+        // 省いたときと知らない値のときは default で描く（読む側の決まり）。
+        let rawAppearance = try container.decodeIfPresent(String.self, forKey: .appearanceID)
         self.appearanceID = AppearanceID.resolve(rawAppearance)
         self.hideOnWidgets = try container.decode(Bool.self, forKey: .hideOnWidgets)
         self.currentBook = try container.decodeIfPresent(WidgetSnapshotBook.self, forKey: .currentBook)
     }
 
+    public nonisolated func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(schemaVersion, forKey: .schemaVersion)
+        try container.encode(appearanceID.rawValue, forKey: .appearanceID)
+        try container.encode(hideOnWidgets, forKey: .hideOnWidgets)
+        try container.encodeIfPresent(currentBook, forKey: .currentBook)
+    }
+
+    /// 字は書記素で数え、前後の空白を除く（読む側の決まりの (5)）。
+    nonisolated static func graphemeCount(_ text: String) -> Int {
+        text.trimmingCharacters(in: .whitespacesAndNewlines).count
+    }
+
+    /// 読む側の決まりの (4)〜(7)。
     public nonisolated func validate() throws(WidgetSnapshotValidationError) {
-        guard version == 1 else {
-            throw .unsupportedVersion(version)
+        guard schemaVersion == Self.currentSchemaVersion else {
+            throw .unsupportedVersion(schemaVersion)
         }
-        guard !updatedAt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            throw .fieldConstraintViolation("updatedAt must not be empty")
-        }
-        guard let book = currentBook else {
-            return
-        }
-        // Privacy invariant: when hideOnWidgets is true, latestLine and latestLineId MUST be nil
-        if hideOnWidgets && (book.latestLine != nil || book.latestLineId != nil) {
+        guard let book = currentBook else { return }
+        if hideOnWidgets && (book.title != nil || book.line != nil || book.isTitlePending) {
             throw .privacyInvariantViolation
         }
-        if book.latestLine == nil && book.latestLineId != nil {
-            throw .privacyInvariantViolation
+        if book.isTitlePending && book.title != nil {
+            throw .titlePendingInvariantViolation
         }
-        // Title pending invariant
-        if book.isTitlePending {
-            if book.title != nil || book.author != nil {
-                throw .titlePendingInvariantViolation
-            }
-        } else {
-            guard let title = book.title, !title.isEmpty else {
-                throw .titlePendingInvariantViolation
-            }
-            if title.count > 100 {
-                throw .fieldConstraintViolation("title exceeds 100 characters")
-            }
+        if let title = book.title, !(1...100).contains(Self.graphemeCount(title)) {
+            throw .fieldConstraintViolation("title must be 1...100 graphemes")
         }
-        if let author = book.author, author.count > 100 {
-            throw .fieldConstraintViolation("author exceeds 100 characters")
+        if let line = book.line, !(1...60).contains(Self.graphemeCount(line)) {
+            throw .fieldConstraintViolation("line must be 1...60 graphemes")
         }
-        if let progressDisplay = book.progressDisplay, progressDisplay.count > 20 {
-            throw .fieldConstraintViolation("progressDisplay exceeds 20 characters")
-        }
-        if let latestLine = book.latestLine {
-            if latestLine.isEmpty || latestLine.count > 25 {
-                throw .fieldConstraintViolation("latestLine must be 1...25 characters")
-            }
+        if let progress = book.progress, !progress.isInRange {
+            throw .fieldConstraintViolation("progress value out of range for unit")
         }
     }
 
     public nonisolated static func decodeAndValidate(from data: Data) throws(WidgetSnapshotValidationError) -> WidgetSnapshot {
-        // First inspect raw version if present so version != 1 reports .unsupportedVersion
-        if let rawObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-           let rawVersion = rawObject["version"] as? Int,
-           rawVersion != 1 {
-            throw .unsupportedVersion(rawVersion)
+        // 型を読む前に大きな版を見る：schemaVersion が整数で 1 でなければ (4)。
+        // 前の版の形（schemaVersion がなく version を持つ。G3 r2 までのアプリが書いた形）も (4) として読めないものにする。
+        // 契約に移行の決まりはなく、アプリは起動のたびに写しを書き直すので、次に書くまでの間だけ読めない（ADR 0002）。
+        if let rawObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            if let rawVersion = rawObject["schemaVersion"] as? Int, rawVersion != currentSchemaVersion {
+                throw .unsupportedVersion(rawVersion)
+            }
+            if rawObject["schemaVersion"] == nil, rawObject["version"] != nil {
+                throw .unsupportedVersion(nil)
+            }
         }
-        let decoder = JSONDecoder()
         let snapshot: WidgetSnapshot
         do {
-            snapshot = try decoder.decode(WidgetSnapshot.self, from: data)
+            snapshot = try JSONDecoder().decode(WidgetSnapshot.self, from: data)
+        } catch let error as WidgetSnapshotValidationError {
+            throw error
         } catch {
-            throw .malformedJSON(error.localizedDescription)
+            throw .malformedJSON(String(describing: type(of: error)))
         }
         try snapshot.validate()
         return snapshot
     }
 
-    /// Safe decoder for the widget extension: treats version != 1 or malformed JSON as "no current book"
-    /// and renders the empty state without crashing.
-    public nonisolated static func decodeForWidgetRenderer(from data: Data, fallbackNowISO8601: String = "1970-01-01T00:00:00Z") -> WidgetSnapshot {
-        if let valid = try? decodeAndValidate(from: data) {
-            return valid
-        }
-        return WidgetSnapshot(
-            version: 1,
-            updatedAt: fallbackNowISO8601,
-            appearanceID: .default,
-            hideOnWidgets: false,
-            currentBook: nil
-        )
+    /// 読めないときは今の本なしとして扱う読み方（W-5 の拡張の外の呼び出しだけが使う。W-1・W-2 は `WidgetSnapshotReader`）。
+    public nonisolated static func decodeForWidgetRenderer(from data: Data) -> WidgetSnapshot {
+        (try? decodeAndValidate(from: data)) ?? WidgetSnapshot()
     }
 }
 

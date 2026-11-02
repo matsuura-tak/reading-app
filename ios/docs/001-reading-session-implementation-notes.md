@@ -111,3 +111,31 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 
 ### 受け入れテストで落ちたもの（テストは直していない）
 - AC-99 と AC-140 は、`readHookJSON("hook.widget")` で読んだ辞書を `"\(widget)"` で文字列にしてから書名を探す。Foundation の辞書の説明では、入れ子の辞書の中の日本語は `\U7f85` の形に書き換わる。そのため、トップの `title` がなくなると、書名が `renders[].accessibility.label` と `texts` にあっても見つからない。h22 のトップは `additionalProperties: false` なので、アプリの側でトップに書名を戻せない。verifier が `readHookString` で読む形にする必要がある。
+
+## 9. 6体目（BASE d204eac）で足したこと
+
+### 写しのファイル `widget-snapshot.json` を契約の形にした（G3 r2 の指揮役の裁定 4：契約が正）
+- 型（`ReadingCore/ContractModels.swift`）：`WidgetSnapshot{schemaVersion, hideOnWidgets, appearanceID, currentBook?}`、`WidgetSnapshotBook{title?, isTitlePending(真のときだけ書く), line?, progress?}`、`WidgetSnapshotProgress{unit, value}`。前の `version`、`updatedAt`、本の `id`、`author`、`progressUnit`、`progressDisplay`、`latestLine`、`latestLineId` はなくした（PRD 12：ISBN、著者、本の id、日時を書かない）。
+- 書く側（`SnapshotStore.makeSnapshot(currentBook:settings:)`、`writeSnapshot` はこれを書くだけ）
+  - hidden のときは `progress` だけ。書名、一行、名無しの本フラグ、「しおり」の文字も書かない（ロック中にも読める写しのプライバシー）。
+  - 名無しの今の本は `title` を書かず `isTitlePending: true`。
+  - 一行は縮めない全文（前は25字に縮めて書いていた）。25字への縮め方は描くときに `WidgetLineComposer` が行う。
+  - 範囲の外の値（書名 1〜100 字、一行 1〜60 字、進み具合の単位ごとの範囲）は、読む側が読めなくなるのでキーごと書かない。
+  - 書き方は契約どおり `Data.write(options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])`（iOS）。null は書かない。
+- 読む側（`WidgetSnapshotReader`。拡張、H22 の読み出し、撮影用の見本が同じ関数）
+  - (3) JSON でない・型が違う・必須がない → `malformed`。(4) `schemaVersion` が 1 でない → `version`。(5) 範囲の外、知らない単位 → `range`。(6) hidden なのに書名・一行・isTitlePending → `hiddenConflict`。(7) 名無しなのに書名 → `malformed`（G3 r2 の裁定 3）。知らない項目は読み流し、知らない `appearanceID` は default。
+  - 書名がなく名無しの印もない今の本は、契約の (3)〜(7) に当たらないので読める。書名の所は `widget.currentBookAsTitle` の文にする（契約の「出し方」）。前は「しおり」を出していた。
+- 前の版の形のファイル（`version` を持ち `schemaVersion` がない）：契約に移行の決まりはない。落ちず、`unavailable(version)` として読めないものにする。アプリは起動のたびに写しを書き直すので、次に書くまでの間だけ。`SnapshotStore.init` も前の形を読まず、今の本なしから始める。
+- 進み具合の短い形は写しに書かず、描くときに `page.short`、`location.short`、`percent.short`（design/ 7。String Catalog に足した）で作る（`WidgetSpokenStrings.progressText`）。英語のときは `Loc 1450`（前は英語でも「位置1450」）。
+- 読み上げのラベルの一行は、写しの全文を25字に縮めたもの（ウィジェットに描く一行と同じ。前と同じ文）。W-3 の待つ状態の一行も同じに縮める。
+- W-5 の拡張の外の読み方（`ReadingSharedContainer.loadWidgetSnapshot`）は `progress{unit,value}` から答える。
+
+### コードの reviewer r1 の提案の直し（指揮役の裁定 4）
+- `store.buy` と `settings.restorePurchases`：action の中で `Task` を作る前に、進行中の印（`purchaseInFlight`、`restoreInFlight`）を同期で立て、本物の処理が終わったら下ろす。立っている間の押下は弾く（契約 H33 の「2度押しの印」）。`store.restore`（S-10a）は action が同期なので変えていない。
+- `storekit.purchase`・`storekit.restore` の ProgressView：`HeldLoadProgressView`（`LoadingPlaceholderViews.swift`）で、門に止められて 0.3秒（ContinuousClock）を超えてから出し、出したときに `markShown` する。0.3秒までは購入のボタンをそのまま出す。
+- `catalog.lookup` を止めている間の2つ目以降の読み取り（S-8a のバーコード）：素通りさせず `queuedCatalogLookups` に待たせ、放したあと1回目の次に来た順に引く。帯は放すまで保つ。
+- Background Assets 拡張の `LM_FILTER_WARNINGS = YES`：付けて clean ビルドすると `appintentsmetadataprocessor` に `--quiet-warnings` が渡ったが、`warning: Metadata extraction skipped, no AppIntents.framework dependency found` の1行は消えなかった。指示どおり元に戻した（pbxproj の差分なし）。
+
+### 受け入れテストで落ちたもの（テストは直していない）
+- AC-99、AC-140（ja・en）：8 に書いたテストの読み方の不具合のまま。
+- AC-141（en だけ。ja は通る）：536行目で `readHookString("hook.widget").contains("位置1450")` を確かめている。契約 H22 は英語の `texts["widget.page"]` を `Loc 1450`、design/ 7 の `location.short` の en も `Loc %lld` と決めている。前は写しに「位置1450」を直書きしていたため、英語でも通っていた。アプリは契約どおりにしたので、テストを言語ごとの値にする直しが要る（verifier）。

@@ -24,6 +24,12 @@ public struct WidgetSpokenStrings: Sendable, Equatable {
     public var spokenNoPageFormat: String
     /// `widget.spoken.noLine`（書名、場所）
     public var spokenNoLineFormat: String
+    /// `page.short`（%lld。「p.61」）
+    public var pageShortFormat: String
+    /// `location.short`（%lld。「位置1450」「Loc 1450」）
+    public var locationShortFormat: String
+    /// `percent.short`（%lld%%。「52%」）
+    public var percentShortFormat: String
 
     public nonisolated init(
         empty: String,
@@ -35,7 +41,10 @@ public struct WidgetSpokenStrings: Sendable, Equatable {
         percentFormat: String,
         spokenFormat: String,
         spokenNoPageFormat: String,
-        spokenNoLineFormat: String
+        spokenNoLineFormat: String,
+        pageShortFormat: String = "p.%lld",
+        locationShortFormat: String,
+        percentShortFormat: String = "%lld%%"
     ) {
         self.empty = empty
         self.unavailable = unavailable
@@ -47,6 +56,9 @@ public struct WidgetSpokenStrings: Sendable, Equatable {
         self.spokenFormat = spokenFormat
         self.spokenNoPageFormat = spokenNoPageFormat
         self.spokenNoLineFormat = spokenNoLineFormat
+        self.pageShortFormat = pageShortFormat
+        self.locationShortFormat = locationShortFormat
+        self.percentShortFormat = percentShortFormat
     }
 
     public static let japanese = WidgetSpokenStrings(
@@ -59,7 +71,10 @@ public struct WidgetSpokenStrings: Sendable, Equatable {
         percentFormat: "%lldパーセント",
         spokenFormat: "%1$@、%2$@。%3$@",
         spokenNoPageFormat: "%1$@。%2$@",
-        spokenNoLineFormat: "%1$@、%2$@"
+        spokenNoLineFormat: "%1$@、%2$@",
+        pageShortFormat: "p.%lld",
+        locationShortFormat: "位置%lld",
+        percentShortFormat: "%lld%%"
     )
 
     public static let english = WidgetSpokenStrings(
@@ -72,8 +87,35 @@ public struct WidgetSpokenStrings: Sendable, Equatable {
         percentFormat: "%lld percent",
         spokenFormat: "%1$@, %2$@. %3$@",
         spokenNoPageFormat: "%1$@. %2$@",
-        spokenNoLineFormat: "%1$@, %2$@"
+        spokenNoLineFormat: "%1$@, %2$@",
+        pageShortFormat: "p.%lld",
+        locationShortFormat: "Loc %lld",
+        percentShortFormat: "%lld%%"
     )
+
+    /// 写しの進み具合の短い形（design/ 7 の `page.short`、`location.short`、`percent.short`。AC-141）。なければ nil。
+    public nonisolated func progressText(_ progress: WidgetSnapshotProgress?) -> String? {
+        guard let progress else { return nil }
+        let format: String
+        switch progress.unit {
+        case .page: format = pageShortFormat
+        case .location: format = locationShortFormat
+        case .percent: format = percentShortFormat
+        }
+        return String(format: format, locale: nil, Int64(progress.value))
+    }
+
+    /// 写しの進み具合の読み上げ（`page.spoken`、`location.spoken`、`percent.spoken`）。なければ nil。
+    public nonisolated func spokenProgress(_ progress: WidgetSnapshotProgress?) -> String? {
+        guard let progress else { return nil }
+        let format: String
+        switch progress.unit {
+        case .page: format = pageFormat
+        case .location: format = locationFormat
+        case .percent: format = percentFormat
+        }
+        return String(format: format, locale: nil, Int64(progress.value))
+    }
 
     /// 場所の表示（「p.61」「位置1450」「Loc 1450」「52%」）を読み上げの文（「61ページ」「位置1450」「52パーセント」）にする。
     /// 単位が分からないとき（Live Activity の状態など）は表示の形から決める。数字がなければ nil。

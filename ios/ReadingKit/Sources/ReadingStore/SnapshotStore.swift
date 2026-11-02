@@ -168,18 +168,13 @@ public final class SnapshotStore {
         let sharedDir = containerDirectory.appendingPathComponent("Shared", isDirectory: true)
         try? FileManager.default.createDirectory(at: sharedDir, withIntermediateDirectories: true)
         self.fileURL = sharedDir.appendingPathComponent("widget-snapshot.json")
+        // 前の版の形や壊れた写しは読めない（WidgetSnapshot.decodeAndValidate）。そのときは今の本なしから始め、次の書き込みで直す。
         if FileManager.default.fileExists(atPath: fileURL.path),
            let data = try? Data(contentsOf: fileURL),
-           let decoded = try? JSONDecoder().decode(WidgetSnapshot.self, from: data) {
+           let decoded = try? WidgetSnapshot.decodeAndValidate(from: data) {
             self.currentSnapshot = decoded
         } else {
-            self.currentSnapshot = WidgetSnapshot(
-                version: 1,
-                updatedAt: "2026-10-18T21:00:00+09:00",
-                appearanceID: .default,
-                hideOnWidgets: false,
-                currentBook: nil
-            )
+            self.currentSnapshot = WidgetSnapshot()
         }
     }
 
@@ -211,81 +206,25 @@ public final class SnapshotStore {
         reloadOnlyIfChanged: Bool = false
     ) throws -> WidgetSnapshot {
 
-        let snapshotBook: WidgetSnapshotBook?
-        if let book = currentBook {
-            let progressDisplay = InputValidator.formatProgressDisplay(
-                unit: book.progressUnit,
-                page: book.currentPage,
-                location: book.currentLocation,
-                percent: book.currentPercent.map(Double.init)
-            )
-
-            if settings.hideOnWidgets {
-                snapshotBook = WidgetSnapshotBook(
-                    id: book.id,
-                    title: "しおり",
-                    author: nil,
-                    isTitlePending: false,
-                    progressUnit: book.progressUnit,
-                    progressDisplay: progressDisplay,
-                    latestLine: nil,
-                    latestLineId: nil
-                )
-            } else {
-                let shortenedLine: String?
-                let lineId: UUID?
-                if let rawLine = book.lastSavedLine, !rawLine.isEmpty {
-                    shortenedLine = VerticalLineLayout.shortenForWidget(rawLine).text
-                    lineId = book.id
-                } else {
-                    shortenedLine = nil
-                    lineId = nil
-                }
-                let resolvedTitle: String? = book.isTitlePending ? nil : (book.title.isEmpty ? "しおり" : book.title)
-                let resolvedAuthor: String? = book.isTitlePending ? nil : (book.author.isEmpty ? nil : book.author)
-                snapshotBook = WidgetSnapshotBook(
-                    id: book.id,
-                    title: resolvedTitle,
-                    author: resolvedAuthor,
-                    isTitlePending: book.isTitlePending,
-                    progressUnit: book.progressUnit,
-                    progressDisplay: progressDisplay,
-                    latestLine: shortenedLine,
-                    latestLineId: lineId
-                )
-            }
-        } else {
-            snapshotBook = nil
-        }
-
-        let snapshot = WidgetSnapshot(
-            version: 1,
-            updatedAt: nowISO,
-            appearanceID: settings.appearanceID,
-            hideOnWidgets: settings.hideOnWidgets,
-            currentBook: snapshotBook
-        )
+        let snapshot = Self.makeSnapshot(currentBook: currentBook, settings: settings)
 
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = try encoder.encode(snapshot)
         let dir = fileURL.deletingLastPathComponent()
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        try data.write(to: fileURL, options: .atomic)
         #if os(iOS)
-        try? FileManager.default.setAttributes(
-            [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
-            ofItemAtPath: fileURL.path
-        )
+        // 契約の書き方：Data.write(options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])（ADR 0002）。
+        try data.write(to: fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        #else
+        try data.write(to: fileURL, options: .atomic)
         #endif
         var rv = URLResourceValues()
         rv.isExcludedFromBackup = true
         var mutableURL = fileURL
         try? mutableURL.setResourceValues(rv)
 
-        var previous = currentSnapshot
-        previous.updatedAt = snapshot.updatedAt
-        let changed = previous != snapshot
+        let changed = currentSnapshot != snapshot
         self.currentSnapshot = snapshot
         // 写しを変えない保存では、reloadOnlyIfChanged のとき再読み込みを求めない（G3 契約 r4 の指揮役の裁定）。
         if recordReload && (!reloadOnlyIfChanged || changed) {
@@ -298,6 +237,37 @@ public final class SnapshotStore {
             #endif
         }
         return snapshot
+    }
+
+    /// 写しの中身を組む（contracts/widget-snapshot.schema.json の書く側の決まり）。
+    /// - 隠す設定のときは進み具合だけ（書名、一行、名無しの本フラグを書かない。ロック中にも読める写しのため）。
+    /// - 名無しの今の本は title を書かず isTitlePending を真にする。
+    /// - 一行は縮めない全文。範囲の外（書名 1〜100 字、一行 1〜60 字、進み具合）は読む側が読めなくなるので書かない。
+    /// - ISBN、著者、本の id、日時、電子書籍フラグは書かない（PRD 12）。
+    public nonisolated static func makeSnapshot(currentBook: BookSnapshot?, settings: SettingsSnapshot) -> WidgetSnapshot {
+        guard let book = currentBook else {
+            return WidgetSnapshot(appearanceID: settings.appearanceID, hideOnWidgets: settings.hideOnWidgets, currentBook: nil)
+        }
+        let progress = WidgetSnapshotProgress.make(
+            unit: book.progressUnit,
+            page: book.currentPage,
+            location: book.currentLocation,
+            percent: book.currentPercent
+        )
+        let snapshotBook: WidgetSnapshotBook
+        if settings.hideOnWidgets {
+            snapshotBook = WidgetSnapshotBook(progress: progress)
+        } else {
+            let title = book.title.trimmingCharacters(in: .whitespacesAndNewlines)
+            let line = (book.lastSavedLine ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            snapshotBook = WidgetSnapshotBook(
+                title: (book.isTitlePending || !(1...100).contains(title.count)) ? nil : title,
+                isTitlePending: book.isTitlePending,
+                line: (1...60).contains(line.count) ? line : nil,
+                progress: progress
+            )
+        }
+        return WidgetSnapshot(appearanceID: settings.appearanceID, hideOnWidgets: settings.hideOnWidgets, currentBook: snapshotBook)
     }
 
     /// 読み上げの文（アプリが String Catalog を通した文を入れる。既定は design/ 7 の ja の値）。
@@ -363,14 +333,14 @@ public final class SnapshotStore {
         case .hidden:
             texts["messageKey"] = "widget.hidden"
             texts["message"] = strings.hidden
-            if let page = book?.progressDisplay, !page.isEmpty { texts["widget.page"] = page }
+            if let page = strings.progressText(book?.progress) { texts["widget.page"] = page }
         case .normal:
-            let page = book?.progressDisplay.flatMap { $0.isEmpty ? nil : $0 }
+            let page = strings.progressText(book?.progress)
             let comp = WidgetLineComposer.compose(
                 family: spec.family,
                 width: spec.width,
                 height: spec.height,
-                rawLine: book?.latestLine ?? "",
+                rawLine: book?.line ?? "",
                 pageText: page
             )
             composition = comp
@@ -379,7 +349,7 @@ public final class SnapshotStore {
         case .noLine, .noLineNoPage:
             if let book {
                 texts["widget.title"] = Self.displayTitle(for: book, strings: strings)
-                if state == .noLine, let page = book.progressDisplay { texts["widget.page"] = page }
+                if state == .noLine, let page = strings.progressText(book.progress) { texts["widget.page"] = page }
             }
         }
 
@@ -421,9 +391,8 @@ public final class SnapshotStore {
 
     /// 一行がないときの書名の所（名無しの今の本は widget.currentBookAsTitle の文）。
     private static func displayTitle(for book: WidgetSnapshotBook, strings: WidgetSpokenStrings) -> String {
-        if book.isTitlePending { return strings.currentBookAsTitle }
-        if let title = book.title, !title.isEmpty { return title }
-        return strings.hidden
+        if let title = book.title?.trimmingCharacters(in: .whitespacesAndNewlines), !book.isTitlePending, !title.isEmpty { return title }
+        return strings.currentBookAsTitle
     }
 
     /// 読み出す時刻（契約 1-7：UTC の Z とミリ秒）。

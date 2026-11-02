@@ -11,6 +11,8 @@ public struct SettingsView: View {
     @Environment(\.themePalette) private var palette
     @State private var showEntryTimePicker = false
     @State private var entryTimeInput: String = ""
+    /// 復元の進行中の印（H33：`Task` を作る前に同期で立て、本物の処理が終わったら下ろす。2度押しを弾く）。
+    @State private var restoreInFlight = false
 
     public init(model: ReadingAppModel) {
         self.model = model
@@ -333,9 +335,12 @@ public struct SettingsView: View {
 
                 HStack(spacing: ThemeSpace.s8) {
                     Button {
+                        guard !restoreInFlight else { return }
+                        restoreInFlight = true
                         Task {
                             await model.store.loadGate.pass(.storekitRestore)
                             _ = model.store.restorePurchases()
+                            restoreInFlight = false
                             model.notifyHookChanged()
                         }
                     } label: {
@@ -344,13 +349,9 @@ public struct SettingsView: View {
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("settings.restorePurchases")
-                    if model.store.loadGate.isHolding(.storekitRestore) {
-                        // design/ 5 の S-10：購入の復元中は settings.restorePurchases の横に ProgressView を出す。
-                        ProgressView()
-                            .task {
-                                try? await ContinuousClock().sleep(for: .milliseconds(300))
-                                model.store.loadGate.markShown(.storekitRestore)
-                            }
+                    // design/ 5 の S-10：購入の復元が 0.3秒を超えたら settings.restorePurchases の横に ProgressView を出す（H33）。
+                    HeldLoadProgressView(gate: model.store.loadGate, point: .storekitRestore) {
+                        EmptyView()
                     }
                 }
             }
@@ -480,6 +481,8 @@ public struct StorePurchasePreviewSheetView: View {
     public let previewAppearanceID: AppearanceID
     @Environment(\.themePalette) private var palette
     @State private var selectedPreviewID: AppearanceID
+    /// 購入の進行中の印（H33：`Task` を作る前に同期で立て、本物の処理が終わったら下ろす。2度押しを弾く）。
+    @State private var purchaseInFlight = false
 
     public init(model: ReadingAppModel, previewAppearanceID: AppearanceID) {
         self.model = model
@@ -546,19 +549,14 @@ public struct StorePurchasePreviewSheetView: View {
 
                         // W-1 の縮小見本：拡張と同じ ReadingLockScreenWidgetView を 172×76 pt の枠で描く（design/ 3 の S-10a）。
                         let previewSnapshot = WidgetSnapshot(
-                            version: 1,
-                            updatedAt: model.store.snapshotStore.currentSnapshot.updatedAt,
                             appearanceID: selectedPreviewID,
                             hideOnWidgets: false,
                             currentBook: WidgetSnapshotBook(
-                                id: model.store.currentBook?.id ?? UUID(),
                                 title: previewBookTitle,
-                                author: nil,
-                                isTitlePending: false,
-                                progressUnit: model.store.currentBook?.progressUnit ?? .page,
-                                progressDisplay: previewPage,
-                                latestLine: previewLine,
-                                latestLineId: nil
+                                line: previewLine,
+                                progress: model.store.currentBook.flatMap {
+                                    WidgetSnapshotProgress.make(unit: $0.progressUnit, page: $0.currentPage, location: $0.currentLocation, percent: $0.currentPercent)
+                                } ?? (model.store.currentBook == nil ? WidgetSnapshotProgress(unit: .page, value: 61) : nil)
                             )
                         )
                         ReadingLockScreenWidgetView(
@@ -656,19 +654,15 @@ public struct StorePurchasePreviewSheetView: View {
                 if canBuy {
                     // H33 storekit.products：商品の情報を取るまで、ボタンの位置に ProgressView（design 5 の S-10a）。
                     GatedLoadView(gate: model.store.loadGate, point: .storekitProducts) {
-                        if model.store.loadGate.isHolding(.storekitPurchase) {
-                            // H33 storekit.purchase：購入の処理の間、ボタンの位置に ProgressView。
-                            ProgressView()
-                                .frame(maxWidth: .infinity, minHeight: 44)
-                                .task {
-                                    try? await ContinuousClock().sleep(for: .milliseconds(300))
-                                    model.store.loadGate.markShown(.storekitPurchase)
-                                }
-                        } else {
+                        // H33 storekit.purchase：購入の処理が 0.3秒を超えたら、ボタンの位置に ProgressView。
+                        HeldLoadProgressView(gate: model.store.loadGate, point: .storekitPurchase, progressMinHeight: 44) {
                             Button {
+                                guard !purchaseInFlight else { return }
+                                purchaseInFlight = true
                                 Task {
                                     await model.store.loadGate.pass(.storekitPurchase)
                                     let res = model.store.purchasePlus()
+                                    purchaseInFlight = false
                                     if res == .success {
                                         model.currentScreen = .settingsMain
                                     }

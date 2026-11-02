@@ -188,6 +188,146 @@ struct ReadingStoreTests {
         #expect(json2.contains("しおり"))
     }
 
+    /// 写しのファイルの形（contracts/widget-snapshot.schema.json の書く側の決まり）。5つの場合を書いて、書いたファイルを読み直す。
+    /// 環境変数 WIDGET_SNAPSHOT_DUMP_DIR があれば、書いた JSON をそこに写す（スキーマに照らすため。テストの結果は変えない）。
+    @Test("widget-snapshot.json は契約の形（普通、hidden、名無し、一行なし、今の本なし）", arguments: [
+        "normal", "hidden", "titlePending", "noLine", "noCurrentBook"
+    ])
+    func widgetSnapshotFileShape(_ name: String) throws {
+        let dir = try makeTempDir()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let snapStore = SnapshotStore(containerDirectory: dir)
+        var book: BookSnapshot? = BookSnapshot(
+            id: ReadingDataStore.uuidBookA,
+            isbn13: "9784101025018",
+            title: "羅生門",
+            author: "芥川龍之介",
+            status: .current,
+            progressUnit: .page,
+            currentPage: 61,
+            lastSavedLine: "下人は、雨やみを待っていた。"
+        )
+        var settings = SettingsSnapshot(hideOnWidgets: false, appearanceID: .default)
+        switch name {
+        case "hidden": settings.hideOnWidgets = true
+        case "titlePending":
+            book?.title = ""
+            book?.author = ""
+            book?.isTitlePending = true
+            book?.progressUnit = .location
+            book?.currentLocation = 1450
+        case "noLine":
+            book?.lastSavedLine = nil
+            book?.progressUnit = .percent
+            book?.currentPercent = 52
+        case "noCurrentBook": book = nil
+        default: break
+        }
+        _ = try snapStore.writeSnapshot(currentBook: book, settings: settings, nowISO: "2026-11-02T21:00:00+09:00", cause: nil, recordReload: false)
+        let data = try Data(contentsOf: snapStore.fileURL)
+        if let dump = ProcessInfo.processInfo.environment["WIDGET_SNAPSHOT_DUMP_DIR"], !dump.isEmpty {
+            try data.write(to: URL(fileURLWithPath: dump).appendingPathComponent("widget-snapshot-\(name).json"))
+        }
+        let text = String(decoding: data, as: UTF8.self)
+        let object = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        #expect(object["schemaVersion"] as? Int == 1)
+        #expect(Set(object.keys).isSubset(of: ["schemaVersion", "hideOnWidgets", "appearanceID", "currentBook"]))
+        // ISBN、著者、本の id、日時は書かない（PRD 12）。null も書かない。
+        for banned in ["9784101025018", "芥川龍之介", ReadingDataStore.uuidBookA.uuidString, "2026-11-02", "null", "updatedAt", "version\""] {
+            #expect(!text.contains(banned), "\(banned)")
+        }
+        let read = WidgetSnapshotReader.read(fileURL: snapStore.fileURL)
+        let snapshot = try #require(read.snapshot)
+        switch name {
+        case "normal":
+            #expect(snapshot.currentBook == WidgetSnapshotBook(title: "羅生門", line: "下人は、雨やみを待っていた。", progress: WidgetSnapshotProgress(unit: .page, value: 61)))
+            #expect(WidgetRenderStateResolver.state(for: read) == .normal)
+        case "hidden":
+            // 書名も一行も書かない（ロック中にも読める写しのプライバシー）。
+            #expect(snapshot.currentBook == WidgetSnapshotBook(progress: WidgetSnapshotProgress(unit: .page, value: 61)))
+            #expect(!text.contains("羅生門"))
+            #expect(!text.contains("下人は"))
+            #expect(!text.contains("しおり"))
+            #expect(WidgetRenderStateResolver.state(for: read) == .hidden)
+        case "titlePending":
+            #expect(snapshot.currentBook == WidgetSnapshotBook(isTitlePending: true, line: "下人は、雨やみを待っていた。", progress: WidgetSnapshotProgress(unit: .location, value: 1450)))
+            #expect(VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: snapshot, strings: .japanese) == "今の本、位置1450。下人は、雨やみを待っていた。")
+        case "noLine":
+            #expect(snapshot.currentBook == WidgetSnapshotBook(title: "羅生門", progress: WidgetSnapshotProgress(unit: .percent, value: 52)))
+            #expect(WidgetRenderStateResolver.state(for: read) == .noLine)
+            #expect(WidgetSpokenStrings.english.progressText(snapshot.currentBook?.progress) == "52%")
+        default:
+            #expect(snapshot.currentBook == nil)
+            #expect(WidgetRenderStateResolver.state(for: read) == .empty)
+        }
+    }
+
+    /// UITEST_WIDGET_SNAPSHOT（H22）に契約の形の写しを入れたとき、hook.widget の読み出し（hookWidgetJSONString）が正しく読む。
+    /// 環境変数 WIDGET_SNAPSHOT_DUMP_DIR があれば、読み出しの JSON をそこに写す（h22 のスキーマに照らすため）。
+    @Test("H22：契約の形の写しの差し替えを hook.widget が読む", arguments: Array(zip(0..<8, [
+        WidgetRenderState.normal, .noLine, .noLineNoPage, .normal, .noLine, .noLine, .hidden, .empty
+    ])))
+    func hookWidgetReadsContractShapedOverride(_ index: Int, _ expected: WidgetRenderState) throws {
+        let dir = try makeTempDir()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let store = ReadingDataStore(containerDirectory: dir, clock: ReadingClock(nowISO8601: "2026-11-02T21:00:00+09:00"))
+        store.resetAllData()
+        store.snapshotStore.configureSpecs(from: "accessoryRectangular:172x76,systemSmall:170x170")
+        let examples = try Self.widgetSnapshotSchemaExamples()
+        store.snapshotStore.snapshotOverride = .contents(examples[index])
+        let json = store.hookWidgetJSONString()
+        if let dump = ProcessInfo.processInfo.environment["WIDGET_SNAPSHOT_DUMP_DIR"], !dump.isEmpty {
+            try Data(json.utf8).write(to: URL(fileURLWithPath: dump).appendingPathComponent("hook-widget-example\(index).json"))
+        }
+        let object = try #require(try JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: Any])
+        let renders = try #require(object["renders"] as? [[String: Any]])
+        #expect(renders.count == 2)
+        for render in renders {
+            #expect(render["snapshotSource"] as? String == "override")
+            #expect(render["state"] as? String == expected.rawValue)
+            #expect(render["unavailableReason"] == nil)
+        }
+        let label = (renders.first?["accessibility"] as? [String: Any])?["label"] as? String
+        switch index {
+        case 0: #expect(label == "羅生門、61ページ。下人は、雨やみを待っていた。")
+        case 3: #expect((renders.first?["texts"] as? [String: String])?["widget.page"] == "位置1450")
+        case 4: #expect((renders.first?["texts"] as? [String: String])?["widget.page"] == "52%")
+        case 5:
+            #expect((renders.first?["texts"] as? [String: String])?["widget.title"] == "今の本")
+            #expect(label == "今の本、45ページ")
+        case 6:
+            #expect(label == "しおり、61ページ")
+            #expect(!json.contains("羅生門"))
+        default: break
+        }
+    }
+
+    /// contracts/widget-snapshot.schema.json の examples（契約のファイルから読む）。
+    static func widgetSnapshotSchemaExamples() throws -> [String] {
+        let schemaURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("contracts/widget-snapshot.schema.json")
+        let schema = try #require(try JSONSerialization.jsonObject(with: Data(contentsOf: schemaURL)) as? [String: Any])
+        let examples = try #require(schema["examples"] as? [Any])
+        return try examples.map { String(decoding: try JSONSerialization.data(withJSONObject: $0), as: UTF8.self) }
+    }
+
+    @Test("前の版の形の写しが残っていても落ちず、次に書くまで読めない（version）、書けば読める")
+    func legacyWidgetSnapshotFile() throws {
+        let dir = try makeTempDir()
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let shared = dir.appendingPathComponent("Shared", isDirectory: true)
+        try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
+        let legacy = #"{"appearanceID":"default","currentBook":{"id":"550e8400-e29b-41d4-a716-446655440000","isTitlePending":false,"latestLine":"下人は","progressDisplay":"p.61","progressUnit":"page","title":"しおり"},"hideOnWidgets":true,"updatedAt":"2026-10-18T21:00:00+09:00","version":1}"#
+        try Data(legacy.utf8).write(to: shared.appendingPathComponent("widget-snapshot.json"))
+        let snapStore = SnapshotStore(containerDirectory: dir)
+        #expect(snapStore.currentSnapshot == WidgetSnapshot())
+        #expect(WidgetSnapshotReader.read(fileURL: snapStore.fileURL) == .unavailable(.version))
+        _ = try snapStore.writeSnapshot(currentBook: nil, settings: SettingsSnapshot(), nowISO: "x", cause: nil, recordReload: false)
+        #expect(WidgetSnapshotReader.read(fileURL: snapStore.fileURL).snapshot == WidgetSnapshot())
+    }
+
     @Test("H22：差し替え（@missing、壊れた写し）は unavailable、枠の誤りは返す、写しを変えない保存は再読み込みしない")
     func snapshotStoreUnavailableAndReloadPolicy() throws {
         let dir = try makeTempDir()

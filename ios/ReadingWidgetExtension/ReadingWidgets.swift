@@ -20,7 +20,7 @@ public struct ReadingWidgetTimelineEntry: TimelineEntry, Sendable {
     /// 写しを読んだ結果から作る。読めないときの写しは空（今の本なし）で、描くのは unavailable。
     public init(date: Date, result: WidgetSnapshotReadResult) {
         self.date = date
-        self.snapshot = result.snapshot ?? WidgetSnapshot(updatedAt: "1970-01-01T00:00:00Z")
+        self.snapshot = result.snapshot ?? WidgetSnapshot()
         self.unavailableReason = result.unavailableReason
     }
 }

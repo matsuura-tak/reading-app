@@ -29,13 +29,7 @@ public enum ReadingSharedContainer {
         if let data = try? Data(contentsOf: url) {
             return WidgetSnapshot.decodeForWidgetRenderer(from: data)
         }
-        return WidgetSnapshot(
-            version: 1,
-            updatedAt: "1970-01-01T00:00:00Z",
-            appearanceID: .default,
-            hideOnWidgets: false,
-            currentBook: nil
-        )
+        return WidgetSnapshot()
     }
 }
 

@@ -4124,6 +4124,60 @@
         }
       }
     },
+    "page.short": {
+      "comment": "単位が page のときの場所の短い形（例：p.61）。S-1、S-4、W-1、W-2、W-3。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "p.%lld"
+          }
+        }
+      }
+    },
+    "location.short": {
+      "comment": "単位が location のときの場所の短い形（例：位置1450）。W-1、W-2、W-3。AC-141。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置%lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loc %lld"
+          }
+        }
+      }
+    },
+    "percent.short": {
+      "comment": "単位が percent のときの場所の短い形（例：52%）。W-1、W-2、W-3。AC-141。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld%%"
+          }
+        }
+      }
+    },
     "widget.spoken": {
       "comment": "W-1、W-2、W-3 の読み上げ（1=書名、2=場所、3=一行）。design/ 7",
       "extractionState": "manual",

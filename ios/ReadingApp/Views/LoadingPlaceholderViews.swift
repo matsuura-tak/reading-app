@@ -52,6 +52,37 @@ struct GatedLoadView<Content: View, Placeholder: View>: View {
     }
 }
 
+/// ボタンの action が門（H33）で止められている間、0.3秒（ContinuousClock）を超えてから ProgressView に替える入れ物。
+/// 出したときに `markShown` する（`hold.<対象>=shown`）。止めていないとき（Release とふつうの起動）は中身をそのまま出す。
+struct HeldLoadProgressView<Content: View>: View {
+    let gate: LoadHoldGate
+    let point: LoadHoldGate.Point
+    var progressMinHeight: CGFloat?
+    @ViewBuilder let content: () -> Content
+    @State private var isProgressVisible = false
+
+    var body: some View {
+        let holding = gate.isHolding(point)
+        Group {
+            if holding && isProgressVisible {
+                ProgressView()
+                    .frame(maxWidth: progressMinHeight == nil ? nil : .infinity, minHeight: progressMinHeight)
+                    .onAppear { gate.markShown(point) }
+            } else {
+                content()
+            }
+        }
+        .task(id: holding) {
+            isProgressVisible = false
+            guard holding else { return }
+            try? await ContinuousClock().sleep(for: .milliseconds(300))
+            if !Task.isCancelled {
+                isProgressVisible = true
+            }
+        }
+    }
+}
+
 /// S-1 の読み込み中：書名と一行の形の灰の帯（redacted）。帯の文字は形を作るためだけのもので、画面には出ない。
 struct BookmarkLoadingPlaceholderView: View {
     @Environment(\.themePalette) private var palette

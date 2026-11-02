@@ -80,11 +80,11 @@ public struct WhereStoppedIntent: AppIntent {
         guard let book = snapshot.currentBook else {
             return String(localized: "intent.whereStopped.noCurrent")
         }
-        guard let rawProgress = book.progressDisplay?.trimmingCharacters(in: .whitespacesAndNewlines),
-              let value = Int(rawProgress.filter(\.isNumber)) else {
+        guard let progress = book.progress else {
             return String(localized: "intent.whereStopped.noPage")
         }
-        switch book.progressUnit {
+        let value = progress.value
+        switch progress.unit {
         case .page:
             return String(format: String(localized: "intent.whereStopped.page"), value)
         case .location:

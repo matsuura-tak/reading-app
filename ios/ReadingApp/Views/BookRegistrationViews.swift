@@ -71,6 +71,8 @@ public struct BookAddFlowSheetView: View {
     /// H33 の `catalog.lookup` の門で止めている間 true（Release とふつうの起動では常に false）。
     @State private var catalogLookupPending = false
     @State private var catalogLookupPlaceholderVisible = false
+    /// `catalog.lookup` を止めている間に来た2つ目以降の読み取り（S-8a のバーコード）。放したあと、来た順に引く。
+    @State private var queuedCatalogLookups: [@MainActor () -> Void] = []
     @State private var selectedSearchEntry: H20BiblioItem?
     @State private var manualTitle: String = ""
     @State private var manualAuthor: String = ""
@@ -760,6 +762,11 @@ public struct BookAddFlowSheetView: View {
     /// `coalesce` が true（S-8c の書名の候補）なら、止めている間の入力では新しく引かず、放したあとの `perform` が最新の入力で引く。
     private func runCatalogLookup(coalesce: Bool, perform: @escaping @MainActor () -> Void) {
         if coalesce && catalogLookupPending { return }
+        if catalogLookupPending {
+            // 止めている間の2つ目は素通りさせず待たせる（1回目を止めたまま帯が消えないように。G3 のコードの reviewer r1 の提案）。
+            queuedCatalogLookups.append(perform)
+            return
+        }
         let gate = model.store.loadGate
         guard gate.willHold(.catalogLookup) else {
             perform()
@@ -780,6 +787,9 @@ public struct BookAddFlowSheetView: View {
             catalogLookupPending = false
             catalogLookupPlaceholderVisible = false
             perform()
+            let queued = queuedCatalogLookups
+            queuedCatalogLookups = []
+            for next in queued { next() }
         }
     }
 

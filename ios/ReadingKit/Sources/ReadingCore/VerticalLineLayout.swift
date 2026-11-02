@@ -276,15 +276,18 @@ public enum VerticalLineLayout: Sendable {
             title = strings.hidden
         } else if book.isTitlePending {
             title = strings.currentBookAsTitle
-        } else if let bookTitle = book.title, !bookTitle.isEmpty {
+        } else if let bookTitle = book.title?.trimmingCharacters(in: .whitespacesAndNewlines), !bookTitle.isEmpty {
             title = bookTitle
         } else {
-            title = strings.hidden
+            // 書名の所は、title がなければ widget.currentBookAsTitle（契約の「出し方」）。
+            title = strings.currentBookAsTitle
         }
-        let place = strings.spokenProgress(unit: book.progressUnit, display: book.progressDisplay)
+        let place = strings.spokenProgress(book.progress)
         var line: String?
-        if !snapshot.hideOnWidgets, let raw = book.latestLine {
-            let stripped = stripVerticalPresentationForms(raw).trimmingCharacters(in: .whitespacesAndNewlines)
+        if !snapshot.hideOnWidgets, let raw = book.line {
+            // 写しは全文を持つ。読み上げはウィジェットに描く一行（25字に縮めたもの）と同じにする（G3 r2 までと同じ文）。
+            let shown = shortenForWidget(raw).text
+            let stripped = stripVerticalPresentationForms(shown).trimmingCharacters(in: .whitespacesAndNewlines)
             line = stripped.isEmpty ? nil : stripped
         }
         return strings.spokenLabel(title: title, place: place, line: line)

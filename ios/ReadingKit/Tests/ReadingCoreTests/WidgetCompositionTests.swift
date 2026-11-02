@@ -174,19 +174,13 @@ struct WidgetCompositionTests {
 
 @Suite("Widget の状態と写しの読み方")
 struct WidgetRenderStateTests {
-    static func snapshot(hide: Bool = false, line: String? = nil, page: String? = nil, book: Bool = true) -> WidgetSnapshot {
+    static func snapshot(hide: Bool = false, line: String? = nil, page: Int? = nil, book: Bool = true) -> WidgetSnapshot {
         WidgetSnapshot(
-            updatedAt: "2026-11-02T12:00:00Z",
             hideOnWidgets: hide,
             currentBook: book ? WidgetSnapshotBook(
-                id: UUID(),
-                title: hide ? "しおり" : "羅生門",
-                author: nil,
-                isTitlePending: false,
-                progressUnit: .page,
-                progressDisplay: page,
-                latestLine: line,
-                latestLineId: line == nil ? nil : UUID()
+                title: hide ? nil : "羅生門",
+                line: hide ? nil : line,
+                progress: page.map { WidgetSnapshotProgress(unit: .page, value: $0) }
             ) : nil
         )
     }
@@ -195,9 +189,9 @@ struct WidgetRenderStateTests {
     func stateTable() {
         #expect(WidgetRenderStateResolver.state(for: .unavailable(.missing)) == .unavailable)
         #expect(WidgetRenderStateResolver.state(for: Self.snapshot(book: false)) == .empty)
-        #expect(WidgetRenderStateResolver.state(for: Self.snapshot(hide: true, page: "p.61")) == .hidden)
-        #expect(WidgetRenderStateResolver.state(for: Self.snapshot(line: "下人は、", page: "p.61")) == .normal)
-        #expect(WidgetRenderStateResolver.state(for: Self.snapshot(page: "p.61")) == .noLine)
+        #expect(WidgetRenderStateResolver.state(for: Self.snapshot(hide: true, page: 61)) == .hidden)
+        #expect(WidgetRenderStateResolver.state(for: Self.snapshot(line: "下人は、", page: 61)) == .normal)
+        #expect(WidgetRenderStateResolver.state(for: Self.snapshot(page: 61)) == .noLine)
         #expect(WidgetRenderStateResolver.state(for: Self.snapshot()) == .noLineNoPage)
     }
 
@@ -206,12 +200,12 @@ struct WidgetRenderStateTests {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         #expect(WidgetSnapshotReader.read(fileURL: dir.appendingPathComponent("none.json")) == .unavailable(.missing))
         #expect(WidgetSnapshotReader.read(data: Data("{".utf8)) == .unavailable(.malformed))
-        #expect(WidgetSnapshotReader.read(data: Data(#"{"version":2,"updatedAt":"x","appearanceID":"default","hideOnWidgets":false}"#.utf8)) == .unavailable(.version))
-        let hiddenWithLine = #"{"version":1,"updatedAt":"x","appearanceID":"default","hideOnWidgets":true,"currentBook":{"id":"00000000-0000-0000-0000-000000000001","title":"しおり","isTitlePending":false,"progressUnit":"page","latestLine":"一行"}}"#
+        #expect(WidgetSnapshotReader.read(data: Data(#"{"schemaVersion":2,"appearanceID":"default","hideOnWidgets":false}"#.utf8)) == .unavailable(.version))
+        let hiddenWithLine = #"{"schemaVersion":1,"appearanceID":"default","hideOnWidgets":true,"currentBook":{"line":"一行","progress":{"unit":"page","value":61}}}"#
         #expect(WidgetSnapshotReader.read(data: Data(hiddenWithLine.utf8)) == .unavailable(.hiddenConflict))
-        let tooLong = #"{"version":1,"updatedAt":"x","appearanceID":"default","hideOnWidgets":false,"currentBook":{"id":"00000000-0000-0000-0000-000000000001","title":"羅生門","isTitlePending":false,"progressUnit":"page","progressDisplay":"012345678901234567890"}}"#
+        let tooLong = #"{"schemaVersion":1,"appearanceID":"default","hideOnWidgets":false,"currentBook":{"title":"羅生門","progress":{"unit":"page","value":10000}}}"#
         #expect(WidgetSnapshotReader.read(data: Data(tooLong.utf8)) == .unavailable(.range))
-        let encoded = try JSONEncoder().encode(Self.snapshot(line: "一行", page: "p.1"))
+        let encoded = try JSONEncoder().encode(Self.snapshot(line: "一行", page: 1))
         #expect(WidgetSnapshotReader.read(data: encoded).snapshot != nil)
     }
 }

@@ -68,13 +68,10 @@ public enum WidgetSnapshotReader {
         case .fieldConstraintViolation:
             return .range
         case .privacyInvariantViolation:
-            // hideOnWidgets が真なのに一行がある（6）。一行の id だけがあるのは型の誤り（3）。
-            let hidden = (try? JSONDecoder().decode(WidgetSnapshot.self, from: data))?.hideOnWidgets ?? false
-            return hidden ? .hiddenConflict : .malformed
+            return .hiddenConflict
         case .titlePendingInvariantViolation:
-            // 名無しでない本の書名が0字は範囲の外（5）。名無しなのに書名がある（7）は h22 の enum にないので malformed。
-            let book = (try? JSONDecoder().decode(WidgetSnapshot.self, from: data))?.currentBook
-            return (book?.isTitlePending ?? false) ? .malformed : .range
+            // 名無しなのに書名がある（7）は h22 の enum にないので malformed（G3 r2 の指揮役の裁定 3）。
+            return .malformed
         }
     }
 }
@@ -89,8 +86,8 @@ public enum WidgetRenderStateResolver {
     public nonisolated static func state(for snapshot: WidgetSnapshot) -> WidgetRenderState {
         guard let book = snapshot.currentBook else { return .empty }
         if snapshot.hideOnWidgets { return .hidden }
-        if let line = book.latestLine, !line.isEmpty { return .normal }
-        if let page = book.progressDisplay, !page.isEmpty { return .noLine }
+        if let line = book.line, !line.isEmpty { return .normal }
+        if book.progress != nil { return .noLine }
         return .noLineNoPage
     }
 }

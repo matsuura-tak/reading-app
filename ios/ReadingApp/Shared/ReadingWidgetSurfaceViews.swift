@@ -53,8 +53,16 @@ public enum ReadingWidgetStrings {
             percentFormat: String(localized: "percent.spoken"),
             spokenFormat: String(localized: "widget.spoken"),
             spokenNoPageFormat: String(localized: "widget.spoken.noPage"),
-            spokenNoLineFormat: String(localized: "widget.spoken.noLine")
+            spokenNoLineFormat: String(localized: "widget.spoken.noLine"),
+            pageShortFormat: String(localized: "page.short"),
+            locationShortFormat: String(localized: "location.short"),
+            percentShortFormat: String(localized: "percent.short")
         )
+    }
+
+    /// 進み具合の短い形（design/ 7 の `page.short`、`location.short`、`percent.short`。AC-141）。なければ nil。
+    public static func progressText(for book: WidgetSnapshotBook?) -> String? {
+        spoken.progressText(book?.progress)
     }
 
     /// W-1・W-2 の全体の読み上げ（書名、場所、一行。著者なし）。拡張、H22、アプリの中の見本（S-5、S-10a）が同じ文を使う。
@@ -101,9 +109,9 @@ public enum ReadingWidgetStrings {
     /// 書名の所に出す文（隠す設定、名無しの今の本を含む。design/ 5 の W-1〜W-3）。
     public static func displayTitle(for book: WidgetSnapshotBook, hideOnWidgets: Bool) -> String {
         if hideOnWidgets { return hidden }
-        if book.isTitlePending { return currentBookAsTitle }
-        if let title = book.title, !title.isEmpty { return title }
-        return hidden
+        if !book.isTitlePending, let title = book.title?.trimmingCharacters(in: .whitespacesAndNewlines), !title.isEmpty { return title }
+        // 書名の所は、title がなければ widget.currentBookAsTitle（contracts/widget-snapshot.schema.json の「出し方」）。
+        return currentBookAsTitle
     }
 
     public static func readingSince(_ startedAt: Date) -> String {
@@ -143,13 +151,13 @@ private func lineComposition(
     guard unavailableReason == nil,
           WidgetRenderStateResolver.state(for: snapshot) == .normal,
           let book = snapshot.currentBook,
-          let line = book.latestLine else { return nil }
+          let line = book.line else { return nil }
     return WidgetLineComposer.compose(
         family: family,
         width: Double(size.width),
         height: Double(size.height),
         rawLine: line,
-        pageText: book.progressDisplay
+        pageText: ReadingWidgetStrings.progressText(for: book)
     )
 }
 
@@ -207,7 +215,7 @@ public struct ReadingLockScreenWidgetView: View {
                 Text(ReadingWidgetStrings.unavailable)
             } else if let book = snapshot.currentBook {
                 let title = ReadingWidgetStrings.displayTitle(for: book, hideOnWidgets: snapshot.hideOnWidgets)
-                if let progress = book.progressDisplay, !progress.isEmpty {
+                if let progress = ReadingWidgetStrings.progressText(for: book) {
                     Label("\(title) \(progress)", systemImage: "book")
                 } else {
                     Label(title, systemImage: "book")
@@ -219,7 +227,7 @@ public struct ReadingLockScreenWidgetView: View {
             VStack(spacing: 2) {
                 Image(systemName: "bookmark.fill")
                     .font(.caption)
-                Text(unavailableReason == nil ? (snapshot.currentBook?.progressDisplay ?? ReadingWidgetStrings.hidden) : "—")
+                Text(unavailableReason == nil ? (ReadingWidgetStrings.progressText(for: snapshot.currentBook) ?? ReadingWidgetStrings.hidden) : "—")
                     .font(.caption2.monospacedDigit())
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
@@ -254,7 +262,7 @@ public struct ReadingLockScreenWidgetView: View {
                 .lineLimit(3)
                 .minimumScaleFactor(0.6)
         case .normal:
-            let progress = snapshot.currentBook?.progressDisplay ?? ""
+            let progress = ReadingWidgetStrings.progressText(for: snapshot.currentBook) ?? ""
             HStack(alignment: .top, spacing: ReadingWidgetMetrics.bandGap) {
                 placeBand(progress)
                 if let composition, composition.grid == nil {
@@ -271,7 +279,7 @@ public struct ReadingLockScreenWidgetView: View {
             }
         case .hidden, .noLine, .noLineNoPage:
             if let book = snapshot.currentBook {
-                let progress = book.progressDisplay ?? ""
+                let progress = ReadingWidgetStrings.progressText(for: book) ?? ""
                 VStack(alignment: .leading, spacing: 2) {
                     Text(ReadingWidgetStrings.displayTitle(for: book, hideOnWidgets: snapshot.hideOnWidgets))
                         .font(.headline)
@@ -346,7 +354,7 @@ public struct ReadingHomeSmallWidgetView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         case .normal, .hidden, .noLine, .noLineNoPage:
             let book = snapshot.currentBook
-            let progress = book?.progressDisplay ?? ""
+            let progress = ReadingWidgetStrings.progressText(for: book) ?? ""
             VStack(alignment: .leading, spacing: ReadingWidgetMetrics.homeSmallPlaceRowGap) {
                 if state == .normal {
                     if let composition, composition.grid == nil {
@@ -388,8 +396,9 @@ public enum ReadingLiveActivityStateFactory {
         return ReadingActivityAttributes.ContentState(
             mode: "waiting",
             title: ReadingWidgetStrings.displayTitle(for: book, hideOnWidgets: snapshot.hideOnWidgets),
-            line: snapshot.hideOnWidgets ? nil : book.latestLine,
-            progressText: book.progressDisplay,
+            // 写しは全文を持つ。W-3 の一行はウィジェットと同じ25字に縮めたもの（G3 r2 までと同じ）。
+            line: snapshot.hideOnWidgets ? nil : book.line.map { VerticalLineLayout.shortenForWidget($0).text },
+            progressText: ReadingWidgetStrings.progressText(for: book),
             summaryText: nil,
             hideOnWidgets: snapshot.hideOnWidgets
         )
@@ -538,19 +547,12 @@ public enum ReadingWidgetPlaceholder {
     /// TimelineProvider.placeholder(in:) の項目。描くときは .redacted(reason: .placeholder) で灰の帯にし、本の文を出さない
     /// （design/ 5 の W-1、W-2 の読み込み中）。文字は帯の形を作るためだけのもので、利用者の本の値ではない。
     public static let snapshot = WidgetSnapshot(
-        version: 1,
-        updatedAt: "1970-01-01T00:00:00Z",
         appearanceID: .default,
         hideOnWidgets: false,
         currentBook: WidgetSnapshotBook(
-            id: UUID(uuidString: "00000000-0000-0000-0000-000000000000") ?? UUID(),
             title: String(repeating: "■", count: 4),
-            author: nil,
-            isTitlePending: false,
-            progressUnit: .page,
-            progressDisplay: "p.000",
-            latestLine: String(repeating: "■", count: 14),
-            latestLineId: nil
+            line: String(repeating: "■", count: 14),
+            progress: WidgetSnapshotProgress(unit: .page, value: 100)
         )
     )
 }

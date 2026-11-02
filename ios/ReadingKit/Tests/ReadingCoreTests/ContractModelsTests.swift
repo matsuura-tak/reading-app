@@ -5,179 +5,60 @@ import Testing
 @Suite("Contract Models & Entry URL Tests")
 struct ContractModelsTests {
 
-    @Test("WidgetSnapshot decodes all 4 contract examples and round-trips")
-    func widgetSnapshotContractExamples() throws {
-        let example1 = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:15:00Z",
-          "appearanceID": "default",
-          "hideOnWidgets": false,
-          "currentBook": {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "title": "コンビニ人間",
-            "author": "村田沙耶香",
-            "isTitlePending": false,
-            "progressUnit": "page",
-            "progressDisplay": "p. 142",
-            "latestLine": "世界の部品になることで、わたしはようやく息ができた",
-            "latestLineId": "660e8400-e29b-41d4-a716-446655440001"
-          }
-        }
-        """
-        let snap1 = try WidgetSnapshot.decodeAndValidate(from: Data(example1.utf8))
-        #expect(snap1.version == 1)
-        #expect(snap1.appearanceID == .default)
-        #expect(snap1.hideOnWidgets == false)
-        let book1 = try #require(snap1.currentBook)
-        #expect(book1.title == "コンビニ人間")
-        #expect(book1.author == "村田沙耶香")
-        #expect(book1.progressUnit == .page)
-        #expect(book1.progressDisplay == "p. 142")
-        #expect(book1.latestLine?.count == 25)
+    /// contracts/widget-snapshot.schema.json の examples の8つ（写し）。
+    static let widgetSnapshotExamples: [String] = [
+        #"{"schemaVersion":1,"hideOnWidgets":false,"appearanceID":"default","currentBook":{"title":"羅生門","line":"下人は、雨やみを待っていた。","progress":{"unit":"page","value":61}}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":false,"appearanceID":"default","currentBook":{"title":"檸檬","progress":{"unit":"page","value":120}}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"檸檬"}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":false,"appearanceID":"kinari","currentBook":{"title":"夜のピクニック","line":"歩行祭は、いつも同じ道を歩く。","progress":{"unit":"location","value":1450}}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"夜のピクニック","progress":{"unit":"percent","value":52}}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"isTitlePending":true,"progress":{"unit":"page","value":45}}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":true,"appearanceID":"default","currentBook":{"progress":{"unit":"page","value":61}}}"#,
+        #"{"schemaVersion":1,"hideOnWidgets":false,"appearanceID":"default"}"#
+    ]
 
-        let example2 = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:16:00Z",
-          "appearanceID": "dark",
-          "hideOnWidgets": true,
-          "currentBook": {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "title": "コンビニ人間",
-            "author": "村田沙耶香",
-            "isTitlePending": false,
-            "progressUnit": "page",
-            "progressDisplay": "p. 142",
-            "latestLine": null,
-            "latestLineId": null
-          }
-        }
-        """
-        let snap2 = try WidgetSnapshot.decodeAndValidate(from: Data(example2.utf8))
-        #expect(snap2.appearanceID == .dark)
-        #expect(snap2.hideOnWidgets == true)
-        #expect(snap2.currentBook?.latestLine == nil)
-        #expect(snap2.currentBook?.latestLineId == nil)
-
-        let example3 = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:17:00Z",
-          "appearanceID": "light",
-          "hideOnWidgets": false,
-          "currentBook": {
-            "id": "770e8400-e29b-41d4-a716-446655440002",
-            "title": null,
-            "author": null,
-            "isTitlePending": true,
-            "progressUnit": "page",
-            "progressDisplay": null,
-            "latestLine": null,
-            "latestLineId": null
-          }
-        }
-        """
-        let snap3 = try WidgetSnapshot.decodeAndValidate(from: Data(example3.utf8))
-        #expect(snap3.appearanceID == .light)
-        #expect(snap3.currentBook?.isTitlePending == true)
-        #expect(snap3.currentBook?.title == nil)
-
-        let example4 = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:18:00Z",
-          "appearanceID": "default",
-          "hideOnWidgets": false,
-          "currentBook": null
-        }
-        """
-        let snap4 = try WidgetSnapshot.decodeAndValidate(from: Data(example4.utf8))
-        #expect(snap4.currentBook == nil)
-
-        // Round-trip encode & decode
-        let encoded = try JSONEncoder().encode(snap1)
+    @Test("WidgetSnapshot decodes the contract examples and round-trips", arguments: ContractModelsTests.widgetSnapshotExamples)
+    func widgetSnapshotContractExamples(_ json: String) throws {
+        let snapshot = try WidgetSnapshot.decodeAndValidate(from: Data(json.utf8))
+        #expect(snapshot.schemaVersion == 1)
+        let encoded = try JSONEncoder().encode(snapshot)
         let roundTripped = try WidgetSnapshot.decodeAndValidate(from: encoded)
-        #expect(roundTripped == snap1)
+        #expect(roundTripped == snapshot)
+        // 書いた形は契約の項目だけ（知らない項目を足さない、null を書かない）。
+        let object = try #require(try JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        #expect(Set(object.keys).isSubset(of: ["schemaVersion", "hideOnWidgets", "appearanceID", "currentBook"]))
+        if let book = object["currentBook"] as? [String: Any] {
+            #expect(Set(book.keys).isSubset(of: ["title", "isTitlePending", "line", "progress"]))
+            #expect(!encoded.contains(Data("null".utf8)))
+        }
     }
 
-    @Test("WidgetSnapshot validation catches version!=1, privacy violation, titlePending violation, and unknown appearance fallback")
-    func widgetSnapshotValidationErrorsAndFallback() throws {
-        let wrongVersion = """
-        {
-          "version": 2,
-          "updatedAt": "2026-10-24T22:18:00Z",
-          "appearanceID": "default",
-          "hideOnWidgets": false,
-          "currentBook": null
+    @Test("WidgetSnapshot の読む側の決まり（4）〜（7）と、前の版の形")
+    func widgetSnapshotReaderRules() throws {
+        func reason(_ json: String) -> WidgetUnavailableReason? {
+            WidgetSnapshotReader.read(data: Data(json.utf8)).unavailableReason
         }
-        """
-        #expect(throws: WidgetSnapshotValidationError.unsupportedVersion(2)) {
-            _ = try WidgetSnapshot.decodeAndValidate(from: Data(wrongVersion.utf8))
-        }
-        // Widget renderer safe fallback returns empty currentBook without crashing
-        let fallback = WidgetSnapshot.decodeForWidgetRenderer(from: Data(wrongVersion.utf8))
-        #expect(fallback.currentBook == nil)
-        #expect(fallback.version == 1)
-
-        // Unknown appearanceID falls back to .default
-        let unknownAppearance = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:18:00Z",
-          "appearanceID": "sepia-future-theme",
-          "hideOnWidgets": false,
-          "currentBook": null
-        }
-        """
-        let decodedAppearance = try WidgetSnapshot.decodeAndValidate(from: Data(unknownAppearance.utf8))
-        #expect(decodedAppearance.appearanceID == .default)
-
-        // Privacy violation: hideOnWidgets == true with non-nil latestLine
-        let privacyViolation = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:16:00Z",
-          "appearanceID": "dark",
-          "hideOnWidgets": true,
-          "currentBook": {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "title": "コンビニ人間",
-            "author": "村田沙耶香",
-            "isTitlePending": false,
-            "progressUnit": "page",
-            "progressDisplay": "p. 142",
-            "latestLine": "漏れてはいけない1行",
-            "latestLineId": null
-          }
-        }
-        """
-        #expect(throws: WidgetSnapshotValidationError.privacyInvariantViolation) {
-            _ = try WidgetSnapshot.decodeAndValidate(from: Data(privacyViolation.utf8))
-        }
-
-        // Title pending violation: isTitlePending == true with non-nil title
-        let pendingViolation = """
-        {
-          "version": 1,
-          "updatedAt": "2026-10-24T22:17:00Z",
-          "appearanceID": "light",
-          "hideOnWidgets": false,
-          "currentBook": {
-            "id": "770e8400-e29b-41d4-a716-446655440002",
-            "title": "題名あり",
-            "author": null,
-            "isTitlePending": true,
-            "progressUnit": "page",
-            "progressDisplay": null,
-            "latestLine": null,
-            "latestLineId": null
-          }
-        }
-        """
-        #expect(throws: WidgetSnapshotValidationError.titlePendingInvariantViolation) {
-            _ = try WidgetSnapshot.decodeAndValidate(from: Data(pendingViolation.utf8))
-        }
+        #expect(reason(#"{"schemaVersion":2,"hideOnWidgets":false}"#) == .version)
+        // 前の版の形（G3 r2 までのアプリが書いた形）は、次に書くまで読めない（version）。落ちない。
+        #expect(reason(#"{"version":1,"updatedAt":"2026-10-18T21:00:00+09:00","appearanceID":"default","hideOnWidgets":false,"currentBook":{"id":"550e8400-e29b-41d4-a716-446655440000","title":"羅生門","isTitlePending":false,"progressUnit":"page","progressDisplay":"p.61","latestLine":"下人は"}}"#) == .version)
+        #expect(reason(#"{"schemaVersion":1}"#) == .malformed)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"isTitlePending":false,"title":"羅生門"}}"#) == .malformed)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"isTitlePending":true,"title":"羅生門"}}"#) == .malformed)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":true,"currentBook":{"title":"羅生門","progress":{"unit":"page","value":61}}}"#) == .hiddenConflict)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":true,"currentBook":{"line":"下人は"}}"#) == .hiddenConflict)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":true,"currentBook":{"isTitlePending":true}}"#) == .hiddenConflict)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"   "}}"#) == .range)
+        #expect(reason("{\"schemaVersion\":1,\"hideOnWidgets\":false,\"currentBook\":{\"title\":\"\(String(repeating: "あ", count: 101))\"}}") == .range)
+        #expect(reason("{\"schemaVersion\":1,\"hideOnWidgets\":false,\"currentBook\":{\"title\":\"a\",\"line\":\"\(String(repeating: "あ", count: 61))\"}}") == .range)
+        #expect(reason("{\"schemaVersion\":1,\"hideOnWidgets\":false,\"currentBook\":{\"title\":\"a\",\"line\":\"\(String(repeating: "あ", count: 60))\"}}") == nil)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"a","progress":{"unit":"page","value":0}}}"#) == .range)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"a","progress":{"unit":"percent","value":101}}}"#) == .range)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"a","progress":{"unit":"percent","value":0}}}"#) == nil)
+        #expect(reason(#"{"schemaVersion":1,"hideOnWidgets":false,"currentBook":{"title":"a","progress":{"unit":"chapter","value":3}}}"#) == .range)
+        // 読み流す：知らない項目、知らない見た目の id。
+        let lenient = WidgetSnapshotReader.read(data: Data(#"{"schemaVersion":1,"hideOnWidgets":false,"appearanceID":"neon","future":1,"currentBook":{"title":"a","extra":true}}"#.utf8))
+        #expect(lenient.snapshot?.appearanceID == .default)
+        #expect(lenient.snapshot?.currentBook?.title == "a")
     }
 
     @Test("All 7 hook schemas decode their contract examples cleanly")

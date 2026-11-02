@@ -58,20 +58,16 @@ struct WidgetSpokenLabelTests {
     ]
 
     private func snapshot(_ c: Case) -> WidgetSnapshot {
-        WidgetSnapshot(
-            version: 1,
-            updatedAt: "2026-11-02T12:00:00Z",
+        // 写しは progress{unit,value}（契約）。表の場所の表示から値を取る。隠す設定の場合も、読み上げが書名と一行を読まないことを確かめるため渡す。
+        let value = c.progress.flatMap { Int($0.filter(\.isNumber)) }
+        return WidgetSnapshot(
             appearanceID: .default,
             hideOnWidgets: c.hide,
             currentBook: WidgetSnapshotBook(
-                id: UUID(),
                 title: c.title,
-                author: "芥川龍之介",
                 isTitlePending: c.isTitlePending,
-                progressUnit: c.unit,
-                progressDisplay: c.progress,
-                latestLine: c.line,
-                latestLineId: nil
+                line: c.line,
+                progress: value.map { WidgetSnapshotProgress(unit: c.unit, value: $0) }
             )
         )
     }
@@ -91,7 +87,7 @@ struct WidgetSpokenLabelTests {
 
     @Test("今の本なしは widget.empty の文")
     func emptyLabel() {
-        let empty = WidgetSnapshot(version: 1, updatedAt: "2026-11-02T12:00:00Z", appearanceID: .default, hideOnWidgets: false, currentBook: nil)
+        let empty = WidgetSnapshot(appearanceID: .default, hideOnWidgets: false, currentBook: nil)
         #expect(VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: empty, strings: .japanese) == "今の本を選ぶと、ここに続きの一行が出ます。")
         #expect(VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: empty, strings: .english) == "Choose a book in Yomuma to see your place here.")
     }

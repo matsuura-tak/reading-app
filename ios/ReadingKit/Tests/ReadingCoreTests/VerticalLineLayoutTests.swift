@@ -102,27 +102,20 @@ struct VerticalLineLayoutTests {
         #expect(VerticalLineLayout.containsJapaneseScript(digitsOnly) == false)
 
         let snapshot = WidgetSnapshot(
-            version: 1,
-            updatedAt: "2026-10-25T12:00:00Z",
             appearanceID: .default,
             hideOnWidgets: false,
             currentBook: WidgetSnapshotBook(
-                id: UUID(),
                 title: "Pride and Prejudice",
-                author: "Jane Austen",
-                isTitlePending: false,
-                progressUnit: .page,
-                progressDisplay: "p. 12",
-                latestLine: englishLine,
-                latestLineId: UUID()
+                line: englishLine,
+                progress: WidgetSnapshotProgress(unit: .page, value: 12)
             )
         )
         let comp = WidgetLineComposer.compose(
             family: .accessoryRectangular,
             width: 172,
             height: 76,
-            rawLine: try #require(snapshot.currentBook?.latestLine),
-            pageText: snapshot.currentBook?.progressDisplay
+            rawLine: try #require(snapshot.currentBook?.line),
+            pageText: WidgetSpokenStrings.english.progressText(snapshot.currentBook?.progress)
         )
         #expect(comp.orientation == .horizontal)
         #expect(comp.grid == nil)
@@ -132,19 +125,12 @@ struct VerticalLineLayoutTests {
     @Test("VoiceOver accessibility label never contains vertical presentation forms U+FE10..U+FE4F (AC-99)")
     func voiceOverLabelExcludesVerticalForms() {
         let snapshot = WidgetSnapshot(
-            version: 1,
-            updatedAt: "2026-10-25T12:00:00Z",
             appearanceID: .default,
             hideOnWidgets: false,
             currentBook: WidgetSnapshotBook(
-                id: UUID(),
                 title: "コンビニ人間",
-                author: "村田沙耶香",
-                isTitlePending: false,
-                progressUnit: .page,
-                progressDisplay: "p. 142",
-                latestLine: "「世界の部品になることで、わたしはようやく…」",
-                latestLineId: UUID()
+                line: "「世界の部品になることで、わたしはようやく…」",
+                progress: WidgetSnapshotProgress(unit: .page, value: 142)
             )
         )
         let label = VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: snapshot)

@@ -199,7 +199,7 @@ public struct UITestHookWidgetShowcaseView: View {
     }
 
     private var snapshot: WidgetSnapshot {
-        readResult.snapshot ?? WidgetSnapshot(updatedAt: "1970-01-01T00:00:00Z")
+        readResult.snapshot ?? WidgetSnapshot()
     }
 
     /// W-3・W-5 は写しのファイルを使わない（ADR 0002）。アプリの中の今の本の写しから作る。
@@ -305,7 +305,7 @@ public struct UITestHookWidgetShowcaseView: View {
         } else {
             startedAt = model.store.clock.now()
         }
-        return ReadingActivityAttributes(bookId: appSnapshot.currentBook?.id, startedAt: startedAt)
+        return ReadingActivityAttributes(bookId: model.store.currentBook?.id, startedAt: startedAt)
     }
 
     private var liveActivityState: ReadingActivityAttributes.ContentState? {
@@ -316,7 +316,7 @@ public struct UITestHookWidgetShowcaseView: View {
             return ReadingLiveActivityStateFactory.reading(from: appSnapshot)
         default:
             guard let record = UITestHookWidgetShowcaseView.latestRecord(model: model) else { return nil }
-            return ReadingLiveActivityStateFactory.ended(from: appSnapshot, minutes: record.durationMinutes, progressText: appSnapshot.currentBook?.progressDisplay)
+            return ReadingLiveActivityStateFactory.ended(from: appSnapshot, minutes: record.durationMinutes, progressText: ReadingWidgetStrings.progressText(for: appSnapshot.currentBook))
         }
     }
 
