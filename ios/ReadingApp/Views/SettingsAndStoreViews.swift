@@ -544,24 +544,32 @@ public struct StorePurchasePreviewSheetView: View {
                                 .foregroundStyle(previewPalette.textSecondary)
                         }
 
-                        // W-1 Lock screen widget miniature preview (172x76)
-                        VStack(alignment: .leading, spacing: ThemeSpace.s4) {
-                            Text(previewLine)
-                                .font(ThemeTypography.widgetLine(size: 13))
-                                .foregroundStyle(previewPalette.textPrimary)
-                                .lineLimit(2)
-                            HStack(spacing: ThemeSpace.s8) {
-                                Text(previewPage)
-                                    .font(.caption2.monospacedDigit())
-                                    .foregroundStyle(previewPalette.textSecondary)
-                                Text(previewBookTitle)
-                                    .font(.caption2)
-                                    .foregroundStyle(previewPalette.textSecondary)
-                                    .lineLimit(1)
-                            }
-                        }
+                        // W-1 の縮小見本：拡張と同じ ReadingLockScreenWidgetView を 172×76 pt の枠で描く（design/ 3 の S-10a）。
+                        let previewSnapshot = WidgetSnapshot(
+                            version: 1,
+                            updatedAt: model.store.snapshotStore.currentSnapshot.updatedAt,
+                            appearanceID: selectedPreviewID,
+                            hideOnWidgets: false,
+                            currentBook: WidgetSnapshotBook(
+                                id: model.store.currentBook?.id ?? UUID(),
+                                title: previewBookTitle,
+                                author: nil,
+                                isTitlePending: false,
+                                progressUnit: model.store.currentBook?.progressUnit ?? .page,
+                                progressDisplay: previewPage,
+                                latestLine: previewLine,
+                                latestLineId: nil
+                            )
+                        )
+                        ReadingLockScreenWidgetView(
+                            family: .accessoryRectangular,
+                            snapshot: previewSnapshot,
+                            size: CGSize(width: 172, height: 76),
+                            contentMargins: ReadingWidgetMetrics.lockScreenContentMargins
+                        )
+                        .foregroundStyle(previewPalette.textPrimary)
+                        .frame(width: 172, height: 76)
                         .padding(ThemeSpace.s8)
-                        .frame(minWidth: 172, maxWidth: 172, minHeight: 76, maxHeight: 76, alignment: .leading)
                         .background(
                             RoundedRectangle(cornerRadius: ThemeRadius.control)
                                 .fill(previewPalette.groupedRow)

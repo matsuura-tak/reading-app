@@ -80,8 +80,8 @@ struct BookmarkLoadingPlaceholderView: View {
     }
 }
 
-/// 行の形の灰の帯（S-6 は5行）。
-struct RedactedRowsPlaceholderView: View {
+/// 行の形の灰の帯を、画面の中の一覧の位置に並べる（S-8a の行、S-8c の候補）。
+struct RedactedRowListView: View {
     let rowCount: Int
     @Environment(\.themePalette) private var palette
 
@@ -98,14 +98,26 @@ struct RedactedRowsPlaceholderView: View {
                 .padding(ThemeSpace.s16)
                 .background(RoundedRectangle(cornerRadius: ThemeRadius.card).fill(palette.groupedRow))
             }
+        }
+        .redacted(reason: .placeholder)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("common.loading"))
+    }
+}
+
+/// 行の形の灰の帯（S-6 は5行）。画面全体を埋める。
+struct RedactedRowsPlaceholderView: View {
+    let rowCount: Int
+    @Environment(\.themePalette) private var palette
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            RedactedRowListView(rowCount: rowCount)
             Spacer(minLength: 0)
         }
         .padding(ThemeSpace.s16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(palette.bgPrimary)
-        .redacted(reason: .placeholder)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("common.loading"))
     }
 }
 
@@ -120,6 +132,11 @@ struct RedactedRowsPlaceholderView: View {
 #Preview("S-6/loading AX5") {
     RedactedRowsPlaceholderView(rowCount: 5)
         .environment(\.dynamicTypeSize, .accessibility5)
+}
+
+#Preview("S-8c/loading") {
+    RedactedRowListView(rowCount: 3)
+        .padding()
 }
 
 #Preview("S-1/loading dark") {

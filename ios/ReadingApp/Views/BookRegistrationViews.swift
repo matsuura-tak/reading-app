@@ -68,6 +68,9 @@ public struct BookAddFlowSheetView: View {
     @State private var inlineScanTitle: String = ""
 
     @State private var searchResults: [H20BiblioItem] = []
+    /// H33 の `catalog.lookup` の門で止めている間 true（Release とふつうの起動では常に false）。
+    @State private var catalogLookupPending = false
+    @State private var catalogLookupPlaceholderVisible = false
     @State private var selectedSearchEntry: H20BiblioItem?
     @State private var manualTitle: String = ""
     @State private var manualAuthor: String = ""
@@ -497,7 +500,9 @@ public struct BookAddFlowSheetView: View {
             Text(footerCopy)
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
+                .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, ThemeSpace.s4)
                 .accessibilityIdentifier("register.footer")
         }
@@ -580,7 +585,10 @@ public struct BookAddFlowSheetView: View {
                 .accessibilityIdentifier("scan.notFound")
             }
 
-            if scannedItems.isEmpty {
+            if catalogLookupPending {
+                // H33 の catalog.lookup を止めている間：一覧の所に行の形の灰の帯。
+                catalogLookupPlaceholder(rowCount: 1)
+            } else if scannedItems.isEmpty {
                 // S-8a の「まだ読んでいない」（design 5）：一覧の所に scan.hint。
                 Text(AppL10n.pick(
                     "本の裏のバーコード（2段あるときは両方）を写してください。続けて読めます。",
@@ -743,6 +751,41 @@ public struct BookAddFlowSheetView: View {
         }
         let supplemental = pendingSupplementalCCode
         pendingSupplementalCCode = nil
+        runCatalogLookup(coalesce: false) {
+            appendScannedRow(isbn13: isbn13, supplemental: supplemental)
+            model.notifyHookChanged()
+        }
+    }
+
+    /// H33 の `catalog.lookup`（contracts/test-hooks.md）。門が素通りのとき（Release とふつうの起動）は、すぐに `perform` を呼び、
+    /// 何も待たない。止めるときは、0.3秒（ContinuousClock）を超えたら S-8a の行・S-8c の候補の灰の帯を出し、放されてから `perform` を呼ぶ。
+    /// `coalesce` が true（S-8c の書名の候補）なら、止めている間の入力では新しく引かず、放したあとの `perform` が最新の入力で引く。
+    private func runCatalogLookup(coalesce: Bool, perform: @escaping @MainActor () -> Void) {
+        if coalesce && catalogLookupPending { return }
+        let gate = model.store.loadGate
+        guard gate.willHold(.catalogLookup) else {
+            perform()
+            return
+        }
+        catalogLookupPending = true
+        Task { @MainActor in
+            let clock = ContinuousClock()
+            let deadline = clock.now.advanced(by: .milliseconds(300))
+            let reveal = Task { @MainActor in
+                try? await clock.sleep(until: deadline)
+                if !Task.isCancelled {
+                    catalogLookupPlaceholderVisible = true
+                }
+            }
+            await gate.pass(.catalogLookup)
+            reveal.cancel()
+            catalogLookupPending = false
+            catalogLookupPlaceholderVisible = false
+            perform()
+        }
+    }
+
+    private func appendScannedRow(isbn13: String, supplemental: String?) {
         let outcome = model.store.catalogDB.lookupByISBN(isbn13, supplementalCode: supplemental, clock: model.store.clock)
         switch outcome {
         case .found(let hit):
@@ -1014,6 +1057,14 @@ public struct BookAddFlowSheetView: View {
         .accessibilityIdentifier("sheet.cover.empty")
     }
 
+    @ViewBuilder
+    private func catalogLookupPlaceholder(rowCount: Int) -> some View {
+        if catalogLookupPlaceholderVisible {
+            RedactedRowListView(rowCount: rowCount)
+                .onAppear { model.store.loadGate.markShown(.catalogLookup) }
+        }
+    }
+
     // MARK: - S-8c Manual Input + Inline Catalog Search
 
     private var manualInputContent: some View {
@@ -1042,7 +1093,13 @@ public struct BookAddFlowSheetView: View {
                             searchResults = []
                             selectedSearchEntry = nil
                         } else {
-                            searchResults = model.store.catalogDB.searchByTitleOrAuthor(q, clock: model.store.clock)
+                            runCatalogLookup(coalesce: true) {
+                                let latest = manualTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                                searchResults = latest.count < 3
+                                    ? []
+                                    : model.store.catalogDB.searchByTitleOrAuthor(latest, clock: model.store.clock)
+                                model.notifyHookChanged()
+                            }
                         }
                         model.notifyHookChanged()
                     }
@@ -1059,7 +1116,10 @@ public struct BookAddFlowSheetView: View {
                     .accessibilityValue(manualAuthor)
             }
 
-            if trimmedQuery.count >= 3 && model.store.catalogDB.status == .ready {
+            if catalogLookupPending {
+                // H33 の catalog.lookup を止めている間：0件の文を先に出さず、0.3秒を超えたら候補の行の形の灰の帯。
+                catalogLookupPlaceholder(rowCount: 3)
+            } else if trimmedQuery.count >= 3 && model.store.catalogDB.status == .ready {
                 if searchResults.isEmpty {
                     Text(AppL10n.pick("書誌データに一致する本はありません。入力した内容でそのまま登録できます。", "No matching book in catalog. You can save the title as entered."))
                         .font(.footnote)

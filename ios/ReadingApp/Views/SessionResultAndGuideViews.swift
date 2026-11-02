@@ -192,35 +192,43 @@ public struct WidgetGuideSheetView: View {
         }
     }
 
-    private func lockWidgetPreview(line: String, progress: String) -> some View {
-        let shortened = VerticalLineLayout.shortenForWidget(line).text
-        let cells = VerticalLineLayout.layoutVerticalCells(text: shortened, maxColumns: 2, rowsPerColumn: 12)
-        let grouped = Dictionary(grouping: cells, by: \.column)
-        let cols = [1, 0].compactMap { grouped[$0] != nil ? $0 : nil }
+    /// 見本の写し。保存の直後に書いた W-1 の写し（widget-snapshot.json）を使い、隠す設定や場所なしも W-1 と同じに見せる（design/ 5 の S-5）。
+    /// 写しに今の本がない時だけ、画面の一行とページから作る。
+    private func guideSnapshot(line: String, progress: String) -> WidgetSnapshot {
+        let current = model.store.snapshotStore.currentSnapshot
+        if current.currentBook != nil { return current }
+        return WidgetSnapshot(
+            version: current.version,
+            updatedAt: current.updatedAt,
+            appearanceID: current.appearanceID,
+            hideOnWidgets: current.hideOnWidgets,
+            currentBook: WidgetSnapshotBook(
+                id: model.store.currentBook?.id ?? UUID(),
+                title: model.store.currentBook?.title,
+                author: nil,
+                isTitlePending: false,
+                progressUnit: model.store.currentBook?.progressUnit ?? .page,
+                progressDisplay: progress,
+                latestLine: line,
+                latestLineId: nil
+            )
+        )
+    }
 
-        return HStack(alignment: .top, spacing: ThemeSpace.s8) {
-            VStack(alignment: .leading) {
-                Spacer(minLength: 0)
-                Text(progress)
-                    .font(.caption2.monospacedDigit())
-                    .foregroundStyle(palette.textSecondary)
-            }
-            Spacer(minLength: ThemeSpace.s4)
-            HStack(alignment: .top, spacing: ThemeSpace.s4) {
-                ForEach(cols, id: \.self) { colNum in
-                    let colCells = grouped[colNum] ?? []
-                    VStack(spacing: 0) {
-                        ForEach(Array(colCells.enumerated()), id: \.offset) { _, cell in
-                            Text(cell.display)
-                                .font(ThemeTypography.widgetLine(size: 11))
-                                .foregroundStyle(palette.textPrimary)
-                        }
-                    }
-                }
-            }
-        }
+    /// 172×76 pt の W-1 と同じ縦書き描画（拡張と同じ `ReadingLockScreenWidgetView`）を角丸枠の中に見せる（design/ 3 の S-5）。
+    private func lockWidgetPreview(line: String, progress: String) -> some View {
+        let snapshot = guideSnapshot(line: line, progress: progress)
+        let widgetLabel = VerticalLineLayout.composeWidget(snapshot: snapshot).accessibilityLabel
+        let size = CGSize(width: 172, height: 76)
+        return ReadingLockScreenWidgetView(
+            family: .accessoryRectangular,
+            snapshot: snapshot,
+            size: size,
+            contentMargins: ReadingWidgetMetrics.lockScreenContentMargins
+        )
+        .foregroundStyle(palette.textPrimary)
+        .frame(width: size.width, height: size.height)
         .padding(ThemeSpace.s12)
-        .frame(minWidth: 172, maxWidth: 172, minHeight: 76, maxHeight: 76)
         .background(
             RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
                 .fill(palette.groupedRow)
@@ -231,7 +239,7 @@ public struct WidgetGuideSheetView: View {
         )
         .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("widgetGuide.preview")
-        .accessibilityLabel(AppL10n.pick("ロック画面ウィジェットの見本", "Lock Screen widget preview"))
+        .accessibilityLabel(AppL10n.pick("ロック画面での見え方。", "How it looks on the Lock Screen.") + widgetLabel)
     }
 }
 

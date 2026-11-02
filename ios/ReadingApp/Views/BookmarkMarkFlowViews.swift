@@ -329,7 +329,13 @@ public struct BookmarkMarkFlowSheet: View {
                         .accessibilityIdentifier("mark.line.count")
                 }
 
-                TextField(AppL10n.pick("心に残った一行", "Enter a line"), text: $lineText)
+                // 大きい文字で欄の幅を超える一行とプレースホルダーを折り返す（1行の欄だと横に切れる。監査の Text clipped）。
+                TextField(AppL10n.pick("心に残った一行", "Enter a line"), text: $lineText, axis: .vertical)
+                    .lineLimit(1...6)
+                    .onChange(of: lineText) { _, value in
+                        // 縦に伸びる欄でも改行は受けない（一行と場所は1行の値）。
+                        if value.contains("\n") { lineText = value.replacingOccurrences(of: "\n", with: "") }
+                    }
                     .themeField(palette)
                     .accessibilityIdentifier("mark.lineField")
                     .accessibilityLabel(lineFieldLabel)
@@ -545,7 +551,12 @@ public struct BookmarkMarkFlowSheet: View {
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
 
-                TextField(selectedColumnText, text: $lineText)
+                TextField(selectedColumnText, text: $lineText, axis: .vertical)
+                    .lineLimit(1...6)
+                    .onChange(of: lineText) { _, value in
+                        // 縦に伸びる欄でも改行は受けない（一行と場所は1行の値）。
+                        if value.contains("\n") { lineText = value.replacingOccurrences(of: "\n", with: "") }
+                    }
                     .themeField(palette)
                     .accessibilityIdentifier("mark.lineField")
                     .accessibilityLabel(lineFieldLabel)
@@ -709,7 +720,12 @@ public struct BookmarkMarkFlowSheet: View {
                 .font(.subheadline)
                 .foregroundStyle(palette.textSecondary)
 
-            TextField(labelText, text: $pageText)
+            TextField(labelText, text: $pageText, axis: .vertical)
+                .lineLimit(1...3)
+                .onChange(of: pageText) { _, value in
+                    // 縦に伸びる欄でも改行は受けない（一行と場所は1行の値）。
+                    if value.contains("\n") { pageText = value.replacingOccurrences(of: "\n", with: "") }
+                }
                 .keyboardType(.numbersAndPunctuation)
                 .themeField(palette)
                 .accessibilityIdentifier("mark.pageField")

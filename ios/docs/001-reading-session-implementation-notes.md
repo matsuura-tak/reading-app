@@ -36,7 +36,7 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 | `recommend.load` | 置いた（2体目）。S-9 の候補の節（`gatedCandidatesSection`）を包み、行の形の灰の帯3行 |
 | `storekit.products` | 置いた（2体目）。S-10a の `store.buy` の位置を包み、ProgressView |
 | `storekit.purchase` | 置いた（2体目）。`store.buy` の押下で `pass` を待ち、止めている間はボタンの位置に ProgressView |
-| `catalog.lookup` | 未実装。`-uitest-hold-load` に書くと `waiting` のまま進まない（S-8a の行の灰の帯と S-8c の候補の待ちが要る） |
+| `catalog.lookup` | 置いた（3体目）。`BookAddFlowSheetView.runCatalogLookup`：S-8a のバーコードの1件（`appendScannedRow`）と S-8c の書名の候補（`manual.title` の入力）で `pass` を待つ。0.3秒を超えたら一覧・候補の位置に `RedactedRowListView`（S-8a は1行、S-8c は3行）。止めている間は `scan.hint` と `search.noResults` を出さない。S-8c は止めている間の入力で引き直さず、放したあとに最新の入力で1回引く |
 
 注意：`store.load` の読み込み本体（`loadFromDisk()`、`seedFromJSON`）は起動の `init` で同期に動くため、門はその後の画面の切り替えで止めている。H7 `store.load` を一緒に付けた場合は、放したあとに S-1 のエラーが出る（見た目は契約どおり）が、「読み込みに入った所で止める」の厳密な形ではない。reviewer に判断を頼む。
 
@@ -53,3 +53,12 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
 - 警告：`BookRegistrationViews.swift` の PhotosPicker のラベル（Sendable の閉包で main actor の `palette` を読んでいた）を、閉包の外で作る `PhotosPickerThemedLabel` にした。プロジェクトの3つの構成に `COPY_PHASE_STRIP = NO`（Xcode のひな形と同じ。拡張の埋め込みの「not stripping binary」警告）。`BackgroundAssetsHandler.swift` に `import ExtensionFoundation`。Background Assets 拡張の埋め込み先が `ReadingApp.app/ReadingApp.app/Extensions` と二重になっていたのを、`dstSubfolderSpec = 16`（Products Directory）で `ReadingApp.app/Extensions` に直した。
 - 残る1行：`appintentsmetadataprocessor ... warning: Metadata extraction skipped, no AppIntents.framework dependency found`（ReadingBackgroundAssetsExtension の ExtractAppIntentsMetadata の道具のログ）。コンパイラの警告ではないが、消す設定は確かめていない。
 - design 5 との食い違い：S-3 の `mark.later.note.empty`（識別子を前のしおりの有無で切り替え、en の文を design 7 に）、S-6 の `shelf.load.error`／`shelf.retry`（`ShelfListViewState.loadError`、Preview「S-6/loadError」「S-6/empty」）、S-8a の `scan.hint`、S-8b の保存で書名が空・101字以上なら `book.title.invalid`（先頭の候補で黙って埋めるのをやめた）、S-8b の0件を `ContentUnavailableView`（`mark.ocr.none`、`cover.retake`、`register.manual`）、S-7 の `colophon.capture` を常に出す（screens.md の S-7 の例は奥付がそろった本でもボタンを出している）、S-7c にカメラ拒否の `camera.denied`／`camera.openSettings`（S-7 と S-9 の両方から開く）。
+
+## 6. 3体目（BASE 563aa31）で足したこと
+- H33 の `catalog.lookup`：上の2章の表。門が素通りのとき（Release とふつうの起動）は、これまでと同じに同期で引き、待ちを足さない。
+- 監査（`G3EvidenceCaptureTests/test_G3_accessibilityAudit`、ja、light）を直す前と後で動かした。
+  - `mark.lineField`（S-3a、S-3c）と `mark.pageField`（S-3a、S-3b）を `TextField(axis: .vertical)` にした（`lineLimit(1...6)`、`1...3`）。大きい文字でプレースホルダーと値が欄の幅を超えて横に切れていた（Text clipped）。改行は `onChange` で取り除く（一行と場所は1行の値）。
+  - S-5 の `widgetGuide.preview` を、拡張と同じ `ReadingLockScreenWidgetView` を 172×76 pt で描く形にした（design/ 3 の S-5「W-1 と同じ縦書き描画」）。写しは `snapshotStore.currentSnapshot`（隠す設定・場所なしも W-1 と同じ）。読み上げを design/ 3 の「ロック画面での見え方。」＋W-1 のラベルにした。
+  - S-10a の `store.preview` の中の W-1 の縮小見本を、同じ `ReadingLockScreenWidgetView`（選んだ見た目の色）にした（design/ 3 の S-10a「W-1 の縮小見本」）。
+  - W-1・W-2 と、その見本（S-5、S-10a）の縦書きの各字は、design/ 9 の `type.book.line.widget.rectangular`（17/15pt 固定）と ADR 0003 の収め方で大きさを固定しているため、監査の「Dynamic Type font sizes are unsupported」が残る。直すには design/ と ADR の判断が要る。
+- `RedactedRowListView`（LoadingPlaceholderViews.swift）を足し、`RedactedRowsPlaceholderView` はそれを使う形にした。
