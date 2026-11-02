@@ -144,7 +144,7 @@ G3 r2 の verifier の指摘（`docs/reviews/001-reading-session-G3-verifier-r2.
 - H33 `-uitest-hold-load <対象>` と `yomuma.uitest.load.release`：端末内の読み込みはふだん 0.3秒より速く、design/ 5 の読み込み中の形を撮れないため。時間（N ミリ秒遅らせる）ではなく「止めて放す」にしたのは、sleep なしで撮る時を決められるから（H19 の hold と同じ考え）。テストの起動だけで効き、設定のファイルに書かない。
 - H22 の見本の入口と H33 の入口（引数を読む所、放す通知を受ける所、`hook.state` に書く所）は `#if UITEST_HOOKS` の中だけ。
 - H33 の止める門は H7 と同じ形にする（2026-11-02、G3 の契約の reviewer の要修正1）。
-  - 止める門は `ReadingStore` の読み込みの関数に、実行時の門として置く。`ReadingDataStore.consumeFailSave(for:)` と同じく `#if` なしの小さな関数で、既定は素通り（止める対象が空）。
+  - 止める門は `ReadingStore` の読み込みの関数に、実行時の門として置く。`ReadingDataStore.consumeFailSave(for:)` と同じく `#if` なしの小さな関数で、既定は素通り（止める対象が空）。（同日、門を通す所を広げた。下の「追記（2026-11-02 その2）」）
   - 門を設定するのは、アプリの `#if UITEST_HOOKS` の中のコーディネータ（`UITestHooks/`）だけ。H7 で `UITestHookCoordinator` が `store.configureFailSave(...)` を呼ぶのと同じ。
   - `ReadingStore` には `UITEST_HOOKS` を定義しない。SwiftPM の `swiftSettings` の `.define` は構成を分けて書かない限り Release でも効き、Release から完全に除くという案A の前提が崩れるため。
   - Release は門を設定する入口を持たないので、止まらない。Release のバイナリに門の関数は残るが、型と関数の名前は `UITestHook` で始めず、nm の検査（見直す条件の1）の対象の外にする。nm の検査は「入口が Release に入っていない」ことの目印で、門が残ることは H7 と同じく許す。
@@ -178,3 +178,20 @@ PRD 11 の G4 の表は pdm の持ち物なので、ここに書き、G4 で Tak
 - Live Activity の高さの上限 160 pt：https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities の「The system may truncate a Live Activity if its height exceeds 160 points」。
 - 契約の検査：`make check-contracts` → `ALL PASSED: 8 schemas, 28 examples validated with 0 errors.`（2026-11-02）。
 - ビルドはしていない（ios/ は書かない）。案1で両方のターゲットに入れたときのビルドは ios-engineer が `make ios-build` で確かめる。
+
+## 追記（2026-11-02 その2、tech-lead）：H33 の門を通す所を広げる
+G3 のコードの reviewer の要修正2（`docs/reviews/001-reading-session-G3-reviewer-code-r1.md`）と指揮役の裁定 2 を受けて書く。
+
+- 決めたこと：門の型（`LoadHoldGate`）は `ReadingStore` に1つ置いたまま、門を通す所（止めるかを聞き、止めるなら放すまで待つ所）は (a) 読み込みの関数の中か、(b) 読み込んだ結果を画面に渡す所（View の側）のどちらでもよいとした（`contracts/test-hooks.md` の H33「本番」）。起動のときに同期で読み終える `store.load` は (b) で止める。
+- 変えないこと：既定は素通り、門は `#if UITEST_HOOKS` の外、型と関数の名前は `UITestHook` で始めない、止める対象を設定する口は `#if UITEST_HOOKS` の中だけ、`ReadingStore` に `UITEST_HOOKS` を定義しない。観察できる振る舞い（`hold.<対象>` の相、`store.load` を止めている間の `hook.store` が空、0.3秒の帯、放したあとの結果）。
+- 比べた案
+  | 案 | 良い点 | 悪い点 | 選ばなかった理由 |
+  |---|---|---|---|
+  | **案1：契約の文を (a) か (b) に広げる（採用）** | G3 r2 の実装をそのまま受け入れられる。観察できる振る舞いは同じ | 門の呼び出しが `ReadingStore` でなくアプリの View に散る（いまは4か所：`GatedLoadView`、`runCatalogLookup`、購入と復元のボタン）。`store.load` は「読み込みを止める」のではなく「結果を画面に渡すのを止める」になる | — |
+  | 案2：`loadFromDisk`・`searchByTitleOrAuthor`・`purchasePlus`・`restorePurchases` を async にし、中で門を待つ | 文のとおり、門が `ReadingStore` の中にそろう | 起動の同期の読み込み（`applyLaunchConfiguration`）を async に変えると、起動の順と速さの AC（AC-55、AC-100〜AC-102）に影響しうる。直す範囲が G3 の終わりには大きい | 観察できる違いがないのに、起動の道を変える危険が大きいため |
+- 招く悪い結果
+  - 門を通す呼び出しが View に増えると、止めないときの道に余計な切り替えが入りうる。契約で「止めないときは時間の待ちと読み込み中の形を足さない。(b) の画面は最初の描画から中身を出す」と決め、ボタンの `Task` は2度押しを弾くことを条件にした。
+- 見直す条件
+  - 上の「見直す条件」の H33 の行と同じ（門の呼び出しが8つの対象より多くの所に散ったら、読み込みの関数を1つの actor にまとめてから門を (a) の1か所にする）。いまは4か所。
+- 確かめたこと
+  - `git grep -n '\.pass(\|willHold(\|GatedLoadView(' ios/`（AcceptanceTests を除く）で、門を通す所が `ContentView.swift`、`ShelfAndBookDetailViews.swift`（2）、`FinishNightView.swift`、`SettingsAndStoreViews.swift`（3）、`BookRegistrationViews.swift`、`LoadingPlaceholderViews.swift` にあり、`ReadingStore` の中は型の宣言だけであることを見た（2026-11-02、f76ac12）。
