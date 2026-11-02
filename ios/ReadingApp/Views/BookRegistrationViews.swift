@@ -493,16 +493,14 @@ public struct BookAddFlowSheetView: View {
                 .accessibilityIdentifier("register.later")
             }
 
-            let footerCopy = AppL10n.pick(
-                "バーコードや書名から加えるときも、外部へ通信せず端末内の書誌データだけを引きます。",
-                "Even when adding by barcode or title, lookups use only the on-device catalog with zero network calls."
-            )
-            Text(footerCopy)
+            // 文は design/ 7 の `register.footer`。Text 自身の要素の幅は一番長い行の幅（341pt）になり、監査がその幅で
+            // 組み直すと3行になって「Text clipped」と出ていた。幅いっぱいの枠を1つの要素にし、監査が枠の幅で測るようにする。
+            Text("register.footer")
                 .font(.footnote)
                 .foregroundStyle(palette.textSecondary)
-                .lineLimit(nil)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
                 .padding(.top, ThemeSpace.s4)
                 .accessibilityIdentifier("register.footer")
         }

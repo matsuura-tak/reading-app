@@ -144,8 +144,9 @@ struct VerticalLineLayoutTests {
         )
         let comp = VerticalLineLayout.composeWidget(snapshot: snapshot)
         #expect(comp.orientation == .vertical)
-        #expect(comp.accessibilityLabel.contains("コンビニ人間、村田沙耶香"))
-        #expect(comp.accessibilityLabel.contains("p. 142"))
+        // 書名、場所、一行（著者は入れない。design/ 6 の W-1・W-2、AC-99）
+        #expect(comp.accessibilityLabel == "コンビニ人間、142ページ。「世界の部品になることで、わたしはようやく…」")
+        #expect(!comp.accessibilityLabel.contains("村田沙耶香"))
         for scalar in comp.accessibilityLabel.unicodeScalars {
             #expect(!(0xFE10...0xFE4F).contains(scalar.value))
         }

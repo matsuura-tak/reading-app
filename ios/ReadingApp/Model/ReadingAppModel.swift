@@ -67,6 +67,8 @@ public final class ReadingAppModel {
         } else {
             self.store = ReadingDataStore()
         }
+        // H22 の読み上げのラベルを、拡張の View と同じ String Catalog の文で組む（AC-99）。
+        self.store.snapshotStore.spokenStrings = ReadingWidgetStrings.spoken
     }
 
     public func updateScreenStateFlags() {

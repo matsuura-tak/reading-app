@@ -4069,6 +4069,150 @@
           }
         }
       }
+    },
+    "page.spoken": {
+      "comment": "単位が page のときの場所の読み上げ（例：61ページ）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lldページ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "page %lld"
+          }
+        }
+      }
+    },
+    "location.spoken": {
+      "comment": "単位が location のときの場所の読み上げ（例：位置1450）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置%lld"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "location %lld"
+          }
+        }
+      }
+    },
+    "percent.spoken": {
+      "comment": "単位が percent のときの場所の読み上げ（例：52パーセント）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lldパーセント"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld percent"
+          }
+        }
+      }
+    },
+    "widget.spoken": {
+      "comment": "W-1、W-2、W-3 の読み上げ（1=書名、2=場所、3=一行）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、%2$@。%3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@. %3$@"
+          }
+        }
+      }
+    },
+    "widget.spoken.noPage": {
+      "comment": "W-1、W-2 の読み上げ（場所なし。1=書名、2=一行）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@。%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. %2$@"
+          }
+        }
+      }
+    },
+    "widget.spoken.noLine": {
+      "comment": "W-1、W-2 の読み上げ（一行なし。1=書名、2=場所）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "widgetGuide.preview.label": {
+      "comment": "S-5 の見本の読み上げの先頭（続けてウィジェットの読み上げを読む）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック画面での見え方。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How it looks on the Lock Screen."
+          }
+        }
+      }
+    },
+    "register.footer": {
+      "comment": "S-8 の下の説明（外部へ送らないこと。AC-103）。design/ 7",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌の検索と文字の読み取りはすべてこの iPhone の中で行い、外部へ送信しません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Book lookup and text recognition happen entirely on this iPhone. Nothing is sent outside."
+          }
+        }
+      }
     }
   }
 }

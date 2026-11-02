@@ -32,6 +32,58 @@ public enum ReadingWidgetStrings {
     public static var endButtonTitle: String { String(localized: "reading.end") }
     public static var endButtonLabel: String { String(localized: "liveActivity.end.label") }
 
+    /// W-1〜W-3 の読み上げの文（design/ 6、design/ 7 の `widget.spoken*`、`page.spoken` など。AC-99）。
+    public static var spoken: WidgetSpokenStrings {
+        WidgetSpokenStrings(
+            empty: empty,
+            unavailable: String(localized: "widget.unavailable"),
+            hidden: hidden,
+            currentBookAsTitle: currentBookAsTitle,
+            pageFormat: String(localized: "page.spoken"),
+            locationFormat: String(localized: "location.spoken"),
+            percentFormat: String(localized: "percent.spoken"),
+            spokenFormat: String(localized: "widget.spoken"),
+            spokenNoPageFormat: String(localized: "widget.spoken.noPage"),
+            spokenNoLineFormat: String(localized: "widget.spoken.noLine")
+        )
+    }
+
+    /// W-1・W-2 の全体の読み上げ（書名、場所、一行。著者なし）。拡張、H22、アプリの中の見本（S-5、S-10a）が同じ文を使う。
+    public static func widgetLabel(for snapshot: WidgetSnapshot) -> String {
+        VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot: snapshot, strings: spoken)
+    }
+
+    /// W-3 の読み上げ（design/ 6 の W-3）。待つ状態「書名、61ページ。一行」、読書中「書名、22:00 から読書中」、
+    /// 終えた直後「書名、10分、61ページ」。隠す設定では書名の所が「しおり」で一行を読まない。
+    public static func liveActivityLabel(
+        attributes: ReadingActivityAttributes,
+        state: ReadingActivityAttributes.ContentState
+    ) -> String {
+        let strings = spoken
+        let title = state.hideOnWidgets ? hidden : state.title
+        let place = strings.spokenProgress(unit: nil, display: state.progressText)
+        switch state.mode {
+        case "reading":
+            guard let startedAt = attributes.startedAt else { return title }
+            return strings.spokenLabel(title: title, place: readingSince(startedAt), line: nil)
+        case "ended":
+            // summaryText は「10分 · p.61」（ReadingLiveActivityStateFactory.ended）。先頭の分数だけを取り、場所は読み上げの形にする。
+            let minutesText = state.summaryText?.components(separatedBy: " · ").first
+            guard let minutes = minutesText, !minutes.isEmpty, minutes != state.progressText else {
+                return strings.spokenLabel(title: title, place: place, line: nil)
+            }
+            let titleAndMinutes = strings.spokenLabel(title: title, place: minutes, line: nil)
+            return strings.spokenLabel(title: titleAndMinutes, place: place, line: nil)
+        default:
+            var line: String?
+            if !state.hideOnWidgets, let raw = state.line {
+                let stripped = VerticalLineLayout.stripVerticalPresentationForms(raw)
+                line = stripped.isEmpty ? nil : stripped
+            }
+            return strings.spokenLabel(title: title, place: place, line: line)
+        }
+    }
+
     /// 書名の所に出す文（隠す設定、名無しの今の本を含む。design/ 5 の W-1〜W-3）。
     public static func displayTitle(for book: WidgetSnapshotBook, hideOnWidgets: Bool) -> String {
         if hideOnWidgets { return hidden }
@@ -154,7 +206,7 @@ public struct ReadingLockScreenWidgetView: View {
     }
 
     public var body: some View {
-        let label = VerticalLineLayout.composeWidget(snapshot: snapshot).accessibilityLabel
+        let label = ReadingWidgetStrings.widgetLabel(for: snapshot)
         content
             .padding(contentMargins)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -270,7 +322,7 @@ public struct ReadingHomeSmallWidgetView: View {
     }
 
     public var body: some View {
-        let label = VerticalLineLayout.composeWidget(snapshot: snapshot).accessibilityLabel
+        let label = ReadingWidgetStrings.widgetLabel(for: snapshot)
         content
             .foregroundStyle(palette.textPrimary)
             .padding(contentMargins)
@@ -402,7 +454,8 @@ public struct ReadingLiveActivityLockScreenView<EndButton: View>: View {
         HStack(alignment: .center, spacing: ThemeSpace.s12) {
             summary
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .accessibilityElement(children: .combine)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(verbatim: ReadingWidgetStrings.liveActivityLabel(attributes: attributes, state: state)))
             if state.mode == "reading" {
                 endButton(Text(ReadingWidgetStrings.endButtonTitle))
                     .buttonStyle(.borderedProminent)

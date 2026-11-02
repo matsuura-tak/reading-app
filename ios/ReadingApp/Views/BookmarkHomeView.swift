@@ -55,9 +55,13 @@ public struct BookmarkHomeView: View {
                 .padding(.horizontal, ThemeSpace.s24)
                 .padding(.vertical, ThemeSpace.s24)
             }
-
-            if case .activeBook(let book) = resolvedState {
-                activeBookBottomBar(book: book)
+            // 下端に固定した「読み始める」の帯は safeAreaBar で置く（design/ 決まり 59）。スクロールの中身は帯の分だけ
+            // 下に余白が付き、最後の行まで帯の上へ送れる。帯の裏に入る中身は OS の端の効果でぼかし、帯に自作の背景は
+            // 付けない（G3 r2 の AX5 の S-1 の指摘）。
+            .safeAreaBar(edge: .bottom) {
+                if case .activeBook(let book) = resolvedState {
+                    activeBookBottomBar(book: book)
+                }
             }
         }
         .background(palette.bgPrimary.ignoresSafeArea())
@@ -334,6 +338,13 @@ public struct BookmarkHomeView: View {
                     .frame(maxWidth: .infinity, minHeight: 200)
             }
 
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: ThemeSpace.s8) {
+                    flipHints(book: book)
+                }
+                .frame(maxWidth: .infinity)
+            }
+
             #if UITEST_HOOKS
             if UITestHookCoordinator.shared.areReadoutsEnabled {
                 InvisibleAccessibleButtonRepresentable(
@@ -428,33 +439,41 @@ public struct BookmarkHomeView: View {
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("bookmark.start")
 
-            if book.isEbook {
-                Text(
-                    AppL10n.pick(
-                        "電子書籍アプリへ移っても数え続けます。終えるときはロック画面の『終える』を押してください。",
-                        "Keeps counting while you read in your e-book app. Tap End Reading on the Lock Screen when done."
-                    )
-                )
-                .font(.footnote)
-                .foregroundStyle(palette.textSecondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityIdentifier("bookmark.flipHint.ebook")
-            }
-
-            if model.store.isFlipAvailable && model.store.settings.flipToStartEnabled {
-                Text(AppL10n.pick("伏せても始まります", "Or place iPhone face down to start"))
-                    .font(.footnote)
-                    .foregroundStyle(palette.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("bookmark.flipHint")
+            // AX1 以上では伏せる案内をスクロールの一番下に移し、帯は「読み始める」だけにする（design/ 9 の S-1）。
+            if !dynamicTypeSize.isAccessibilitySize {
+                flipHints(book: book)
             }
         }
         .padding(.horizontal, ThemeSpace.s24)
         .padding(.top, ThemeSpace.s12)
         .padding(.bottom, ThemeSpace.s16)
-        .background(palette.bgPrimary)
+    }
+
+    /// 伏せる案内（紙の本は `bookmark.flipHint`、電子書籍は `bookmark.flipHint.ebook`）。
+    @ViewBuilder
+    private func flipHints(book: BookSnapshot) -> some View {
+        if book.isEbook {
+            Text(
+                AppL10n.pick(
+                    "電子書籍アプリへ移っても数え続けます。終えるときはロック画面の『終える』を押してください。",
+                    "Keeps counting while you read in your e-book app. Tap End Reading on the Lock Screen when done."
+                )
+            )
+            .font(.footnote)
+            .foregroundStyle(palette.textSecondary)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("bookmark.flipHint.ebook")
+        }
+
+        if model.store.isFlipAvailable && model.store.settings.flipToStartEnabled {
+            Text(AppL10n.pick("伏せても始まります", "Or place iPhone face down to start"))
+                .font(.footnote)
+                .foregroundStyle(palette.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("bookmark.flipHint")
+        }
     }
 }
 

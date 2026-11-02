@@ -263,43 +263,42 @@ public enum VerticalLineLayout: Sendable {
         return cells
     }
 
-    /// Builds the single VoiceOver accessibility label for a widget snapshot (AC-99).
+    /// Builds the single VoiceOver accessibility label for a widget snapshot (AC-99, design/ 6 W-1・W-2, 決まり 53).
+    /// 書式は「書名、場所。一行」。著者は入れない。一行は保存した一行（縦書き用の字形を外したもの）から作る。
     public nonisolated static func buildWidgetAccessibilityLabel(
         snapshot: WidgetSnapshot,
-        displayedLine: String?
+        strings: WidgetSpokenStrings = .japanese
     ) -> String {
         guard let book = snapshot.currentBook else {
-            return "いま読んでいる本はありません。本を選んで読書を始められます"
+            return strings.empty
         }
-
-        var segments: [String] = []
-        if book.isTitlePending {
-            segments.append("書誌を確認中")
-        } else if let title = book.title, !title.isEmpty {
-            if let author = book.author, !author.isEmpty {
-                segments.append("\(title)、\(author)")
-            } else {
-                segments.append(title)
-            }
+        let title: String
+        if snapshot.hideOnWidgets {
+            title = strings.hidden
+        } else if book.isTitlePending {
+            title = strings.currentBookAsTitle
+        } else if let bookTitle = book.title, !bookTitle.isEmpty {
+            title = bookTitle
+        } else {
+            title = strings.hidden
         }
-
-        if let progress = book.progressDisplay, !progress.isEmpty {
-            segments.append(progress)
+        let place = strings.spokenProgress(unit: book.progressUnit, display: book.progressDisplay)
+        var line: String?
+        if !snapshot.hideOnWidgets, let raw = book.latestLine {
+            let stripped = stripVerticalPresentationForms(raw).trimmingCharacters(in: .whitespacesAndNewlines)
+            line = stripped.isEmpty ? nil : stripped
         }
-
-        if !snapshot.hideOnWidgets, let line = displayedLine, !line.isEmpty {
-            segments.append(stripVerticalPresentationForms(line))
-        }
-
-        return segments.joined(separator: "。")
+        return strings.spokenLabel(title: title, place: place, line: line)
     }
 
     /// Composes the full `H22WidgetComposition` from a `WidgetSnapshot`.
     public nonisolated static func composeWidget(
         snapshot: WidgetSnapshot,
         maxColumns: Int = defaultWidgetMaxColumns,
-        rowsPerColumn: Int = defaultWidgetRowsPerColumn
+        rowsPerColumn: Int = defaultWidgetRowsPerColumn,
+        strings: WidgetSpokenStrings = .japanese
     ) -> H22WidgetComposition {
+        let spokenLabel = buildWidgetAccessibilityLabel(snapshot: snapshot, strings: strings)
         guard let book = snapshot.currentBook else {
             return H22WidgetComposition(
                 orientation: .empty,
@@ -307,7 +306,7 @@ public enum VerticalLineLayout: Sendable {
                 shortened: false,
                 columnCount: 0,
                 rowsPerColumn: 0,
-                accessibilityLabel: buildWidgetAccessibilityLabel(snapshot: snapshot, displayedLine: nil),
+                accessibilityLabel: spokenLabel,
                 cells: []
             )
         }
@@ -334,7 +333,7 @@ public enum VerticalLineLayout: Sendable {
                     shortened: false,
                     columnCount: colCount,
                     rowsPerColumn: rowsPerColumn,
-                    accessibilityLabel: buildWidgetAccessibilityLabel(snapshot: snapshot, displayedLine: nil),
+                    accessibilityLabel: spokenLabel,
                     cells: cells
                 )
             } else {
@@ -344,7 +343,7 @@ public enum VerticalLineLayout: Sendable {
                     shortened: false,
                     columnCount: 0,
                     rowsPerColumn: 0,
-                    accessibilityLabel: buildWidgetAccessibilityLabel(snapshot: snapshot, displayedLine: nil),
+                    accessibilityLabel: spokenLabel,
                     cells: []
                 )
             }
@@ -360,7 +359,7 @@ public enum VerticalLineLayout: Sendable {
                 shortened: shortenResult.shortened,
                 columnCount: 0,
                 rowsPerColumn: 0,
-                accessibilityLabel: buildWidgetAccessibilityLabel(snapshot: snapshot, displayedLine: displayedLine),
+                accessibilityLabel: spokenLabel,
                 cells: []
             )
         }
@@ -378,7 +377,7 @@ public enum VerticalLineLayout: Sendable {
             shortened: shortenResult.shortened,
             columnCount: columnCount,
             rowsPerColumn: rowsPerColumn,
-            accessibilityLabel: buildWidgetAccessibilityLabel(snapshot: snapshot, displayedLine: displayedLine),
+            accessibilityLabel: spokenLabel,
             cells: cells
         )
     }

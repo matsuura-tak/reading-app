@@ -62,3 +62,19 @@ W-1〜W-5 の View は ios/ReadingApp/Shared/ReadingWidgetSurfaceViews.swift の
   - S-10a の `store.preview` の中の W-1 の縮小見本を、同じ `ReadingLockScreenWidgetView`（選んだ見た目の色）にした（design/ 3 の S-10a「W-1 の縮小見本」）。
   - W-1・W-2 と、その見本（S-5、S-10a）の縦書きの各字は、design/ 9 の `type.book.line.widget.rectangular`（17/15pt 固定）と ADR 0003 の収め方で大きさを固定しているため、監査の「Dynamic Type font sizes are unsupported」が残る。直すには design/ と ADR の判断が要る。
 - `RedactedRowListView`（LoadingPlaceholderViews.swift）を足し、`RedactedRowsPlaceholderView` はそれを使う形にした。
+
+## 7. 4体目（BASE 2daf7d6）で足したこと
+- W-1・W-2 の読み上げ（AC-99、design/ 6 の W-1・W-2、決まり 53）
+  - `VerticalLineLayout.buildWidgetAccessibilityLabel(snapshot:strings:)` を「書名、場所。一行」の書式にした。著者は入れない。一行は `latestLine`（保存した一行）から縦書き用の字形を外して作る（表示用に25字へ縮めた一行ではない）。
+  - 文は ReadingCore の `WidgetSpokenStrings`（新しいファイル）で受ける。ReadingCore は String Catalog を持たないので、アプリと拡張は `ReadingWidgetStrings.spoken`（`widget.spoken`、`widget.spoken.noPage`、`widget.spoken.noLine`、`page.spoken`、`location.spoken`、`percent.spoken`、`widget.empty`、`widget.unavailable`、`widget.hidden`、`widget.currentBookAsTitle`）を渡す。`WidgetSpokenStrings.japanese` と `.english` は design/ 7 の値の写しで、単体テストと既定値に使う。
+  - 場合の対応：場所あり・一行あり＝`widget.spoken`、場所なし＝`widget.spoken.noPage`、一行なし＝`widget.spoken.noLine`、どちらもなし＝書名だけ、隠す設定＝書名の所が `widget.hidden` で一行を読まない、名無しの今の本＝書名の所が `widget.currentBookAsTitle`、今の本なし＝`widget.empty`。
+  - H22（`hook.widget` の `accessibilityLabel` と `renders[].accessibilityLabel`）も同じ関数と同じ文で組む（`SnapshotStore.spokenStrings` を `ReadingAppModel` の起動時に入れる）。これまで書名を2回つないでいた所をやめた。
+  - S-5 の `widgetGuide.preview` は `widgetGuide.preview.label`＋W-1 のラベル。S-10a の見本は `store.preview` の1つの要素の中なので、中の W-1 の View が新しいラベルを持つだけ（`store.preview` のラベルは変えていない）。
+  - W-3（Live Activity）の文の部分（`liveActivity.banner` の中の、「終える」以外）を1つのラベルにした：待つ状態「書名、61ページ。一行」、読書中「書名、22:00 から読書中」（`liveActivity.readingSince`）、終えた直後「書名、10分、61ページ」。ContentState に単位がないので、場所は表示の形（`p.`、`位置`/`Loc`、`%`）から読み方を決める。
+  - `widget.unavailable`（写しを読めない）の文は `WidgetSpokenStrings.unavailable` に入れたが、拡張は写しを読めないときも空の写しにして `widget.empty` を出している（`ReadingSharedContainer.loadWidgetSnapshot`）。見た目と読み上げを `widget.unavailable` に分けるのは、まだしていない。
+- S-8 の `register.footer`
+  - 原因の見立て：Text 自身の要素の枠は一番長い行の幅（341pt、親は354pt）になる。監査はその幅で組み直すと行が増えて「Text clipped」と出していた（3体目が `frame(maxWidth:)` と `lineLimit(nil)` を試しても変わらなかったのは、どちらも Text 自身の要素の枠を変えないため）。
+  - 直し方：幅いっぱいの枠に `.accessibilityElement(children: .combine)` を付け、枠を1つの要素にした。文は design/ 7 の `register.footer`（String Catalog に足した）にした。これまでの文は design/ と違う文を `AppL10n.pick` で書いていた。
+- S-1 の AX5
+  - 下端の帯を `VStack` の下から `safeAreaBar(edge: .bottom)`（iOS 26）に替え、帯の自作の背景をやめた。帯の裏に入る中身は OS の端の効果でぼける。
+  - design/ 9 の S-1「伏せる案内はスクロール領域の一番下に移す」に合わせ、AX1 以上では `bookmark.flipHint` と `bookmark.flipHint.ebook` をスクロールの一番下に置き、帯は「読み始める」だけにした。

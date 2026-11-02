@@ -218,7 +218,7 @@ public struct WidgetGuideSheetView: View {
     /// 172×76 pt の W-1 と同じ縦書き描画（拡張と同じ `ReadingLockScreenWidgetView`）を角丸枠の中に見せる（design/ 3 の S-5）。
     private func lockWidgetPreview(line: String, progress: String) -> some View {
         let snapshot = guideSnapshot(line: line, progress: progress)
-        let widgetLabel = VerticalLineLayout.composeWidget(snapshot: snapshot).accessibilityLabel
+        let widgetLabel = ReadingWidgetStrings.widgetLabel(for: snapshot)
         let size = CGSize(width: 172, height: 76)
         return ReadingLockScreenWidgetView(
             family: .accessoryRectangular,
@@ -239,7 +239,7 @@ public struct WidgetGuideSheetView: View {
         )
         .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("widgetGuide.preview")
-        .accessibilityLabel(AppL10n.pick("ロック画面での見え方。", "How it looks on the Lock Screen.") + widgetLabel)
+        .accessibilityLabel(String(localized: "widgetGuide.preview.label") + widgetLabel)
     }
 }
 

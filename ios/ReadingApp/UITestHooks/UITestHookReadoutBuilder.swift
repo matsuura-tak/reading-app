@@ -48,7 +48,7 @@ public enum UITestHookReadoutBuilder {
 
     public static func verticalJSON(model: ReadingAppModel) -> String {
         let snapshot = model.store.snapshotStore.currentSnapshot
-        let comp = VerticalLineLayout.composeWidget(snapshot: snapshot)
+        let comp = VerticalLineLayout.composeWidget(snapshot: snapshot, strings: ReadingWidgetStrings.spoken)
         return encodeJSON(UITestHookVerticalPayload(composition: comp))
     }
 

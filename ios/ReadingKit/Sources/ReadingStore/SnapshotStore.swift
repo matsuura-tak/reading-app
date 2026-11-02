@@ -277,8 +277,11 @@ public final class SnapshotStore {
         return snapshot
     }
 
+    /// 読み上げの文（アプリが String Catalog を通した文を入れる。既定は design/ 7 の ja の値）。
+    public var spokenStrings: WidgetSpokenStrings = .japanese
+
     public func buildComposition(from snapshot: WidgetSnapshot) -> H22WidgetComposition {
-        VerticalLineLayout.composeWidget(snapshot: snapshot)
+        VerticalLineLayout.composeWidget(snapshot: snapshot, strings: spokenStrings)
     }
 
     public func readout() -> H22WidgetReadout {
@@ -345,14 +348,8 @@ public final class SnapshotStore {
                 texts["widget.empty"] = "いま読んでいる本はありません"
                 texts["empty"] = "いま読んでいる本はありません"
             }
-            let a11yLabel: String = {
-                var parts: [String] = []
-                if let book = currentSnapshot.currentBook, !currentSnapshot.hideOnWidgets, let t = book.title, !t.isEmpty {
-                    parts.append(t)
-                }
-                parts.append(comp.accessibilityLabel)
-                return parts.joined(separator: "、")
-            }()
+            // 拡張の View と同じ1つのラベル（書名、場所、一行。design/ 6 の W-1・W-2、AC-99）。
+            let a11yLabel = comp.accessibilityLabel
 
             return WidgetRenderEntry(
                 family: spec.family,
