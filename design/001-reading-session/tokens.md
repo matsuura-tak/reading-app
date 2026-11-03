@@ -149,3 +149,23 @@
 
 - ほかの場所（ボタンを押したとき、終えたとき、結果の画面、読み終えた画面、写真・スクリーンショットの読み取り）では触覚を出さない（R-28、性格語「静か」）。
 - 動きはシステムの NavigationStack の押し出しと `.sheet` の出入りだけを使い、独自のアニメーションの秒数やバネの値は持たない（決定 50）。
+
+## 6. 日付の書式（2026-11-03、仕様の決定 90）
+
+文言キーではなく、`Date.FormatStyle` の組み合わせに名前を付けたもの。端末の言語の書式に従い、文字列を手で組まない。年は出さない（仕様の 10 の未解決）。
+
+| 書式の名前 | `Date.FormatStyle` | 日本語 | 英語 | 使う場所 |
+|---|---|---|---|---|
+| `format.night.wide` | `.dateTime.month(.wide).day()` | 10月16日 | October 16 | `record.night`（S-7b）、`book.record.spoken`（S-7 の行の読み上げ）、`record.delete.confirm`、`finish.reflection.multi` の `%4$@`（S-9） |
+| `format.night.narrow` | `.dateTime.month(.defaultDigits).day()` | 10/16 | 10/16 | S-7 の記録の行 `book.record.row.<id>` の見える文字だけ（音声コントロール用に `accessibilityInputLabels` にも入れる。決定 60） |
+| （時刻） | `.dateTime.hour().minute()`（`time: .shortened`） | 22:00 | 10:00 PM | `reading.startedAt`（S-2）、`liveActivity.readingSince`（W-3）。決定 83 |
+
+- 晩の日付は 4:00 を境目にした「晩の日付」（`yyyy-MM-dd`、記録時のタイムゾーン固定。AC-22）を、タイムゾーンをずらさずにそのまま月日にする（S-7b・読み上げ・ふりかえりと、記録の行で同じ日になる）。
+
+## 7. 大きい文字で部品を替える所（2026-11-03、仕様の決定 93）
+
+| 所 | 標準（〜xxxLarge） | accessibility1 以上 |
+|---|---|---|
+| シートの上の帯の題（S-3 のシート、S-3c、S-4、S-7a、S-7b、S-7c、S-8、S-8a〜S-8d、S-9a、S-10a） | 帯の中央に `.headline` | 帯には左右のボタンだけ。題は内容の先頭の行（`.headline`、見出しトレイト） |
+| 進み具合の単位の切り替え（`mark.progressUnit`、`book.edit.progressUnit`） | `Picker` の `.segmented` | `Picker` の `.inline`（3行にチェック） |
+| S-1 の下端の帯の端 | `scrollEdgeEffectStyle(.hard, for: .bottom)`（自作の背景なし） | 同じ。送る側の下に帯の高さ＋`space.16` の余白 |

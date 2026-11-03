@@ -249,6 +249,14 @@ p.61                         （bookmark.page）
 
 ## S-3c 写真・スクリーンショットから一行を選ぶ画面（S-3 の `mark.photo` / `mark.screenshot` から。S-3c 単体で選択・修正・保存が完結。AC-65〜AC-69, AC-94, AC-95, AC-141, AC-142）
 ```
+──（`mark.photo` で開いた直後、写す前）──
+┌────────────────────────────────────────────────────────────────────────┐
+│                      ［カメラのプレビュー］                             │
+│          止めたページの文字を枠に入れてください。                       │  mark.camera.hint（.subheadline 2つ目の色）
+└────────────────────────────────────────────────────────────────────────┘
+[                          写す                           ]   .borderedProminent  mark.shutter
+──（写してから結果が返るまで：ProgressView と「文字を読み取っています」mark.ocr.recognizing。AC-94 のボタンはそのまま押せる）──
+──（結果が返ったあと）──
 <                 一行を選ぶ                    [撮り直す]（スクショなら「選び直す」） mark.retake
 （保存の失敗は欄の上に exclamationmark.circle と common.save.error。選んだ文字と場所は残す。AC-95）
 止めた行の枠を押すと、下の欄に入ります。文字はそのまま手で直せます。 .subheadline 2つ目の色  mark.ocr.hint
@@ -263,7 +271,7 @@ p.61                         （bookmark.page）
 └────────────────────────────────────────────────────────────────────────┘
 （下半分：常時表示。別の画面へ遷移せず S-3c のこの場で文字修正・場所入力・保存が完結する）
 一行（1〜60字）
-[ほかには誰もいない。                                  ]   TextField（手でそのまま直せる。AC-67） mark.lineField
+[ほかには誰もいない。                                  ]   TextField（選んだ列の文が値として入る。列を選んだあと最初に触れたとき全体を選ぶ。手でそのまま直せる。AC-67、決定 91） mark.lineField
 （誤り）exclamationmark.circle 一行は1〜60字で入れてください。  mark.line.invalid
 どこまで読んだか
 単位  [ ページ | 位置 | ％ ]                                  Picker(.segmented)（page 1〜9999 / location 1〜999999 / percent 0〜100 の3択） mark.progressUnit
@@ -322,7 +330,8 @@ p.61                         （bookmark.page）
 読み終えた                                                  shelf.finished（読み終えた日時の新しい順）
   檸檬 · 梶井基次郎                                  >      shelf.row.<id>
 ```
-- 本0冊のときは `ContentUnavailableView` に `shelf.empty.title`、`shelf.empty.message`、`shelf.empty.addBook` を出す。読み込み失敗のときは `shelf.load.error` と `shelf.retry` を出す。
+- 本0冊のときは `ContentUnavailableView` に `shelf.empty.title`、`shelf.empty.message`、`shelf.empty.addBook` を出す。読み込み失敗のときは `shelf.load.error.title`、`shelf.load.error` と `shelf.retry` を出す。
+- 本のない区分は見出しごと出さず、「積読の本はありません」のような代わりの文も出さない（決定 87）。
 
 ## S-7 本の画面（List .insetGrouped と、下端の主操作。AC-14〜AC-26, AC-113, AC-146）
 縦の線：奥付の名前の列は左 16+16、値の列は名前の列の最長の幅のあと 12。
@@ -391,8 +400,9 @@ p.61                         （bookmark.page）
 ┌────────────────────────────────────────────────────────────────────────┐
 │                ［奥付のカメラプレビュー / 写した奥付］                 │
 │  （カメラ拒否時は camera.denied と camera.openSettings を出す）        │
-│  （0文字のときは mark.ocr.none と colophon.retake を出す）             │
+│  （0文字のときは mark.ocr.none.title、mark.ocr.none と colophon.retake）│
 └────────────────────────────────────────────────────────────────────────┘
+[            写す            ]  colophon.shutter    [ 写真から読み取る ]  colophon.pickPhoto（PhotosPicker、.bordered）
 拾った奥付（手でそのまま直せます）
   書名      [青を売る                         ]   book.edit.title
   著者      [坂崎かおる                       ]   book.edit.author
@@ -515,8 +525,8 @@ ISBN 9784003101018 · 岩波書店（文庫）
 ## S-9 読み終えた画面（シート .large。1つのスクロール。AC-77〜AC-87, AC-113, AC-127〜AC-129, AC-147, AC-148）
 縦の線：左 16（見出し、ふりかえり、奥付、カード共有、次の1冊）、16〜377（ボタン）。
 ```
-[xmark 閉じる]                                              finish.close
-読み終えました                                              .largeTitle  finish.title
+[xmark 閉じる]（帯に題は出さない。決定 89）                 finish.close
+読み終えました                                              .largeTitle  finish.title（1回だけ。「3晩、83分」のようなまとめの行はこの下に置かない）
 6晩、合計142分（2時間22分）。いちばん長かったのは10月15日の晩の38分でした。
                                                             .body        finish.reflection（文言キー finish.reflection.multi。AC-127）
 （1晩だけのときは finish.reflection.single：「1晩、30分で読み終えました。」AC-128。記録0件のときは非表示 AC-129）
@@ -528,7 +538,7 @@ ISBN 9784003101018 · 岩波書店（文庫）
 受賞      第156回 直木三十五賞、2017年 本屋大賞             colophon.award
 ───────────────────────────────────────
 [ text.viewfinder 奥付を撮って補う ]                        .bordered  colophon.capture（押すと S-7c。AC-77, AC-113）
-[ square.and.arrow.up 読み終えのカードを共有 ]              .bordered  finish.card.share（書名・著者・何晩・合計時間だけの PNG 画像。一行とふりかえりは載せない。AC-84, AC-85）
+[ square.and.arrow.up 読み終えのカードを共有 ]              .bordered  finish.card.share（押すと下の S-9a。書名・著者・何晩・合計時間だけの PNG 画像。一行とふりかえりは載せない。AC-84, AC-85）
                                                             space.24
 次の1冊                                                     .headline  next.header
 積読と、この本につながる本から選んでいます。                .footnote 2つ目の色  next.subheader
@@ -547,6 +557,17 @@ ISBN 9784003101018 · 岩波書店（文庫）
 [ 今は読まない ]                                            .bordered  next.skip（見送って S-9 を閉じ、今の本0冊になる。AC-147）
 まだ読み終えていなかったときは、本棚でこの本を開き、        .footnote 2つ目の色  finish.undoNote
 「この本を読む」を押すと戻せます。
+```
+
+## S-9a 読み終えのカードの見本（シート。S-9 の `finish.card.share` から。足した 2026-11-03。AC-84, AC-85）
+```
+[xmark 閉じる]              読み終えのカード                 finish.card.close / finish.card.navTitle
+┌────────────────────────────────────────────────────────────────────────┐
+│  蜜蜂と遠雷                （type.book.line、明朝）                      │  finish.card.canvas（PNG と同じ View。
+│  恩田陸                                                                 │  一行・ふりかえり・写真は描かない）
+│  3晩 · 65分                （book.nights、duration.minutes）            │
+└────────────────────────────────────────────────────────────────────────┘
+[ square.and.arrow.up 画像を共有 ]                          .bordered  finish.card.shareImage（ShareLink。共有シートに PNG 画像1件を渡す）
 ```
 
 ## S-10 設定の画面（Form。AC-34, AC-37, AC-38, AC-51, AC-88, AC-92, AC-93, AC-105, AC-108）
@@ -592,6 +613,8 @@ ISBN 9784003101018 · 岩波書店（文庫）
 ┌────────────────────────────────────────────────────────────────────────┐
 │           ［選んだ見た目（kinari / sumi / shu）の見本］                │  store.preview（accessibilityValue は選んだ見た目の id）
 │        しおりの画面（S-1）とウィジェット（W-1）が実際の色で出る        │
+│  （今の本がないときは一行の位置に store.preview.sample.line だけを描き、  │
+│    書名・著者・場所は空。下に store.preview.sample.note。決定 88）       │
 └────────────────────────────────────────────────────────────────────────┘
 （購入失敗のときはここに store.purchase.error、通信なしのときは store.offline、支払い制限端末では store.unavailable を出す。AC-107, AC-109, AC-110）
 ──（下端に固定。safeAreaInset）──

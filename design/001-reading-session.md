@@ -345,6 +345,7 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | S-8c 手で入れる（書名候補つき）画面 | 書名を手で入れながら端末内書誌 DB の候補から1タップで選ぶか、そのまま保存する | ツールバー右上の「保存」（`manual.save`、`Button(role: .confirm)`） | `Form`、`Section`、`TextField`、`Toggle`、`Picker`、`Button`、`ToolbarItem` | 標準から外れない |
 | S-8d 本棚の写真から複数冊を選ぶ画面 | 本棚や積読の山の1枚の写真から、複数の背表紙を押してまとめて積読に加える | 下端に固定した「選んだn冊を積読に加える」（`bookshelf.addSelected`、`.borderedProminent`） | `ScrollView`、`List`、`TextField`、`Button`、`ContentUnavailableView`、`safeAreaInset(edge: .bottom)` | 画像の上の背表紙の枠ボタン（S-3c・S-8b と同じ白黒2重線の枠。押した枠が下の標準 `List` の行 `bookshelf.row.<n>` になり、行の中で書名を直せる） |
 | S-9 読み終えた画面 | 1冊を読み終えた夜に、ふりかえりと奥付を静かに見せ、カードを共有するか次の1冊を選ばせる | 次の1冊の候補の「この本を読む」（`next.choose`。未所有の候補は「積読に加える」`next.addToShelf`、候補0件のときは「本を加える」`next.addBook`） | `.sheet`、`NavigationStack`、`ScrollView`、`VStack`、`Button`（`.bordered`）、`ShareLink` / `UIActivityViewController`、`ContentUnavailableView`、`ToolbarItem` | S-7 と同じ奥付の節（`finish.colophon`）と、共有用のカード画像の描画（`ImageRenderer` で奥付の型を PNG に描く。画面の要素ではない） |
+| S-9a 読み終えのカードの見本（足した。2026-11-03） | 共有する前に、カードに描かれるもの（書名・著者・何晩・合計分だけ）を見せ、画像を共有シートに渡す | 「画像を共有」（`finish.card.shareImage`、`ShareLink`、`.bordered`） | `.sheet`、`VStack`、`ShareLink`、`Button` | カードの絵（`ImageRenderer` で描いた PNG と同じ View を `finish.card.canvas` として表示。VoiceOver は全体を1つにまとめ「読み終えのカード、（書名）、（著者）、（n晩）、（m分）」と読む） |
 | S-10 設定の画面 | 読み始めの動作、夜の入口の時刻、ロック画面のプライバシー、見た目と購入の復元、書誌の出どころを整える | 各項目の切り替え・選択（主操作の単一ボタンは持たない） | `Form`、`Section`、`Toggle`、`DatePicker` / `Picker`（15分刻みの時刻 `settings.entryTime`）、`NavigationLink`、`Button`、`Link` | 標準から外れない |
 | S-10a 見た目と「よむま＋」の画面 | 紙と墨の見た目を見比べて選び、未購入なら見本を見て買い切りで求める | 購入シートが出ているとき：「よむま＋を買う」（`store.buy`、`.borderedProminent`）／一覧のとき：見た目の行を選んで適用する | `List`（`.insetGrouped`）、`Section`、`Button`、`.sheet`（購入シート）、`ToolbarItem` | 見本の枠（`store.preview`：選んだ見た目の色トークンを当てた S-1 と W-1 の縮小見本。VoiceOver は `accessibilityIdentifier` `store.preview` に `accessibilityValue` として選んだ見た目の id を持たせる。AC-105） |
 | 部品 N 知らせの帯 | 画面の流れを止めずに、起きたことと直し方を伝える | 「閉じる」（`notice.close`、`.bordered` の小さいボタン、押せる範囲 44×44 pt） | `HStack`、`Image(systemName:)`、`Text`、`Button` | 標準の `alert` を使わず画面の上部（S-2 と S-8a〜S-8d の保存失敗は下端ボタンのすぐ上）に帯で出す（自動で消えるトーストは使わず、モーダルな `alert` で操作を止めないため。R-26、決定 43。出たときに `AccessibilityNotification.Announcement` で1回読み上げる） |
@@ -443,6 +444,16 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | 84 | アプリの外からのインテントの声の文（`intent.start.noCurrent`「今の本がありません。よむまを開きます。」、`intent.end.completed`「読書を終えました。」、失敗時の `session.start.error`）は1〜2文の事実だけにし、書名・一行・分数・場所を入れない（決定 79 と同じ理由）。ボタンのない Siri からも動くので「押してください」ではなく「試してください」と言う。「よむま」の直後に「で」を続けない（7-2 の決まり）（2026-11-02。G3 r2g の未解決2） | R-22、R-82 | https://developer.apple.com/design/human-interface-guidelines/siri 、https://developer.apple.com/design/human-interface-guidelines/privacy |
 | 85 | 推薦の理由（S-9 の `next.reason`、S-1 の候補、S-7 の `after.reason`）は、軸（共起・次の巻・同じ著者・同じ賞・同じレーベル）と「積読にある本か」の組ごとに1つの文言キーから作る（7-1 の表）。コードで「積読から・」と軸の文をつながず、賞やレーベルの名前が空のときはその軸を使わない。利用者が本を選ぶ手がかり（同じ作者、賞）を1行の事実で言う（2026-11-02。G3 r2g の未解決4） | R-26、R-79、R-86 | B-4、https://developer.apple.com/design/human-interface-guidelines/writing |
 | 86 | W-1・W-2 の縦書きの一行と場所の文字、およびアプリの中の見本（S-5、S-10a）は固定の字の大きさのままにし、アクセシビリティ監査の「Dynamic Type font sizes are unsupported」を例外として受け入れる（2026-11-02、G3 の指揮役の裁定）。ロック画面の枠は OS が決めて広がらず、見本は実物と同じ大きさで見せないと嘘になる。読み上げは1つのラベルで全文を伝える（決定 8、53。理由の全文は 9 章） | R-18、R-19、R-24 | B-6、https://developer.apple.com/design/human-interface-guidelines/widgets 、https://developer.apple.com/design/human-interface-guidelines/accessibility |
+| 87 | S-6 の本のない区分（今の本・積読・読み終えた）は見出しごと出さず、「積読の本はありません」のような代わりの文も出さない。空の案内は画面全体が空のとき（本0冊の `ContentUnavailableView`）だけにする。区分ごとの空の文は読む人に何も頼まず、見出しと文で2行を使うだけなので消す（S-7 の「この本のあとに」が候補0件のとき節ごと出さないのと同じ）。区分がどこに出るかは、本を加えたときに見えればよい（2026-11-03。G3 r2i の未解決3） | R-26、R-33 | B-2、https://developer.apple.com/design/human-interface-guidelines/lists-and-tables |
+| 88 | S-10a の購入シートの見本（`store.preview`）は、今の本があればその本の書名・著者・一行・場所で描き、今の本がないときは一行だけを「見本の一行」として描き、書名・著者・場所の位置は空にする。仮の本「羅生門／芥川龍之介／p.61」を本物の本のように描かない（Rams の「正直」。利用者の本棚にない本が自分の本のように見える）。見本の一行は公有の文（`store.preview.sample.line`）で、見本の下に `store.preview.sample.note`「見本の一行です。今の本を選ぶと、その本の続きの一行で見えます。」を出す（決定 13 と同じ考え方。2026-11-03。G3 r2i の未解決3） | R-18、R-33、R-35 | B-1、B-2、https://developer.apple.com/design/human-interface-guidelines/in-app-purchase |
+| 89 | S-9 の見出し「読み終えました」（`finish.title`、`.largeTitle`）は内容の先頭に1回だけ出し、シートの上の帯には題を出さず「閉じる」（`finish.close`）だけを置く。何晩・合計分のまとめの行（実装の `finish.summary`「3晩、83分」）は出さない。同じ数は `finish.reflection`（「3晩、合計83分（1時間23分）。…」）が1回で言う（AC-127）。1画面で同じ題と同じ数を二度出さない（2026-11-03。G3 r2i の未解決8、verifier r3 の提案 (c)） | R-23、R-26 | B-2、B-4、https://developer.apple.com/design/human-interface-guidelines/sheets |
+| 90 | 晩の日付は、年を出さず月日だけを端末の言語の書式で出す。広い形（`format.night.wide`。`Date.FormatStyle` の `.month(.wide).day()`。日本語「10月16日」、英語「October 16」）は `record.night`、`book.record.spoken`、`finish.reflection.multi` の `%4$@`、`record.delete.confirm` に入れる。狭い形（`format.night.narrow`。`.month(.defaultDigits).day()`。日本語「10/16」、英語「10/16」）は S-7 の記録の行の見える文字だけに使う。どちらも文言キーではなく書式で、文字列を手で組まない（決定 56、60 の書式を名前で固定した。2026-11-03。verifier r3 の未解決） | R-26 | B-6、https://developer.apple.com/design/human-interface-guidelines/writing |
+| 91 | S-3c の一行の欄（`mark.lineField`）は、選んだ列の文を欄の値として入れ（placeholder ではない）、列を選んだあと最初に欄に触れたときだけ文の全体を選ぶ。そのまま打てば置き換わり、もう一度押せば字の間に入って1字だけ直せる（AC-66、AC-67）。全体を選ぶのは列から入った文のときだけで、利用者が打った文や、S-3a・S-7a・S-8c の欄では標準のまま（末尾に入る）にする。VoiceOver では標準の `TextField` の読み上げ（値と選択範囲）に任せる（2026-11-03。G3 r3a の未解決1） | R-23、R-24、R-36 | https://developer.apple.com/design/human-interface-guidelines/text-fields 、https://developer.apple.com/design/human-interface-guidelines/entering-data |
+| 92 | 5章の状態の表と実装が食い違う7か所（S-3 の `mark.later.note.empty`、S-9 のカメラ拒否の `camera.denied`、S-7c の0文字時の `mark.ocr.none`／`colophon.retake`、S-6 の `shelf.load.error`、S-8a の `scan.hint`、S-8b の書名空の `book.title.invalid`、S-10 の保存失敗の `common.save.error`）は5章のままにし、実装が合わせる。どれも「何が起きたか」と「次の一手」を出す決まり（決定 28、44）の適用で、出さないと空の画面か無言の失敗になる。読めないときの `ContentUnavailableView` の見出しには `shelf.load.error.title`／`book.load.error.title` を足し、本文は S-1 の `store.load.error` と同じ形にそろえた（2026-11-03。verifier r2 の提案、r3 の提案 (d)） | R-26、R-33 | B-1、https://developer.apple.com/design/human-interface-guidelines/writing |
+| 93 | 大きい文字（accessibility1 以上）では、(1) シートの上の帯に題を描かず、左右のボタン（取り消す・閉じる／保存）だけを置き、題は内容の先頭の行（`.headline`、見出しトレイト）に移す。(2) 単位の切り替え（`mark.progressUnit`、`book.edit.progressUnit`）は `.segmented` をやめ `.inline` の `Picker`（3行にチェック）にする。セグメントは Dynamic Type で字が大きくならず、AX5 で読めない。(3) S-1 の下端の帯はシステムの硬い端の効果（`scrollEdgeEffectStyle(.hard, for: .bottom)`）にし、自作の背景を重ねない。一番下まで送ったとき伏せる案内の全文が帯の上に見える分の余白を取る（2026-11-03。G3 r3a の未解決4、指揮役の記録） | R-24 | https://developer.apple.com/design/human-interface-guidelines/accessibility 、https://developer.apple.com/design/human-interface-guidelines/pickers 、https://developer.apple.com/design/human-interface-guidelines/sheets |
+| 94 | S-1 の縦書きの一行（`bookmark.line`）と、S-5・S-10a の見本の縦書きは、W-1・W-2 と同じく全体を1つのアクセシビリティ要素に置き換え（`accessibilityRepresentation`）、ラベルは保存した一行そのもの（縦書き用の字形を使わない。AC-99）にする。1字ずつの `Text` は要素として出さない。監査の1字（「方」「の」）のコントラストの指摘はこれで消える（2026-11-03。G3 r3a の未解決5） | R-24、R-81 | https://developer.apple.com/design/human-interface-guidelines/accessibility |
+| 95 | S-1 で場所（ページ・位置・％）がないときは場所の行（`bookmark.page`）を出さず、「まだ記録はありません」のような代わりの文も出さない。一行も場所もないときだけ、書名の下に `bookmark.noMark.message` を1つ出す（5章の S-1 のとおり）。ない値の場所に文を置くと、行がある本と同じ高さで「何かがある」ように見える（2026-11-03。G3 r2i の未解決3） | R-26、R-33 | B-2 |
+| 96 | 監査の「Label not human-readable」（`mark.page.previous`「前の値はp.45です。…」）は、見える文字は `page.short`（「p.45」）のまま、読み上げのラベルを同じキー `mark.page.footer.keep` に `page.spoken`（「45ページ」）を入れて作る（「前の値は45ページです。空のまま保存すると、45ページのまま残ります。」）。見える文字を置き換えて読み上げを作らない決まり（決定 53）のとおり、書式の引数を替える。S-10a の `store.product.title` は行数の上限を付けず折り返す（2026-11-03。verifier r3 の提案 (e)） | R-24、R-81 | https://developer.apple.com/design/human-interface-guidelines/accessibility |
 
 ---
 
@@ -457,27 +468,27 @@ PRD の受け入れ基準 AC-1〜AC-149（全149件）を、漏れなく画面�
 | W-3 | 予定の時刻の待つ状態（`waiting`）：書名、一行（横書き）、ページ（押すと S-1）。読書中（`reading`）：書名、読み始めの時刻（`liveActivity.readingSince`「22:00 から読書中」）、`liveActivity.end`「終える」ボタン1つ（AC-41、AC-114）。終えた直後（`ended`）：`liveActivity.ended.summary`「10分 · p.61」 | 一行がない今の本の待つ状態：書名とページ（ページもなければ書名だけ）。今の本がないときは予約を作らない | なし（予約または開始の時点で値が確定している） | 予約や開始の要求が失敗したときは Live Activity を出さず、アプリ側の画面（S-2 または S-4）でそのまま進める（AC-97、AC-131）。「終える」で保存に失敗したときは Live Activity を消さず S-2 に `session.save.error` を出す（AC-132） | なし（端末内の時計と ActivityKit だけで動き、通信を使わない。AC-125） | Live Activity がオフ（`areActivitiesEnabled == false`）：Live Activity は出ず、アラートも出さない（S-10 に `settings.liveActivity.off` を出す。AC-37、AC-118） | `settings.hideOnWidgets` がオン：書名と一行を出さず `widget.hidden`「しおり」とページ（読書中は「しおり」と経過時間と「終える」）だけを出す（AC-34、AC-120）。名無しの今の本：書名の所に `widget.currentBookAsTitle`「今の本」を出す（AC-139） |
 | W-4 | ロック画面・コントロールセンター・アクションボタンに `control.startReading`「読み始める」（記号 `book`）の単発ボタン1つを出す（AC-126） | 今の本がないときに押されたら、アプリを前に出して S-1 の空状態を見せる（AC-117） | 押してから 0.5秒以内に `reading` にして Live Activity を出す（AC-114） | 保存に失敗したときは声・通知で `session.start.error` を返し `idle` のままにする（AC-119）。Live Activity の要求だけ失敗したときはアプリを前に出して S-2 を出す（AC-131） | なし（通信を使わない。機内モードでもそのまま動く。AC-125） | Live Activity がオフのときは、その場で `reading` にしてアプリを前に出し S-2 を出す（AC-118） | すでに `reading` のときに押されたら、二重に始めず `intent.start.alreadyReading` を返す（AC-115） |
 | W-5 | 「読み始める」：`intent.start.started` を声で返し Live Activity を開始。「どこまで読んだ？」：声と1行の小窓で `intent.whereStopped.page` / `location` / `percent` を返す。「続きを読む」：アプリを前に出して S-1 を開く | 「どこまで読んだ？」で進み具合がないときは `intent.whereStopped.noPage`、今の本がないときは `intent.whereStopped.noCurrent` を返す（AC-122）。「読み始める」「続きを読む」で今の本がないときは S-1 の空状態を開く（AC-117、AC-135） | なし（ローカルの SwiftData / 写しを読むだけで 0.5秒以内に返る） | 「どこまで読んだ？」で読み込みに失敗したときは `intent.whereStopped.error` を返す（AC-133）。「読み始める」で保存に失敗したときは `session.start.error` を返す（AC-119） | なし（通信を使わない。機内モードでも3つともそのまま動く。AC-125） | なし（「どこまで読んだ？」は `alwaysAllowed` でロック中も認証を求めない。`settings.hideOnWidgets` がオンでもページ・位置・％だけを答え、一行と書名は出さない。AC-121、AC-123） | すでに `reading` のときに「続きを読む」を動かすと S-2 を前に出し（AC-134）、「読み始める」を動かすと `intent.start.alreadyReading` を返す（AC-115） |
-| S-1 | 書名、著者、縦書きの一行（全文）、「p.61」（または「位置1450」「52%」）、`bookmark.setMark`、`bookmark.finish`（`.bordered`）、下端に固定した `bookmark.start`、伏せる案内の1行（紙の本は `bookmark.flipHint`、電子書籍は `bookmark.flipHint.ebook`） | 本0冊：`ContentUnavailableView`（`bookmark.empty.title`、`bookmark.empty.message`、`bookmark.addBook`）。今の本なし・積読あり：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、積読から最大3冊の候補 `bookmark.noCurrent.next.<id>`（各行に `bookmark.noCurrent.choose`）と `bookmark.openShelf`（AC-145）。今の本なし・積読0冊：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、`bookmark.openShelf`。一行も場所もない：書名の下に `bookmark.noMark.message` | 起動して保存先を読む間、0.3秒を超えたら書名と一行の形の灰の帯（redacted）。空の状態を先に出さない | 保存先を読めない：`ContentUnavailableView`（`store.load.error.title`、`store.load.error`、`store.retry`）だけで、ツールバーは「設定」だけ（AC-90）。読み始めの保存失敗：知らせ `session.start.error`（AC-59）。読み終えたの保存失敗：知らせ `common.save.error`（AC-91） | なし（毎晩の道は通信を一切使わない。AC-62） | なし（S-1 自体は OS の許可を使わない。伏せ検知が使えない端末 H18 やオフのときは `bookmark.flipHint` を出さない。AC-51） | 名無しの今の本（`isTitlePending = true`）：`bookmark.title` に `widget.currentBookAsTitle`「今の本」を出し、下に `bookmark.setBookTitle`「書名を入れる」（`.bordered`）を出す（AC-139、AC-140）。一行あり・場所なし：場所の行を出さない。一行なし・場所あり：縦書きの所を詰め、著者の下に場所を出す |
+| S-1 | 書名、著者、縦書きの一行（全文）、「p.61」（または「位置1450」「52%」）、`bookmark.setMark`、`bookmark.finish`（`.bordered`）、下端に固定した `bookmark.start`、伏せる案内の1行（紙の本は `bookmark.flipHint`、電子書籍は `bookmark.flipHint.ebook`） | 本0冊：`ContentUnavailableView`（`bookmark.empty.title`、`bookmark.empty.message`、`bookmark.addBook`）。今の本なし・積読あり：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、積読から最大3冊の候補 `bookmark.noCurrent.next.<id>`（各行に `bookmark.noCurrent.choose`）と `bookmark.openShelf`（AC-145）。今の本なし・積読0冊：`bookmark.noCurrent.title`、`bookmark.noCurrent.message`、`bookmark.openShelf`。一行も場所もない：書名の下に `bookmark.noMark.message` を1つ出す（場所の行 `bookmark.page` は出さず、「まだ記録はありません」のような代わりの文も出さない。決定 95）。今の本なし・積読ありの候補の上に「積読からすぐ読む」のような見出しは置かない（`bookmark.noCurrent.message` と各行の理由「積読から」で足りる。決定 87 と同じ考え方） | 起動して保存先を読む間、0.3秒を超えたら書名と一行の形の灰の帯（redacted）。空の状態を先に出さない | 保存先を読めない：`ContentUnavailableView`（`store.load.error.title`、`store.load.error`、`store.retry`）だけで、ツールバーは「設定」だけ（AC-90）。読み始めの保存失敗：知らせ `session.start.error`（AC-59）。読み終えたの保存失敗：知らせ `common.save.error`（AC-91） | なし（毎晩の道は通信を一切使わない。AC-62） | なし（S-1 自体は OS の許可を使わない。伏せ検知が使えない端末 H18 やオフのときは `bookmark.flipHint` を出さない。AC-51） | 名無しの今の本（`isTitlePending = true`）：`bookmark.title` に `widget.currentBookAsTitle`「今の本」を出し、下に `bookmark.setBookTitle`「書名を入れる」（`.bordered`）を出す（AC-139、AC-140）。一行あり・場所なし：場所の行を出さない。一行なし・場所あり：縦書きの所を詰め、著者の下に場所を出す |
 | S-2 | 書名（`reading.title`）、「21:04 から数えています。」（`reading.startedAt`）、数え続けることの1行（紙の本は `reading.note`、電子書籍は `reading.ebookNote`。AC-144）、下端に固定した「終える」（`reading.end`） | なし（今の本がないと読み始められない。AC-46） | なし（端末内の開始時刻を出すだけ。開き直したときは S-1 と同じ読み込みのあとに出す） | 終わりの保存の失敗：「終える」のすぐ上に知らせ `session.save.error`（閉じるボタンなし。もう一度 `reading.end` を押せる。AC-60、AC-132） | なし（通信を使わない。AC-62） | なし（許可を使わない） | 名無しの今の本（`isTitlePending = true`）：書名の位置に `widget.currentBookAsTitle`「今の本」を出す（AC-139） |
 | S-3 | 書名、問い「どこまで読みましたか。」、5つの道：`mark.photo`（ページを撮る）、`mark.screenshot`（スクリーンショットから選ぶ）、`mark.manual`（一行を入れる）、`mark.pageOnly`（ページ・位置・％だけ入れる）、`mark.later`（あとで挟む）と説明（AC-63） | 前のしおりがない：`mark.later` の下の文を `mark.later.note.empty`「しおりは空のままです。」に替える。読まずに挟むシート（AC-64）では `mark.later` は出さずツールバーに閉じる（`mark.cancel`）を出す | なし（読書の記録は「終える」を押した時点で保存済みで、0.5秒以内に開く。AC-55） | なし（この画面自体は保存を行わない。保存の失敗は S-3a〜S-3c で出す） | なし（通信を使わない。AC-62） | カメラの許可を断った状態で `mark.photo` を押したとき：カメラは開かず S-3 の中に `camera.denied` と `camera.openSettings`（「設定を開く」）を出し、同じ画面の `mark.screenshot`、`mark.manual`、`mark.pageOnly`、`mark.later` はそのまま押せる（AC-70、AC-142） | 名無しの今の本：書名の位置に `widget.currentBookAsTitle`「今の本」を出す。電子書籍（`isEbook = true`）：`mark.pageOnly` の表示文を進捗単位に合わせて出す |
 | S-3a | 一行の欄（`mark.lineField`、焦点）、電子書籍のときは単位の切り替え（`mark.progressUnit`：ページ／位置／％）、場所の欄（`mark.pageField`）とその下の消えない説明（`mark.page.previous`）、ツールバーの保存（`mark.save`） | 欄は空で始まる。一行が空のまま保存を押すと `mark.line.invalid`。場所の欄が空なら前の値をそのまま保つ（前の値がなければ空のまま保存できる） | 保存の間は保存ボタンの2度押しを受けない | 入力の誤り：欄のすぐ下に `mark.line.invalid`、`mark.page.invalid`（AC-72、AC-74、AC-141）。保存の失敗：Form のいちばん上の行に `common.save.error`、入れた字は残す（AC-95） | なし（通信を使わない） | なし（許可を使わない） | なし（手入力の画面であり、読み込むのは開く前に確定している前の場所の値だけ） |
 | S-3b | 電子書籍のときは単位の切り替え（`mark.progressUnit`：ページ／位置／％）、場所の欄（`mark.pageField`、焦点、数字キーボード）、その下の消えない説明（`mark.page.previous`）と一行が消えることの説明、ツールバーの保存（`mark.save`） | 空のまま保存を押すと `mark.page.invalid`（AC-74）。前の場所がないときは `mark.page.previous` を出さない | S-3a と同じ | 入力の誤り：`mark.page.invalid`（ページは 1〜9999、位置は 1〜999999、％は 0〜100 の外。AC-74、AC-141）。保存の失敗：Form のいちばん上に `common.save.error`、入れた字は残す | なし（通信を使わない） | なし（許可を使わない） | なし（手入力の画面であり、読み込むのは開く前に確定している前の場所の値だけ） |
-| S-3c | 上部に撮影したページまたは選んだスクリーンショットと右から `mark.ocr.column.1`〜`<n>` の枠（いちばん左の `<n>` が初期選択）、下に `mark.lineField`（選択した列の文字が入る）、電子書籍なら `mark.progressUnit`、`mark.pageField`、下端に固定した `mark.save`、補助の `mark.retake` と `mark.manual`（AC-65〜AC-67、AC-142） | 読み取れた列が0個：`ContentUnavailableView` で `mark.ocr.none` と、`mark.retake`（「撮り直す」／スクショなら「選び直す」）、`mark.manual`（「手で入れる」）を出し、前のしおりは変えない（AC-68） | 写真を確定してから Vision の結果が返るまでの間：画像の上に ProgressView と灰の帯を出し、その下にある `mark.manual` と `mark.pageOnly` は押せるままにする（押すと 1.0秒以内に S-3a / S-3b に移り、後から返った OCR 結果で上書きしない。AC-94） | 入力の誤り：`mark.line.invalid`、`mark.page.invalid`。保存の失敗：欄の上に `common.save.error`、選んだ文字と場所は残す（AC-95） | なし（Vision の文字認識は端末内だけで動き、通信を使わない） | `mark.screenshot`（`PhotosPicker`）はカメラ許可が拒否でもアラート0個でそのまま動く（AC-142）。カメラ撮影中に権限が外されたときは S-3 に戻って `camera.denied` を出す | ルビや掠れで文字が一部崩れたとき：枠を選んで `mark.lineField` に入った文字をその場で手で直して `mark.save` で保存できる（AC-67）。柱やノンブルからページ数が取れたときは `mark.pageField` に候補として入れ、取れなければ空欄のまま手入力できる |
-| S-4 | 書名、`result.summary`（「p.43 → p.61　18分」「位置1200 → 位置1450　18分」「34% → 52%　18分」）、「記録しました。」、下端に固定した「閉じる」（`result.close`） | `mark.later` の晩と、場所を変えずに一行だけ保存した晩：`result.summary` は「18分」だけ（AC-75）。前の場所がない本で初めて場所を入れた晩：「p.61　18分」（AC-76） | なし（保存は前の画面で完了している） | なし（保存の失敗は S-2 と S-3a〜S-3c で出す） | なし（通信を使わない） | なし（許可を使わない） | 経過が 86,460秒（1440分超）で上限に達したとき：`result.summary` の下に知らせ `session.capped` を出す（AC-57） |
+| S-3c | 撮る前（`mark.photo` から）：カメラの面に案内 `mark.camera.hint`、下端に「写す」（`mark.shutter`）。写してから結果が返るまで：`ProgressView` と `mark.ocr.recognizing`。上部に撮影したページまたは選んだスクリーンショットと右から `mark.ocr.column.1`〜`<n>` の枠（いちばん左の `<n>` が初期選択）、下に `mark.lineField`（選択した列の文字が欄の値として入る。placeholder ではない。列を選んだあと最初に欄に触れたときだけ全体を選ぶ。決定 91）、電子書籍なら `mark.progressUnit`、`mark.pageField`、下端に固定した `mark.save`、補助の `mark.retake` と `mark.manual`（AC-65〜AC-67、AC-142） | 読み取れた列が0個：`ContentUnavailableView` で見出し `mark.ocr.none.title`、文 `mark.ocr.none` と、`mark.retake`（「撮り直す」／スクショなら「選び直す」）、`mark.manual`（「手で入れる」）を出し、前のしおりは変えない（AC-68） | 写真を確定してから Vision の結果が返るまでの間：画像の上に ProgressView と灰の帯を出し、その下にある `mark.manual` と `mark.pageOnly` は押せるままにする（押すと 1.0秒以内に S-3a / S-3b に移り、後から返った OCR 結果で上書きしない。AC-94） | 入力の誤り：`mark.line.invalid`、`mark.page.invalid`。保存の失敗：欄の上に `common.save.error`、選んだ文字と場所は残す（AC-95） | なし（Vision の文字認識は端末内だけで動き、通信を使わない） | `mark.screenshot`（`PhotosPicker`）はカメラ許可が拒否でもアラート0個でそのまま動く（AC-142）。カメラ撮影中に権限が外されたときは S-3 に戻って `camera.denied` を出す | ルビや掠れで文字が一部崩れたとき：枠を選んで `mark.lineField` に入った文字をその場で手で直して `mark.save` で保存できる（AC-67）。柱やノンブルからページ数が取れたときは `mark.pageField` に候補として入れ、取れなければ空欄のまま手入力できる |
+| S-4 | 上の帯の題 `result.navTitle`「今夜の記録」、書名、`result.summary`（「p.43 → p.61　18分」「位置1200 → 位置1450　18分」「34% → 52%　18分」）、「記録しました。」、下端に固定した「閉じる」（`result.close`） | `mark.later` の晩と、場所を変えずに一行だけ保存した晩：`result.summary` は「18分」だけ（AC-75）。前の場所がない本で初めて場所を入れた晩：「p.61　18分」（AC-76） | なし（保存は前の画面で完了している） | なし（保存の失敗は S-2 と S-3a〜S-3c で出す） | なし（通信を使わない） | なし（許可を使わない） | 経過が 86,460秒（1440分超）で上限に達したとき：`result.summary` の下に知らせ `session.capped` を出す（AC-57） |
 | S-5 | 見出し、説明、利用者の一行の見本（172×76 pt、`widgetGuide.preview`）、下端の「閉じる」（`widgetGuide.close`） | なし（初めて一行を保存した直後にだけ出るため、一行は必ずある。AC-96） | なし（S-1 で読み込み済みの一行を使う） | なし（この画面の操作は閉じるだけで、失敗する保存を持たない） | なし（通信を使わない） | なし（許可を使わない） | `settings.hideOnWidgets` がオン：見本も「しおり」とページの形で見せる。場所なし：見本も一行だけ |
-| S-6 | 今の本（`shelf.current`）、積読（`shelf.tsundoku`、加えた日の新しい順）、読み終えた（`shelf.finished`、読み終えた日時の新しい順）の3区分（AC-13） | 本0冊：`ContentUnavailableView`（`shelf.empty.title`、`shelf.empty.message`、`shelf.empty.addBook`）。本のない区分は見出しごと出さない | 0.3秒を超えたら行の形の灰の帯を5行（500冊でも 1.0秒以内。AC-101） | 読めない：`ContentUnavailableView`（`shelf.load.error`、`shelf.retry`） | なし（本棚はすべて端末内のデータで通信を使わない） | なし（許可を使わない） | 名無しの今の本（`isTitlePending = true`）：行の書名に `widget.currentBookAsTitle`「今の本」を出す。著者が空の本：著者の行を出さない |
-| S-7 | 奥付（`book.colophon`）、奥付を撮って補うボタン（`colophon.capture` / `book.captureColophon`）、記録（何晩、合計、行 `book.record.row.<id>`）、読み終えた本なら「この本のあとに」（`after.header`、未所有の候補最大5冊 `after.candidate.<ISBNまたは受賞ID>`）、この本を消す（`book.delete`）、下端に固定した「この本を読む」（`book.readThis`）、ツールバーの「直す」（`book.edit`） | 記録0件：記録の節に `book.records.empty`（AC-23）。奥付はデータのある行だけ（書名1行だけのこともある。AC-18）。「この本のあとに」の候補が0件のときは `after.header` の節ごと出さない | 0.3秒を超えたら記録の行の形の灰の帯（記録1,000件でも 1.0秒以内。AC-101） | 読めない：`ContentUnavailableView`（`book.load.error`、`book.retry`）。今の本にする・積読に加える・消すの保存失敗：画面の上に知らせ `common.save.error`（AC-91） | なし（奥付も記録も「この本のあとに」の候補もすべて端末内 DB と同梱シードから出し、通信を使わない） | `colophon.capture` を押したときにカメラ許可が拒否なら、奥付の下に `camera.denied` と `camera.openSettings` を出し、ツールバーの `book.edit`（手で直す）を案内する | 名無しの今の本：奥付の書名に「今の本」を出し、`colophon.capture` と `book.edit` で書名と奥付を入れられる（AC-113、AC-140） |
+| S-6 | 今の本（`shelf.current`）、積読（`shelf.tsundoku`、加えた日の新しい順）、読み終えた（`shelf.finished`、読み終えた日時の新しい順）の3区分（AC-13） | 本0冊：`ContentUnavailableView`（`shelf.empty.title`、`shelf.empty.message`、`shelf.empty.addBook`）。本のない区分は見出しごと出さず、「積読の本はありません」「読み終えた本はまだありません」のような代わりの文も出さない（決定 87） | 0.3秒を超えたら行の形の灰の帯を5行（500冊でも 1.0秒以内。AC-101） | 読めない：`ContentUnavailableView`（見出し `shelf.load.error.title`、文 `shelf.load.error`、`shelf.retry`。記号 `exclamationmark.triangle`） | なし（本棚はすべて端末内のデータで通信を使わない） | なし（許可を使わない） | 名無しの今の本（`isTitlePending = true`）：行の書名に `widget.currentBookAsTitle`「今の本」を出す。著者が空の本：著者の行を出さない |
+| S-7 | 奥付（`book.colophon`）、奥付を撮って補うボタン（`colophon.capture` / `book.captureColophon`）、記録（何晩、合計、行 `book.record.row.<id>`）、読み終えた本なら「この本のあとに」（`after.header`、未所有の候補最大5冊 `after.candidate.<ISBNまたは受賞ID>`）、この本を消す（`book.delete`）、下端に固定した「この本を読む」（`book.readThis`）、ツールバーの「直す」（`book.edit`） | 記録0件：記録の節に `book.records.empty`（AC-23）。奥付はデータのある行だけ（書名1行だけのこともある。AC-18）。「この本のあとに」の候補が0件のときは `after.header` の節ごと出さない | 0.3秒を超えたら記録の行の形の灰の帯（記録1,000件でも 1.0秒以内。AC-101） | 読めない：`ContentUnavailableView`（見出し `book.load.error.title`、文 `book.load.error`、`book.retry`）。今の本にする・積読に加える・消すの保存失敗：画面の上に知らせ `common.save.error`（AC-91。S-7a〜S-7c のシートが開いている間は S-7 の帯を出さず、帯はシートの中の1つだけ） | なし（奥付も記録も「この本のあとに」の候補もすべて端末内 DB と同梱シードから出し、通信を使わない） | `colophon.capture` を押したときにカメラ許可が拒否なら、奥付の下に `camera.denied` と `camera.openSettings` を出し、ツールバーの `book.edit`（手で直す）を案内する | 名無しの今の本：奥付の書名に「今の本」を出し、`colophon.capture` と `book.edit` で書名と奥付を入れられる（AC-113、AC-140） |
 | S-7a | 書名（`book.edit.title`）、著者（`book.edit.author`）、電子書籍の切り替え（`book.edit.isEbook`）と進捗の単位（`book.edit.progressUnit`）、出版社、レーベル、出版年、取り消す、保存（`book.edit.save`） | 著者が空の本は著者の欄が空で始まる。書名を空にして保存を押すと `book.title.invalid` | 保存の間は保存を1回しか受けない | `book.title.invalid`、`book.author.invalid`（欄のすぐ下）、`common.save.error`（Form のいちばん上の行。AC-91）。入れた字は残す | なし（通信を使わない） | なし（許可を使わない） | なし（手入力の画面であり、今の本の値をそのまま欄に出す） |
 | S-7b | 晩の日付（読むだけ、`record.night`）、分の欄（`record.minutesField`）、保存（`record.save`）、この記録を消す（`record.delete`） | 空にして保存を押すと `record.minutes.invalid`（AC-25） | S-7a と同じ | `record.minutes.invalid`（欄の下）、`common.save.error`（Form のいちばん上。AC-91）。入れた字は残す | なし（通信を使わない） | なし（許可を使わない） | なし（開いた記録の値をそのまま出す） |
-| S-7c | 上部に奥付のカメラプレビューと「写す」ボタン、写したあとは抜き出した書名・著者・出版社・レーベル・出版年・ISBN の確認欄と下端に固定した「保存」（`colophon.save`）（AC-113） | 1文字も読み取れなかったとき：`mark.ocr.none` と「撮り直す」（`colophon.retake`）を出し、欄は手でそのまま打てる | 写してから Vision の結果が返るまで（0.5〜1.5秒）：欄の所に ProgressView を出し、そのまま手入力もできる | 保存の失敗：Form のいちばん上に `common.save.error`、欄の値は残す | なし（端末内の Vision だけで動き、通信を使わない） | カメラ許可が拒否：S-7c の中に `camera.denied` と `camera.openSettings` を出し、確認欄に手で入れて `colophon.save` で保存できる | 奥付から一部の項目（例：出版社と出版年だけ）が読めたとき：読めた項目だけ欄に埋め、残りの欄は空のまま保存するか手で補える（AC-10、AC-113） |
+| S-7c | 上部に奥付のカメラプレビューと「写す」ボタン（`colophon.shutter`）、その下に補助の「写真から読み取る」（`colophon.pickPhoto`。`PhotosPicker`、`.bordered`。S-3 の `mark.screenshot` と同じく許可を求めない）、写したあとは抜き出した書名・著者・出版社・レーベル・出版年・ISBN の確認欄と下端に固定した「保存」（`colophon.save`）（AC-113） | 1文字も読み取れなかったとき：`mark.ocr.none.title` と `mark.ocr.none` の2行と「撮り直す」（`colophon.retake`）を出し、欄は手でそのまま打てる | 写してから Vision の結果が返るまで（0.5〜1.5秒）：欄の所に ProgressView を出し、そのまま手入力もできる | 保存の失敗：Form のいちばん上に `common.save.error`、欄の値は残す | なし（端末内の Vision だけで動き、通信を使わない） | カメラ許可が拒否：S-7c の中に `camera.denied` と `camera.openSettings` を出し、確認欄に手で入れて `colophon.save` で保存できる | 奥付から一部の項目（例：出版社と出版年だけ）が読めたとき：読めた項目だけ欄に埋め、残りの欄は空のまま保存するか手で補える（AC-10、AC-113） |
 | S-8 | 登録の道の一覧：`register.barcode`（バーコード）、`register.cover`（表紙・背表紙を撮る）、`register.screenshot`（スクリーンショット・写真から選ぶ）、`register.bookshelf`（本棚・積読をまとめて撮る）、`register.manual`（手で入れる・書名で探す）、および条件を満たすときの `register.later`（あとで） | 今の本が1冊あるか、`isTitlePending = true` の本がすでにあるときは `register.later` の行を出さない（AC-139） | なし（固定のメニュー行だけで読み込みはない） | カメラを持たない端末：カメラを使う3つの行（`register.barcode`、`register.cover`、`register.bookshelf`）の下に `register.scanUnavailable` を出し、`register.screenshot` と `register.manual` を使わせる | なし（すべての登録の道が端末内書誌 DB と端末内 OCR で完結し、通信を使わない。AC-6、AC-103） | カメラを断った状態で `register.barcode`、`register.cover`、`register.bookshelf` を押したとき：カメラ画面を開かず S-8 の中に `camera.denied` と `camera.openSettings` を出し、`register.screenshot` と `register.manual` はそのまま押せる（AC-12） | 端末内書誌 DB が未取得（`notDownloaded`）のとき：S-8 の下の補足に DB を準備中である旨を出し、どの道もそのまま使える（AC-9、AC-11） |
 | S-8a | 上にカメラ（`scan.camera`）、下に読めた本の一覧（`scan.row.<ISBN>`）、下端に固定した「n冊を本棚に加える」（`scan.addToShelf`）。1冊以上読んだ間は戻るを隠し、閉じる（`role: .cancel`）→ 確認ダイアログだけ（決定 26） | まだ読んでいない：一覧の所に `scan.hint`。`scan.addToShelf` は押せない（0冊）。確認なしで閉じられる | 端末内書誌 DB（H20）は 0.3秒以内に返るため待ち表示は原則出ない（0.3秒を超えたときだけ行に灰の帯を出す。AC-149） | 本棚に加える保存の失敗（AC-91）：一覧の上に知らせ `common.save.error`。読んだ本の一覧は残し、もう一度 `scan.addToShelf` を押せる | なし（機内モードでも端末内書誌 DB から 0.3秒以内に書名・著者・出版社が埋まる。AC-6） | 断っているときは S-8 に残る。読む途中で権限を外されたときは S-8 に戻って `camera.denied` を出す | 端末内書誌 DB が `notDownloaded` のとき：行に `scan.dbNotReady` と `scan.row.captureCover`、`scan.row.editTitle` を出す（AC-9）。DB にない ISBN のとき：行に `scan.notFound` と `scan.row.captureCover`、`scan.row.editTitle` を出し、2段目 Cコードや ISBN 出版社記号から判型と出版社名を補う（AC-10、AC-11）。既登録の本：知らせ `scan.duplicate`（AC-3） |
-| S-8b | 上部に表紙・背表紙・スクリーンショットの画像と読み取った行の枠 `cover.ocr.line.1`〜`<n>`、下に1タップ目で入る書名欄（`manual.title`、`cover.selectTitle`）と2タップ目で入る著者欄（`manual.author`、`cover.selectAuthor`）、下端に固定した「保存」（`cover.save`）（AC-137） | 読み取れた行が0個：`ContentUnavailableView` で `mark.ocr.none` と「撮り直す」（`cover.retake`）、「手で入れる」（`register.manual` → S-8c）を出す | 画像を選んでから Vision の結果が返るまで：画像の上に ProgressView を出し、下の欄にはそのまま手で打てる | 書名が空・101字以上：`book.title.invalid`。著者が101字以上：`book.author.invalid`。保存の失敗：欄の上に `common.save.error` | なし（端末内の Vision だけで動き、通信を使わない） | `register.screenshot`（`PhotosPicker`）は許可不要。カメラ撮影で権限が外れたときは S-8 に戻って `camera.denied` を出す | 表紙の帯や装飾文字で1行だけしか読めなかったとき：1タップ目で書名に入れ、著者は下の `manual.author` に手で打つか空のまま `cover.save` で保存できる |
-| S-8c | 書名の欄（`manual.title`、3字以上で端末内書誌 DB の候補 `search.row.<ISBN>` が最大20件下に並び、押すと各欄に自動入力）、著者の欄（`manual.author`）、電子書籍の切り替え（`manual.isEbook`）と単位（`mark.progressUnit`）、保存（`manual.save`）（AC-4、AC-5、AC-7） | 入れる前：候補一覧は出さない。3字以上入れて DB に合う本が0件のとき：候補の位置に `search.noResults` を1行出し、そのまま `manual.save` で保存できる（AC-5） | 端末内書誌 DB は 0.3秒以内に返る（AC-149）。保存の間は `manual.save` の2度押しを受けない | `book.title.invalid`、`book.author.invalid`（欄のすぐ下。AC-8）、`common.save.error`（Form のいちばん上。AC-91）。入れた字は残す | なし（機内モードでも端末内書誌 DB の候補補完と手入力保存がそのまま動く。AC-6） | なし（許可を使わない） | 端末内書誌 DB が `notDownloaded` のとき：候補の位置に DB のダウンロード状態と再試行ボタン（`catalog.retry`）を出し、手入力での保存はそのまま動く（AC-11）。DB の候補にレーベルやページ数がないときは、ある項目だけ欄に埋める（AC-4、AC-10） |
+| S-8b | 上部に表紙・背表紙・スクリーンショットの画像と読み取った行の枠 `cover.ocr.line.1`〜`<n>`、下に1タップ目で入る書名欄（`manual.title`、`cover.selectTitle`）と2タップ目で入る著者欄（`manual.author`、`cover.selectAuthor`）、下端に固定した「保存」（`cover.save`）（AC-137） | 読み取れた行が0個：`ContentUnavailableView` で見出し `mark.ocr.none.title`、文 `mark.ocr.none` と「撮り直す」（`cover.retake`）、「手で入れる」（`register.manual` → S-8c）を出す | 画像を選んでから Vision の結果が返るまで：画像の上に ProgressView を出し、下の欄にはそのまま手で打てる | 書名が空・101字以上：`book.title.invalid`。著者が101字以上：`book.author.invalid`。保存の失敗：欄の上に `common.save.error` | なし（端末内の Vision だけで動き、通信を使わない） | `register.screenshot`（`PhotosPicker`）は許可不要。カメラ撮影で権限が外れたときは S-8 に戻って `camera.denied` を出す | 表紙の帯や装飾文字で1行だけしか読めなかったとき：1タップ目で書名に入れ、著者は下の `manual.author` に手で打つか空のまま `cover.save` で保存できる |
+| S-8c | 書名の欄（`manual.title`、3字以上で端末内書誌 DB の候補 `search.row.<ISBN>` が最大20件下に並び、押すと各欄に自動入力。候補の上に1行の見出し `search.candidates.header`）、著者の欄（`manual.author`）、電子書籍の切り替え（`manual.isEbook`）と単位（`mark.progressUnit`）、保存（`manual.save`）（AC-4、AC-5、AC-7） | 入れる前：候補一覧は出さない。3字以上入れて DB に合う本が0件のとき：候補の位置に `search.noResults` を1行出し、そのまま `manual.save` で保存できる（AC-5） | 端末内書誌 DB は 0.3秒以内に返る（AC-149）。保存の間は `manual.save` の2度押しを受けない | `book.title.invalid`、`book.author.invalid`（欄のすぐ下。AC-8）、`common.save.error`（Form のいちばん上。AC-91）。入れた字は残す | なし（機内モードでも端末内書誌 DB の候補補完と手入力保存がそのまま動く。AC-6） | なし（許可を使わない） | 端末内書誌 DB が `notDownloaded` のとき：候補の位置に DB のダウンロード状態と再試行ボタン（`catalog.retry`）を出し、手入力での保存はそのまま動く（AC-11）。DB の候補にレーベルやページ数がないときは、ある項目だけ欄に埋める（AC-4、AC-10） |
 | S-8d | 上部に本棚・積読の写真と背表紙の枠、下に押して選んだ候補の一覧 `bookshelf.row.<n>`（各行に書名欄と、DB で1件一致したときの著者・出版社）、下端に固定した「選んだn冊を積読に加える」（`bookshelf.addSelected`）（AC-138） | まだ背表紙の枠を1つも選んでいない：一覧の位置に案内 `bookshelf.hint` を出し、`bookshelf.addSelected` は押せない（0冊）。読み取れた文字が0個のときは `mark.ocr.none` と「撮り直す」「手で入れる」を出す | 写してから Vision の結果が返るまで：写真の上に ProgressView を出す | 保存の失敗：一覧の上に `common.save.error`、選んだ行は残す | なし（端末内の Vision と端末内書誌 DB だけで動き、通信を使わない） | カメラ権限が外れたときは S-8 に戻って `camera.denied` を出す | 端末内書誌 DB（H20）で完全一致が1件の本（「羅生門」）は著者・出版社・ISBN を自動で埋め、複数件ある本（「こころ」）や0件の本は書名だけで加える（AC-138） |
-| S-9 | 見出し「読み終えました」、ふりかえりの1行（`finish.reflection`）、奥付（`finish.colophon`）と奥付撮影（`colophon.capture`）、カードの共有（`finish.card.share`）、次の1冊（最大3冊：`next.candidate.<id>`、理由 `next.reason`、積読は `next.choose`、未所有は `next.addToShelf`、見送りは `next.skip`）、戻し方の1行（`finish.undoNote`） | 積読も未所有の候補も0件：`next.candidate` は0個で、`ContentUnavailableView`（`next.empty.title`、`next.empty.message`、`next.addBook`）を出す（AC-81）。記録が0件の本：`finish.reflection` の行を出さない（AC-129） | 0.3秒を超えたら候補の行の形の灰の帯 | 今の本にする・積読に加えるの保存失敗：画面の上に知らせ `common.save.error`、S-9 のまま残る | なし（候補はすべて積読・端末内書誌 DB・同梱受賞一覧・同梱共起テーブルから出し、通信を使わない） | `colophon.capture` を押したときにカメラ許可が拒否なら `camera.denied` と `camera.openSettings` を出す | 奥付はデータのある行だけ出す（AC-77）。記録が1晩だけのときは `finish.reflection.single`、2晩以上のときは `finish.reflection.multi` を出す（AC-127、AC-128） |
+| S-9 | 上の帯は「閉じる」（`finish.close`）だけで題を出さない。内容の先頭に見出し「読み終えました」（`finish.title`）を1回、ふりかえりの1行（`finish.reflection`。何晩・合計分はこの1行だけが言い、別のまとめの行は出さない。決定 89）、奥付（`finish.colophon`）と奥付撮影（`colophon.capture`）、カードの共有（`finish.card.share`。押すとカードの見本のシート S-9a：題 `finish.card.navTitle`、カード `finish.card.canvas`、「画像を共有」`finish.card.shareImage`、「閉じる」`finish.card.close`）、次の1冊（最大3冊：`next.candidate.<id>`、理由 `next.reason`、積読は `next.choose`、未所有は `next.addToShelf`、見送りは `next.skip`）、戻し方の1行（`finish.undoNote`） | 積読も未所有の候補も0件：`next.candidate` は0個で、`ContentUnavailableView`（`next.empty.title`、`next.empty.message`、`next.addBook`）を出す（AC-81）。記録が0件の本：`finish.reflection` の行を出さない（AC-129） | 0.3秒を超えたら候補の行の形の灰の帯 | 今の本にする・積読に加えるの保存失敗：画面の上に知らせ `common.save.error`、S-9 のまま残る | なし（候補はすべて積読・端末内書誌 DB・同梱受賞一覧・同梱共起テーブルから出し、通信を使わない） | `colophon.capture` を押したときにカメラ許可が拒否なら `camera.denied` と `camera.openSettings` を出す | 奥付はデータのある行だけ出す（AC-77）。記録が1晩だけのときは `finish.reflection.single`、2晩以上のときは `finish.reflection.multi` を出す（AC-127、AC-128） |
 | S-10 | 読み始め（`settings.flipToStart`、`settings.entryTime`）、ロック画面（`settings.hideOnWidgets`）、見た目と購入（`settings.appearance`、`settings.restorePurchases`）、書誌データ（状態と `catalog.retry`）、情報（`settings.privacyPolicy`、`settings.dataSources`、`settings.dataSources.license`） | なし（いつも決まった設定項目が並ぶ） | 購入の復元中は `settings.restorePurchases` の横に ProgressView を出す | 設定の保存失敗：切り替えを前の値に戻し、節の下に `common.save.error`。復元の結果：画面上部に知らせ `store.restore.done` または `store.restore.none`（AC-108） | リンクは Safari が扱い、購入の復元で通信がないときは知らせ `store.offline` を出す | OS の設定で Live Activity がオフのとき：読み始めの節に `settings.liveActivity.off` を出す（AC-37） | 伏せる道を使えない端末（H18）：`settings.flipToStart` を押せなくし、下に `settings.flipToStart.unavailable` を出す（AC-51）。端末内書誌 DB が `notDownloaded` のとき：書誌データの節に未取得の旨と再試行ボタン `catalog.retry` を出す（AC-11） |
-| S-10a | 見た目の一覧（無料：標準 `default`、よむま＋：生成り `kinari`・墨 `sumi`・朱 `shu`）。未購入で鍵つきの行を押すと、見本 `store.preview`（`accessibilityValue` は見た目の id）と買い切りの購入シート（品名、中身、値段、`store.buy`、`store.restore`、`store.close`）が出る（AC-105、AC-106） | なし（4つの見た目の選択肢が常に並ぶ） | 商品情報の取得中または購入処理中はボタンの位置に ProgressView を出す | 購入失敗：シートの中に `store.purchase.error` が1つ出て、見た目は `default` のまま（AC-107）。購入キャンセル（`userCancelled`）：エラーを出さずシートに残る（AC-107） | 通信がなく商品情報を読めないとき：アラートは出さずシートの中に `store.offline` を出し、`store.buy` は出さない（AC-110） | 支払いが許可されていない端末（`canMakePayments == false`）：`store.buy` は出さず、シートの中に `store.unavailable` を出す（AC-109） | 返金されたとき：前に戻ったときに購入状態が未購入に戻り、設定とウィジェットの見た目が `default` に戻る（AC-111） |
+| S-10a | 見た目の一覧（無料：標準 `default`、よむま＋：生成り `kinari`・墨 `sumi`・朱 `shu`）。未購入で鍵つきの行を押すと、見本 `store.preview`（`accessibilityValue` は見た目の id）と買い切りの購入シート（題 `store.navTitle`、品名、中身、値段、`store.buy`、`store.restore`、`store.close`）が出る（AC-105、AC-106）。購入済みのときは一覧の下に `store.purchased` | 今の本がないときの見本：一行の位置に見本の一行 `store.preview.sample.line` だけを描き、書名・著者・場所の位置は空にし、見本の下に `store.preview.sample.note` を出す（仮の本を本物のように描かない。決定 88）。見た目は `default`・`kinari`・`sumi`・`shu` の4つだけで、それ以外（dark、light など）の名前は画面に出さない | 商品情報の取得中または購入処理中はボタンの位置に ProgressView を出す | 購入失敗：シートの中に `store.purchase.error` が1つ出て、見た目は `default` のまま（AC-107）。購入キャンセル（`userCancelled`）：エラーを出さずシートに残る（AC-107） | 通信がなく商品情報を読めないとき：アラートは出さずシートの中に `store.offline` を出し、`store.buy` は出さない（AC-110） | 支払いが許可されていない端末（`canMakePayments == false`）：`store.buy` は出さず、シートの中に `store.unavailable` を出す（AC-109） | 返金されたとき：前に戻ったときに購入状態が未購入に戻り、設定とウィジェットの見た目が `default` に戻る（AC-111） |
 | 部品 N | 記号（エラーは `exclamationmark.circle`、ほかは `info.circle`）、文、閉じるボタン（`notice.close`） | なし（知らせがあるときにだけ出る部品のため） | なし（確定した文を即座に出す部品のため） | エラーの知らせは記号だけ赤（`color.state.error`）、文字は本文の色（`color.text.primary`） | なし（部品自体の通信はない） | なし（部品自体の許可はない） | なし（文の全文を折り返して出す） |
 
 ### 長い文字、0件、とても多いとき、取り消せない操作
@@ -518,7 +529,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-1 | ツールバー右の設定ボタン | `toolbar.settings` | 「設定」 |
 | S-1 | 今の本の書名（名無しの今の本のときは `widget.currentBookAsTitle`「今の本」） | `bookmark.title` | 書名（見出しトレイト `.isHeader`） |
 | S-1 | 今の本の著者 | `bookmark.author`（足した） | 著者 |
-| S-1 | 続きの一行 | `bookmark.line` | 保存した一行そのもの（AC-99） |
+| S-1 | 続きの一行 | `bookmark.line` | 保存した一行そのもの（AC-99）。縦書きのときも全体を1つの要素にし、1字ずつの `Text` は要素として出さない（決定 94） |
 | S-1 | 場所（ページ「p.61」、位置「位置1450」、％「52%」） | `bookmark.page` | 「61ページ」「位置1450」「52パーセント」（AC-99、AC-141） |
 | S-1 | どこまで読んだかを入れるボタン | `bookmark.setMark` | 「どこまで読んだかを入れる」 |
 | S-1 | 読み終えたボタン | `bookmark.finish` | 「読み終えた」。ヒント「奥付と次の1冊を出します。」 |
@@ -532,7 +543,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-1 | 今の本なし・積読ありのときの候補の行（最大3冊） | `bookmark.noCurrent.next.<id>`（前方一致 `bookmark.noCurrent.next`） | 「（書名）、（著者）、（理由）」（AC-145） |
 | S-1 | 今の本なしの候補の行の中の「この本を読む」ボタン | `bookmark.noCurrent.choose` | 「この本を読む、（書名）」（AC-145） |
 | S-1 | 本棚から選ぶボタン | `bookmark.openShelf`（足した） | 「本棚から選ぶ」 |
-| S-1 | しおりがまだないときの案内文 | `bookmark.noMark.message`（足した） | 文のとおり |
+| S-1 | しおりがまだないときの案内文（一行も場所もないときだけ。場所だけないときは `bookmark.page` の要素ごと出さない。決定 95） | `bookmark.noMark.message`（足した。`bookmark.line.empty` のような別の識別子は使わない） | 文のとおり |
 | S-1 | 保存先を読めないときの文と再試行ボタン | `store.load.error`、`store.retry`（`store.retry` は足した） | 文のとおり、「もう一度読み込む」（AC-90） |
 | 部品 N | 知らせの帯と文 | `notice`（足した）。文の要素は文言キーと同じ識別子（`session.tooShort`、`session.invalidTime`、`session.start.error`、`session.save.error`、`session.capped`、`common.save.error`、`scan.duplicate`、`store.restore.done`、`store.restore.none`） | 文のとおり（出たときに1回読み上げを送る） |
 | 部品 N | 知らせを閉じるボタン | `notice.close`（足した） | 「閉じる」。ヒント「知らせを閉じます。」 |
@@ -552,11 +563,12 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-3a、S-3c | 一行の入力欄 | `mark.lineField` | 「一行」（AC-65、AC-71） |
 | S-3a、S-3b、S-3c | 電子書籍の進捗単位ピッカー（`page` / `location` / `percent`） | `mark.progressUnit` | 「進み具合の単位」（セグメント：ページ、位置、％）（AC-141） |
 | S-3a、S-3b、S-3c | ページ・位置番号・％の入力欄 | `mark.pageField` | 単位に合わせて「ページ」「位置番号」「パーセント」（AC-65、AC-71、AC-73、AC-141） |
-| S-3a、S-3b、S-3c | 前の場所の消えない説明（前の値があるときだけ） | `mark.page.previous`（足した） | 文のとおり（「前のページは43です。…」） |
+| S-3a、S-3b、S-3c | 前の場所の消えない説明（前の値があるときだけ） | `mark.page.previous`（足した） | 見える文字は `mark.page.footer.keep` に `page.short`（「前の値はp.43です。空のまま保存すると、p.43のまま残ります。」）。読み上げは同じキーに `page.spoken`／`location.spoken`／`percent.spoken` を入れた文（「前の値は43ページです。空のまま保存すると、43ページのまま残ります。」。決定 96） |
+| S-3c | 撮る前のカメラの面の案内と「写す」ボタン、読み取り中の文 | `mark.camera.hint`、`mark.shutter`、`mark.ocr.recognizing`（足した） | 文言キーの文、「写す」、文のとおり（`ProgressView` と一緒に1回読み上げ） |
 | S-3a、S-3b、S-3c | 保存ボタン | `mark.save` | 「保存」（AC-65、AC-71、AC-73） |
 | S-3a、S-3b、S-3c | 一行・場所の入力誤りの文 | `mark.line.invalid`、`mark.page.invalid`（位置の範囲外 1〜999999 外の別名 `mark.progress.outOfRange.location`） | 文のとおり（出たときに1回読み上げ）（AC-72、AC-74、AC-141） |
 | S-3c | 読み取った列（または行）の枠ボタン（右から1始まり） | `mark.ocr.column.<n>`（例：`mark.ocr.column.1`〜`mark.ocr.column.6`、前方一致 `mark.ocr.column`） | 「列 <n>、（読み取った文字列）」。選ばれている枠には `.isSelected` トレイトを付ける（AC-65、AC-66、AC-142） |
-| S-3c、S-7c、S-8b、S-8d | 文字が1つも読み取れなかったときの文 | `mark.ocr.none` | 文言キー `mark.ocr.none` の文（AC-68） |
+| S-3c、S-7c、S-8b、S-8d | 文字が1つも読み取れなかったときの見出しと文 | `mark.ocr.none.title`（足した）、`mark.ocr.none` | 文言キー `mark.ocr.none.title` と `mark.ocr.none` の文（AC-68） |
 | S-3c | 撮り直す（スクショのときは選び直す）ボタン | `mark.retake` | 「撮り直す」（スクショのときは「選び直す」）（AC-68） |
 | S-4 | 本の書名 | `result.title`（足した） | 書名 |
 | S-4 | 読書のまとめ（場所の進みと分数） | `result.summary` | 「43ページから61ページ、18分」「位置1200から位置1450、18分」「34パーセントから52パーセント、18分」（`result.summary.spoken`）。前の場所なし「61ページ、18分」（`result.summary.first.spoken`）。あとで挟む「18分」（`duration.minutes.spoken`）。見える文字の「p.」を「ページ」に置き換えて作らない（決定 53）。90分の晩は「90分」のまま（決定 82）（AC-75、AC-76、AC-141） |
@@ -565,11 +577,13 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-6 | 本棚の3つの区分 | `shelf.current`、`shelf.tsundoku`、`shelf.finished` | 「今の本」「積読」「読み終えた」（AC-13） |
 | S-6 | 本の行 | `shelf.row.<本の id>`（足した） | 「（書名）、（著者）」 |
 | S-6 | ツールバーの「＋」本を加えるボタン、空状態の「本を加える」ボタン | `shelf.addBook`、`shelf.empty.addBook`（足した） | 「本を加える」 |
-| S-6 | 読み込めないときの文と再試行ボタン | `shelf.load.error`、`shelf.retry`（足した） | 文のとおり、「もう一度読み込む」 |
+| S-6 | 読み込めないときの見出しと文と再試行ボタン | `shelf.load.error.title`（足した）、`shelf.load.error`、`shelf.retry`（足した） | 見出しと文のとおり、「もう一度読み込む」 |
+| S-7 | 読み込めないときの見出しと文と再試行ボタン | `book.load.error.title`（足した）、`book.load.error`、`book.retry`（足した） | 見出しと文のとおり、「もう一度読み込む」 |
 | S-7、S-9 | 奥付のまとまり | `book.colophon`（S-7）、`finish.colophon`（S-9） | 「奥付」（AC-17、AC-77） |
 | S-7、S-9 | 奥付の各行 | `colophon.title`、`colophon.author`、`colophon.publisher`、`colophon.year`、`colophon.award` | 行ごとに「書名、蜜蜂と遠雷」「著者、恩田陸」「出版社、新潮社、新潮文庫」「出版年、2016年」「受賞、第156回 直木三十五賞、2017年 本屋大賞」（AC-17〜AC-21、AC-77） |
 | S-7、S-9 | 奥付を撮って補うボタン | `colophon.capture`（S-7 では別名 `book.captureColophon` も同じ要素またはエイリアスとして対応） | 「奥付を撮って補う」（AC-77、AC-113） |
 | S-7c | 奥付の確認欄の保存ボタンと撮り直すボタン | `colophon.save`、`colophon.retake`（`retake` は足した） | 「保存」「撮り直す」（AC-113） |
+| S-7c | 「写す」ボタン、写真から読み取るボタン（`PhotosPicker`）、取り消すボタン | `colophon.shutter`、`colophon.pickPhoto`、`colophon.cancel`（足した） | 「写す」「写真から読み取る」「取り消す」 |
 | S-7 | 何晩・合計時間 | `book.nights`、`book.total`（足した） | 「4晩」「合計 85分」（AC-22 のとおり分のまま。2026-11-02 に「合計1時間25分」から直した。決定 82） |
 | 全画面 | 読み込み中の形（redacted の灰の帯。決定 29） | （識別子なし） | `common.loading` の文「読み込み中」／"Loading" |
 | S-7 | 記録の行 | `book.record.row.<記録の id>`（前方一致 `book.record.row`） | 「10月17日の晩、10分」。見える文字「10/17」を `accessibilityInputLabels` に入れる（AC-22、決定 60） |
@@ -604,12 +618,14 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-8c | 書名の入力欄（インクリメンタル検索欄）、著者の入力欄、電子書籍トグル、進捗単位ピッカー、保存ボタン、取り消すボタン | `manual.title`（別名 `manual.searchField`）、`manual.author`、`manual.isEbook`、`mark.progressUnit`、`manual.save`、`manual.cancel`（`cancel` は足した） | 「書名」「著者」「電子書籍」「進み具合の単位」「保存」「取り消す」（AC-4、AC-5、AC-7、AC-8、AC-141） |
 | S-8c | `manual.title` に3字以上入れたときに出る端末内書誌 DB の候補の行（最大20件） | `search.row.<ISBN>`（例：`search.row.9784040000053`、前方一致 `search.row`、別名 `manual.candidate.<ISBN>`） | 「（書名）、（著者）、（出版社）、（レーベル）、（出版年）」（選んだ行には `.isSelected` トレイトを付ける。AC-4） |
 | S-8c | 端末内書誌 DB に合う候補が0件のときの文 | `search.noResults` | 文言キー `search.noResults` の文（AC-5） |
+| S-8c | 候補の一覧の上の見出し（候補が1件以上のときだけ） | `search.candidates.header`（足した） | 文言キーの文 |
 | S-8c、S-7a、S-8b | 書名・著者の入力誤りの文 | `book.title.invalid`、`book.author.invalid` | 文言キーのとおり（AC-8） |
 | S-8d | 本棚の写真から選んだ背表紙の候補行（1始まり） | `bookshelf.row.<n>`（例：`bookshelf.row.1`〜`bookshelf.row.3`） | 「候補 <n>、（書名）、（著者・出版社）」（AC-138） |
 | S-8d | 選んだn冊を積読に加えるボタン（主操作） | `bookshelf.addSelected` | 「選んだ3冊を積読に加える」（AC-138） |
 | S-9 | 読み終えましたの見出し | `finish.title`（足した） | 「読み終えました」（見出しトレイト） |
 | S-9 | ふりかえりの1行（記録1件以上のときだけ出る） | `finish.reflection` | 文言キー `finish.reflection.multi` または `finish.reflection.single` の文（AC-127〜AC-129） |
 | S-9 | 読み終えのカードを共有するボタン | `finish.card.share` | 「読み終えのカードを共有」（AC-84、AC-85） |
+| S-9a | カードの見本のシート：カードの絵、画像を共有するボタン（`ShareLink`）、閉じるボタン | `finish.card.canvas`、`finish.card.shareImage`、`finish.card.close`（足した。`shareCard.*` の名前は使わない） | 「読み終えのカード、（書名）、（著者）、（n晩）、（m分）」、「画像を共有」、「閉じる」（AC-84、AC-85） |
 | S-9 | 次の1冊の候補の行（最大3冊） | `next.candidate.<id>`（前方一致 `next.candidate`） | 「（書名）、（著者）。（理由）」（AC-78〜AC-83、AC-87、AC-147、AC-148） |
 | S-9 | 候補の行の中の理由の1行 | `next.reason` | 理由の文（AC-79、AC-148） |
 | S-9 | 積読の候補の「この本を読む」ボタン | `next.choose` | 「この本を読む、（書名）」（AC-82） |
@@ -627,6 +643,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | S-10 | 書誌の出どころの文と、CC BY 4.0 ライセンスへのリンク | `settings.dataSources`、`settings.dataSources.license` | 見出しと文言キー `settings.dataSources` の全文、「ライセンス、CC BY 4.0、Safari で開きます」（AC-93） |
 | S-10a | 見た目の選択肢の行（`default`、`kinari`、`sumi`、`shu`） | `appearance.row.default`、`appearance.row.kinari`、`appearance.row.sumi`、`appearance.row.shu`（足した） | 「標準（白と黒）、選択中」「生成り、よむま＋（未購入なら『鍵つき』）」など（AC-105、AC-106） |
 | S-10a | 購入シートの見た目の見本 | `store.preview` | ラベル「見た目の見本」、`accessibilityValue` に選んだ見た目の id（`kinari`、`sumi`、`shu`）（AC-105） |
+| S-10a | 今の本がないときの見本の注記、購入済みの文 | `store.preview.sample.note`、`store.purchased`（足した。`store.purchasedBadge` の名前は使わない） | 文言キーの文 |
 | S-10a | 購入シートの「よむま＋を買う」「購入を復元する」「閉じる」ボタン | `store.buy`、`store.restore`、`store.close` | 「よむま＋を買う」「購入を復元する」「閉じる」（AC-105、AC-106） |
 | S-10a、S-10 | 購入・復元のエラーと状態の文 | `store.purchase.error`、`store.restore.done`、`store.restore.none`、`store.unavailable`、`store.offline` | 各文言キーの文（AC-107〜AC-110） |
 
@@ -638,6 +655,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 - **調子**：です・ます調で淡々と書く。感嘆符（`！`）、絵文字、冗談を使わない。ほめない、祝わない。ボタンは動詞（英語は動詞で始める）。エラーは何が起きたかとどう直すかを書き、利用者を責めない（R-21、R-26、R-31）。
 - **組み立て方**：文字列を `+` でつなげず、書名・ISBN・数・時刻はすべて書式の引数（`%@`、`%lld`）で入れる。英語の数は String Catalog の複数形（`one` / `other`）を使う。ページ数、位置番号、出版年には桁区切りのカンマを入れない。
 - **時間と時刻（2026-11-02、決定 82、83）**：読書時間は分のまま `duration.minutes`（60分以上も「85分」「1440分」）で出し、時間に直すのは `finish.reflection.multi` の括弧の中だけ。時刻（S-2 の `reading.startedAt`、W-3 の `liveActivity.readingSince`）はシステムの短い時刻の書式（`time: .shortened`）を `%@` に入れ、「22時0分」のように手で組まない。読み上げ用の文（`*.spoken`）は見える文字を置き換えて作らず、専用のキーから組む（決定 53）。
+- **晩の日付（2026-11-03、決定 90）**：年を出さず月日だけを、端末の言語の `Date.FormatStyle` で組む。広い形 `format.night.wide`（`.month(.wide).day()`。日本語「10月16日」、英語「October 16」）を `record.night`、`book.record.spoken`、`record.delete.confirm`、`finish.reflection.multi` の `%4$@` に入れ、狭い形 `format.night.narrow`（`.month(.defaultDigits).day()`。日本語・英語とも「10/16」）は S-7 の記録の行の見える文字だけに使う。どちらも文言キーではなく書式の名前（`design/001-reading-session/tokens.md` の 6）で、「10月16日」を手で組まない。
 - **見える文字と読み上げが違うキーの対（見える文字 → 読み上げ）**：`page.short` → `page.spoken`、`location.short` → `location.spoken`、`percent.short` → `percent.spoken`、`duration.minutes` → `duration.minutes.spoken`、`result.summary.*` → `result.summary.spoken` / `result.summary.first.spoken`、`liveActivity.ended.summary` → `liveActivity.ended.spoken`。
 
 | キー | 日本語 | 英語 | 使う場所 |
@@ -707,7 +725,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `mark.line.footer` | 1〜60字。ロック画面には25字まで出ます。 | 1–60 characters. Up to 25 appear on the Lock Screen. | S-3a、S-3c。足した |
 | `mark.page.label` | ページ | Page | S-3a、S-3b、S-3c（位置のときは「位置番号」、％のときは「％」）。足した |
 | `mark.page.placeholder` | 例 61 | e.g. 61 | S-3a、S-3b、S-3c（位置のときは「例 1450」、％のときは「例 52」）。足した |
-| `mark.page.footer.keep` | 前の値は%1$@です。空のまま保存すると、%1$@のまま残ります。 | Previous: %1$@. If you leave this blank, it stays at %1$@. | S-3a、S-3c の `mark.page.previous`。足した |
+| `mark.page.footer.keep` | 前の値は%1$@です。空のまま保存すると、%1$@のまま残ります。 | Previous: %1$@. If you leave this blank, it stays at %1$@. | S-3a、S-3c の `mark.page.previous`。見える文字は `%1$@` に `page.short`／`location.short`／`percent.short`（「p.43」）、読み上げのラベルは同じキーの `%1$@` に `page.spoken`／`location.spoken`／`percent.spoken`（「43ページ」）を入れて作る（決定 96）。足した |
 | `mark.page.footer.optional` | 空のままでも保存できます。 | You can leave this blank. | S-3a、S-3c（前の値がないとき）。足した |
 | `mark.page.previous` | 前のページは%lldです。 | Previous page: %lld. | S-3b の `mark.page.previous`（位置なら「前の位置は位置%lldです。」、％なら「前の値は%lld%です。」）。足した |
 | `mark.pageOnly.footer` | 保存すると一行は消え、ロック画面には書名と場所が出ます。 | Saving clears the line. The Lock Screen will show the title and place. | S-3b。足した |
@@ -715,7 +733,11 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `mark.line.invalid` | 一行は1〜60字で入れてください。 | Enter a line of 1 to 60 characters. | S-3a、S-3c。PRD（AC-72） |
 | `mark.page.invalid` | ページは1〜9999（位置は1〜999999、％は0〜100）の整数の数字で入れてください。 | Enter a whole number: 1–9999 for page, 1–999999 for location, or 0–100 for %. | S-3a、S-3b、S-3c。PRD（AC-74、AC-141） |
 | `mark.ocr.hint` | 止めた行の枠を押すと、下の欄に入ります。文字はそのまま手で直せます。 | Tap the box for the line where you stopped. You can edit the text below. | S-3c。足した |
-| `mark.ocr.none` | 文字を読み取れませんでした。明るい所で撮り直すか、手で入れてください。 | No text was found. Retake the photo in better light, or enter it manually. | S-3c、S-7c、S-8b、S-8d。PRD（AC-68） |
+| `mark.ocr.none.title` | 文字を読み取れませんでした | No Text Found | S-3c、S-7c、S-8b、S-8d の0文字のときの見出し（`ContentUnavailableView` の題、記号 `text.viewfinder`）。足した（2026-11-03、決定 92） |
+| `mark.ocr.none` | 明るい所で撮り直すか、手で入れてください。 | Retake the photo in better light, or enter the text manually. | S-3c、S-7c、S-8b、S-8d の0文字のときの文（`mark.ocr.none.title` の下に出す。2026-11-03 に「文字を読み取れませんでした。」を見出しへ移し、文から外した）。PRD（AC-68） |
+| `mark.camera.hint` | 止めたページの文字を枠に入れてください。 | Fit the page text inside the frame. | S-3c（`mark.photo` で開いた撮る前のカメラの面）。足した（2026-11-03） |
+| `mark.shutter` | 写す | Capture | S-3c の撮る前の主操作（`.borderedProminent`）。足した（2026-11-03） |
+| `mark.ocr.recognizing` | 文字を読み取っています | Recognizing text | S-3c の写してから結果が返るまで（`ProgressView` と一緒に。「…」は付けない）。足した（2026-11-03） |
 | `mark.retake` | 撮り直す | Retake | S-3c（スクショのときは「選び直す」／「Choose Another」）。PRD（AC-68） |
 | `result.summary.pages` | p.%1$lld → p.%2$lld　%3$@ | p.%1$lld → p.%2$lld  %3$@ | S-4 の `result.summary`（ページ）。PRD（AC-76） |
 | `result.summary.locations` | 位置%1$lld → 位置%2$lld　%3$@ | Loc %1$lld → Loc %2$lld  %3$@ | S-4 の `result.summary`（位置番号）。PRD（AC-141） |
@@ -727,6 +749,7 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `result.summary.first.spoken` | %1$@、%2$@ | %1$@, %2$@ | S-4 の `result.summary` の読み上げ（前の場所がない晩。例「61ページ、18分」）。`mark.later` の晩は `duration.minutes.spoken` だけを読む。足した（2026-11-02）。PRD（AC-75、AC-76） |
 | `result.saved` | 記録しました。 | Session saved. | S-4。足した |
 | `result.close` | 閉じる | Done | S-4 の主操作。足した |
+| `result.navTitle` | 今夜の記録 | Tonight's Reading | S-4 の上の帯の題。足した（2026-11-03） |
 | `session.capped` | 24時間で数えるのを止めました。分数は、本の画面の記録で直せます。 | Counting stopped at 24 hours. You can edit the minutes in the book's reading log. | S-4 の知らせ。PRD（AC-57） |
 | `widgetGuide.title` | ロック画面に置く | Add to Your Lock Screen | S-5（`widgetGuide`）。PRD（AC-96） |
 | `widgetGuide.body` | ロック画面を長押しして「カスタマイズ」を選び、時計の下の枠に「よむま」を加えると、iPhone を手に取るたびに、この一行が出ます。 | Touch and hold the Lock Screen, tap Customize, and add Yomuma below the clock. This line will appear each time you pick up iPhone. | S-5。足した |
@@ -750,7 +773,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `shelf.addBook` | 本を加える | Add a Book | S-6 のツールバーと空状態。足した |
 | `shelf.empty.title` | 本棚に本がありません | No Books on Your Bookshelf | S-6。足した |
 | `shelf.empty.message` | 読んでいる本と、積んである本を加えてください。 | Add the book you're reading and the ones waiting in your pile. | S-6。足した |
-| `shelf.load.error` | 本棚を読み込めませんでした。もう一度読み込んでください。 | Couldn't load your bookshelf. Try loading again. | S-6。足した |
+| `shelf.load.error.title` | 本棚を読み込めませんでした | Couldn't Load Your Bookshelf | S-6 の読めないときの見出し（`ContentUnavailableView` の題、記号 `exclamationmark.triangle`）。足した（2026-11-03、決定 92） |
+| `shelf.load.error` | もう一度読み込んでください。続くときは、アプリを終了して開き直してください。 | Try loading again. If it keeps happening, quit Yomuma and open it again. | S-6 の読めないときの文（見出しの下。S-1 の `store.load.error` と同じ形。2026-11-03 に「本棚を読み込めませんでした。」を見出しへ移した）。足した |
 | `shelf.retry` / `book.retry` | もう一度読み込む | Try Again | S-6、S-7。足した |
 | `colophon.header` | 奥付 | Colophon | S-7（`book.colophon`）、S-9（`finish.colophon`）。足した |
 | `colophon.title.label` | 書名 | Title | 奥付（`colophon.title`）。PRD（AC-17） |
@@ -762,11 +786,14 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `colophon.award.label` | 受賞 | Awards | 奥付（`colophon.award`）。PRD（AC-17、AC-19〜AC-21） |
 | `colophon.capture` | 奥付を撮って補う | Scan Colophon | S-7（`colophon.capture` / `book.captureColophon`）、S-9（`colophon.capture`）。英語は動詞で始める短い形のまま。"Scan Colophon to Complete" のような目的の付け足しはしない（B-2。2026-11-02 に見直し、値は変えない）。PRD（AC-77、AC-113） |
 | `colophon.save` | 保存 | Save | S-7c の保存ボタン。PRD（AC-113） |
+| `colophon.shutter` | 写す | Capture | S-7c のカメラの「写す」ボタン。足した（2026-11-03） |
+| `colophon.pickPhoto` | 写真から読み取る | Choose from Photos | S-7c の補助ボタン（`PhotosPicker`、`.bordered`。カメラ拒否のときの代わりの道でもある）。足した（2026-11-03） |
+| `colophon.cancel` | 取り消す | Cancel | S-7c の上の帯の取り消す。足した（2026-11-03） |
 | `book.records.header` | 記録 | Reading Log | S-7。足した |
 | `book.nights` | %lld晩 | one: %lld night / other: %lld nights | S-7、S-9（カード）。PRD（AC-22、AC-84、AC-85） |
 | `book.total` | 合計 %@ | Total %@ | S-7（`%@` は `duration.minutes`。例「合計 85分」。AC-22 のとおり分のまま）。PRD（AC-22） |
 | `book.records.empty` | まだ記録がありません。読み始めて終えると、ここに残ります。 | No sessions yet. They appear here after you start and end reading. | S-7。PRD（AC-23） |
-| `book.record.spoken` | %1$@の晩、%2$@ | Night of %1$@, %2$@ | S-7 の `book.record.row.<id>` の読み上げ。足した |
+| `book.record.spoken` | %1$@の晩、%2$@ | Night of %1$@, %2$@ | S-7 の `book.record.row.<id>` の読み上げ（`%1$@` は `format.night.wide`「10月16日」／"October 16"、`%2$@` は `duration.minutes.spoken`。行の見える文字は `format.night.narrow`「10/16」と `duration.minutes`。決定 90）。足した |
 | `after.header` | この本のあとに | After This Book | S-7（読み終えた本 `finished` のおすすめ節の見出し）。PRD（AC-146） |
 | `after.addToShelf` | 積読に加える | Add to Pile | S-7 の `after.candidate` のボタン。PRD（AC-146） |
 | `after.added` | 積読に加えました | Added to Pile | S-7 で `after.addToShelf` を押したあとの表示。PRD（AC-146） |
@@ -777,7 +804,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `book.delete.confirm` | 「%1$@」と、この本の記録%2$lld件を消します。元に戻せません。 | one: Delete “%1$@” and its %2$lld session? This can't be undone. / other: Delete “%1$@” and its %2$lld sessions? This can't be undone. | S-7 の確認（記録1件以上）。PRD（AC-16） |
 | `book.delete.confirm.noRecords` | 「%@」を消します。元に戻せません。 | Delete “%@”? This can't be undone. | S-7 の確認（記録0件）。足した |
 | `book.delete.confirmButton` / `record.delete.confirmButton` | 消す | Delete | 確認ダイアログの破壊ボタン。足した |
-| `book.load.error` | この本を読み込めませんでした。もう一度読み込んでください。 | Couldn't load this book. Try loading again. | S-7。足した |
+| `book.load.error.title` | この本を読み込めませんでした | Couldn't Load This Book | S-7 の読めないときの見出し。足した（2026-11-03、決定 92） |
+| `book.load.error` | もう一度読み込んでください。続くときは、アプリを終了して開き直してください。 | Try loading again. If it keeps happening, quit Yomuma and open it again. | S-7 の読めないときの文（見出しの下。2026-11-03 に「この本を読み込めませんでした。」を見出しへ移した）。足した |
 | `book.edit.navTitle` | 本を直す | Edit Book | S-7a。足した |
 | `book.edit.title` / `manual.title` | 書名 | Title | S-7a、S-8b、S-8c。PRD（AC-4、AC-7） |
 | `book.edit.author` / `manual.author` | 著者 | Author | S-7a、S-8b、S-8c。PRD（AC-7） |
@@ -788,11 +816,11 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `book.title.invalid` | 書名は1〜100字で入れてください。 | Enter a title of 1 to 100 characters. | S-7a、S-8b、S-8c。PRD（AC-8） |
 | `book.author.invalid` | 著者は100字までで入れてください。 | Enter an author name of up to 100 characters. | S-7a、S-8b、S-8c。PRD（AC-8） |
 | `record.navTitle` | 記録を直す | Edit Session | S-7b。足した |
-| `record.night` | %@の晩 | Night of %@ | S-7b。足した |
+| `record.night` | %@の晩 | Night of %@ | S-7b（`%@` は `format.night.wide`「10月16日」／"October 16"。決定 90）。足した |
 | `record.minutes.label` | 分 | Minutes | S-7b。足した |
 | `record.minutes.footer` | 1〜1440分 | 1 to 1,440 minutes | S-7b。足した |
 | `record.delete` | この記録を消す | Delete This Session | S-7b。PRD（AC-26） |
-| `record.delete.confirm` | この記録（%@）を消します。元に戻せません。 | Delete this session (%@)? This can't be undone. | S-7b の確認。足した |
+| `record.delete.confirm` | この記録（%@）を消します。元に戻せません。 | Delete this session (%@)? This can't be undone. | S-7b の確認（`%@` は `record.night` の文「10月16日の晩」）。足した |
 | `record.minutes.invalid` | 分は1〜1440の数字で入れてください。 | Enter minutes from 1 to 1,440. | S-7b。PRD（AC-25） |
 | `register.navTitle` | 本を加える | Add a Book | S-8。足した |
 | `register.barcode` | バーコードを続けて読む | Scan Barcodes | S-8（記号 `barcode.viewfinder`）。PRD（AC-2、AC-3） |
@@ -826,10 +854,14 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `bookshelf.hint` | 加えたい本の背表紙の枠を押してください。何冊でも選べます。 | Tap the spine boxes for the books you want to add. | S-8d（AC-138）。足した |
 | `bookshelf.addSelected` | 選んだ%lld冊を積読に加える | one: Add %lld Selected Book to Pile / other: Add %lld Selected Books to Pile | S-8d の主操作。PRD（AC-138） |
 | `search.noResults` | 「%@」に合う候補は書誌データにありませんでした。このまま保存できます。 | No matches for “%@” in book data. You can save it as entered. | S-8c（`manual.title` の候補が0件のとき）。PRD（AC-5） |
-| `finish.title` | 読み終えました | Finished | S-9 の見出し。足した |
-| `finish.reflection.multi` | %1$lld晩、合計%2$lld分（%3$@）。いちばん長かったのは%4$@の晩の%5$lld分でした。 | %1$lld nights, %2$lld min (%3$@) in total. Your longest night was %4$@, at %5$lld min. | S-9 の `finish.reflection`（2晩以上）。PRD（AC-127、AC-128） |
+| `search.candidates.header` | 書誌データの候補。押すと欄に入ります。 | Matches in book data. Tap one to fill in the fields. | S-8c の候補一覧の上の1行（`.footnote`、`color.text.secondary`。候補が1件以上のときだけ）。足した（2026-11-03） |
+| `finish.title` | 読み終えました | Finished | S-9 の見出し（内容の先頭に `.largeTitle` で1回だけ。上の帯には題を出さない。何晩・合計分のまとめの行はこの下に置かない。決定 89）。足した |
+| `finish.reflection.multi` | %1$lld晩、合計%2$lld分（%3$@）。いちばん長かったのは%4$@の晩の%5$lld分でした。 | %1$lld nights, %2$lld min (%3$@) in total. Your longest night was %4$@, at %5$lld min. | S-9 の `finish.reflection`（2晩以上。`%4$@` は `format.night.wide`「10月15日」／"October 15"。決定 90）。PRD（AC-127、AC-128） |
 | `finish.reflection.single` | 1晩、%lld分で読み終えました。 | Finished in 1 night, %lld min. | S-9 の `finish.reflection`（1晩だけ）。PRD（AC-128） |
-| `finish.card.share` | 読み終えのカードを共有 | Share Finish Card | S-9 のカード共有ボタン。PRD（AC-84、AC-85） |
+| `finish.card.share` | 読み終えのカードを共有 | Share Finish Card | S-9 のカード共有ボタン（押すと S-9a のカードの見本のシート）。PRD（AC-84、AC-85） |
+| `finish.card.navTitle` | 読み終えのカード | Finish Card | S-9a（カードの見本のシート）の上の帯の題。足した（2026-11-03） |
+| `finish.card.shareImage` | 画像を共有 | Share Image | S-9a の `ShareLink`（`.bordered`。渡すのは PNG 画像1件。AC-84）。足した（2026-11-03） |
+| `finish.card.close` | 閉じる | Close | S-9a の上の帯の閉じる。足した（2026-11-03） |
 | `next.header` | 次の1冊 | Your Next Book | S-9。足した |
 | `next.subheader` | 積読と、この本につながる本から選んでいます。 | Picked from your pile and books connected to this one. | S-9。足した |
 | `next.reason.tsundoku` | 積読から | From your pile | S-9、S-1（noCurrent）の理由。PRD（AC-80） |
@@ -874,6 +906,10 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 | `store.buy` | よむま＋を買う（¥980） | Buy Yomuma+ | S-10a の購入シートの主操作（`Product.displayPrice` を併記。基準価格 ¥980）。PRD（AC-105、AC-106） |
 | `store.restore` | 購入を復元する | Restore Purchases | S-10a の購入シート。PRD（AC-105） |
 | `store.close` | 閉じる | Close | S-10a の購入シート。PRD（AC-105） |
+| `store.navTitle` | よむま＋ | Yomuma+ | S-10a の購入シートの上の帯の題（品名 `store.product.title` は内容の中に出る）。足した（2026-11-03） |
+| `store.purchased` | よむま＋は購入済みです。 | You own Yomuma+. | S-10a の見た目の一覧の下（購入済みのときだけ。`.footnote`）。足した（2026-11-03） |
+| `store.preview.sample.line` | ある日の暮方の事である。 | Call me Ishmael. | S-10a の見本（`store.preview`）で今の本がないときの一行（日本語は芥川龍之介「羅生門」の冒頭、英語は Melville "Moby-Dick" の冒頭。どちらも公有）。書名・著者・場所の位置は空にする（決定 88）。足した（2026-11-03） |
+| `store.preview.sample.note` | 見本の一行です。今の本を選ぶと、その本の続きの一行で見えます。 | This is a sample line. Choose a current book to preview it with your own line. | S-10a の見本の下（今の本がないときだけ。`.footnote`、`color.text.secondary`）。足した（2026-11-03） |
 | `store.purchase.error` | 購入を完了できませんでした。支払いは行われていません。もう一度試してください。 | Couldn't complete the purchase. You weren't charged. Please try again. | S-10a の購入シート。PRD（AC-107） |
 | `store.restore.done` | 購入を復元しました。「よむま＋」の見た目を選べます。 | Purchases restored. Yomuma+ appearances are now available. | S-10、S-10a。PRD（AC-108） |
 | `store.restore.none` | この Apple Account で購入された記録が見つかりませんでした。 | No previous purchases were found for this Apple Account. | S-10、S-10a。PRD（AC-108） |
@@ -1008,6 +1044,10 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
   - **W-1、W-2、およびその見本（S-5 の `widgetGuide.preview`、S-10a の `store.preview`）**：枠が広がらないため固定サイズ（決定 8）。大きい文字の利用者は押して開いた S-1 で拡大された全文を読む。
     - **監査の「Dynamic Type font sizes are unsupported」は例外として受け入れる（2026-11-02、G3 の指揮役の裁定。決定 86）**。理由：(1) ロック画面とホーム画面のウィジェットの枠（172×76 / 153×68、148〜170 の四方）は OS が決め、Dynamic Type で字を大きくすると25字の一行が枠に入らず欠ける。(2) アプリの中の見本は「ロック画面でこう見える」を見せるためのもので、実物と同じ大きさで描かないと嘘になる（見本の字を大きくすると、置いたあとの実物と違う）。(3) 読み上げは全体を1つのラベル（`widget.spoken` など。AC-99）にしてあり、縦書きの字そのものを読ませないので、VoiceOver の利用者は字の大きさに依らず全文を聞ける。例外はこの縦書きの一行（`type.book.line.widget.*`）と場所の文字（`type.widget.page`）だけで、アプリの中の他の文字はすべて Dynamic Type に従う。
   - **W-3（Live Activity）**：上限 `.xxxLarge` まで拡大し、書名と経過時間と「終える」ボタンが重ならないよう2行に折り返す。
+  - **シートの上の帯（S-3 のシート、S-3c、S-4、S-7a、S-7b、S-7c、S-8、S-8a〜S-8d、S-9、S-9a、S-10a。決定 93）**：accessibility1 以上では帯に題を描かず、左の「取り消す／閉じる」と右の「保存」だけを置く。題は内容の先頭の行（`.headline`、見出しトレイト `.isHeader`、同じ文言キー）に移す。帯の中で題とボタンを重ねない（AX5 の S-7a で「取り消す」と「本を直す」が重なった）。S-9 は帯に題がなく、内容の `finish.title` がそのまま見出し。
+  - **単位の切り替え（`mark.progressUnit`、`book.edit.progressUnit`。S-3a、S-3b、S-3c、S-7a、S-8c。決定 93）**：accessibility1 以上では `.segmented` をやめ `.inline` の `Picker`（「ページ」「位置」「％」の3行にチェック）にする。識別子とラベル「進み具合の単位」はそのまま。セグメントの字は Dynamic Type で大きくならない。
+  - **S-1 の下端の帯（決定 93）**：帯の背景は自作せず、システムの硬い端の効果（`scrollEdgeEffectStyle(.hard, for: .bottom)`）にする。一番下まで送ったとき、伏せる案内の全文が帯の上に見える分の余白（帯の高さ＋`space.16`）を送る側の下に取る。帯の下のごく薄いぼかしはシステムのもので受け入れる。
+  - **S-10a の購入シート**：`store.product.title`、`store.product.description`、見た目の4つの切り替えボタンは行数の上限を付けず折り返し、横並びの切り替えは入らなければ `ViewThatFits` で縦に積む（決定 96）。
 - **色だけで区別していないか**：
   - 選んだ枠（S-3c、S-8b、S-8d）：白黒2重線の内側の太さ（2pt → 3pt）と、番号・役割札（「✓ 6」「書名」「著者」）、および VoiceOver の `.isSelected` トレイトで示す。
   - 選んだ行（S-8c の書名候補、S-10a の見た目）：チェックの記号 `checkmark` と `.isSelected` トレイト。
@@ -1020,7 +1060,8 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 - **VoiceOver の読み上げ順**：
   - **W-1、W-2**：1つのまとまり（書名または「今の本」または「しおり」→ 場所 → 一行。AC-99）。
   - **W-3**：待つ状態は1つのまとまり（書名 → 場所 → 一行）。読書中は、書名と経過時間のまとまり → `liveActivity.end`（「読書を終える」ボタン）。
-  - **S-1**：本棚、設定（ツールバー）→（知らせ）→ 書名 → 著者 → 一行 → 場所 → どこまで読んだかを入れる → 読み終えた →（名無しの本なら）書名を入れる → 読み始める → 伏せる案内。
+  - **S-1**：本棚、設定（ツールバー）→（知らせ）→ 書名 → 著者 → 一行（縦書きでも1つの要素 `bookmark.line`。ラベルは保存した一行そのもの。1字ずつの要素は出さない。決定 94）→ 場所 → どこまで読んだかを入れる → 読み終えた →（名無しの本なら）書名を入れる → 読み始める → 伏せる案内。
+  - **S-5、S-10a の見本**：見本全体が1つの要素（`widgetGuide.preview`、`store.preview`）。中の縦書きの字は要素として出さない（決定 94）。
   - **S-2**：書名 → 始めた時刻 → 数え続ける1行（または電子書籍の案内）→（知らせ）→ 終える。
   - **S-3**：問い → 書名 → ページを撮る →（カメラ拒否の文と設定を開く）→ スクリーンショットから選ぶ → 一行を入れる → ページだけ入れる → あとで挟む →（シートのとき）閉じる。
   - **S-3a、S-3b**：一行の欄（S-3a）→ 進捗単位ピッカー（電子書籍のとき）→ 場所の欄 → 前の場所の説明 → 保存。
@@ -1040,6 +1081,13 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
 - **英語が長くなったとき（疑似言語 Double-Length で確かめる画面）**：
   - S-1、S-2、S-3（5つの道のボタン）、S-3c、S-4、S-7（「この本のあとに」の理由とボタン）、S-8（6つの道）、S-8a〜S-8d、S-9（ふりかえり、理由、ボタン）、S-10、S-10a、W-1〜W-3。ボタンの文字は折り返して切らず、横並びは入らなければ `ViewThatFits` で縦並びにする。
 - **押せる範囲**：どの押せる要素も **44×44 pt 以上**。`.bordered` のボタン（`bookmark.setMark`、`bookmark.finish`、`bookmark.setBookTitle`、`mark.later`、`notice.close`、`colophon.capture`、`finish.card.share`、`next.choose`、`next.addToShelf`、`after.addToShelf`）も高さを 44pt 以上にする。写真上の読み取り枠（`mark.ocr.column.<n>`、`cover.ocr.line.<n>`）も `.contentShape` で最小 44×44 pt のヒット領域を確保し、accessibility1 以上では標準の `List` 行でも押せるようにする。
+
+- **アクセシビリティ監査（`performAccessibilityAudit`）の残りの扱い（2026-11-03、決定 94、96）**：
+  - 「Contrast failed」で要素が1字（「方」「の」）のもの：縦書きの字が1字ずつ要素に出ていたことによる。S-1 と見本を1つの要素にすると出なくなる（決定 94）。
+  - 「Contrast failed [element=nil]」（S-1、部品 N）：要素が特定されない指摘。知らせ（N）の文は `color.text.primary`、記号だけ `color.state.error`、帯の地は `color.background.groupedRow`（9 の表のとおり 4.5:1 以上）であることを実装で確かめ、それでも残れば監査の側の限界として記録に残す（design/ の値は変えない）。S-3a の「ページ」（`.subheadline`、`color.text.secondary`）の地が `color.background.grouped` 以外（白の欄の上など）に乗っていないかも確かめる。
+  - 「Label not human-readable」（`mark.page.previous`）：読み上げのラベルを `page.spoken` で組む（決定 96）。
+  - 「Text clipped」（`store.product.title`、W-3・W-4 の見本）：`store.product.title` は折り返す（決定 96）。W-3・W-4 の見本は実寸の枠で切れる分で、決定 86 と同じ例外。
+  - 「Dynamic Type font sizes are unsupported」（W-1、W-2、見本）：決定 86 の例外。
 
 ### コントラスト比の計算結果（独自の色を使うすべての組）
 基準は、17pt 以下の文字が **4.5:1 以上**、18pt 以上か太字の文字とアイコンや操作部品の枠が **3:1 以上**（WCAG 2.1 / 2.2 相対輝度式）。
@@ -1072,12 +1120,17 @@ PRD の識別子はすべてそのまま使う。PRD にない補助の要素に
   - 受け入れテストが `result.summary` や `book.total` の値を「1440分」「85分」で比べている前提で `duration.minutes` を分のままにした（決定 82）。PRD の AC-22・AC-57・AC-127 と合うが、S-7 の「合計 85分」が読みにくいと Takuma が感じるなら、PRD（pdm）側で「合計1時間25分」に変える判断になる。design/ だけでは変えない。
   - `session.start.error` の文を「押してください」から「試してください」に直した。受け入れテストが文の全文を比べているなら verifier の直しが要る（報告に書いた）。
   - `intent.start.noCurrent` の声の文「今の本がありません。よむまを開きます。」は、Siri がアプリを開く直前に読み上げるものとして決めた。実機の Siri でアプリを開く結果（`opensIntent` / `.result(opensIntent:)`）のときに声が読まれるかは G4 の実機でしか確かめられない（読まれなければ画面の S-1 だけで足り、文は無駄になるが害はない）。
+- 2026-11-03（G3、決定 87〜96）に足したもの：
+  - 読み終えのカードは、`finish.card.share` を押すとカードの見本のシート（S-9a）が開き、そこの `finish.card.shareImage` で共有シートに渡す2段の形にした（実装に合わせた。共有する前に絵を確かめられる）。PRD の AC-84 は「`finish.card.share` を押す → 共有シートに渡したものは画像1件」で、間に1画面挟まることを書いていない。受け入れテストが通っているなら問題はないが、PRD の文を2段に合わせるかは pdm の判断（PRD に関わる）。
+  - S-7c の「写真から読み取る」（`colophon.pickPhoto`）は PRD の AC-113・AC-140（撮って補う）にない補助の道。実装にあったものを、S-3 の `mark.screenshot` と同じ理由（許可を求めない道を1つ残す）で残した。要らなければ消してよい（PRD に関わる）。
+  - 晩の日付に年を出さない（決定 90）。読み終えまでに年をまたいだ本の記録の行で「10/16」がどの年か分からなくなるが、記録は本ごとで数も少ないので出さなかった。出すなら決定 90 を直す（Takuma の判断）。
+  - `mark.ocr.none`、`shelf.load.error`、`book.load.error` の文を見出しと文に分けた。受け入れテストが文の全文を比べているなら verifier の直しが要る。
 - 上記のほかはなし（2026-10-19〜2026-10-25 に Takuma が方向性・範囲・端末内書誌 DB・OCR・電子書籍・おすすめ・予約 Live Activity・App Shortcuts・買い切り「よむま＋」をすべて承認・決定済み。`docs/approvals/001-reading-session-G1-decisions.md`、`docs/approvals/001-reading-session-G0.md`）。
 
 ## 確かめ（提出前に designer が印を付ける。design-reviewer はこれを信じずに確かめる）
 - [x] PRD のすべての AC に対応する画面と操作がある（2節の表に AC-1〜AC-149 の全149件を漏れなく記載）
 - [x] どの画面にも7つの状態があり、「なし」には理由がある（5節の表に W-1〜W-5、S-1〜S-10a、部品 N の7状態をすべて記載し、すべての「なし」に括弧で理由を記載）
-- [x] 判断の表のすべての行に、R の番号と原則がある（4節の判断 1〜86 のすべての行に R-1〜R-87 と HIG URL / B-1〜B-6 を記載）
+- [x] 判断の表のすべての行に、R の番号と原則がある（4節の判断 1〜96 のすべての行に R-1〜R-87 と HIG URL / B-1〜B-6 を記載。87〜96 は 2026-11-03）
 - [x] どの画面も仕事は1文、主操作は1つ（3節の表にすべての画面の1文の仕事と1つの主操作を記載）
 - [x] 標準部品から外れる所には、元の部品、理由、アクセシビリティの扱いがある（3節の表に記載）
 - [x] 色のすべての組にコントラスト比の計算があり、基準を満たす（9節の表と tokens.md にライト・ダーク・コントラストを上げるの3モードすべての計算値を記載し、文字 4.5:1 以上、記号・枠 3:1 以上を満たす）
