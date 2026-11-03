@@ -135,15 +135,8 @@ public struct VerticalBookmarkTextView: View {
     public var body: some View {
         switch state {
         case .empty:
-            let emptyLabel = String(localized: "bookmark.noMark.message")
-            Text(emptyLabel)
-                .font(.subheadline)
-                .foregroundStyle(palette.textSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.vertical, ThemeSpace.s24)
-                .accessibilityIdentifier("bookmark.line.empty")
-                .accessibilityLabel(emptyLabel)
-                .accessibilityValue("")
+            // 一行がないときは何も描かない。一行も場所もないときの `bookmark.noMark.message` は S-1 が書名の下に出す（決定 95）。
+            EmptyView()
         case .content(let line, let isVertical):
             let useVertical = isVertical && !dynamicTypeSize.isAccessibilitySize
             Group {
@@ -174,10 +167,8 @@ public struct VerticalBookmarkTextView: View {
                         .padding(.vertical, ThemeSpace.s16)
                 }
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityIdentifier("bookmark.line")
-            .accessibilityLabel(line)
-            .accessibilityValue(line)
+            // 縦書きの1字ずつの `Text` を要素として出さず、全体を保存した一行そのものの1つの要素にする（決定 94、AC-99）。
+            .singleAccessibilityElement(label: line, value: line, identifier: "bookmark.line")
         }
     }
 }

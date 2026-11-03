@@ -250,3 +250,13 @@ designer が決めた文言キー（design/ 7、決定 82〜86）をアプリに
 ### AX5 の S-1 で伏せる案内が下端で半分切れる
 - 原因：大きい文字では伏せる案内をスクロールの一番下に置く（design/ 9）。中身が画面より長く、`safeAreaBar` の「読み始める」の帯の下（ホームインジケーターの帯）に、スクロールの中身の伏せる案内の行が半分だけ透けて見えた。
 - 直し方：S-1 のスクロールの下端の端の効果を、システムのはっきりした形（`.scrollEdgeEffectStyle(.hard, for: .bottom)`、iOS 26）にした。帯に自作の背景は付けない。`safeAreaBar` は中身の下に帯の分の余白を足すので、一番下まで送れば案内は帯の上に出る見込み［推測。一番下まで送った画面は撮っていない］。
+
+## 14. 12体目と13体目（BASE d7d7a8e → c584c9e）で合わせたこと（designer の決定 87〜96、裁定 35〜39）
+- 文言：`AppL10n`（言語の引数を見て日英を選ぶ仮の仕組み）を消し、画面の文字はすべて String Catalog のキーから出す（`AppL10n.pick` 0か所）。決定 87〜96 の新しいキー19個を ja・en で入れ、`mark.ocr.none`・`shelf.load.error`・`book.load.error` は見出し（`*.title`）と文に分けた。
+- 識別子の改名：`shareCard.*` → `finish.card.close`／`finish.card.canvas`／`finish.card.shareImage`、`colophon.ocr.pickPhoto` → `colophon.pickPhoto`、`store.purchasedBadge` → `store.purchased`。`bookmark.line.empty` は使わない（一行も場所もないときだけ `bookmark.noMark.message`）。
+- AC-84（裁定 36）：H24 の記録は S-9 の `finish.card.share` を押した時点で行う（`FinishNightView` の `shareCardButtonSection`）。S-9a のシートはそのあと開く見本で、記録の時点は変えていない。
+- 大きい文字（決定 93）：`SheetHeaderBar` は accessibility1 以上で題を描かず、題は内容の先頭の `SheetContentTitle`（`.headline`、見出しトレイト）が出す。進み具合の単位は `progressUnitPickerStyle()`（accessibility1 以上は `.inline`）。S-1 のスクロールの下に `space.16` を足した。
+- 1つの要素（決定 94）：S-1 の縦書きの一行、S-5・S-10a の見本は `singleAccessibilityElement`（`accessibilityRepresentation`）で1つの要素にする。
+- S-9 の `finish.summary`（何晩・合計分）は出さない（決定 89）。帯の題も出さず、`finish.title` は内容に1回。
+- S-10a の今の本なし：仮の本（書名・著者・p.61）を描かず、見本の一行 `store.preview.sample.line` と注記 `store.preview.sample.note` だけ（決定 88）。
+- 残り：S-7c の「写す」（`colophon.shutter`）とカメラの面は作っていない。S-3c・S-8b の「写す」も実際のカメラで撮る作りがなく、H23 の読み取りの設定だけを読む（Release では常に0文字になる）。S-8c に `manual.isEbook` と単位の切り替えがない。どれも決定 87〜96 の範囲の外で、報告で上げた。

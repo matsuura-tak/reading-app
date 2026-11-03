@@ -3,8 +3,9 @@ import ReadingCore
 import ReadingStore
 
 public enum FinishNightViewState: Equatable, Sendable {
-    case withReflection(title: String, author: String, summary: String, reflection: String, candidates: [RecommendationCandidate])
-    case withoutReflection(title: String, author: String, summary: String, candidates: [RecommendationCandidate])
+    // 何晩・合計分のまとめの行は持たない。同じ数は `finish.reflection` だけが言う（design/ 5 の S-9、決定 89）。
+    case withReflection(title: String, author: String, reflection: String, candidates: [RecommendationCandidate])
+    case withoutReflection(title: String, author: String, candidates: [RecommendationCandidate])
 }
 
 public struct FinishNightView: View {
@@ -33,30 +34,28 @@ public struct FinishNightView: View {
         if let previewState { return previewState }
         let title = book?.title ?? ""
         let author = book?.author ?? ""
-        let nights = model.store.distinctNightCount(for: bookId)
-        let mins = model.store.totalMinutes(for: bookId)
-        let summary = BookTextFormat.nightsAndMinutes(nights: nights, minutes: mins)
         let candidates = cachedCandidates ?? model.store.buildNextBookCandidates(for: bookId)
         if let reflectionSummary = model.store.buildFinishReflectionSummary(for: bookId) {
             let reflection = BookTextFormat.finishReflection(reflectionSummary)
-            return .withReflection(title: title, author: author, summary: summary, reflection: reflection, candidates: candidates)
+            return .withReflection(title: title, author: author, reflection: reflection, candidates: candidates)
         }
-        return .withoutReflection(title: title, author: author, summary: summary, candidates: candidates)
+        return .withoutReflection(title: title, author: author, candidates: candidates)
     }
 
     private var resolvedCandidates: [RecommendationCandidate] {
         switch resolvedState {
-        case .withReflection(_, _, _, _, let candidates):
+        case .withReflection(_, _, _, let candidates):
             return candidates
-        case .withoutReflection(_, _, _, let candidates):
+        case .withoutReflection(_, _, let candidates):
             return candidates
         }
     }
 
     public var body: some View {
         VStack(spacing: 0) {
+            // 帯は「閉じる」だけで題を出さない。題「読み終えました」は内容の先頭に1回だけ（design/ 5 の S-9、決定 89）。
             SheetHeaderBar(
-                title: String(localized: "finish.title"),
+                title: "",
                 leftTitle: String(localized: "finish.close"),
                 leftId: "finish.close",
                 onLeft: {
@@ -72,13 +71,13 @@ public struct FinishNightView: View {
                     }
 
                     switch resolvedState {
-                    case .withReflection(let title, let author, let summary, let reflection, let candidates):
-                        headerSection(title: title, author: author, summary: summary, reflection: reflection)
+                    case .withReflection(let title, let author, let reflection, let candidates):
+                        headerSection(title: title, author: author, reflection: reflection)
                         shareCardButtonSection
                         gatedCandidatesSection(candidates: candidates)
                         skipButtonSection(candidates: candidates)
-                    case .withoutReflection(let title, let author, let summary, let candidates):
-                        headerSection(title: title, author: author, summary: summary, reflection: nil)
+                    case .withoutReflection(let title, let author, let candidates):
+                        headerSection(title: title, author: author, reflection: nil)
                         shareCardButtonSection
                         gatedCandidatesSection(candidates: candidates)
                         skipButtonSection(candidates: candidates)
@@ -127,7 +126,7 @@ public struct FinishNightView: View {
         model.notifyHookChanged()
     }
 
-    private func headerSection(title: String, author: String, summary: String, reflection: String?) -> some View {
+    private func headerSection(title: String, author: String, reflection: String?) -> some View {
         let displayTitle = title.isEmpty ? ReadingWidgetStrings.currentBookAsTitle : title
         let formattedPublisher = BookTextFormat.publisherWithLabel(publisher: book?.publisher, label: book?.label)
         let matchedAwards = AwardsCatalog.matchAwards(
@@ -154,13 +153,7 @@ public struct FinishNightView: View {
                 .foregroundStyle(palette.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("finish.title")
-
-            Text(summary)
-                .font(.headline.monospacedDigit())
-                .foregroundStyle(palette.textPrimary)
-                .accessibilityIdentifier("finish.summary")
-                .accessibilityLabel(summary)
-                .accessibilityValue(summary)
+                .accessibilityAddTraits(.isHeader)
 
             if let reflection {
                 Text(reflection)
@@ -494,7 +487,6 @@ public struct FinishNightView: View {
         previewState: .withReflection(
             title: "羅生門",
             author: "芥川龍之介",
-            summary: BookTextFormat.nightsAndMinutes(nights: 4, minutes: 85),
             reflection: "4晩、合計85分（1時間25分）。いちばん長かったのは10月18日の晩の30分でした。",
             candidates: [c1]
         )
@@ -509,7 +501,6 @@ public struct FinishNightView: View {
         previewState: .withoutReflection(
             title: "羅生門",
             author: "芥川龍之介",
-            summary: BookTextFormat.nightsAndMinutes(nights: 1, minutes: 20),
             candidates: []
         )
     )

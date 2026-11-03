@@ -43,14 +43,16 @@ public struct ShelfListView: View {
         }
     }
 
-    // S-6 の「読めない」（design 5）：shelf.load.error と shelf.retry。
+    // S-6 の「読めない」（design 5、決定 92）：見出し shelf.load.error.title、文 shelf.load.error、shelf.retry。
     private var shelfLoadErrorSection: some View {
         let message = String(localized: "shelf.load.error")
         return ContentUnavailableView {
-            Label(
-                AppL10n.pick("本棚を読み込めませんでした", "Couldn't Load Bookshelf"),
-                systemImage: "exclamationmark.triangle"
-            )
+            Label {
+                Text(String(localized: "shelf.load.error.title"))
+                    .accessibilityIdentifier("shelf.load.error.title")
+            } icon: {
+                Image(systemName: "exclamationmark.triangle")
+            }
         } description: {
             Text(message)
                 .accessibilityIdentifier("shelf.load.error")
@@ -89,36 +91,27 @@ public struct ShelfListView: View {
                         }
                     }
 
-                    VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                        Text(String(localized: "shelf.tsundoku"))
-                            .font(.subheadline.bold())
-                            .foregroundStyle(palette.textSecondary)
-                            .accessibilityIdentifier("shelf.tsundoku")
-
-                        if tsundoku.isEmpty {
-                            Text(AppL10n.pick("積読の本はありません", "No books in your stack"))
-                                .font(.subheadline)
+                    // 本のない区分は見出しごと出さず、代わりの文も出さない（design/ 5 の S-6、決定 87）。
+                    if !tsundoku.isEmpty {
+                        VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                            Text(String(localized: "shelf.tsundoku"))
+                                .font(.subheadline.bold())
                                 .foregroundStyle(palette.textSecondary)
-                                .padding(.vertical, ThemeSpace.s8)
-                        } else {
+                                .accessibilityIdentifier("shelf.tsundoku")
+
                             ForEach(tsundoku) { book in
                                 shelfBookButton(book: book)
                             }
                         }
                     }
 
-                    VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                        Text(String(localized: "shelf.finished"))
-                            .font(.subheadline.bold())
-                            .foregroundStyle(palette.textSecondary)
-                            .accessibilityIdentifier("shelf.finished")
-
-                        if finished.isEmpty {
-                            Text(AppL10n.pick("読み終えた本はまだありません", "No finished books yet"))
-                                .font(.subheadline)
+                    if !finished.isEmpty {
+                        VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                            Text(String(localized: "shelf.finished"))
+                                .font(.subheadline.bold())
                                 .foregroundStyle(palette.textSecondary)
-                                .padding(.vertical, ThemeSpace.s8)
-                        } else {
+                                .accessibilityIdentifier("shelf.finished")
+
                             ForEach(finished) { book in
                                 shelfBookButton(book: book)
                             }
@@ -260,6 +253,8 @@ public enum BookDetailSheetKind: Identifiable, Equatable, Sendable {
 public struct BookDetailView: View {
     @Bindable var model: ReadingAppModel
     public let bookId: UUID
+    /// Preview 用：S-7 の「読めない」（design/ 5）を描く。
+    public let previewLoadError: Bool
     @State private var detailSheet: BookDetailSheetKind?
     @State private var showDeleteBookConfirm = false
     @State private var addedAfterCandidateIDs: Set<String> = []
@@ -267,13 +262,44 @@ public struct BookDetailView: View {
     @Environment(\.themePalette) private var palette
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    public init(model: ReadingAppModel, bookId: UUID) {
+    public init(model: ReadingAppModel, bookId: UUID, previewLoadError: Bool = false) {
         self.model = model
         self.bookId = bookId
+        self.previewLoadError = previewLoadError
     }
 
     private var book: BookSnapshot? {
         model.store.books.first { $0.id == bookId }
+    }
+
+    /// S-7 の「読めない」（design/ 5）：保存先を読めなかったとき。
+    private var isLoadFailed: Bool {
+        previewLoadError || model.store.isStoreLoadFailed
+    }
+
+    // S-7 の「読めない」（design/ 5、決定 92）：見出し book.load.error.title、文 book.load.error、book.retry。
+    private var bookLoadErrorSection: some View {
+        ContentUnavailableView {
+            Label {
+                Text(String(localized: "book.load.error.title"))
+                    .accessibilityIdentifier("book.load.error.title")
+            } icon: {
+                Image(systemName: "exclamationmark.triangle")
+            }
+        } description: {
+            Text(String(localized: "book.load.error"))
+                .accessibilityIdentifier("book.load.error")
+        } actions: {
+            Button {
+                model.store.loadFromDisk()
+                model.notifyHookChanged()
+            } label: {
+                Text(String(localized: "book.retry"))
+            }
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("book.retry")
+        }
+        .padding(.vertical, ThemeSpace.s32)
     }
 
     /// S-7 の題（名無しの今の本は `widget.currentBookAsTitle`。design/ 5 の S-7）。
@@ -292,7 +318,9 @@ public struct BookDetailView: View {
                         BannerNoticeView(model: model)
                     }
 
-                    if let book {
+                    if isLoadFailed {
+                        bookLoadErrorSection
+                    } else if let book {
                         bookHeaderSection(book: book)
                         bookActionsSection(book: book)
                         afterCandidatesSection(book: book)
@@ -308,7 +336,7 @@ public struct BookDetailView: View {
                 .padding(.vertical, ThemeSpace.s24)
             }
 
-            if let book, !book.status.isCurrentReading {
+            if !isLoadFailed, let book, !book.status.isCurrentReading {
                 VStack(spacing: 0) {
                     Button {
                         if model.store.switchToCurrentBook(bookId: book.id) {
@@ -982,6 +1010,7 @@ public struct BookEditSheetView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+                    SheetContentTitle(String(localized: "book.edit.navTitle"))
                     BannerNoticeView(model: model)
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
@@ -1029,7 +1058,7 @@ public struct BookEditSheetView: View {
                         Text(String(localized: "mark.progressUnit.location")).tag(ProgressUnit.location)
                         Text("%").tag(ProgressUnit.percent)
                     }
-                    .pickerStyle(.segmented)
+                    .progressUnitPickerStyle()
                     .accessibilityIdentifier("book.edit.progressUnit")
                 }
                 .padding(ThemeSpace.s24)
@@ -1094,6 +1123,7 @@ public struct RecordEditSheetView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+                    SheetContentTitle(String(localized: "record.navTitle"))
                     BannerNoticeView(model: model)
 
                     HStack {
@@ -1228,15 +1258,29 @@ public struct ShareCardPreviewSheetView: View {
         let nights = model.store.distinctNightCount(for: book.id)
         let mins = model.store.totalMinutes(for: book.id)
 
+        // 読み上げ「読み終えのカード、（書名）、（著者）、（n晩）、（m分）」（design/ 6 の S-9a）。区切りは端末の言語の並べ方の書式に任せる。
+        let nightsText = String.localizedStringWithFormat(NSLocalizedString("book.nights", comment: ""), nights)
+        let canvasLabel = [
+            String(localized: "finish.card.navTitle"),
+            book.title,
+            book.author,
+            nightsText,
+            ReadingWidgetStrings.durationMinutesSpoken(mins)
+        ]
+        .filter { !$0.isEmpty }
+        .formatted(.list(type: .and, width: .narrow))
+
         return VStack(spacing: 0) {
             SheetHeaderBar(
-                title: AppL10n.pick("読了カード", "Finish Card"),
-                cancelTitle: String(localized: "mark.cancel"),
-                cancelIdentifier: "shareCard.close",
+                title: String(localized: "finish.card.navTitle"),
+                cancelTitle: String(localized: "finish.card.close"),
+                cancelIdentifier: "finish.card.close",
                 onCancel: onClose
             )
 
             VStack(spacing: ThemeSpace.s24) {
+                SheetContentTitle(String(localized: "finish.card.navTitle"))
+
                 FinishCardCanvasView(
                     title: book.title,
                     author: book.author,
@@ -1244,8 +1288,9 @@ public struct ShareCardPreviewSheetView: View {
                     totalMinutes: mins
                 )
                 .frame(maxWidth: .infinity)
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("shareCard.canvas")
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(verbatim: canvasLabel))
+                .accessibilityIdentifier("finish.card.canvas")
 
                 if let renderedOutput,
                    !renderedOutput.pngData.isEmpty,
@@ -1255,10 +1300,10 @@ public struct ShareCardPreviewSheetView: View {
                         item: previewImage,
                         preview: SharePreview(book.title, image: previewImage)
                     ) {
-                        Text(AppL10n.pick("画像を共有", "Share Image"))
+                        Text(String(localized: "finish.card.shareImage"))
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                    .accessibilityIdentifier("shareCard.share")
+                    .accessibilityIdentifier("finish.card.shareImage")
                 }
 
                 Spacer()
@@ -1281,11 +1326,24 @@ public struct ShareCardPreviewSheetView: View {
 
 // MARK: - S-7c Colophon OCR Sheet
 
+/// S-7c の読み取りの段（design/ 5 の S-7c）。
+public enum ColophonOCRPhase: Equatable, Sendable {
+    /// 読み取る前（写真を選ぶ前。欄は手でそのまま打てる）。
+    case idle
+    /// 写してから Vision の結果が返るまで（H23 の hold で止めている間）。欄の所に ProgressView、手入力もできる。
+    case recognizing
+    /// 1文字も読み取れなかった：`mark.ocr.none.title`、`mark.ocr.none`、`colophon.retake`。
+    case nothingRead
+    /// 読み取れた項目を欄に入れた（一部だけのときは残りの欄は空）。
+    case read
+}
+
 public struct ColophonOCRSheetView: View {
     @Bindable var model: ReadingAppModel
     public let bookId: UUID
     public let onClose: () -> Void
 
+    @State private var phase: ColophonOCRPhase
     @State private var extracted: ColophonExtractionResult?
     @State private var authorText: String = ""
     @State private var publisherText: String = ""
@@ -1295,10 +1353,11 @@ public struct ColophonOCRSheetView: View {
     @State private var selectedPhotoItem: PhotosPickerItem?
     @Environment(\.themePalette) private var palette
 
-    public init(model: ReadingAppModel, bookId: UUID, onClose: @escaping () -> Void) {
+    public init(model: ReadingAppModel, bookId: UUID, initialPhase: ColophonOCRPhase = .idle, onClose: @escaping () -> Void) {
         self.model = model
         self.bookId = bookId
         self.onClose = onClose
+        _phase = State(initialValue: initialPhase)
     }
 
     private var isCameraDenied: Bool {
@@ -1315,13 +1374,15 @@ public struct ColophonOCRSheetView: View {
         return VStack(spacing: 0) {
             SheetHeaderBar(
                 title: String(localized: "colophon.capture"),
-                cancelTitle: String(localized: "book.edit.cancel"),
+                cancelTitle: String(localized: "colophon.cancel"),
                 cancelIdentifier: "colophon.cancel",
                 onCancel: onClose
             )
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+                    SheetContentTitle(String(localized: "colophon.capture"))
+
                     BannerNoticeView(model: model)
 
                     if isCameraDenied {
@@ -1354,25 +1415,26 @@ public struct ColophonOCRSheetView: View {
                         selection: $selectedPhotoItem,
                         matching: .images
                     ) {
-                        Text(AppL10n.pick("奥付の画像から読み取る", "Pick Colophon Image"))
+                        Text(String(localized: "colophon.pickPhoto"))
                     }
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                    .accessibilityIdentifier("colophon.ocr.pickPhoto")
+                    .accessibilityIdentifier("colophon.pickPhoto")
                     .onChange(of: selectedPhotoItem) { _, newItem in
                         guard let newItem else { return }
+                        phase = .recognizing
                         Task { @MainActor in
                             if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
-                                let res = CameraAndOCRService.evaluateColophon(from: image)
-                                extracted = res
-                                if let a = res.author, !a.isEmpty { authorText = a }
-                                if let p = res.publisher, !p.isEmpty { publisherText = p }
-                                if let l = res.label, !l.isEmpty { labelText = l }
-                                if let y = res.publishedYear { yearText = String(y) }
-                                if let i = res.isbn13, !i.isEmpty { isbnText = i }
-                                model.notifyHookChanged()
+                                applyColophonResult(CameraAndOCRService.evaluateColophon(from: image))
+                            } else {
+                                phase = .idle
                             }
+                            // 同じ写真を選び直しても読み直せるように、選んだものを外す（画像は残さない。AC-69）。
+                            selectedPhotoItem = nil
+                            model.notifyHookChanged()
                         }
                     }
+
+                    colophonPhaseSection
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
                         Text(authorFieldLabel)
@@ -1450,16 +1512,106 @@ public struct ColophonOCRSheetView: View {
         }
         .background(palette.bgPrimary.ignoresSafeArea())
         .onAppear {
-            let colCfg = model.store.ocrConfiguration?.colophon ?? H23OCRColophon(rawLines: [])
-            let res = OCRPipeline.parseColophon(colCfg)
-            extracted = res
-            authorText = res.author ?? ""
-            publisherText = res.publisher ?? ""
-            labelText = res.label ?? ""
-            yearText = res.publishedYear.map(String.init) ?? ""
-            isbnText = res.isbn13 ?? ""
-            model.notifyHookChanged()
+            evaluateConfiguredColophon()
         }
+        .onChange(of: model.store.isOCRHoldReleased) { _, released in
+            if released, phase == .recognizing {
+                evaluateConfiguredColophon()
+            }
+        }
+    }
+
+    /// 読み取り中・読み取れなかったときの行（design/ 5 の S-7c の「読み込み中」「空」）。欄は下にそのまま出し、手で打てる。
+    @ViewBuilder
+    private var colophonPhaseSection: some View {
+        switch phase {
+        case .idle, .read:
+            EmptyView()
+        case .recognizing:
+            HStack(spacing: ThemeSpace.s8) {
+                ProgressView()
+                    .tint(palette.actionTint)
+                Text(String(localized: "mark.ocr.recognizing"))
+                    .font(.subheadline)
+                    .foregroundStyle(palette.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("mark.ocr.recognizing")
+        case .nothingRead:
+            VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                Label {
+                    Text(String(localized: "mark.ocr.none.title"))
+                        .font(.headline)
+                        .foregroundStyle(palette.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("mark.ocr.none.title")
+                } icon: {
+                    Image(systemName: "text.viewfinder")
+                        .foregroundStyle(palette.textSecondary)
+                        .accessibilityHidden(true)
+                }
+                Text(String(localized: "mark.ocr.none"))
+                    .font(.subheadline)
+                    .foregroundStyle(palette.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("mark.ocr.none")
+                colophonRetakeButton
+            }
+        }
+    }
+
+    /// 撮り直す（`colophon.retake`）。H23 の読み取りの設定があるときはそれを読み直し、ないときは写真を選び直す。
+    @ViewBuilder
+    private var colophonRetakeButton: some View {
+        if model.store.ocrConfiguration?.colophon != nil {
+            Button {
+                evaluateConfiguredColophon()
+            } label: {
+                Text(String(localized: "mark.retake"))
+            }
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("colophon.retake")
+        } else {
+            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                Text(String(localized: "mark.retake"))
+            }
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("colophon.retake")
+        }
+    }
+
+    /// H23 の奥付の読み取り（契約 test-hooks.md）を読む。設定がなければ読み取る前のまま、欄は空で手で打てる。
+    private func evaluateConfiguredColophon() {
+        guard let colCfg = model.store.ocrConfiguration?.colophon else {
+            phase = .idle
+            model.notifyHookChanged()
+            return
+        }
+        if model.store.ocrHoldEnabled && !model.store.isOCRHoldReleased {
+            phase = .recognizing
+            model.notifyHookChanged()
+            return
+        }
+        applyColophonResult(OCRPipeline.parseColophon(colCfg))
+        model.notifyHookChanged()
+    }
+
+    /// 読めた項目だけ欄に入れる。1つも読めなければ `nothingRead`（前に入れた欄の値は変えない）。
+    private func applyColophonResult(_ res: ColophonExtractionResult) {
+        extracted = res
+        let readNothing = [res.title, res.author, res.publisher, res.label, res.isbn13]
+            .allSatisfy { ($0 ?? "").isEmpty } && res.publishedYear == nil
+        guard !readNothing else {
+            phase = .nothingRead
+            return
+        }
+        if let a = res.author, !a.isEmpty { authorText = a }
+        if let p = res.publisher, !p.isEmpty { publisherText = p }
+        if let l = res.label, !l.isEmpty { labelText = l }
+        if let y = res.publishedYear { yearText = String(y) }
+        if let i = res.isbn13, !i.isEmpty { isbnText = i }
+        phase = .read
     }
 }
 
@@ -1482,6 +1634,12 @@ public struct ColophonOCRSheetView: View {
 #Preview("S-6/loadError") {
     NavigationStack {
         ShelfListView(model: ReadingAppModel(), previewState: .loadError)
+    }
+}
+
+#Preview("S-7/loadError") {
+    NavigationStack {
+        BookDetailView(model: ReadingAppModel(), bookId: ReadingDataStore.uuidBookA, previewLoadError: true)
     }
 }
 

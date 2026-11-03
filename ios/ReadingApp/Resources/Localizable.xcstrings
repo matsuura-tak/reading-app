@@ -5757,13 +5757,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "文字を読み取れませんでした。明るい所で撮り直すか、手で入れてください。"
+            "value": "明るい所で撮り直すか、手で入れてください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No text was found. Retake the photo in better light, or enter it manually."
+            "value": "Retake the photo in better light, or enter the text manually."
           }
         }
       }
@@ -6045,13 +6045,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "本棚を読み込めませんでした。もう一度読み込んでください。"
+            "value": "もう一度読み込んでください。続くときは、アプリを終了して開き直してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Couldn't load your bookshelf. Try loading again."
+            "value": "Try loading again. If it keeps happening, quit Yomuma and open it again."
           }
         }
       }
@@ -6463,13 +6463,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "この本を読み込めませんでした。もう一度読み込んでください。"
+            "value": "もう一度読み込んでください。続くときは、アプリを終了して開き直してください。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Couldn't load this book. Try loading again."
+            "value": "Try loading again. If it keeps happening, quit Yomuma and open it again."
           }
         }
       }
@@ -8216,6 +8216,330 @@
           "stringUnit": {
             "state": "translated",
             "value": "License (CC BY 4.0)"
+          }
+        }
+      }
+    },
+    "mark.ocr.none.title": {
+      "comment": "S-3c・S-7c・S-8b・S-8d で文字が1つも読み取れなかったときの見出し（ContentUnavailableView の題）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字を読み取れませんでした"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Text Found"
+          }
+        }
+      }
+    },
+    "mark.camera.hint": {
+      "comment": "S-3c の写す前のカメラの面の案内",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "止めたページの文字を枠に入れてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fit the page text inside the frame."
+          }
+        }
+      }
+    },
+    "mark.shutter": {
+      "comment": "S-3c の写す前の主操作（ページを写す）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "写す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture"
+          }
+        }
+      }
+    },
+    "mark.ocr.recognizing": {
+      "comment": "S-3c で写してから結果が返るまで ProgressView と一緒に出す文（「…」は付けない）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文字を読み取っています"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recognizing text"
+          }
+        }
+      }
+    },
+    "result.navTitle": {
+      "comment": "S-4 読書の結果のシートの題",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今夜の記録"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonight's Reading"
+          }
+        }
+      }
+    },
+    "shelf.load.error.title": {
+      "comment": "S-6 本棚を読み込めないときの見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本棚を読み込めませんでした"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't Load Your Bookshelf"
+          }
+        }
+      }
+    },
+    "colophon.shutter": {
+      "comment": "S-7c 奥付のカメラの「写す」ボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "写す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capture"
+          }
+        }
+      }
+    },
+    "colophon.pickPhoto": {
+      "comment": "S-7c の補助ボタン（写真から奥付を読み取る。PhotosPicker）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "写真から読み取る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose from Photos"
+          }
+        }
+      }
+    },
+    "colophon.cancel": {
+      "comment": "S-7c 奥付を撮って補うシートの取り消すボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取り消す"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "book.load.error.title": {
+      "comment": "S-7 本の画面を読み込めないときの見出し",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この本を読み込めませんでした"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't Load This Book"
+          }
+        }
+      }
+    },
+    "search.candidates.header": {
+      "comment": "S-8c 書名で探したときの候補一覧の上の1行（候補が1件以上のときだけ）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書誌データの候補。押すと欄に入ります。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matches in book data. Tap one to fill in the fields."
+          }
+        }
+      }
+    },
+    "finish.card.navTitle": {
+      "comment": "S-9a 読み終えのカードの見本のシートの題",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み終えのカード"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finish Card"
+          }
+        }
+      }
+    },
+    "finish.card.shareImage": {
+      "comment": "S-9a カードの画像を共有シートに渡すボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画像を共有"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share Image"
+          }
+        }
+      }
+    },
+    "finish.card.close": {
+      "comment": "S-9a カードの見本のシートを閉じるボタン",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "store.navTitle": {
+      "comment": "S-10a 購入シートの題（アプリ内課金の名前）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま＋"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yomuma+"
+          }
+        }
+      }
+    },
+    "store.purchased": {
+      "comment": "S-10a 見た目の一覧の下（購入済みのときだけ）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よむま＋は購入済みです。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You own Yomuma+."
+          }
+        }
+      }
+    },
+    "store.preview.sample.line": {
+      "comment": "S-10a 見本で今の本がないときの見本の一行（公有の文。日本語は「羅生門」、英語は Moby-Dick の冒頭）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ある日の暮方の事である。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call me Ishmael."
+          }
+        }
+      }
+    },
+    "store.preview.sample.note": {
+      "comment": "S-10a 見本の下の注記（今の本がないときだけ）",
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見本の一行です。今の本を選ぶと、その本の続きの一行で見えます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is a sample line. Choose a current book to preview it with your own line."
           }
         }
       }

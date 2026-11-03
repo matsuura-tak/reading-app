@@ -54,6 +54,9 @@ public struct BookmarkHomeView: View {
                 }
                 .padding(.horizontal, ThemeSpace.s24)
                 .padding(.vertical, ThemeSpace.s24)
+                // design/ 9（決定 93）：送る側の下は、safeAreaBar が足す帯の高さに加えて `space.16` を空け、
+                // 最後の行が帯のすぐ上の端の効果に重ならない所まで送れるようにする。
+                .padding(.bottom, ThemeSpace.s16)
             }
             // 下端に固定した「読み始める」の帯は safeAreaBar で置く（design/ 決まり 59）。スクロールの中身は帯の分だけ
             // 下に余白が付き、最後の行まで帯の上へ送れる。帯の裏に入る中身は OS の端の効果でぼかし、帯に自作の背景は
@@ -192,11 +195,8 @@ public struct BookmarkHomeView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, ThemeSpace.s16)
 
+            // 候補の上に「積読からすぐ読む」のような見出しは置かない（design/ 5 の S-1。決定 87 と同じ考え方）。
             if !candidates.isEmpty {
-                Text(AppL10n.pick("積読からすぐ読む", "Read Next from Stack"))
-                    .font(.subheadline.bold())
-                    .foregroundStyle(palette.textSecondary)
-
                 ForEach(Array(candidates.prefix(3).enumerated()), id: \.element.id) { _, book in
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
                         Text(book.title)
@@ -248,7 +248,8 @@ public struct BookmarkHomeView: View {
                 } label: {
                     Text(String(localized: "bookmark.openShelf"))
                 }
-                .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+                // design/ 5 の S-1：本棚から選ぶは `.bordered`（主操作の塗りにしない）。
+                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                 .accessibilityIdentifier("bookmark.openShelf")
 
                 Button {
@@ -295,6 +296,8 @@ public struct BookmarkHomeView: View {
                         .accessibilityValue(book.author)
                 }
 
+                // 場所がないときは場所の行を出さず、代わりの文も出さない。一行も場所もないときだけ
+                // 書名の下に `bookmark.noMark.message` を1つ出す（design/ 5 の S-1、決定 95）。
                 if let progressStr, !progressStr.isEmpty {
                     Text(progressStr)
                         .font(.subheadline.monospacedDigit())
@@ -302,14 +305,14 @@ public struct BookmarkHomeView: View {
                         .accessibilityIdentifier("bookmark.page")
                         .accessibilityLabel(progressStr)
                         .accessibilityValue(progressStr)
-                } else {
-                    let emptyProgress = AppL10n.pick("まだ記録はありません", "No position saved yet")
-                    Text(emptyProgress)
+                } else if (book.lastSavedLine ?? "").isEmpty {
+                    let noMarkText = String(localized: "bookmark.noMark.message")
+                    Text(noMarkText)
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
-                        .accessibilityIdentifier("bookmark.page")
-                        .accessibilityLabel(emptyProgress)
-                        .accessibilityValue(emptyProgress)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("bookmark.noMark.message")
                 }
 
                 // AX1 以上は一行が横書きになり長くなるため、ボタンより上に置き、下端の bookmark.start の裏に回らないようにする
@@ -325,7 +328,8 @@ public struct BookmarkHomeView: View {
             }
             .frame(maxWidth: .infinity)
 
-            if !dynamicTypeSize.isAccessibilitySize {
+            // 一行がないときは縦書きの所を詰める（design/ 5 の S-1「一行なし・場所あり」）。
+            if !dynamicTypeSize.isAccessibilitySize, !(book.lastSavedLine ?? "").isEmpty {
                 VerticalBookmarkTextView(line: book.lastSavedLine)
                     .frame(maxWidth: .infinity, minHeight: 200)
             }

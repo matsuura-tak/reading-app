@@ -49,9 +49,11 @@ public struct SessionResultSheetView: View {
         let bookTitle = (book?.isTitlePending == true) ? String(localized: "widget.currentBookAsTitle") : (book?.title ?? "")
 
         return VStack(spacing: 0) {
-            SheetHeaderBar(title: AppL10n.pick("今夜の記録", "Tonight’s Reading"))
+            SheetHeaderBar(title: String(localized: "result.navTitle"))
 
             VStack(spacing: ThemeSpace.s24) {
+                SheetContentTitle(String(localized: "result.navTitle"))
+
                 BannerNoticeView(model: model, showCloseButton: false)
 
                 Spacer()
@@ -156,6 +158,7 @@ public struct WidgetGuideSheetView: View {
                         .foregroundStyle(palette.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityIdentifier("widgetGuide.title")
+                        .accessibilityAddTraits(.isHeader)
 
                     HStack {
                         Spacer()
@@ -239,9 +242,12 @@ public struct WidgetGuideSheetView: View {
             RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
                 .stroke(palette.hairline, lineWidth: 1)
         )
-        .accessibilityElement(children: .ignore)
-        .accessibilityIdentifier("widgetGuide.preview")
-        .accessibilityLabel(String(localized: "widgetGuide.preview.label") + widgetLabel)
+        // 見本全体を1つの要素に置き換え、中の縦書きの字は要素として出さない（決定 94）。
+        .singleAccessibilityElement(
+            label: String(localized: "widgetGuide.preview.label") + widgetLabel,
+            value: nil,
+            identifier: "widgetGuide.preview"
+        )
     }
 }
 

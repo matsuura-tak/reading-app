@@ -147,6 +147,7 @@ public struct BookAddFlowSheetView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+                    SheetContentTitle(headerTitle)
                     BannerNoticeView(model: model)
 
                     switch step {
@@ -1007,10 +1008,12 @@ public struct BookAddFlowSheetView: View {
     // 撮り直す（cover.retake）、手で入れる（register.manual → S-8c）。
     private func coverEmptyContent(isbn13: String?) -> some View {
         ContentUnavailableView {
-            Label(
-                AppL10n.pick("文字を読み取れませんでした", "No Text Found"),
-                systemImage: "text.viewfinder"
-            )
+            Label {
+                Text(String(localized: "mark.ocr.none.title"))
+                    .accessibilityIdentifier("mark.ocr.none.title")
+            } icon: {
+                Image(systemName: "text.viewfinder")
+            }
         } description: {
             Text(String(localized: "mark.ocr.none"))
             .accessibilityIdentifier("mark.ocr.none")
@@ -1119,9 +1122,11 @@ public struct BookAddFlowSheetView: View {
                         .accessibilityIdentifier("search.noResults")
                 } else {
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
-                        Text(AppL10n.pick("端末内の書誌データから選ぶ（任意）", "Choose from On-Device Catalog (Optional)"))
-                            .font(.subheadline)
+                        Text(String(localized: "search.candidates.header"))
+                            .font(.footnote)
                             .foregroundStyle(palette.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityIdentifier("search.candidates.header")
 
                         ForEach(Array(searchResults.enumerated()), id: \.offset) { idx, entry in
                             let rowISBN = entry.isbn13 ?? "\(idx + 1)"

@@ -146,6 +146,25 @@ extension View {
                 .accessibilityIdentifier(identifier)
         }
     }
+
+    /// S-1 の縦書きの一行（`bookmark.line`）と S-5・S-10a の見本を、W-1 と同じ形で1つの要素にする（決定 94）。
+    /// `value` は受け入れテストと H13 の読み出しが読む値（AC-99 の `bookmark.line` は保存した一行そのもの）。
+    func singleAccessibilityElement(label: String, value: String?, identifier: String) -> some View {
+        accessibilityRepresentation {
+            if let value {
+                Color.clear
+                    .accessibilityElement()
+                    .accessibilityLabel(Text(verbatim: label))
+                    .accessibilityValue(Text(verbatim: value))
+                    .accessibilityIdentifier(identifier)
+            } else {
+                Color.clear
+                    .accessibilityElement()
+                    .accessibilityLabel(Text(verbatim: label))
+                    .accessibilityIdentifier(identifier)
+            }
+        }
+    }
 }
 
 /// 縦書きの一行の字を、組み方の関数（`WidgetLineComposer`）が決めた位置にそのまま描く。

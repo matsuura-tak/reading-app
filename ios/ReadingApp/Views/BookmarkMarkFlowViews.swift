@@ -65,6 +65,8 @@ public struct BookmarkMarkFlowSheet: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+                    SheetContentTitle(headerTitle)
+
                     BannerNoticeView(model: model)
 
                     switch step {
@@ -374,17 +376,18 @@ public struct BookmarkMarkFlowSheet: View {
                         .stroke(palette.hairline, lineWidth: 1)
                 )
                 .overlay {
-                    Text(AppL10n.pick("ページの文字を枠内に合わせてください", "Align the page text within the frame"))
+                    Text(String(localized: "mark.camera.hint"))
                         .font(.subheadline)
                         .foregroundStyle(palette.textSecondary)
                         .multilineTextAlignment(.center)
                         .padding(ThemeSpace.s16)
+                        .accessibilityIdentifier("mark.camera.hint")
                 }
 
             Button {
                 triggerPageOCR()
             } label: {
-                Text(AppL10n.pick("撮影する", "Capture"))
+                Text(String(localized: "mark.shutter"))
             }
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.shutter")
@@ -395,12 +398,19 @@ public struct BookmarkMarkFlowSheet: View {
 
     private var markOCRProcessingContent: some View {
         VStack(spacing: ThemeSpace.s16) {
-            ProgressView()
-                .controlSize(.large)
-                .tint(palette.actionTint)
-            Text(AppL10n.pick("文字を読み取っています…", "Recognizing text..."))
-                .font(.subheadline)
-                .foregroundStyle(palette.textSecondary)
+            // design/ 5 の S-3c：ProgressView と `mark.ocr.recognizing` を1回読み上げる1つの要素にする。
+            VStack(spacing: ThemeSpace.s8) {
+                ProgressView()
+                    .controlSize(.large)
+                    .tint(palette.actionTint)
+                Text(String(localized: "mark.ocr.recognizing"))
+                    .font(.subheadline)
+                    .foregroundStyle(palette.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("mark.ocr.recognizing")
 
             Button {
                 model.store.clock.beginInterval(.markWait)
@@ -436,29 +446,20 @@ public struct BookmarkMarkFlowSheet: View {
         .accessibilityIdentifier("mark.ocr.processing")
     }
 
+    // S-3c の「読み取れた列が0個」（design/ 5）：ContentUnavailableView で見出し `mark.ocr.none.title`、文 `mark.ocr.none`、
+    // 撮り直す（`mark.retake`）と手で入れる（`mark.manual`）。前のしおりは変えない（AC-68）。
     private var markOCREmptyContent: some View {
-        VStack(alignment: .leading, spacing: ThemeSpace.s16) {
-            HStack(spacing: ThemeSpace.s8) {
-                Image(systemName: "info.circle")
-                    .foregroundStyle(palette.textSecondary)
-                    .accessibilityHidden(true)
-                Text(String(localized: "mark.ocr.none"))
-                .font(.subheadline)
-                .foregroundStyle(palette.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityIdentifier("mark.ocr.none")
+        ContentUnavailableView {
+            Label {
+                Text(String(localized: "mark.ocr.none.title"))
+                    .accessibilityIdentifier("mark.ocr.none.title")
+            } icon: {
+                Image(systemName: "text.viewfinder")
             }
-            .padding(ThemeSpace.s16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                    .fill(palette.groupedRow)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                    .stroke(palette.hairline, lineWidth: 1)
-            )
-
+        } description: {
+            Text(String(localized: "mark.ocr.none"))
+                .accessibilityIdentifier("mark.ocr.none")
+        } actions: {
             Button {
                 step = .ocrCamera
                 model.currentScreen = .bookmarkMarkCamera
@@ -466,7 +467,7 @@ public struct BookmarkMarkFlowSheet: View {
             } label: {
                 Text(String(localized: "mark.retake"))
             }
-            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.retake")
 
             Button {
@@ -478,7 +479,7 @@ public struct BookmarkMarkFlowSheet: View {
             } label: {
                 Text(String(localized: "mark.manual"))
             }
-            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.manual")
         }
         .accessibilityElement(children: .contain)
@@ -594,23 +595,7 @@ public struct BookmarkMarkFlowSheet: View {
                 .accessibilityIdentifier("mark.manual")
             }
 
-            Button {
-                model.store.activeErrorKey = nil
-                let isAfterSession = (model.store.pendingMarkRecordId != nil)
-                model.store.completeMarkLater()
-                if isAfterSession {
-                    model.currentScreen = .sessionResult
-                    model.activeSheet = .resultSheet
-                } else {
-                    model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
-                    model.activeSheet = nil
-                }
-                model.notifyHookChanged()
-            } label: {
-                Text(String(localized: "mark.later"))
-            }
-            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-            .accessibilityIdentifier("mark.later")
+            // design/ 5 の S-3c の補助は `mark.retake` と `mark.manual` だけ（「あとで挟む」は S-3 の道で、S-3c には置かない）。
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.mark.ocr")
@@ -717,7 +702,7 @@ public struct BookmarkMarkFlowSheet: View {
                     Text(String(localized: "mark.progressUnit.location")).tag(ProgressUnit.location)
                     Text("%").tag(ProgressUnit.percent)
                 }
-                .pickerStyle(.segmented)
+                .progressUnitPickerStyle()
                 .accessibilityIdentifier("mark.progressUnit")
             }
 
@@ -750,11 +735,24 @@ public struct BookmarkMarkFlowSheet: View {
                     }
                 }()
                 let prevText = String(format: String(localized: "mark.page.footer.keep"), prevPlace)
+                // 読み上げは同じキーに `page.spoken`／`location.spoken`／`percent.spoken` を入れた文（決定 96、決定 53）。
+                let prevSpokenPlace: String = {
+                    switch unit {
+                    case .page:
+                        return String(format: String(localized: "page.spoken"), prev)
+                    case .location:
+                        return String(format: String(localized: "location.spoken"), prev)
+                    case .percent:
+                        return String(format: String(localized: "percent.spoken"), prev)
+                    }
+                }()
+                let prevSpoken = String(format: String(localized: "mark.page.footer.keep"), prevSpokenPlace)
                 Text(prevText)
                     .font(.footnote)
                     .foregroundStyle(palette.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("mark.page.previous")
+                    .accessibilityLabel(prevSpoken)
             }
         }
     }

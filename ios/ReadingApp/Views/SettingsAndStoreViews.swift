@@ -313,10 +313,11 @@ public struct SettingsView: View {
                 }
 
                 if model.store.settings.isPlusPurchased {
-                    Text(AppL10n.pick("よむま＋ 購入済み", "Yomuma+ Purchased"))
-                        .font(.footnote.bold())
+                    Text(String(localized: "store.purchased"))
+                        .font(.footnote)
                         .foregroundStyle(palette.textSecondary)
-                        .accessibilityIdentifier("store.purchasedBadge")
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("store.purchased")
                 }
 
                 if let msgKey = model.store.storeStatusMessageKey, model.store.previewAppearanceID == nil {
@@ -461,9 +462,8 @@ public struct SettingsView: View {
 
     public static func appearanceDisplayName(_ id: AppearanceID) -> String {
         switch id {
-        case .default: return String(localized: "appearance.default")
-        case .dark: return AppL10n.pick("夜（ダーク）", "Dark")
-        case .light: return AppL10n.pick("昼（ライト）", "Light")
+        // 見た目は default・kinari・sumi・shu の4つだけ。dark・light は標準と同じ色の古い値で、名前を画面に出さない（design/ 5 の S-10a）。
+        case .default, .dark, .light: return String(localized: "appearance.default")
         case .kinari: return String(localized: "appearance.kinari")
         case .sumi: return String(localized: "appearance.sumi")
         case .shu: return String(localized: "appearance.shu")
@@ -488,24 +488,28 @@ public struct StorePurchasePreviewSheetView: View {
     public var body: some View {
         let canBuy = model.store.storeCanMakePayments && model.store.storeProductLoadAvailable && !model.store.isOffline
         let previewPalette = ThemePalette.palette(for: selectedPreviewID)
-        let previewBookTitle = model.store.currentBook?.title ?? AppL10n.pick("羅生門", "Rashomon")
-        let previewBookAuthor = model.store.currentBook?.author ?? AppL10n.pick("芥川龍之介", "Ryunosuke Akutagawa")
-        let previewLine = model.store.currentBook?.lastSavedLine ?? AppL10n.pick("ある日の暮方の事である。", "It happened one evening.")
+        // 今の本がないときは一行の位置に見本の一行だけを描き、書名・著者・場所は空にする（仮の本を本物のように描かない。決定 88）。
+        let currentBook = model.store.currentBook
+        let previewBookTitle = currentBook?.title ?? ""
+        let previewBookAuthor = currentBook?.author ?? ""
+        let previewLine = currentBook == nil
+            ? String(localized: "store.preview.sample.line")
+            : (currentBook?.lastSavedLine ?? "")
         let previewPage: String = {
-            guard let book = model.store.currentBook else { return "p.61" }
+            guard let book = currentBook else { return "" }
             return InputValidator.formatProgressDisplay(
                 unit: book.progressUnit,
                 page: book.currentPage,
                 location: book.currentLocation,
                 percent: book.currentPercent.map(Double.init),
                 strings: ReadingWidgetStrings.spoken
-            ) ?? "p.61"
+            ) ?? ""
         }()
         let supportedAppearances: [AppearanceID] = [.default, .kinari, .sumi, .shu]
 
         return VStack(spacing: 0) {
             SheetHeaderBar(
-                title: AppL10n.pick("よむま＋", "Yomuma+"),
+                title: String(localized: "store.navTitle"),
                 leftTitle: String(localized: "store.close"),
                 leftId: "store.close",
                 onLeft: {
@@ -517,30 +521,40 @@ public struct StorePurchasePreviewSheetView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s24) {
+                    SheetContentTitle(String(localized: "store.navTitle"))
+
                     // S-1 & W-1 live theme preview card
                     VStack(spacing: ThemeSpace.s16) {
                         Text(SettingsView.appearanceDisplayName(selectedPreviewID))
                             .font(.subheadline.bold())
                             .foregroundStyle(previewPalette.textSecondary)
 
-                        Text(previewLine)
-                            .font(ThemeTypography.bookmarkLine(size: 22))
-                            .foregroundStyle(previewPalette.textPrimary)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, ThemeSpace.s8)
-
-                        HStack(spacing: ThemeSpace.s8) {
-                            Text(previewBookTitle)
-                                .font(.footnote.bold())
+                        if !previewLine.isEmpty {
+                            Text(previewLine)
+                                .font(ThemeTypography.bookmarkLine(size: 22))
                                 .foregroundStyle(previewPalette.textPrimary)
-                            if !previewBookAuthor.isEmpty {
-                                Text(previewBookAuthor)
-                                    .font(.footnote)
-                                    .foregroundStyle(previewPalette.textSecondary)
+                                .multilineTextAlignment(.center)
+                                .padding(.vertical, ThemeSpace.s8)
+                        }
+
+                        if !previewBookTitle.isEmpty || !previewBookAuthor.isEmpty || !previewPage.isEmpty {
+                            HStack(spacing: ThemeSpace.s8) {
+                                if !previewBookTitle.isEmpty {
+                                    Text(previewBookTitle)
+                                        .font(.footnote.bold())
+                                        .foregroundStyle(previewPalette.textPrimary)
+                                }
+                                if !previewBookAuthor.isEmpty {
+                                    Text(previewBookAuthor)
+                                        .font(.footnote)
+                                        .foregroundStyle(previewPalette.textSecondary)
+                                }
+                                if !previewPage.isEmpty {
+                                    Text(previewPage)
+                                        .font(.footnote.monospacedDigit())
+                                        .foregroundStyle(previewPalette.textSecondary)
+                                }
                             }
-                            Text(previewPage)
-                                .font(.footnote.monospacedDigit())
-                                .foregroundStyle(previewPalette.textSecondary)
                         }
 
                         // W-1 の縮小見本：拡張と同じ ReadingLockScreenWidgetView を 172×76 pt の枠で描く（design/ 3 の S-10a）。
@@ -548,11 +562,11 @@ public struct StorePurchasePreviewSheetView: View {
                             appearanceID: selectedPreviewID,
                             hideOnWidgets: false,
                             currentBook: WidgetSnapshotBook(
-                                title: previewBookTitle,
-                                line: previewLine,
-                                progress: model.store.currentBook.flatMap {
+                                title: previewBookTitle.isEmpty ? nil : previewBookTitle,
+                                line: previewLine.isEmpty ? nil : previewLine,
+                                progress: currentBook.flatMap {
                                     WidgetSnapshotProgress.make(unit: $0.progressUnit, page: $0.currentPage, location: $0.currentLocation, percent: $0.currentPercent)
-                                } ?? (model.store.currentBook == nil ? WidgetSnapshotProgress(unit: .page, value: 61) : nil)
+                                }
                             )
                         )
                         ReadingLockScreenWidgetView(
@@ -583,10 +597,20 @@ public struct StorePurchasePreviewSheetView: View {
                         RoundedRectangle(cornerRadius: ThemeRadius.card)
                             .strokeBorder(previewPalette.hairline, lineWidth: 1)
                     )
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityIdentifier("store.preview")
-                    .accessibilityLabel(selectedPreviewID.rawValue)
-                    .accessibilityValue(selectedPreviewID.rawValue)
+                    // 見本全体を1つの要素に置き換え、中の縦書きの字は要素として出さない（決定 94）。値は見た目の id（AC-105）。
+                    .singleAccessibilityElement(
+                        label: selectedPreviewID.rawValue,
+                        value: selectedPreviewID.rawValue,
+                        identifier: "store.preview"
+                    )
+
+                    if currentBook == nil {
+                        Text(String(localized: "store.preview.sample.note"))
+                            .font(.footnote)
+                            .foregroundStyle(palette.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityIdentifier("store.preview.sample.note")
+                    }
 
                     // 4 appearance preview switcher buttons
                     HStack(spacing: ThemeSpace.s8) {
@@ -616,9 +640,13 @@ public struct StorePurchasePreviewSheetView: View {
                     }
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
+                        // 行数の上限を付けず折り返す（決定 96）。
                         Text(String(localized: "store.product.title"))
                             .font(.headline)
                             .foregroundStyle(palette.textPrimary)
+                            .lineLimit(nil)
+                            .multilineTextAlignment(.leading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityIdentifier("store.product.title")
 

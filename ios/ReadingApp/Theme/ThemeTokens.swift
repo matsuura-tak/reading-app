@@ -33,25 +33,6 @@ public enum ReadingSharedContainer {
     }
 }
 
-public enum AppL10n {
-    public static var isEnglish: Bool {
-        let args = ProcessInfo.processInfo.arguments
-        if let idx = args.lastIndex(of: "-AppleLanguages"), idx + 1 < args.count {
-            let val = args[idx + 1].lowercased()
-            if val.contains("en") { return true }
-            if val.contains("ja") { return false }
-        }
-        if let first = Locale.preferredLanguages.first?.lowercased() {
-            return first.hasPrefix("en")
-        }
-        return false
-    }
-
-    public static func pick(_ ja: String, _ en: String) -> String {
-        isEnglish ? en : ja
-    }
-}
-
 /// 本のデータを design/ 7 の書式のキーで文にする（言語ごとの文は String Catalog が持つ）。
 public enum BookTextFormat {
     /// `colophon.publisher.withLabel`。出版社とレーベルの片方だけなら、その値だけ。
@@ -74,13 +55,6 @@ public enum BookTextFormat {
     /// `book.nights`（英語は複数形）。
     public static func nights(_ count: Int) -> String {
         String.localizedStringWithFormat(NSLocalizedString("book.nights", comment: ""), count)
-    }
-
-    /// S-9 の `finish.summary`（design/ 7 に組み合わせのキーがないため、`book.nights` と `duration.minutes` を
-    /// システムの並べ方の書式で並べる。日本語「3晩、83分」、英語「3 nights, 83 min」）。
-    public static func nightsAndMinutes(nights count: Int, minutes: Int) -> String {
-        [nights(count), String(format: String(localized: "duration.minutes"), minutes)]
-            .formatted(.list(type: .and, width: .narrow))
     }
 
     /// `finish.reflection.single` / `finish.reflection.multi`。括弧の中は `duration.hoursMinutes`（分が0なら `duration.hours`）。
@@ -434,14 +408,21 @@ public struct SheetHeaderBar: View {
         self.onCancel = onLeft
     }
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     public var body: some View {
         VStack(spacing: 0) {
             ZStack {
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(palette.textPrimary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 88)
+                // design/ 9・tokens.md 7（決定 93）：accessibility1 以上では帯に題を描かず、左のボタンだけを置く。
+                // 題は内容の先頭の `SheetContentTitle` が見出しとして出す（帯の中で題とボタンを重ねない）。
+                if !title.isEmpty && !dynamicTypeSize.isAccessibilitySize {
+                    Text(title)
+                        .font(.headline)
+                        .foregroundStyle(palette.textPrimary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 88)
+                        .accessibilityAddTraits(.isHeader)
+                }
 
                 HStack {
                     if let cancelTitle, let onCancel {
@@ -468,6 +449,49 @@ public struct SheetHeaderBar: View {
                 .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1)
                 .accessibilityHidden(true)
         }
+    }
+}
+
+/// シートの題を内容の先頭の行に出す（accessibility1 以上のときだけ。design/ 9・tokens.md 7、決定 93）。
+/// 標準の大きさでは帯（`SheetHeaderBar`）が題を出すので、ここは何も描かない。
+public struct SheetContentTitle: View {
+    public let title: String
+    @Environment(\.themePalette) private var palette
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    public init(_ title: String) {
+        self.title = title
+    }
+
+    public var body: some View {
+        if dynamicTypeSize.isAccessibilitySize && !title.isEmpty {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(palette.textPrimary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+        }
+    }
+}
+
+/// 進み具合の単位の切り替え（`mark.progressUnit`、`book.edit.progressUnit`）の形。
+/// 標準は `.segmented`、accessibility1 以上は `.inline`（3行にチェック）。セグメントの字は Dynamic Type で大きくならないため（決定 93）。
+public struct ProgressUnitPickerStyleModifier: ViewModifier {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    public func body(content: Content) -> some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            content.pickerStyle(.inline)
+        } else {
+            content.pickerStyle(.segmented)
+        }
+    }
+}
+
+public extension View {
+    func progressUnitPickerStyle() -> some View {
+        modifier(ProgressUnitPickerStyleModifier())
     }
 }
 
