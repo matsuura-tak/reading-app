@@ -66,7 +66,10 @@ public struct FinishNightView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s24) {
-                    BannerNoticeView(model: model)
+                    // 奥付のシート（S-7c）は自分の帯を出すので、シートの間は下の S-9 の帯を出さない（AC-91 の「1つ」）。
+                    if !showShareCardSheet && !showColophonSheet {
+                        BannerNoticeView(model: model)
+                    }
 
                     switch resolvedState {
                     case .withReflection(let title, let author, let summary, let reflection, let candidates):

@@ -19,6 +19,10 @@ public struct BookmarkMarkFlowSheet: View {
     @Bindable var model: ReadingAppModel
     @State private var step: BookmarkMarkFlowStep = .select
     @State private var lineText: String = ""
+    /// S-3c：選んだ列の文を欄に入れたあと、最初に欄に触れたときは全体を選ぶ（打てば置き換わり、もう一度押せば字の間に入れて直せる）。
+    @State private var lineSelection: TextSelection?
+    @State private var selectsWholeLineOnFocus = false
+    @FocusState private var isOCRLineFieldFocused: Bool
     @State private var pageText: String = ""
     @State private var selectedScreenshotItem: PhotosPickerItem?
     @Environment(\.themePalette) private var palette
@@ -27,6 +31,10 @@ public struct BookmarkMarkFlowSheet: View {
     public init(model: ReadingAppModel, initialStep: BookmarkMarkFlowStep = .select) {
         self.model = model
         _step = State(initialValue: initialStep)
+        if case .ocrCandidates(let columns, let selectedIndices) = initialStep {
+            _lineText = State(initialValue: OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices))
+            _selectsWholeLineOnFocus = State(initialValue: true)
+        }
     }
 
     private var headerTitle: String {
@@ -131,12 +139,11 @@ public struct BookmarkMarkFlowSheet: View {
             .padding(.top, ThemeSpace.s12)
             .padding(.bottom, ThemeSpace.s16)
             .background(palette.bgPrimary)
-        case .ocrCandidates(let columns, let selectedIndices):
-            let selectedColumnText = OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices)
-            let effectiveLineValue = lineText.isEmpty ? selectedColumnText : lineText
+        case .ocrCandidates:
             VStack(spacing: 0) {
                 Button {
-                    handleSaveBookmark(mode: "ocr", rawLine: effectiveLineValue, rawProgress: pageText)
+                    // 欄の値（選んだ列の文、または手で直した文）をそのまま保存する。空なら mark.line.invalid（AC-67、AC-72）。
+                    handleSaveBookmark(mode: "ocr", rawLine: lineText, rawProgress: pageText)
                 } label: {
                     Text(String(localized: "mark.save"))
                 }
@@ -479,8 +486,6 @@ public struct BookmarkMarkFlowSheet: View {
     }
 
     private func markOCRCandidatesContent(columns: [OCRPageColumnItem], selectedIndices: [Int]) -> some View {
-        let selectedColumnText = OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices)
-        let effectiveLineValue = lineText.isEmpty ? selectedColumnText : lineText
         let lineFieldLabel = String(localized: "mark.line.label")
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s12) {
@@ -545,16 +550,22 @@ public struct BookmarkMarkFlowSheet: View {
                     .font(.subheadline)
                     .foregroundStyle(palette.textSecondary)
 
-                TextField(selectedColumnText, text: $lineText, axis: .vertical)
+                // design/ 5 の S-3c：選んだ列の文字を欄の値に入れる（placeholder は mark.line.placeholder）。
+                TextField(String(localized: "mark.line.placeholder"), text: $lineText, selection: $lineSelection, axis: .vertical)
                     .lineLimit(1...6)
+                    .focused($isOCRLineFieldFocused)
                     .onChange(of: lineText) { _, value in
                         // 縦に伸びる欄でも改行は受けない（一行と場所は1行の値）。
                         if value.contains("\n") { lineText = value.replacingOccurrences(of: "\n", with: "") }
                     }
+                    .onChange(of: isOCRLineFieldFocused) { _, focused in
+                        guard focused, selectsWholeLineOnFocus else { return }
+                        selectsWholeLineOnFocus = false
+                        lineSelection = TextSelection(range: lineText.startIndex..<lineText.endIndex)
+                    }
                     .themeField(palette)
                     .accessibilityIdentifier("mark.lineField")
                     .accessibilityLabel(lineFieldLabel)
-                    .accessibilityValue(effectiveLineValue)
             }
 
             progressFieldSection
@@ -653,7 +664,6 @@ public struct BookmarkMarkFlowSheet: View {
     }
 
     private func toggleOCRColumn(col: OCRPageColumnItem, columns: [OCRPageColumnItem], selectedIndices: [Int]) {
-        lineText = ""
         let newIndices: [Int]
         if selectedIndices == [columns.last?.index ?? 1] && col.index != (columns.last?.index ?? 1) {
             newIndices = [col.index]
@@ -663,6 +673,7 @@ public struct BookmarkMarkFlowSheet: View {
             newIndices = selectedIndices + [col.index]
         }
         step = .ocrCandidates(columns: columns, selectedIndices: newIndices)
+        fillLineField(columns: columns, selectedIndices: newIndices)
         #if UITEST_HOOKS
         UITestHookCoordinator.shared.selectedOCRColumnIndex = col.index
         #endif
@@ -782,12 +793,20 @@ public struct BookmarkMarkFlowSheet: View {
         model.notifyHookChanged()
     }
 
+    /// 選んだ列の文を mark.lineField の値にする（AC-65、AC-66）。次に欄に触れたときは全体を選ぶ。
+    private func fillLineField(columns: [OCRPageColumnItem], selectedIndices: [Int]) {
+        lineText = OCRPipeline.joinSelectedColumns(columns: columns, selectedIndices: selectedIndices)
+        lineSelection = nil
+        selectsWholeLineOnFocus = true
+        isOCRLineFieldFocused = false
+    }
+
     private func applyVisionPageOCRResult(_ result: OCRPageResult) {
         if result.columns.isEmpty {
             step = .ocrEmpty
             model.currentScreen = .bookmarkMarkCamera
         } else {
-            lineText = ""
+            fillLineField(columns: result.columns, selectedIndices: result.initialSelectedIndices)
             if let detPage = result.detectedPageNumber {
                 pageText = "\(detPage)"
             } else {

@@ -63,6 +63,9 @@ public struct BookmarkHomeView: View {
                     activeBookBottomBar(book: book)
                 }
             }
+            // 大きい文字（AX）では中身が画面より長く、帯の下（ホームインジケーターの帯）に伏せる案内の行が半分だけ
+            // 透けて見えた（G3 r3 の S1_normal_ax5）。下端はシステムのはっきりした端の効果にして、帯の裏と下の中身を見せない。
+            .scrollEdgeEffectStyle(.hard, for: .bottom)
         }
         .background(palette.bgPrimary.ignoresSafeArea())
         .accessibilityElement(children: .contain)

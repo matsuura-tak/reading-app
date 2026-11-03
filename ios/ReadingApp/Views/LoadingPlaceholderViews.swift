@@ -58,15 +58,23 @@ struct HeldLoadProgressView<Content: View>: View {
     let gate: LoadHoldGate
     let point: LoadHoldGate.Point
     var progressMinHeight: CGFloat?
+    /// 中身が空（`EmptyView`）で、ボタンの横に ProgressView だけを出す所（S-10 の復元）の左の間。
+    var progressLeadingPadding: CGFloat = 0
     @ViewBuilder let content: () -> Content
     @State private var isProgressVisible = false
 
     var body: some View {
         let holding = gate.isHolding(point)
-        Group {
+        // 中身が EmptyView のとき、Group に付けた .task は動かない（描くものがないため）。
+        // 大きさ0の Color.clear を常に置き、.task がいつも動くようにする（G3 r3：storekit.restore が held のままだった）。
+        ZStack {
+            Color.clear
+                .frame(width: 0, height: 0)
+                .accessibilityHidden(true)
             if holding && isProgressVisible {
                 ProgressView()
                     .frame(maxWidth: progressMinHeight == nil ? nil : .infinity, minHeight: progressMinHeight)
+                    .padding(.leading, progressLeadingPadding)
                     .onAppear { gate.markShown(point) }
             } else {
                 content()

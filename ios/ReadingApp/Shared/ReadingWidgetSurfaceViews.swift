@@ -132,6 +132,22 @@ public enum ReadingWidgetStrings {
     }
 }
 
+extension View {
+    /// 契約 H22・AC-99：ウィジェットの全体を「書名、場所。一行」の1つの要素にまとめる。
+    /// `.accessibilityElement(children: .ignore)` だけだと、縦書きの1字ずつの `Text` が XCUITest の木と
+    /// アクセシビリティ監査に子として残った（G3 r3 の監査で W-1 16件・W-2 14件）。見える字の木は使わず、
+    /// 読み上げの文1つだけの見えない表し方に置き換える。表し方を `Text` にすると、監査がその見えない文を
+    /// 「Text clipped」と数えたため、文字を描かない要素（`Color.clear`）にラベルを付ける。
+    func widgetSingleAccessibilityElement(label: String, identifier: String) -> some View {
+        accessibilityRepresentation {
+            Color.clear
+                .accessibilityElement()
+                .accessibilityLabel(Text(verbatim: label))
+                .accessibilityIdentifier(identifier)
+        }
+    }
+}
+
 /// 縦書きの一行の字を、組み方の関数（`WidgetLineComposer`）が決めた位置にそのまま描く。
 /// 座標は枠の左上を原点とする pt。この層は枠（W×H）と同じ大きさで、枠の左上に重ねる。
 struct ReadingVerticalGlyphLayer: View {
@@ -214,9 +230,7 @@ public struct ReadingLockScreenWidgetView: View {
                     ReadingVerticalGlyphLayer(grid: grid)
                 }
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: label))
-            .accessibilityIdentifier("widget.rectangular")
+            .widgetSingleAccessibilityElement(label: label, identifier: "widget.rectangular")
     }
 
     @ViewBuilder
@@ -349,9 +363,7 @@ public struct ReadingHomeSmallWidgetView: View {
                         .foregroundStyle(palette.textPrimary)
                 }
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(verbatim: label))
-            .accessibilityIdentifier("widget.small")
+            .widgetSingleAccessibilityElement(label: label, identifier: "widget.small")
     }
 
     @ViewBuilder

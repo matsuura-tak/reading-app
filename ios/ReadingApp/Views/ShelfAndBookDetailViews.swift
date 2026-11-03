@@ -286,7 +286,11 @@ public struct BookDetailView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: ThemeSpace.s24) {
-                    BannerNoticeView(model: model)
+                    // S-7a・S-7b・S-7c のシートは自分の帯を出す。iOS 26 のシートは下の画面を縮めず、
+                    // 下の S-7 の帯も読み上げの木に残って `common.save.error` が2つになるため（AC-91）、シートの間は出さない。
+                    if detailSheet == nil {
+                        BannerNoticeView(model: model)
+                    }
 
                     if let book {
                         bookHeaderSection(book: book)
@@ -948,14 +952,15 @@ public struct BookEditSheetView: View {
     @State private var editedYear: String = ""
     @State private var editedIsEbook: Bool = false
     @State private var editedUnit: ProgressUnit = .page
-    @State private var didTouchTitle = false
-    @State private var didTouchAuthor = false
     @Environment(\.themePalette) private var palette
 
     public init(model: ReadingAppModel, book: BookSnapshot, onClose: @escaping () -> Void) {
         self.model = model
         self.book = book
         self.onClose = onClose
+        // design/ 5 の S-7a：今の本の値をそのまま欄に出す（著者が空の本は空で始まる。名無しの今の本の書名も空で始まる）。
+        _editedTitle = State(initialValue: book.isTitlePending ? "" : book.title)
+        _editedAuthor = State(initialValue: book.author)
         _editedPublisher = State(initialValue: book.publisher ?? "")
         _editedLabel = State(initialValue: book.label ?? "")
         _editedYear = State(initialValue: book.publishedYear.map(String.init) ?? "")
@@ -983,26 +988,20 @@ public struct BookEditSheetView: View {
                         Text(titleLabel)
                             .font(.subheadline)
                             .foregroundStyle(palette.textSecondary)
-                        TextField(book.title, text: $editedTitle, onEditingChanged: { editing in
-                            if editing { didTouchTitle = true }
-                        })
+                        TextField(titleLabel, text: $editedTitle)
                         .themeField(palette)
                         .accessibilityIdentifier("book.edit.title")
                         .accessibilityLabel(titleLabel)
-                        .accessibilityValue(didTouchTitle ? editedTitle : book.title)
                     }
 
                     VStack(alignment: .leading, spacing: ThemeSpace.s8) {
                         Text(authorLabel)
                             .font(.subheadline)
                             .foregroundStyle(palette.textSecondary)
-                        TextField(book.author.isEmpty ? String(localized: "book.edit.author") : book.author, text: $editedAuthor, onEditingChanged: { editing in
-                            if editing { didTouchAuthor = true }
-                        })
+                        TextField(authorLabel, text: $editedAuthor)
                         .themeField(palette)
                         .accessibilityIdentifier("book.edit.author")
                         .accessibilityLabel(authorLabel)
-                        .accessibilityValue(didTouchAuthor ? editedAuthor : book.author)
                     }
 
                     HStack {
@@ -1038,12 +1037,11 @@ public struct BookEditSheetView: View {
 
             VStack(spacing: 0) {
                 Button {
-                    let finalTitle = didTouchTitle ? editedTitle : (editedTitle.isEmpty ? book.title : editedTitle)
-                    let finalAuthor = didTouchAuthor ? editedAuthor : (editedAuthor.isEmpty ? book.author : editedAuthor)
+                    // 欄の値をそのまま渡す。書名が空なら book.title.invalid、著者が空なら著者なしで保存（design/ 5 の S-7a、AC-8）。
                     let res = model.store.updateBook(
                         bookId: book.id,
-                        title: finalTitle,
-                        author: finalAuthor,
+                        title: editedTitle,
+                        author: editedAuthor,
                         isEbook: editedIsEbook,
                         progressUnit: editedUnit
                     )

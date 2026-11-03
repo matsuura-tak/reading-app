@@ -223,12 +223,24 @@ public struct UITestHookWidgetShowcaseView: View {
         ZStack {
             rootBackground
                 .ignoresSafeArea()
-            surface
-                .frame(width: canvasSize.width, height: canvasSize.height, alignment: .topLeading)
-                .background(canvasBackground)
-                .clipped()
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("hook.widget.canvas")
+            // 枠は実寸（契約 H22）。大きい文字で中身が枠を超えても、XCUITest の `hook.widget.canvas` の frame は
+            // 子の要素を合わせた大きさにならず、枠の大きさのままにする（G3 r3：AX5 で 170→171.67、160→191 になった）。
+            // 動かないスクロールの入れ物は自分の大きさを要素の frame に持ち、はみ出した中身は枠で切る。
+            ScrollView(.vertical) {
+                // 固定の面は枠の高さで描く（中身に合わせる面は中身の高さ。はみ出せば枠で切れる）。
+                surface
+                    .frame(
+                        width: canvasSize.width,
+                        height: spec.surface.fitsContentHeight ? nil : canvasSize.height,
+                        alignment: .topLeading
+                    )
+            }
+            .scrollDisabled(true)
+            .scrollIndicators(.hidden)
+            .frame(width: canvasSize.width, height: canvasSize.height, alignment: .topLeading)
+            .background(canvasBackground)
+            .clipped()
+            .accessibilityIdentifier("hook.widget.canvas")
                 .background(alignment: .top) {
                     surface
                         .frame(width: canvasSize.width)

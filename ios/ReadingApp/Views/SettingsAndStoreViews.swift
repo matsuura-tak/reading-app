@@ -330,7 +330,8 @@ public struct SettingsView: View {
                         .accessibilityValue(msgText)
                 }
 
-                HStack(spacing: ThemeSpace.s8) {
+                // 間は ProgressView の側で取る（出していない間にボタンの幅を削らない）。
+                HStack(spacing: 0) {
                     Button {
                         guard !restoreInFlight else { return }
                         restoreInFlight = true
@@ -347,7 +348,7 @@ public struct SettingsView: View {
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("settings.restorePurchases")
                     // design/ 5 の S-10：購入の復元が 0.3秒を超えたら settings.restorePurchases の横に ProgressView を出す（H33）。
-                    HeldLoadProgressView(gate: model.store.loadGate, point: .storekitRestore) {
+                    HeldLoadProgressView(gate: model.store.loadGate, point: .storekitRestore, progressLeadingPadding: ThemeSpace.s8) {
                         EmptyView()
                     }
                 }

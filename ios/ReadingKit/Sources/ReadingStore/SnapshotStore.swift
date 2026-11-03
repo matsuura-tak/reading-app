@@ -381,6 +381,8 @@ public final class SnapshotStore {
             accessibility: WidgetRenderAccessibility(
                 identifier: spec.family == .systemSmall ? "widget.small" : "widget.rectangular",
                 label: label,
+                // W-1・W-2 の View は全体を `accessibilityRepresentation` の Text 1つに置き換える
+                // （ReadingWidgetSurfaceViews.swift の widgetSingleAccessibilityElement）。読み上げのまとまりは常に1つ。
                 groupCount: 1
             ),
             texts: texts,

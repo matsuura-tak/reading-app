@@ -223,3 +223,30 @@ designer が決めた文言キー（design/ 7、決定 82〜86）をアプリに
 
 ### `AppL10n.pick` の残り
 - design/ 7 に文がある所は移した（S-9 の11か所は9体目、S-7 の題と S-7b の晩は10体目）。残りは design/ 7 に文がないので移していない（文は作らない）。一覧は10体目の報告の「未解決」。
+
+## 13. 11体目（BASE 642cdba）で直したこと（G3 verifier r3 の指摘と裁定 30）
+
+### AC-91：`common.save.error` が S-7a・S-7b で2つ
+- 原因：S-7（`BookDetailView`）の帯 `BannerNoticeView(model:)` と、シート（S-7a・S-7b・S-7c）の帯が同じ `store.activeErrorKey` を見て両方出ていた。iOS 26 の iPhone のシートは下の画面を縮めないので、下の S-7 の帯もシートの帯とほぼ同じ位置（7pt 上）にあり、XCUITest の木にも残った。S-7 自体の保存（`book.status`、`book.delete`）と S-8c・S-3b は、下に帯を出す画面がないので1つだった。
+- 直し方：シートを出している間は、下の画面（S-7 と S-9）の帯を出さない（`detailSheet == nil`、S-9 は2つのシートが閉じているとき）。帯はシートの中の1つだけになる。
+
+### S-7a・S-3c の欄の値
+- S-7a：書名・著者の欄は今の本の値で始まる（名無しの今の本の書名と、著者が空の本の著者は空で始まる。design/ 5）。placeholder は欄の名前のキー（`book.edit.title`、`book.edit.author`）。保存は欄の値をそのまま渡し、書名が空なら `book.title.invalid`、著者が空なら著者なしで保存する（前は空なら前の値を残していた）。
+- S-3c：選んだ列の文を `mark.lineField` の値にする（列を選び直すと替わる）。placeholder は `mark.line.placeholder`。保存は欄の値（空なら `mark.line.invalid`）。
+  - 欄に値が入ったあと最初に欄に触れたときは、文の全体を選ぶ（`TextField(_:text:selection:axis:)` と `TextSelection`、iOS 18）。打てば置き換わり、もう一度押せば字の間に入って直せる。AC-67 の「手で直す」を、文の全体を打ち直す形でも、1字だけ直す形でもできるようにするため。design/ にこの決めはないので、designer に確かめてもらう。
+
+### W-1・W-2 の縦書きの字が1字ずつ要素に出る（AC-99、H22）
+- 原因：`.accessibilityElement(children: .ignore)` と、字の層の `.accessibilityHidden(true)` を付けても、SwiftUI は中の `Text` を XCUITest の木（とアクセシビリティ監査）に子として出していた。
+- 直し方：W-1・W-2 の View の全体を `accessibilityRepresentation`（iOS 15）で、文字を描かない要素（`Color.clear` にラベルと識別子）1つに置き換える（`widgetSingleAccessibilityElement`）。表し方を `Text` にすると、監査がその見えない文を「Text clipped」と数えたため。拡張とアプリの見本（H22、S-5、S-10a）は同じ View の型なので両方に効く。`hook.widget` の `accessibility.groupCount` は、この作りで常に1つ。
+
+### H33 の `storekit.restore` が `held` のまま
+- 原因：S-10 の復元の `HeldLoadProgressView` は中身が `EmptyView` で、`Group` に付けた `.task(id:)` が動かなかった（描くものがない View の修飾子は動かない）。ほかの7つは中身があった。
+- 直し方：`HeldLoadProgressView` に大きさ0の `Color.clear` を常に置き、`.task` がいつも動くようにした。S-10 の HStack の間は ProgressView の側で取る（出していない間にボタンの幅を削らない）。
+
+### AX5 の `hook.widget.canvas` の frame（H22）
+- 原因：枠は `.frame(width:height:)` で実寸だったが、XCUITest の要素の frame は子の要素を合わせた大きさになり、大きい文字で中身が枠を超えると枠より大きく出た（systemSmall 171.67、liveActivity 191）。
+- 直し方：枠を動かないスクロールの入れ物（`ScrollView` と `.scrollDisabled(true)`）にした。入れ物は自分の大きさを要素の frame に持つ。固定の面は枠の高さで、中身に合わせる面は中身の高さで描き、はみ出した分は枠で切る。
+
+### AX5 の S-1 で伏せる案内が下端で半分切れる
+- 原因：大きい文字では伏せる案内をスクロールの一番下に置く（design/ 9）。中身が画面より長く、`safeAreaBar` の「読み始める」の帯の下（ホームインジケーターの帯）に、スクロールの中身の伏せる案内の行が半分だけ透けて見えた。
+- 直し方：S-1 のスクロールの下端の端の効果を、システムのはっきりした形（`.scrollEdgeEffectStyle(.hard, for: .bottom)`、iOS 26）にした。帯に自作の背景は付けない。`safeAreaBar` は中身の下に帯の分の余白を足すので、一番下まで送れば案内は帯の上に出る見込み［推測。一番下まで送った画面は撮っていない］。
