@@ -1,76 +1,76 @@
 variant=ax5 args=["-uitest-readouts", "off", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
-CAPTURED S1_normal_ax5.png (286159 bytes)
+CAPTURED S1_normal_ax5.png (274004 bytes)
 OK S-1 normal
-CAPTURED S2_normal_ax5.png (231241 bytes)
+CAPTURED S2_normal_ax5.png (232213 bytes)
 OK S-2 normal
-CAPTURED S3_normal_ax5.png (253611 bytes)
+CAPTURED S3_normal_ax5.png (251352 bytes)
 OK S-3 normal (after session)
-CAPTURED S3a_normal_ax5.png (215987 bytes)
+CAPTURED S3a_normal_ax5.png (211515 bytes)
 OK S-3a normal
-CAPTURED S3b_normal_ax5.png (201259 bytes)
+CAPTURED S3b_normal_ax5.png (181666 bytes)
 OK S-3b normal
-CAPTURED S3c_normal_ax5.png (260168 bytes)
+CAPTURED S3c_normal_ax5.png (259251 bytes)
 OK S-3c normal
-CAPTURED S5_normal_ax5.png (182827 bytes)
+CAPTURED S5_normal_ax5.png (222527 bytes)
 OK S-5 normal (after first mark save)
-CAPTURED S4_normal_ax5.png (159302 bytes)
+CAPTURED S4_normal_ax5.png (157874 bytes)
 OK S-4 normal (page moved)
-CAPTURED N_normal_ax5.png (293607 bytes)
+CAPTURED N_normal_ax5.png (269199 bytes)
 OK N normal (info banner: session under 1 minute)
-CAPTURED S6_normal_ax5.png (219573 bytes)
+CAPTURED S6_normal_ax5.png (220252 bytes)
 OK S-6 normal
-CAPTURED S8_normal_ax5.png (261015 bytes)
+CAPTURED S8_normal_ax5.png (251303 bytes)
 OK S-8 normal
-CAPTURED S8a_normal_ax5.png (243805 bytes)
+CAPTURED S8a_normal_ax5.png (267861 bytes)
 OK S-8a normal
-CAPTURED S8b_normal_ax5.png (232093 bytes)
+CAPTURED S8b_normal_ax5.png (237185 bytes)
 OK S-8b normal
-CAPTURED S8c_normal_ax5.png (190752 bytes)
+CAPTURED S8c_normal_ax5.png (182028 bytes)
 OK S-8c normal
-CAPTURED S8d_normal_ax5.png (294225 bytes)
+CAPTURED S8d_normal_ax5.png (286190 bytes)
 OK S-8d normal
-CAPTURED S7_normal_ax5.png (207993 bytes)
+CAPTURED S7_normal_ax5.png (207854 bytes)
 OK S-7 normal
-FIELD book.edit.title exists=true value=羅生門 placeholder=羅生門 label=書名
-FIELD book.edit.author exists=true value=芥川龍之介 placeholder=芥川龍之介 label=著者
-CAPTURED S7a_normal_ax5.png (202463 bytes)
+FIELD book.edit.title exists=true value=羅生門 placeholder=書名 label=書名
+FIELD book.edit.author exists=true value=芥川龍之介 placeholder=著者 label=著者
+CAPTURED S7a_normal_ax5.png (199930 bytes)
 OK S-7a normal
-CAPTURED S7b_normal_ax5.png (231660 bytes)
+CAPTURED S7b_normal_ax5.png (230736 bytes)
 OK S-7b normal
-TEXT finish.summary exists=true label=3晩、83分 value=3晩、83分
+TEXT finish.summary exists=false label=- value=-
 TEXT finish.reflection exists=true label=3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。 value=3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。
-NIGHT_TEXTS count=2 ["3晩、83分", "3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。"]
-CAPTURED S9_normal_ax5.png (277235 bytes)
+NIGHT_TEXTS count=1 ["3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。"]
+CAPTURED S9_normal_ax5.png (252281 bytes)
 OK S-9 normal
-CAPTURED S9_card_ax5.png (169905 bytes)
+CAPTURED S9_card_ax5.png (188209 bytes)
 OK S-9 finish card
-CAPTURED S7c_normal_ax5.png (204078 bytes)
+CAPTURED S7c_normal_ax5.png (186919 bytes)
 OK S-7c normal (colophon read)
-CAPTURED S10_normal_ax5.png (242192 bytes)
+CAPTURED S10_normal_ax5.png (242141 bytes)
 OK S-10 normal
-CAPTURED S10a_normal_ax5.png (299180 bytes)
+CAPTURED S10a_normal_ax5.png (292069 bytes)
 OK S-10a normal
-CAPTURED S1_empty_ax5.png (241493 bytes)
+CAPTURED S1_empty_ax5.png (241791 bytes)
 OK S-1 empty
-CAPTURED S6_empty_ax5.png (238233 bytes)
+CAPTURED S6_empty_ax5.png (238503 bytes)
 OK S-6 empty
-CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["dynamicTypeSize": accessibility5, "variant": normal, "canvasHeight": 76, "contentOverflow": 0, "colorScheme": dark, "requestedHeight": 76, "spec": accessoryRectangular:172x76, "idealHeight": 76, "surface": accessoryRectangular, "viewType": ReadingLockScreenWidgetView, "canvasWidth": 172, "requestedWidth": 172]
-RENDER spec=accessoryRectangular:172x76 request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
-CAPTURED W1_normal_ax5.png (68291 bytes)
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["canvasWidth": 172, "colorScheme": dark, "requestedHeight": 76, "canvasHeight": 76, "dynamicTypeSize": accessibility5, "surface": accessoryRectangular, "contentOverflow": 0, "variant": normal, "viewType": ReadingLockScreenWidgetView, "idealHeight": 76, "requestedWidth": 172, "spec": accessoryRectangular:172x76]
+RENDER spec=accessoryRectangular:172x76 request=["family": accessoryRectangular, "height": 76, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W1_normal_ax5.png (68751 bytes)
 OK W-1 normal 172x76
-CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 171.66668701171875) showcase=["spec": systemSmall:170x170, "surface": systemSmall, "requestedHeight": 170, "viewType": ReadingHomeSmallWidgetView, "dynamicTypeSize": accessibility5, "variant": normal, "canvasHeight": 170, "canvasWidth": 170, "contentOverflow": 0, "colorScheme": light, "requestedWidth": 170, "idealHeight": 170]
-RENDER spec=systemSmall:170x170 request=["width": 170, "family": systemSmall, "height": 170] state=normal fontSize=20 L=5 columnCount=3 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
-CAPTURED W2_normal_ax5.png (89171 bytes)
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["variant": normal, "requestedHeight": 170, "contentOverflow": 0, "canvasWidth": 170, "viewType": ReadingHomeSmallWidgetView, "surface": systemSmall, "canvasHeight": 170, "requestedWidth": 170, "spec": systemSmall:170x170, "dynamicTypeSize": accessibility5, "idealHeight": 170, "colorScheme": light]
+RENDER spec=systemSmall:170x170 request=["width": 170, "height": 170, "family": systemSmall] state=normal fontSize=20 L=5 columnCount=3 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W2_normal_ax5.png (90203 bytes)
 OK W-2 normal 170x170
-CANVAS spec=liveActivity:370x160:waiting frame=(16.0, 371.0, 370.0, 191.0) showcase=["viewType": ReadingLiveActivityLockScreenView, "contentOverflow": 1, "requestedHeight": 160, "requestedWidth": 370, "idealHeight": 252, "surface": liveActivity, "spec": liveActivity:370x160:waiting, "canvasHeight": 160, "dynamicTypeSize": accessibility5, "colorScheme": light, "variant": waiting, "canvasWidth": 370]
-RENDER spec=liveActivity:370x160:waiting request=["height": 76, "width": 172, "family": accessoryRectangular] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=true
-CAPTURED W3_normal_ax5.png (93639 bytes)
+CANVAS spec=liveActivity:370x160:waiting frame=(16.0, 371.0, 370.0, 160.0) showcase=["colorScheme": light, "viewType": ReadingLiveActivityLockScreenView, "requestedWidth": 370, "spec": liveActivity:370x160:waiting, "dynamicTypeSize": accessibility5, "requestedHeight": 160, "contentOverflow": 1, "surface": liveActivity, "idealHeight": 252, "canvasWidth": 370, "variant": waiting, "canvasHeight": 160]
+RENDER spec=liveActivity:370x160:waiting request=["height": 76, "family": accessoryRectangular, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=true
+CAPTURED W3_normal_ax5.png (116253 bytes)
 OK W-3 normal (waiting)
-CANVAS spec=control:160x72 frame=(121.0, 415.0, 160.0, 72.0) showcase=["canvasWidth": 160, "surface": control, "contentOverflow": 1, "variant": startReading, "dynamicTypeSize": accessibility5, "requestedHeight": 72, "viewType": ReadingControlLabelView, "idealHeight": 311.6666666666666, "canvasHeight": 72, "spec": control:160x72, "requestedWidth": 160, "colorScheme": light]
-RENDER spec=control:160x72 request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=true
-CAPTURED W4_normal_ax5.png (65017 bytes)
+CANVAS spec=control:160x72 frame=(121.0, 415.0, 160.0, 72.0) showcase=["canvasHeight": 72, "viewType": ReadingControlLabelView, "requestedWidth": 160, "dynamicTypeSize": accessibility5, "spec": control:160x72, "contentOverflow": 1, "canvasWidth": 160, "requestedHeight": 72, "variant": startReading, "idealHeight": 311.6666666666666, "colorScheme": light, "surface": control]
+RENDER spec=control:160x72 request=["family": accessoryRectangular, "height": 76, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=true
+CAPTURED W4_normal_ax5.png (65954 bytes)
 OK W-4 normal (control)
-CANVAS spec=snippet:360x200 frame=(21.0, 372.3333333333333, 360.0, 157.33333333333331) showcase=["viewType": WhereStoppedSnippetView, "canvasHeight": 157.3333333333333, "requestedHeight": 200, "requestedWidth": 360, "variant": whereStopped, "idealHeight": 157.3333333333333, "colorScheme": light, "canvasWidth": 360, "dynamicTypeSize": accessibility5, "contentOverflow": 0, "surface": snippet, "spec": snippet:360x200]
-RENDER spec=snippet:360x200 request=["height": 76, "family": accessoryRectangular, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
-CAPTURED W5_normal_ax5.png (93541 bytes)
+CANVAS spec=snippet:360x200 frame=(21.0, 372.3333333333333, 360.0, 157.33333333333331) showcase=["spec": snippet:360x200, "variant": whereStopped, "contentOverflow": 0, "canvasWidth": 360, "surface": snippet, "requestedHeight": 200, "dynamicTypeSize": accessibility5, "requestedWidth": 360, "idealHeight": 157.3333333333333, "colorScheme": light, "viewType": WhereStoppedSnippetView, "canvasHeight": 157.3333333333333]
+RENDER spec=snippet:360x200 request=["width": 172, "height": 76, "family": accessoryRectangular] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W5_normal_ax5.png (94453 bytes)
 OK W-5 normal (snippet)

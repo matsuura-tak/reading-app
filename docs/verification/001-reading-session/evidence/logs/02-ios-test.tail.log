@@ -1,413 +1,444 @@
-	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
-	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
-✔ Test "W-3 の終えた直後の見える文字は liveActivity.ended.summary（場所がなければ分数だけ）" passed after 0.001 seconds.
-✔ Test "S-4 のまとめの値は、前の値が今と同じなら前の値を持たない" passed after 0.001 seconds.
-✔ Test "S-4 の result.summary の3つの形（AC-75、AC-76、AC-141）" with 8 test cases passed after 0.001 seconds.
-✔ Test "formatProgressDisplay の位置は location.short（ja は「位置1450」、en は「Loc 1450」）" passed after 0.001 seconds.
-✔ Test "どこまで読んだ？の答えは言語ごとの文で、書名と一行を含まない（AC-121、AC-143）" with 3 test cases passed after 0.001 seconds.
-✔ Test "今の本がないときの「読み始める」は intent.start.noCurrent の文を返す（決定 84）" passed after 0.051 seconds.
-✔ Test "英語の文を渡した店は、Siri の答えを英語で返し、日本語を含まない（AC-121〜AC-123、AC-133、AC-143）" passed after 0.089 seconds.
-✔ Suite ReadingStoreStringsTests passed after 0.089 seconds.
-✔ Test "ReadingDataStore entry URL 300s expiry, crash recovery, clock rollback, title-pending book, and all 11+ hook readouts" passed after 1.166 seconds.
-✔ Test "ReadingDataStore and subcomponents deallocate cleanly with no retain cycles (weak reference becomes nil)" passed after 1.166 seconds.
-✔ Test "SnapshotStore writes widget-snapshot.json atomically, enforces hideOnWidgets privacy, and tracks reloads" passed after 1.166 seconds.
-✔ Test "前の版の形の写しが残っていても落ちず、次に書くまで読めない（version）、書けば読める" passed after 1.294 seconds.
-✔ Test "ReadingClock advances seconds, milliseconds, timezone, and records 8 latency metrics" passed after 1.294 seconds.
-✔ Test "CatalogDatabase builds SQLite with FTS5, opens read-only, excludes from backup, and queries ISBN/Title/Cooccurrence" passed after 1.294 seconds.
-✔ Test "ReadingDataStore flip-to-start, session duration boundaries, Live Activity, StoreKit, Intents, and perf500 preset" passed after 1.294 seconds.
-✔ Test "H22：差し替え（@missing、壊れた写し）は unavailable、枠の誤りは返す、写しを変えない保存は再読み込みしない" passed after 1.294 seconds.
-✔ Test "widget-snapshot.json は契約の形（普通、hidden、名無し、一行なし、今の本なし）" with 5 test cases passed after 1.294 seconds.
-✔ Test "ReadingDataStore book CRUD, title-pending book, and H7 failSave rollback across all 10 points" passed after 1.294 seconds.
-✔ Test "SwiftData ReadingStore.store persistence without JSON state file, entry URL scheme/host validation, and <60s discarded session entry preservation" passed after 1.294 seconds.
-✔ Test "H22：契約の形の写しの差し替えを hook.widget が読む" with 8 test cases passed after 1.294 seconds.
-✔ Suite ReadingStoreTests passed after 1.294 seconds.
-✔ Test run with 19 tests in 2 suites passed after 1.294 seconds.
-✔ Test "今の本なしは widget.empty の文" passed after 0.003 seconds.
-✔ Test "軸と「積読にある本か」の組ごとに1つのキーの文（決定 85）" with 10 test cases passed after 0.003 seconds.
-✔ Test "賞の表示名は回や年を前に付け、名前が空なら nil" passed after 0.003 seconds.
-✔ Test "横書き（AC-30）の composition のキーは orientation、displayedLine、shortened、page だけ" passed after 0.003 seconds.
-✔ Test "26字以上は縮めてから組む（AC-29）" passed after 0.003 seconds.
-✔ Test "「そして」＋「…」×6 は 172x76 で 17pt、C 5、feed 11、relaxed 偽" passed after 0.003 seconds.
-✔ Test "「あ」＋「ー」×24 は W-1 の両方の枠で relaxed 真、13pt、L 5、C 5、cells 25個" with 2 test cases passed after 0.003 seconds.
-✔ Test "「あ、」×12＋「あ」は字が落ちない（W-1・W-2 の4つの枠）" with 4 test cases passed after 0.003 seconds.
-✔ Test "W-1 172x76 の AC-27 の14字は、スキーマの1つ目の例と同じ升目と位置" passed after 0.003 seconds.
-✔ Test "レーベルが空の本どうしは、同じレーベルの軸に当たらない" passed after 0.003 seconds.
-✔ Test "契約の表の9行で s、L、C、送り、referenceL、slack.horizontal が合う" with 9 test cases passed after 0.003 seconds.
-✔ Test "賞やレーベルの名前が空なら、その軸の理由を出さない" with 4 test cases passed after 0.004 seconds.
-✔ Test "design/ 6 の書式で読む（ja と en）" with 9 test cases passed after 0.004 seconds.
-✔ Test "「あいうーーーー」のくり返し25字は 153x68 で relaxed 真、172x76 は 14pt・C 7 で入る" passed after 0.004 seconds.
-✔ Test "状態の表（上から順に当てはまった最初の行）" passed after 0.004 seconds.
-✔ Test "縦書きの composition は升目の9項目をすべて書く" passed after 0.004 seconds.
-✔ Test "単位が分からない表示の形から場所の読み方を決める（Live Activity）" with 4 test cases passed after 0.004 seconds.
-✔ Test "InputValidator enforces all character and integer boundaries, full-width digit conversion, and decimal rejection" passed after 0.004 seconds.
-✔ Test "WidgetSnapshot の読む側の決まり（4）〜（7）と、前の版の形" passed after 0.004 seconds.
-✔ Test "読めない写しの理由" passed after 0.004 seconds.
-✔ Test "All 7 hook schemas decode their contract examples cleanly" passed after 0.004 seconds.
-✔ Test "EntryURLParser parses all 4 valid schemes and rejects malformed URLs" passed after 0.003 seconds.
-✔ Test "VoiceOver accessibility label never contains vertical presentation forms U+FE10..U+FE4F (AC-99)" passed after 0.003 seconds.
-✔ Test "AuthorNameFormatter cleans NDL dc:creator patterns accurately (AC-92)" passed after 0.004 seconds.
-✔ Test "Horizontal fallback when line has no Hiragana, Katakana, or Han (AC-30)" passed after 0.003 seconds.
+=== [1] swift test --package-path ios/ReadingKit (r14/swifttest.log) ===
+✔ Test "All 7 hook schemas decode their contract examples cleanly" passed after 0.006 seconds.
+✔ Test "W-1 172x76 の AC-27 の14字は、スキーマの1つ目の例と同じ升目と位置" passed after 0.004 seconds.
+✔ Test "Horizontal fallback when line has no Hiragana, Katakana, or Han (AC-30)" passed after 0.005 seconds.
+✔ Test "AuthorNameFormatter cleans NDL dc:creator patterns accurately (AC-92)" passed after 0.006 seconds.
+✔ Test "横書き（AC-30）の composition のキーは orientation、displayedLine、shortened、page だけ" passed after 0.004 seconds.
+✔ Test "Vertical glyph replacement, 90-degree rotation, and Kinsoku (AC-27, AC-28)" passed after 0.004 seconds.
+✔ Test "VoiceOver accessibility label never contains vertical presentation forms U+FE10..U+FE4F (AC-99)" passed after 0.004 seconds.
+✔ Test "契約の表の9行で s、L、C、送り、referenceL、slack.horizontal が合う" with 9 test cases passed after 0.004 seconds.
+✔ Test "26字以上は縮めてから組む（AC-29）" passed after 0.004 seconds.
+✔ Test "読めない写しの理由" passed after 0.005 seconds.
+✔ Test "「あ」＋「ー」×24 は W-1 の両方の枠で relaxed 真、13pt、L 5、C 5、cells 25個" with 2 test cases passed after 0.004 seconds.
+✔ Test "英語の文を渡すと、S-9・S-7・S-1 の候補の理由に日本語の地の文が入らない" passed after 0.006 seconds.
 ✔ Test "S-7 の「この本のあとに」は、本棚が空なら起点の本がないので候補を出さない（決まった本を起点にしない）" passed after 0.003 seconds.
-✔ Test "WidgetSnapshot decodes the contract examples and round-trips" with 8 test cases passed after 0.003 seconds.
-✔ Test "Vertical glyph replacement, 90-degree rotation, and Kinsoku (AC-27, AC-28)" passed after 0.003 seconds.
+✔ Test "「そして」＋「…」×6 は 172x76 で 17pt、C 5、feed 11、relaxed 偽" passed after 0.003 seconds.
+✔ Test "「あいうーーーー」のくり返し25字は 153x68 で relaxed 真、172x76 は 14pt・C 7 で入る" passed after 0.003 seconds.
 ✔ Test "25-character shortening rule (AC-29) handles all boundary cases" passed after 0.003 seconds.
-✔ Test "英語の文を渡すと、S-9・S-7・S-1 の候補の理由に日本語の地の文が入らない" passed after 0.004 seconds.
-✔ Suite "Widget spoken label (AC-99)" passed after 0.004 seconds.
-✔ Suite "WidgetLineComposer（H22 の組み方）" passed after 0.004 seconds.
-✔ Suite "Widget の状態と写しの読み方" passed after 0.004 seconds.
-✔ Suite "VerticalLineLayout Tests" passed after 0.004 seconds.
-✔ Suite "Contract Models & Entry URL Tests" passed after 0.005 seconds.
-✔ Suite RecommendationReasonStringsTests passed after 0.004 seconds.
-✔ Test "Finish reflection text handles 0, 1, and multi-night records with newer-date tie-breaker (AC-85, AC-127..129)" passed after 0.005 seconds.
-✔ Test "NightDateCalculator uses 4:00 AM boundary in the record's timeZoneID (AC-22)" passed after 0.006 seconds.
-✔ Test "ISBNAndCCodeParser validates ISBN-13, rejects non-book barcodes, and derives publisher & label (AC-3, AC-5, AC-11)" passed after 0.006 seconds.
-✔ Suite "AuthorNameFormatter & ISBNAndCCodeParser Tests" passed after 0.007 seconds.
-✔ Test "Bundled awards.json contains all 76 rows in exact order across the 3 awards (AC-112)" passed after 0.006 seconds.
-✔ Test "OCRPipeline processes vertical page columns, colophon, cover 2-tap, and bookshelf spines (AC-65..68, AC-113, AC-137, AC-138)" passed after 0.007 seconds.
-✔ Suite "NightDateCalculator, InputValidator & OCRPipeline Tests" passed after 0.007 seconds.
-✔ Test "Award matching requires both normalized title and normalized author, rejecting volumes and derivatives (AC-18..21)" passed after 0.014 seconds.
-✔ Test "RecommendationEngine scores weights, filters cooccurrence, and generates S-9 / S-7 / S-1 candidates (AC-75..87, AC-145..148)" passed after 0.048 seconds.
-✔ Suite "AwardsCatalog & RecommendationEngine Tests" passed after 0.049 seconds.
-✔ Test run with 37 tests in 9 suites passed after 0.049 seconds.
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC21_記号や括弧の違いを正規化して受賞を照合する]' passed (93.978 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC15_本の書名と著者を直しても記録が保たれる]' passed (51.066 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC17_本の画面の奥付5行と出版社レーベル受賞が出る]' passed (35.228 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC24_記録の分数を直すと合計分数が更新される]' passed (54.451 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC19_書名と著者の両方が一致するとき受賞が出る]' passed (28.315 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC13_本棚の3区分と積読の新しい順の並びを検証する]' passed (25.376 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC26_記録を消すと件数と合計と晩数が減る]' passed (43.800 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC25_記録の分数の入力境界値を検証する]' passed (106.869 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC112_同梱の受賞一覧データが仕様書の表と全行一致する]' passed (7.571 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC22_4時境目の晩の日付とタイムゾーン変更不変を検証する]' passed (24.508 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC18_奥付でデータのない行や不明の文字を出さない]' passed (11.172 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC20_片方不一致や派生本には受賞を出さない]' passed (17.915 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC16_今の本を消すと記録も消え今の本なしになる]' passed (22.924 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC14_積読や読了の本を今の本に切り替えられる]' passed (20.571 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC23_記録がない本の画面に空の案内が出る]' passed (7.493 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC113_奥付を1枚撮って著者出版社レーベル出版年ISBNを補完し画像を残さない]' passed (18.283 seconds).
-	 Executed 16 tests, with 0 failures (0 unexpected) in 569.518 (569.716) seconds
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC71_手入力の一行の前後空白を除いて保存する]' passed (27.492 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC70_しおり撮影でカメラ拒否時にスクショと手入力の導線が出る]' passed (9.192 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC63_しおりを挟む画面に5つの道がすべて押せる状態で出る]' passed (12.894 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC141_電子書籍の位置番号とパーセントのしおり保存と境界値を検証する]' passed (112.315 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC74_ページ番号の1から9999までの境界値と全角数字を検証する]' passed (74.222 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC72_一行の1字から60字までの境界値を検証する]' passed (61.965 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC68_文字が1行も読み取れないときに撮り直しと手入力が出る]' passed (11.043 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC76_結果画面に前回ページからの遷移と分数が出て1タップで閉じる]' passed (28.018 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC65_ページ写真OCRで一番左の列が初期選択され保存できる]' passed (29.248 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC69_撮影したページ画像と未選択列の文字を一切残さない]' passed (25.867 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC64_読まずにしおりだけを挟むと記録を増やさず更新される]' passed (21.513 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC66_OCR結果の別の列を選び直して保存できる]' passed (20.356 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC142_カメラ拒否でもスクリーンショットから一行を選んで保存でき画像を残さない]' passed (22.180 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC73_ページ数だけ入れると一行が空になりウィジェットも書名とページになる]' passed (18.555 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC75_あとでを選ぶと前のしおりを保ち結果画面に分数だけが出る]' passed (10.026 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC95_読後のしおり保存失敗時も記録は残り入力値を保ったまま再保存できる]' passed (27.728 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC94_OCR待ちの間も1秒以内に手入力やページ入力に移り後から結果が返っても上書きされない]' passed (31.343 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC67_OCRの誤字を入力欄で手直しして保存できる]' passed (19.231 seconds).
-	 Executed 18 tests, with 0 failures (0 unexpected) in 563.188 (563.406) seconds
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC62_オフラインでもウィジェット起動からしおり保存まで完走する]' passed (22.334 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC61_開始と終了の二度押しで記録や画面が重複しない]' passed (10.864 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない]' passed (14.393 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC54_読書中も自動ロック無効化と近接センサー監視を使わない]' passed (16.409 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC51_伏せる設定オフまたは非対応環境では伏せても始まらない]' passed (23.041 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC53_読書中に強制終了しても再起動後に続きから数える]' passed (24.740 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC56_59秒は記録せず60秒ちょうどから1分として記録する]' passed (22.296 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC59_読み始めの保存失敗時はidleのままエラーを出す]' passed (17.305 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る]' passed (8.966 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC45_伏せて1秒未満で起こすと読み始めない]' passed (11.078 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC58_端末時刻が開始より前に戻ったときは記録せず知らせを出す]' passed (15.937 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない]' passed (33.341 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC57_24時間超は1440分で止めて上限の知らせを出す]' passed (33.526 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC50_しおり画面に伏せて始める案内の1行が出る]' passed (6.403 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC46_今の本がないときは伏せの監視がオフで始まらない]' passed (14.634 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC42_起動から1タップで確認や入力なしに読み始められる]' passed (8.921 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC44_しおり画面で伏せて1秒たつと触覚が1回鳴り読み始める]' passed (8.687 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC52_バックグラウンドの間も開始時刻からの差で時間を数える]' passed (19.003 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC60_終わりの保存失敗時は読書中を保ち再試行で合算保存される]' passed (13.531 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC43_読書中の画面は押せる要素が終えるの1つだけになる]' passed (10.024 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC55_終える1タップで確認なしに500ミリ秒以内にしおり画面が出る]' passed (50.810 seconds).
-	 Executed 21 tests, with 0 failures (0 unexpected) in 386.244 (386.287) seconds
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC130_入口時刻前の読書開始で今夜の予約を取り消し終了時に予約を見直す]' passed (19.786 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC98_読まなかった晩のLiveActivityは翌朝前面復帰で終了し今夜分を予約する]' passed (8.494 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC41_表示中の予約LiveActivityが読書中から結果表示へ遷移する]' passed (10.018 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC34_隠す設定オンでウィジェットとLiveActivityから書名と一行を隠す]' passed (8.501 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC27_ロック画面ウィジェットに縦書きの一行とページが出る]' passed (6.496 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC38_夜の入口の時刻を15分刻みで変えると予約時刻が変わる]' passed (12.533 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC37_LiveActivityオフ時は予約要求を出さず設定に案内を出す]' passed (12.541 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC28_縦書きの字形置換と行頭禁則処理を検証する]' passed (36.948 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC31_一行がないときは書名とページをウィジェットに出す]' passed (12.453 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC39_予約がない晩でもアイコン起動でしおり画面が開き伏せ監視がオンになる]' passed (9.819 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない]' passed (7.488 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC36_しおり保存で翌晩21時のLiveActivityが1件予約される]' passed (21.296 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC29_26字以上の一行の句読点位置による縮め方を検証する]' passed (43.944 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC33_しおり保存でウィジェットが1回だけ再読み込みされる]' passed (14.306 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC32_今の本がないときはウィジェットに空の文言が出る]' passed (12.227 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC96_ウィジェットの置き方案内は最初の1回だけ出る]' passed (20.046 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC35_StandBy用の小ウィジェットに縦書きの一行とページが出る]' passed (6.494 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC97_LiveActivity予約失敗時はアラートを出さず次回前面復帰時に予約し直す]' passed (11.130 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC40_入口のURLと300秒境界で記録の入口の印が決まる]' passed (76.414 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC30_欧文のみの一行は横書き1行で出る]' passed (6.477 seconds).
-	 Executed 20 tests, with 0 failures (0 unexpected) in 357.411 (357.432) seconds
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (0.086 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' passed (0.061 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (0.056 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (0.056 seconds).
-	 Executed 4 tests, with 0 failures (0 unexpected) in 0.258 (0.261) seconds
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC147_端末内の重み付けでよく選ぶ理由の候補が既定の順より上に繰り上がる]' passed (9.194 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC80_未所有の候補がないときは積読から最大3冊を出す]' passed (10.327 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない]' passed (8.678 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC82_次の1冊で積読の本を選ぶと今の本になりウィジェットも更新される]' passed (16.853 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC81_積読も未所有の候補もないときは本を加える案内が出る]' passed (6.946 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC85_読み終えのカードの晩数を4時境目のユニーク晩数で数える]' passed (7.495 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない]' passed (6.897 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC128_ふりかえり1行の1晩のみの文言と同点最長晩の新しい日付選択を検証する]' passed (13.684 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC127_読み終えのふりかえり1行に晩数と合計時間と最長の晩が出てカードには載らない]' passed (8.442 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC148_共起テーブルから文学NDC9かつ10人以上の本だけを人数を出さずに推薦する]' passed (8.345 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC84_読み終えのカード画像に書名著者晩数分数だけを描き一行を含めない]' passed (8.528 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC146_読み終えた本の詳細画面にこの本のあとにが最大5冊出てその場で積読に加えられる]' passed (18.694 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC145_今の本が0冊で積読があるときしおり画面に最大3冊出て1タップで今の本になる]' passed (18.711 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC87_端末内書誌DBからシリーズの次の巻と同じ著者の本を推薦し書誌つきで積読に加える]' passed (18.121 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC79_次の1冊の各候補に事実1行の理由が出る]' passed (8.236 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC77_読み終えたボタンで読了になり奥付5行と奥付撮影ボタンが出る]' passed (9.545 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC78_次の1冊に積読の関連本2冊と未所有の関連本1冊が順に並ぶ]' passed (10.640 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC83_受賞一覧から出た未所有の本を積読に加えられる]' passed (15.739 seconds).
-	 Executed 18 tests, with 0 failures (0 unexpected) in 205.075 (205.098) seconds
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC135_今の本がないときに続きを読むインテントはしおり画面の空状態を出す]' passed (14.583 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC126_AppShortcuts3種とControl1種の登録内容と言い方を検証する]' passed (6.292 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる]' passed (20.979 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC105_鍵つき見た目を押すと見本と購入シートが出て閉じると標準に戻る]' passed (9.604 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC144_電子書籍のしおり画面と読書中画面に専用案内が出てLiveActivityから終えられる]' passed (7.324 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC89_画面操作で入れた本と記録としおりと設定が再起動後もすべて残る]' passed (56.524 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC106_購入すると見た目を選べてウィジェットと再起動後にも反映される]' passed (16.494 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる]' passed (16.078 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC90_起動時の保存先読込失敗でエラーを出し再起動で元のデータが戻る]' passed (13.678 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC104_未購入でも毎晩の道と読み終えた画面に課金案内が出ない]' passed (9.510 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC108_購入の復元で履歴の有無に応じた結果と文言が出る]' passed (14.626 seconds).
-/Users/takumamatsuura/reading-app/ios/AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift:241: error: -[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる] : XCTAssertEqual failed: ("2") is not equal to ("1") - common.save.error: type=48 frame=(71.66666666666666, 163.0, 169.0, 58.0) label=保存できませんでした。変更は反映されていません。もう一度試してください。 | type=48 frame=(71.66
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる]' failed (10.594 seconds).
-Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC110_オフラインで商品を読めないときは案内を出し読書は妨げない]' passed (7.745 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC120_隠す設定オンのとき読み始めるインテントのLiveActivityに書名を出さない]' passed (7.560 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC103_登録から読了カード共有まで外部HTTP通信が0件である]' passed (28.224 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC132_LiveActivityの終えるで保存失敗時は読書を消さずS2にエラーを出す]' passed (9.330 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC116_LiveActivityの終えるで動いた時刻で記録し場面に応じて画面を出す]' passed (25.753 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC109_決済不可の端末では購入ボタンを出さず案内を出す]' passed (7.891 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC123_隠す設定オンでもどこまで読んだインテントはページを答え書名と一行を出さない]' passed (6.431 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC143_電子書籍の位置番号とパーセントに応じてどこまで読んだインテントが答える]' passed (12.876 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC136_4時をまたぎLiveActivityが8時間上限で消えても読書は続き全分数が記録される]' passed (9.438 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC114_読み始めるインテントでアプリを開かず読書とLiveActivityが始まる]' passed (11.371 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC121_どこまで読んだインテントは認証なしでページだけ答え一行と書名を出さない]' passed (6.375 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC124_続きを読むインテントはしおり画面を開き始まった読書にintent_openを付ける]' passed (9.640 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC119_読み始めるインテントで保存失敗時はエラーを返しLiveActivityを出さない]' passed (8.609 seconds).
-/Users/takumamatsuura/reading-app/ios/AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift:241: error: -[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる] : XCTAssertEqual failed: ("2") is not equal to ("1") - common.save.error: type=48 frame=(71.66666666666666, 163.0, 169.0, 58.0) label=保存できませんでした。変更は反映されていません。もう一度試してください。 | type=48 frame=(7
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる]' failed (10.404 seconds).
-Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC93_設定画面にNDLの3条件とCCBYリンクが出てしおり画面と読書中画面には出ない]' passed (10.848 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC131_読み始めるインテントでLiveActivity要求が失敗したらアプリを開いて読書を続ける]' passed (10.338 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる]' passed (19.023 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC118_LiveActivityオフ時の読み始めるインテントは読書を開始し前面可ならS2を出す]' passed (19.850 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC134_読書中に続きを読むインテントを動かすと読書中の画面を出す]' passed (9.497 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC88_設定画面からプライバシーポリシーのURLを開く]' passed (8.645 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC133_どこまで読んだインテントで読込失敗時はエラー文言だけを返し書名やページを出さない]' passed (6.325 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC122_どこまで読んだインテントでページや今の本がないときの応答を検証する]' passed (24.373 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC125_オフラインでも外からの3つのインテントとしおり保存がすべて動く]' passed (12.001 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC107_購入の取りやめとエラー時に未購入と標準の見た目が保たれる]' passed (16.322 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC117_今の本がないときに読み始めるインテントはアプリを開いて空状態を見せる]' passed (16.596 seconds).
-/Users/takumamatsuura/reading-app/ios/AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift:241: error: -[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる] : XCTAssertEqual failed: ("2") is not equal to ("1") - common.save.error: type=48 frame=(71.66666666666666, 163.0, 169.0, 58.0) label=保存できませんでした。変更は反映されていません。もう一度試してください。 | type=48 frame=(71.6
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる]' failed (9.841 seconds).
-Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC115_どの状態から読み始めるインテントを動かしても二重に始まらない]' passed (42.770 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC111_購入が返金されると前面復帰時に標準の見た目へ戻る]' passed (8.583 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる]' passed (18.446 seconds).
-	 Executed 3 tests, with 0 failures (0 unexpected) in 69.799 (69.803) seconds
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC5_書誌DBの候補が0件でもそのまま手入力で保存できる]' passed (18.011 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC2_バーコードで最初の1冊を加えると今の本になる]' passed (20.198 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC11_未収録ISBNとCコードから岩波書店と文庫を補完する]' passed (11.660 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC138_本棚の1枚の写真から複数の背表紙を選んで一括で積読に加え1件一致の書誌を補う]' passed (19.536 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC12_カメラ拒否時に設定とスクショと手入力の導線が出る]' passed (12.525 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC4_手入力欄で端末内書誌DBの候補から選んで保存できる]' passed (20.414 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC140_名無しの今の本に後からバーコードで書名と奥付を入れると記録を保って更新される]' passed (21.223 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC92_NDL書誌の著者名から生没年や役割語や2人目以降を除いて整形する]' passed (9.535 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC3_バーコード連続読取で重複と非図書を除きCコードで文庫を補う]' passed (18.983 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC6_機内モードでも端末内書誌DBでバーコード登録が動く]' passed (10.734 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC7_候補を選ばずに前後空白を除いて積読に保存できる]' passed (18.744 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC8_手入力の書名と著者の文字数境界を検証する]' passed (62.690 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC137_表紙写真とスクリーンショットから2タップで書名と著者を選んで登録できる]' passed (38.240 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC9_書誌DB未取得時にその場で書名を入れて追加できる]' passed (13.780 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC10_書誌DBにないISBNをその場で書名入力して追加できる]' passed (13.710 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC139_書名をあとでにして今すぐ読み始められ名無しの本は1冊に制限される]' passed (25.556 seconds).
-	 Executed 16 tests, with 0 failures (0 unexpected) in 335.539 (335.563) seconds
-	 Executed 19 tests, with 0 failures (0 unexpected) in 405.338 (405.368) seconds
-	 Executed 19 tests, with 0 failures (0 unexpected) in 405.338 (405.369) seconds
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC8_手入力の書名と著者の文字数境界を検証する]' passed (62.006 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC10_書誌DBにないISBNをその場で書名入力して追加できる]' passed (13.721 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC12_カメラ拒否時に設定とスクショと手入力の導線が出る]' passed (12.527 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC7_候補を選ばずに前後空白を除いて積読に保存できる]' passed (18.833 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC92_NDL書誌の著者名から生没年や役割語や2人目以降を除いて整形する]' passed (9.561 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC5_書誌DBの候補が0件でもそのまま手入力で保存できる]' passed (17.681 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC6_機内モードでも端末内書誌DBでバーコード登録が動く]' passed (10.767 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC11_未収録ISBNとCコードから岩波書店と文庫を補完する]' passed (11.980 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC2_バーコードで最初の1冊を加えると今の本になる]' passed (20.137 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC9_書誌DB未取得時にその場で書名を入れて追加できる]' passed (13.907 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC138_本棚の1枚の写真から複数の背表紙を選んで一括で積読に加え1件一致の書誌を補う]' passed (19.834 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC4_手入力欄で端末内書誌DBの候補から選んで保存できる]' passed (20.647 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC3_バーコード連続読取で重複と非図書を除きCコードで文庫を補う]' passed (19.265 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC140_名無しの今の本に後からバーコードで書名と奥付を入れると記録を保って更新される]' passed (21.639 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC139_書名をあとでにして今すぐ読み始められ名無しの本は1冊に制限される]' passed (26.776 seconds).
-Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC137_表紙写真とスクリーンショットから2タップで書名と著者を選んで登録できる]' passed (38.723 seconds).
-	 Executed 16 tests, with 0 failures (0 unexpected) in 338.004 (338.022) seconds
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない]' passed (7.198 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC146_読み終えた本の詳細画面にこの本のあとにが最大5冊出てその場で積読に加えられる]' passed (18.539 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC127_読み終えのふりかえり1行に晩数と合計時間と最長の晩が出てカードには載らない]' passed (8.512 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC87_端末内書誌DBからシリーズの次の巻と同じ著者の本を推薦し書誌つきで積読に加える]' passed (17.946 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC85_読み終えのカードの晩数を4時境目のユニーク晩数で数える]' passed (7.307 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC83_受賞一覧から出た未所有の本を積読に加えられる]' passed (15.803 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC79_次の1冊の各候補に事実1行の理由が出る]' passed (8.081 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC128_ふりかえり1行の1晩のみの文言と同点最長晩の新しい日付選択を検証する]' passed (13.561 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC81_積読も未所有の候補もないときは本を加える案内が出る]' passed (7.040 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC80_未所有の候補がないときは積読から最大3冊を出す]' passed (10.399 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない]' passed (8.853 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC148_共起テーブルから文学NDC9かつ10人以上の本だけを人数を出さずに推薦する]' passed (8.045 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC82_次の1冊で積読の本を選ぶと今の本になりウィジェットも更新される]' passed (16.780 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC145_今の本が0冊で積読があるときしおり画面に最大3冊出て1タップで今の本になる]' passed (18.633 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC84_読み終えのカード画像に書名著者晩数分数だけを描き一行を含めない]' passed (8.610 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC78_次の1冊に積読の関連本2冊と未所有の関連本1冊が順に並ぶ]' passed (10.517 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC147_端末内の重み付けでよく選ぶ理由の候補が既定の順より上に繰り上がる]' passed (9.198 seconds).
-Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC77_読み終えたボタンで読了になり奥付5行と奥付撮影ボタンが出る]' passed (9.423 seconds).
-	 Executed 18 tests, with 0 failures (0 unexpected) in 204.444 (204.471) seconds
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC41_表示中の予約LiveActivityが読書中から結果表示へ遷移する]' passed (9.926 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC32_今の本がないときはウィジェットに空の文言が出る]' passed (12.335 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC36_しおり保存で翌晩21時のLiveActivityが1件予約される]' passed (21.320 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC31_一行がないときは書名とページをウィジェットに出す]' passed (12.475 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC34_隠す設定オンでウィジェットとLiveActivityから書名と一行を隠す]' passed (8.752 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC29_26字以上の一行の句読点位置による縮め方を検証する]' passed (44.279 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC40_入口のURLと300秒境界で記録の入口の印が決まる]' passed (76.304 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC130_入口時刻前の読書開始で今夜の予約を取り消し終了時に予約を見直す]' passed (19.826 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC98_読まなかった晩のLiveActivityは翌朝前面復帰で終了し今夜分を予約する]' passed (8.742 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC28_縦書きの字形置換と行頭禁則処理を検証する]' passed (37.056 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC37_LiveActivityオフ時は予約要求を出さず設定に案内を出す]' passed (12.754 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC27_ロック画面ウィジェットに縦書きの一行とページが出る]' passed (6.480 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC39_予約がない晩でもアイコン起動でしおり画面が開き伏せ監視がオンになる]' passed (9.910 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC35_StandBy用の小ウィジェットに縦書きの一行とページが出る]' passed (6.511 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC96_ウィジェットの置き方案内は最初の1回だけ出る]' passed (20.345 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC30_欧文のみの一行は横書き1行で出る]' passed (6.371 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC38_夜の入口の時刻を15分刻みで変えると予約時刻が変わる]' passed (12.634 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない]' passed (7.619 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC33_しおり保存でウィジェットが1回だけ再読み込みされる]' passed (14.463 seconds).
-Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC97_LiveActivity予約失敗時はアラートを出さず次回前面復帰時に予約し直す]' passed (10.735 seconds).
-	 Executed 20 tests, with 0 failures (0 unexpected) in 358.837 (358.864) seconds
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC14_積読や読了の本を今の本に切り替えられる]' passed (18.188 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC20_片方不一致や派生本には受賞を出さない]' passed (13.629 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC18_奥付でデータのない行や不明の文字を出さない]' passed (8.878 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC21_記号や括弧の違いを正規化して受賞を照合する]' passed (12.011 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC15_本の書名と著者を直しても記録が保たれる]' passed (20.154 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC26_記録を消すと件数と合計と晩数が減る]' passed (16.728 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC17_本の画面の奥付5行と出版社レーベル受賞が出る]' passed (11.014 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC16_今の本を消すと記録も消え今の本なしになる]' passed (18.638 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC13_本棚の3区分と積読の新しい順の並びを検証する]' passed (14.833 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC25_記録の分数の入力境界値を検証する]' passed (73.601 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC113_奥付を1枚撮って著者出版社レーベル出版年ISBNを補完し画像を残さない]' passed (17.516 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC22_4時境目の晩の日付とタイムゾーン変更不変を検証する]' passed (20.166 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC19_書名と著者の両方が一致するとき受賞が出る]' passed (7.467 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC24_記録の分数を直すと合計分数が更新される]' passed (17.265 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC112_同梱の受賞一覧データが仕様書の表と全行一致する]' passed (6.405 seconds).
-Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC23_記録がない本の画面に空の案内が出る]' passed (7.301 seconds).
-	 Executed 16 tests, with 0 failures (0 unexpected) in 283.795 (283.812) seconds
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC124_続きを読むインテントはしおり画面を開き始まった読書にintent_openを付ける]' passed (9.660 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC123_隠す設定オンでもどこまで読んだインテントはページを答え書名と一行を出さない]' passed (6.453 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC110_オフラインで商品を読めないときは案内を出し読書は妨げない]' passed (8.901 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC121_どこまで読んだインテントは認証なしでページだけ答え一行と書名を出さない]' passed (6.343 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC104_未購入でも毎晩の道と読み終えた画面に課金案内が出ない]' passed (9.566 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC108_購入の復元で履歴の有無に応じた結果と文言が出る]' passed (14.473 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC134_読書中に続きを読むインテントを動かすと読書中の画面を出す]' passed (9.621 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC144_電子書籍のしおり画面と読書中画面に専用案内が出てLiveActivityから終えられる]' passed (7.483 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC133_どこまで読んだインテントで読込失敗時はエラー文言だけを返し書名やページを出さない]' passed (6.332 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC135_今の本がないときに続きを読むインテントはしおり画面の空状態を出す]' passed (14.555 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC117_今の本がないときに読み始めるインテントはアプリを開いて空状態を見せる]' passed (16.657 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC88_設定画面からプライバシーポリシーのURLを開く]' passed (8.904 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる]' passed (16.244 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC114_読み始めるインテントでアプリを開かず読書とLiveActivityが始まる]' passed (11.624 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC103_登録から読了カード共有まで外部HTTP通信が0件である]' passed (28.624 seconds).
-/Users/takumamatsuura/reading-app/ios/AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift:241: error: -[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる] : XCTAssertEqual failed: ("2") is not equal to ("1") - common.save.error: type=48 frame=(71.66666666666666, 163.0, 169.33333333333331, 58.0) label=Couldn't save. Nothing was changed. Please tr
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる]' failed (9.814 seconds).
-Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC118_LiveActivityオフ時の読み始めるインテントは読書を開始し前面可ならS2を出す]' passed (19.019 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC111_購入が返金されると前面復帰時に標準の見た目へ戻る]' passed (8.470 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC89_画面操作で入れた本と記録としおりと設定が再起動後もすべて残る]' passed (56.827 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC126_AppShortcuts3種とControl1種の登録内容と言い方を検証する]' passed (6.397 seconds).
-/Users/takumamatsuura/reading-app/ios/AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift:241: error: -[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる] : XCTAssertEqual failed: ("2") is not equal to ("1") - common.save.error: type=48 frame=(71.66666666666666, 163.0, 169.33333333333331, 58.0) label=Couldn't save. Nothing was changed. Please
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる]' failed (10.340 seconds).
-Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC106_購入すると見た目を選べてウィジェットと再起動後にも反映される]' passed (15.586 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC107_購入の取りやめとエラー時に未購入と標準の見た目が保たれる]' passed (16.224 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる]' passed (18.986 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC120_隠す設定オンのとき読み始めるインテントのLiveActivityに書名を出さない]' passed (7.511 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC105_鍵つき見た目を押すと見本と購入シートが出て閉じると標準に戻る]' passed (9.533 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる]' passed (20.662 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC93_設定画面にNDLの3条件とCCBYリンクが出てしおり画面と読書中画面には出ない]' passed (11.885 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC131_読み始めるインテントでLiveActivity要求が失敗したらアプリを開いて読書を続ける]' passed (10.280 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC119_読み始めるインテントで保存失敗時はエラーを返しLiveActivityを出さない]' passed (8.762 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC122_どこまで読んだインテントでページや今の本がないときの応答を検証する]' passed (24.686 seconds).
-/Users/takumamatsuura/reading-app/ios/AcceptanceTests/SettingsStoreIntentsAcceptanceTests.swift:241: error: -[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる] : XCTAssertEqual failed: ("2") is not equal to ("1") - common.save.error: type=48 frame=(71.66666666666666, 163.0, 169.33333333333331, 58.0) label=Couldn't save. Nothing was changed. Please try
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる]' failed (11.106 seconds).
-Restarting after unexpected exit, crash, or test timeout; summary will include totals from previous launches.
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC143_電子書籍の位置番号とパーセントに応じてどこまで読んだインテントが答える]' passed (11.747 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC132_LiveActivityの終えるで保存失敗時は読書を消さずS2にエラーを出す]' passed (9.348 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC109_決済不可の端末では購入ボタンを出さず案内を出す]' passed (8.077 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC116_LiveActivityの終えるで動いた時刻で記録し場面に応じて画面を出す]' passed (25.945 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる]' passed (19.238 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC125_オフラインでも外からの3つのインテントとしおり保存がすべて動く]' passed (12.356 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC90_起動時の保存先読込失敗でエラーを出し再起動で元のデータが戻る]' passed (13.690 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC136_4時をまたぎLiveActivityが8時間上限で消えても読書は続き全分数が記録される]' passed (9.295 seconds).
-Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC115_どの状態から読み始めるインテントを動かしても二重に始まらない]' passed (43.566 seconds).
-	 Executed 9 tests, with 0 failures (0 unexpected) in 153.262 (153.278) seconds
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC50_しおり画面に伏せて始める案内の1行が出る]' passed (6.520 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない]' passed (32.999 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC54_読書中も自動ロック無効化と近接センサー監視を使わない]' passed (15.159 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC46_今の本がないときは伏せの監視がオフで始まらない]' passed (14.597 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC57_24時間超は1440分で止めて上限の知らせを出す]' passed (33.583 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC52_バックグラウンドの間も開始時刻からの差で時間を数える]' passed (18.972 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る]' passed (8.626 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC56_59秒は記録せず60秒ちょうどから1分として記録する]' passed (11.436 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC51_伏せる設定オフまたは非対応環境では伏せても始まらない]' passed (21.900 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC42_起動から1タップで確認や入力なしに読み始められる]' passed (8.971 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC58_端末時刻が開始より前に戻ったときは記録せず知らせを出す]' passed (15.527 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC59_読み始めの保存失敗時はidleのままエラーを出す]' passed (15.085 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC45_伏せて1秒未満で起こすと読み始めない]' passed (8.736 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC55_終える1タップで確認なしに500ミリ秒以内にしおり画面が出る]' passed (51.249 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC53_読書中に強制終了しても再起動後に続きから数える]' passed (16.449 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない]' passed (12.714 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC44_しおり画面で伏せて1秒たつと触覚が1回鳴り読み始める]' passed (8.657 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC61_開始と終了の二度押しで記録や画面が重複しない]' passed (9.660 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC43_読書中の画面は押せる要素が終えるの1つだけになる]' passed (10.168 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC60_終わりの保存失敗時は読書中を保ち再試行で合算保存される]' passed (13.730 seconds).
-Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC62_オフラインでもウィジェット起動からしおり保存まで完走する]' passed (19.292 seconds).
-	 Executed 21 tests, with 0 failures (0 unexpected) in 354.030 (354.058) seconds
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (0.086 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (0.061 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (0.056 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' passed (0.054 seconds).
-	 Executed 4 tests, with 0 failures (0 unexpected) in 0.257 (0.260) seconds
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC142_カメラ拒否でもスクリーンショットから一行を選んで保存でき画像を残さない]' passed (18.188 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC73_ページ数だけ入れると一行が空になりウィジェットも書名とページになる]' passed (16.635 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC71_手入力の一行の前後空白を除いて保存する]' passed (16.647 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC63_しおりを挟む画面に5つの道がすべて押せる状態で出る]' passed (11.861 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC141_電子書籍の位置番号とパーセントのしおり保存と境界値を検証する]' passed (94.480 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC72_一行の1字から60字までの境界値を検証する]' passed (42.249 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC66_OCR結果の別の列を選び直して保存できる]' passed (16.677 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC69_撮影したページ画像と未選択列の文字を一切残さない]' passed (21.004 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC67_OCRの誤字を入力欄で手直しして保存できる]' passed (16.136 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC76_結果画面に前回ページからの遷移と分数が出て1タップで閉じる]' passed (21.920 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC75_あとでを選ぶと前のしおりを保ち結果画面に分数だけが出る]' passed (8.629 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC70_しおり撮影でカメラ拒否時にスクショと手入力の導線が出る]' passed (7.499 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC94_OCR待ちの間も1秒以内に手入力やページ入力に移り後から結果が返っても上書きされない]' passed (23.956 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC95_読後のしおり保存失敗時も記録は残り入力値を保ったまま再保存できる]' passed (19.062 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC64_読まずにしおりだけを挟むと記録を増やさず更新される]' passed (17.392 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC68_文字が1行も読み取れないときに撮り直しと手入力が出る]' passed (8.662 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC74_ページ番号の1から9999までの境界値と全角数字を検証する]' passed (63.979 seconds).
-Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC65_ページ写真OCRで一番左の列が初期選択され保存できる]' passed (24.815 seconds).
-	 Executed 18 tests, with 0 failures (0 unexpected) in 449.793 (449.811) seconds
-	 Executed 52 tests, with 0 failures (0 unexpected) in 957.342 (957.409) seconds
-	 Executed 52 tests, with 0 failures (0 unexpected) in 957.342 (957.410) seconds
+✔ Test "縦書きの composition は升目の9項目をすべて書く" passed after 0.003 seconds.
+✔ Test "「あ、」×12＋「あ」は字が落ちない（W-1・W-2 の4つの枠）" with 4 test cases passed after 0.003 seconds.
+✔ Suite "Widget spoken label (AC-99)" passed after 0.007 seconds.
+✔ Suite "Widget の状態と写しの読み方" passed after 0.007 seconds.
+✔ Suite "Contract Models & Entry URL Tests" passed after 0.007 seconds.
+✔ Suite "VerticalLineLayout Tests" passed after 0.007 seconds.
+✔ Suite "WidgetLineComposer（H22 の組み方）" passed after 0.007 seconds.
+✔ Suite RecommendationReasonStringsTests passed after 0.007 seconds.
+✔ Test "Finish reflection text handles 0, 1, and multi-night records with newer-date tie-breaker (AC-85, AC-127..129)" passed after 0.008 seconds.
+✔ Test "NightDateCalculator uses 4:00 AM boundary in the record's timeZoneID (AC-22)" passed after 0.009 seconds.
+✔ Test "ISBNAndCCodeParser validates ISBN-13, rejects non-book barcodes, and derives publisher & label (AC-3, AC-5, AC-11)" passed after 0.009 seconds.
+✔ Suite "AuthorNameFormatter & ISBNAndCCodeParser Tests" passed after 0.010 seconds.
+✔ Test "Bundled awards.json contains all 76 rows in exact order across the 3 awards (AC-112)" passed after 0.008 seconds.
+✔ Test "OCRPipeline processes vertical page columns, colophon, cover 2-tap, and bookshelf spines (AC-65..68, AC-113, AC-137, AC-138)" passed after 0.010 seconds.
+✔ Suite "NightDateCalculator, InputValidator & OCRPipeline Tests" passed after 0.010 seconds.
+✔ Test "Award matching requires both normalized title and normalized author, rejecting volumes and derivatives (AC-18..21)" passed after 0.021 seconds.
+✔ Test "RecommendationEngine scores weights, filters cooccurrence, and generates S-9 / S-7 / S-1 candidates (AC-75..87, AC-145..148)" passed after 0.071 seconds.
+✔ Suite "AwardsCatalog & RecommendationEngine Tests" passed after 0.074 seconds.
+✔ Test run with 37 tests in 9 suites passed after 0.075 seconds.
+
+=== [2] 4 Acceptance Test Classes (68 tests x ja/en, r14/accept.log) ===
+Test Suite 'Selected tests' started at 2026-11-03 14:54:39.197.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 14:54:39.200.
+Test Suite 'ShelfAndBookAcceptanceTests' started at 2026-11-03 14:54:39.200.
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC13_本棚の3区分と積読の新しい順の並びを検証する]' passed (18.372 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC17_本の画面の奥付5行と出版社レーベル受賞が出る]' passed (12.941 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC18_奥付でデータのない行や不明の文字を出さない]' passed (10.345 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC24_記録の分数を直すと合計分数が更新される]' passed (20.846 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC25_記録の分数の入力境界値を検証する]' passed (85.342 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC22_4時境目の晩の日付とタイムゾーン変更不変を検証する]' passed (23.566 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC23_記録がない本の画面に空の案内が出る]' passed (8.820 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC19_書名と著者の両方が一致するとき受賞が出る]' passed (8.929 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC112_同梱の受賞一覧データが仕様書の表と全行一致する]' passed (7.585 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC15_本の書名と著者を直しても記録が保たれる]' passed (22.903 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC26_記録を消すと件数と合計と晩数が減る]' passed (19.656 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC113_奥付を1枚撮って著者出版社レーベル出版年ISBNを補完し画像を残さない]' passed (20.626 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC14_積読や読了の本を今の本に切り替えられる]' passed (21.229 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC16_今の本を消すと記録も消え今の本なしになる]' passed (21.444 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC21_記号や括弧の違いを正規化して受賞を照合する]' passed (13.398 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC20_片方不一致や派生本には受賞を出さない]' passed (15.670 seconds).
+Test Suite 'ShelfAndBookAcceptanceTests' passed at 2026-11-03 15:00:10.895.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 331.672 (331.695) seconds
+Test Suite 'RegistrationAcceptanceTests' started at 2026-11-03 15:00:10.899.
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC7_候補を選ばずに前後空白を除いて積読に保存できる]' passed (21.769 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC92_NDL書誌の著者名から生没年や役割語や2人目以降を除いて整形する]' passed (11.178 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC10_書誌DBにないISBNをその場で書名入力して追加できる]' passed (15.574 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC4_手入力欄で端末内書誌DBの候補から選んで保存できる]' passed (23.606 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC3_バーコード連続読取で重複と非図書を除きCコードで文庫を補う]' passed (21.774 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC11_未収録ISBNとCコードから岩波書店と文庫を補完する]' passed (13.410 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC6_機内モードでも端末内書誌DBでバーコード登録が動く]' passed (12.447 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC5_書誌DBの候補が0件でもそのまま手入力で保存できる]' passed (20.898 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC8_手入力の書名と著者の文字数境界を検証する]' passed (71.425 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC12_カメラ拒否時に設定とスクショと手入力の導線が出る]' passed (14.072 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC2_バーコードで最初の1冊を加えると今の本になる]' passed (23.291 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC139_書名をあとでにして今すぐ読み始められ名無しの本は1冊に制限される]' passed (28.871 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC9_書誌DB未取得時にその場で書名を入れて追加できる]' passed (15.489 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC138_本棚の1枚の写真から複数の背表紙を選んで一括で積読に加え1件一致の書誌を補う]' passed (22.655 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC137_表紙写真とスクリーンショットから2タップで書名と著者を選んで登録できる]' passed (43.898 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC140_名無しの今の本に後からバーコードで書名と奥付を入れると記録を保って更新される]' passed (24.154 seconds).
+Test Suite 'RegistrationAcceptanceTests' passed at 2026-11-03 15:06:35.432.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 384.510 (384.533) seconds
+Test Suite 'BookmarkAcceptanceTests' started at 2026-11-03 15:06:35.433.
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC141_電子書籍の位置番号とパーセントのしおり保存と境界値を検証する]' passed (100.809 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC69_撮影したページ画像と未選択列の文字を一切残さない]' passed (24.999 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC71_手入力の一行の前後空白を除いて保存する]' passed (16.717 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC94_OCR待ちの間も1秒以内に手入力やページ入力に移り後から結果が返っても上書きされない]' passed (24.029 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC66_OCR結果の別の列を選び直して保存できる]' passed (16.705 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC67_OCRの誤字を入力欄で手直しして保存できる]' passed (16.078 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC65_ページ写真OCRで一番左の列が初期選択され保存できる]' passed (24.915 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC73_ページ数だけ入れると一行が空になりウィジェットも書名とページになる]' passed (16.643 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC68_文字が1行も読み取れないときに撮り直しと手入力が出る]' passed (8.658 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC76_結果画面に前回ページからの遷移と分数が出て1タップで閉じる]' passed (22.079 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC70_しおり撮影でカメラ拒否時にスクショと手入力の導線が出る]' passed (7.472 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC64_読まずにしおりだけを挟むと記録を増やさず更新される]' passed (17.239 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC74_ページ番号の1から9999までの境界値と全角数字を検証する]' passed (64.030 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC63_しおりを挟む画面に5つの道がすべて押せる状態で出る]' passed (11.674 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC142_カメラ拒否でもスクリーンショットから一行を選んで保存でき画像を残さない]' passed (18.162 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC75_あとでを選ぶと前のしおりを保ち結果画面に分数だけが出る]' passed (8.555 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC72_一行の1字から60字までの境界値を検証する]' passed (41.680 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC95_読後のしおり保存失敗時も記録は残り入力値を保ったまま再保存できる]' passed (19.038 seconds).
+Test Suite 'BookmarkAcceptanceTests' passed at 2026-11-03 15:14:14.941.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 459.482 (459.508) seconds
+Test Suite 'FinishAndRecommendationAcceptanceTests' started at 2026-11-03 15:14:14.943.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC78_次の1冊に積読の関連本2冊と未所有の関連本1冊が順に並ぶ]' passed (10.702 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない]' passed (8.649 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない]' passed (6.949 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC87_端末内書誌DBからシリーズの次の巻と同じ著者の本を推薦し書誌つきで積読に加える]' passed (17.808 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC128_ふりかえり1行の1晩のみの文言と同点最長晩の新しい日付選択を検証する]' passed (13.472 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC83_受賞一覧から出た未所有の本を積読に加えられる]' passed (15.525 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC80_未所有の候補がないときは積読から最大3冊を出す]' passed (10.319 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC81_積読も未所有の候補もないときは本を加える案内が出る]' passed (6.992 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC146_読み終えた本の詳細画面にこの本のあとにが最大5冊出てその場で積読に加えられる]' passed (18.496 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC127_読み終えのふりかえり1行に晩数と合計時間と最長の晩が出てカードには載らない]' passed (8.602 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC79_次の1冊の各候補に事実1行の理由が出る]' passed (8.165 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC147_端末内の重み付けでよく選ぶ理由の候補が既定の順より上に繰り上がる]' passed (9.207 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC145_今の本が0冊で積読があるときしおり画面に最大3冊出て1タップで今の本になる]' passed (18.343 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC82_次の1冊で積読の本を選ぶと今の本になりウィジェットも更新される]' passed (16.893 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC77_読み終えたボタンで読了になり奥付5行と奥付撮影ボタンが出る]' passed (9.451 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC148_共起テーブルから文学NDC9かつ10人以上の本だけを人数を出さずに推薦する]' passed (8.054 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC84_読み終えのカード画像に書名著者晩数分数だけを描き一行を含めない]' passed (8.498 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC85_読み終えのカードの晩数を4時境目のユニーク晩数で数える]' passed (7.338 seconds).
+Test Suite 'FinishAndRecommendationAcceptanceTests' passed at 2026-11-03 15:17:38.434.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 203.463 (203.491) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 15:17:38.435.
+	 Executed 68 tests, with 0 failures (0 unexpected) in 1379.127 (1379.234) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 15:17:38.436.
+	 Executed 68 tests, with 0 failures (0 unexpected) in 1379.127 (1379.239) seconds
+Test Suite 'Selected tests' started at 2026-11-03 15:17:40.945.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 15:17:40.946.
+Test Suite 'FinishAndRecommendationAcceptanceTests' started at 2026-11-03 15:17:40.947.
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC87_端末内書誌DBからシリーズの次の巻と同じ著者の本を推薦し書誌つきで積読に加える]' passed (17.182 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC79_次の1冊の各候補に事実1行の理由が出る]' passed (8.277 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC127_読み終えのふりかえり1行に晩数と合計時間と最長の晩が出てカードには載らない]' passed (8.725 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC78_次の1冊に積読の関連本2冊と未所有の関連本1冊が順に並ぶ]' passed (10.590 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC148_共起テーブルから文学NDC9かつ10人以上の本だけを人数を出さずに推薦する]' passed (8.209 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない]' passed (6.895 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない]' passed (9.145 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC82_次の1冊で積読の本を選ぶと今の本になりウィジェットも更新される]' passed (16.720 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC81_積読も未所有の候補もないときは本を加える案内が出る]' passed (6.931 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC128_ふりかえり1行の1晩のみの文言と同点最長晩の新しい日付選択を検証する]' passed (13.784 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC84_読み終えのカード画像に書名著者晩数分数だけを描き一行を含めない]' passed (8.451 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC147_端末内の重み付けでよく選ぶ理由の候補が既定の順より上に繰り上がる]' passed (9.248 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC77_読み終えたボタンで読了になり奥付5行と奥付撮影ボタンが出る]' passed (9.540 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC83_受賞一覧から出た未所有の本を積読に加えられる]' passed (15.631 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC145_今の本が0冊で積読があるときしおり画面に最大3冊出て1タップで今の本になる]' passed (18.698 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC80_未所有の候補がないときは積読から最大3冊を出す]' passed (10.397 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC146_読み終えた本の詳細画面にこの本のあとにが最大5冊出てその場で積読に加えられる]' passed (18.791 seconds).
+Test Case '-[ReadingAcceptanceTests.FinishAndRecommendationAcceptanceTests test_AC85_読み終えのカードの晩数を4時境目のユニーク晩数で数える]' passed (7.296 seconds).
+Test Suite 'FinishAndRecommendationAcceptanceTests' passed at 2026-11-03 15:21:05.482.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 204.510 (204.535) seconds
+Test Suite 'RegistrationAcceptanceTests' started at 2026-11-03 15:21:05.483.
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC12_カメラ拒否時に設定とスクショと手入力の導線が出る]' passed (12.729 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC137_表紙写真とスクリーンショットから2タップで書名と著者を選んで登録できる]' passed (38.618 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC8_手入力の書名と著者の文字数境界を検証する]' passed (63.471 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC4_手入力欄で端末内書誌DBの候補から選んで保存できる]' passed (20.785 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC92_NDL書誌の著者名から生没年や役割語や2人目以降を除いて整形する]' passed (9.588 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC5_書誌DBの候補が0件でもそのまま手入力で保存できる]' passed (17.862 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC10_書誌DBにないISBNをその場で書名入力して追加できる]' passed (13.887 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC11_未収録ISBNとCコードから岩波書店と文庫を補完する]' passed (11.737 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC139_書名をあとでにして今すぐ読み始められ名無しの本は1冊に制限される]' passed (25.716 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC9_書誌DB未取得時にその場で書名を入れて追加できる]' passed (14.038 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC138_本棚の1枚の写真から複数の背表紙を選んで一括で積読に加え1件一致の書誌を補う]' passed (19.786 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC2_バーコードで最初の1冊を加えると今の本になる]' passed (20.427 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC140_名無しの今の本に後からバーコードで書名と奥付を入れると記録を保って更新される]' passed (21.537 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC3_バーコード連続読取で重複と非図書を除きCコードで文庫を補う]' passed (19.188 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC6_機内モードでも端末内書誌DBでバーコード登録が動く]' passed (10.820 seconds).
+Test Case '-[ReadingAcceptanceTests.RegistrationAcceptanceTests test_AC7_候補を選ばずに前後空白を除いて積読に保存できる]' passed (18.837 seconds).
+Test Suite 'RegistrationAcceptanceTests' passed at 2026-11-03 15:26:44.532.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 339.027 (339.049) seconds
+Test Suite 'ShelfAndBookAcceptanceTests' started at 2026-11-03 15:26:44.533.
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC26_記録を消すと件数と合計と晩数が減る]' passed (16.827 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC18_奥付でデータのない行や不明の文字を出さない]' passed (8.588 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC14_積読や読了の本を今の本に切り替えられる]' passed (18.265 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC17_本の画面の奥付5行と出版社レーベル受賞が出る]' passed (11.021 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC13_本棚の3区分と積読の新しい順の並びを検証する]' passed (14.920 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC25_記録の分数の入力境界値を検証する]' passed (72.943 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC112_同梱の受賞一覧データが仕様書の表と全行一致する]' passed (6.384 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC16_今の本を消すと記録も消え今の本なしになる]' passed (18.657 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC21_記号や括弧の違いを正規化して受賞を照合する]' passed (11.795 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC19_書名と著者の両方が一致するとき受賞が出る]' passed (7.326 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC15_本の書名と著者を直しても記録が保たれる]' passed (19.576 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC23_記録がない本の画面に空の案内が出る]' passed (7.221 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC24_記録の分数を直すと合計分数が更新される]' passed (17.235 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC113_奥付を1枚撮って著者出版社レーベル出版年ISBNを補完し画像を残さない]' passed (17.552 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC20_片方不一致や派生本には受賞を出さない]' passed (13.708 seconds).
+Test Case '-[ReadingAcceptanceTests.ShelfAndBookAcceptanceTests test_AC22_4時境目の晩の日付とタイムゾーン変更不変を検証する]' passed (20.145 seconds).
+Test Suite 'ShelfAndBookAcceptanceTests' passed at 2026-11-03 15:31:26.719.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 282.165 (282.187) seconds
+Test Suite 'BookmarkAcceptanceTests' started at 2026-11-03 15:31:26.720.
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC71_手入力の一行の前後空白を除いて保存する]' passed (16.678 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC72_一行の1字から60字までの境界値を検証する]' passed (42.202 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC64_読まずにしおりだけを挟むと記録を増やさず更新される]' passed (17.401 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC70_しおり撮影でカメラ拒否時にスクショと手入力の導線が出る]' passed (11.034 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC75_あとでを選ぶと前のしおりを保ち結果画面に分数だけが出る]' passed (8.677 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC74_ページ番号の1から9999までの境界値と全角数字を検証する]' passed (64.201 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC73_ページ数だけ入れると一行が空になりウィジェットも書名とページになる]' passed (16.548 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC65_ページ写真OCRで一番左の列が初期選択され保存できる]' passed (24.822 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC95_読後のしおり保存失敗時も記録は残り入力値を保ったまま再保存できる]' passed (19.131 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC94_OCR待ちの間も1秒以内に手入力やページ入力に移り後から結果が返っても上書きされない]' passed (29.863 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC63_しおりを挟む画面に5つの道がすべて押せる状態で出る]' passed (12.594 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC142_カメラ拒否でもスクリーンショットから一行を選んで保存でき画像を残さない]' passed (18.256 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC68_文字が1行も読み取れないときに撮り直しと手入力が出る]' passed (8.632 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC66_OCR結果の別の列を選び直して保存できる]' passed (16.657 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC69_撮影したページ画像と未選択列の文字を一切残さない]' passed (25.011 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC76_結果画面に前回ページからの遷移と分数が出て1タップで閉じる]' passed (27.153 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC67_OCRの誤字を入力欄で手直しして保存できる]' passed (16.316 seconds).
+Test Case '-[ReadingAcceptanceTests.BookmarkAcceptanceTests test_AC141_電子書籍の位置番号とパーセントのしおり保存と境界値を検証する]' passed (93.961 seconds).
+Test Suite 'BookmarkAcceptanceTests' passed at 2026-11-03 15:39:15.891.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 469.138 (469.170) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 15:39:15.893.
+	 Executed 68 tests, with 0 failures (0 unexpected) in 1294.840 (1294.947) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 15:39:15.896.
+	 Executed 68 tests, with 0 failures (0 unexpected) in 1294.840 (1294.950) seconds
+** TEST SUCCEEDED **
+
+=== [3] Remaining 3 Acceptance Test Classes (82 tests x ja/en, r14/accept2.log + r14/accept2-rs-ja.log) ===
+Test Suite 'Selected tests' started at 2026-11-03 22:23:28.096.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 22:23:28.100.
+Test Suite 'SettingsStoreIntentsAcceptanceTests' started at 2026-11-03 22:23:28.100.
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC88_設定画面からプライバシーポリシーのURLを開く]' passed (28.634 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC115_どの状態から読み始めるインテントを動かしても二重に始まらない]' passed (46.814 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC108_購入の復元で履歴の有無に応じた結果と文言が出る]' passed (19.975 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC120_隠す設定オンのとき読み始めるインテントのLiveActivityに書名を出さない]' passed (21.224 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC118_LiveActivityオフ時の読み始めるインテントは読書を開始し前面可ならS2を出す]' passed (27.114 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC126_AppShortcuts3種とControl1種の登録内容と言い方を検証する]' passed (7.491 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC123_隠す設定オンでもどこまで読んだインテントはページを答え書名と一行を出さない]' passed (6.799 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる]' passed (20.357 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC110_オフラインで商品を読めないときは案内を出し読書は妨げない]' passed (9.164 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC107_購入の取りやめとエラー時に未購入と標準の見た目が保たれる]' passed (16.374 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC104_未購入でも毎晩の道と読み終えた画面に課金案内が出ない]' passed (9.661 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる]' passed (20.906 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC106_購入すると見た目を選べてウィジェットと再起動後にも反映される]' passed (25.029 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC121_どこまで読んだインテントは認証なしでページだけ答え一行と書名を出さない]' passed (29.639 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる]' passed (25.016 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC90_起動時の保存先読込失敗でエラーを出し再起動で元のデータが戻る]' passed (14.392 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC103_登録から読了カード共有まで外部HTTP通信が0件である]' passed (29.273 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC122_どこまで読んだインテントでページや今の本がないときの応答を検証する]' passed (25.724 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC134_読書中に続きを読むインテントを動かすと読書中の画面を出す]' passed (9.582 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC136_4時をまたぎLiveActivityが8時間上限で消えても読書は続き全分数が記録される]' passed (9.395 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる]' passed (18.666 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC144_電子書籍のしおり画面と読書中画面に専用案内が出てLiveActivityから終えられる]' passed (7.291 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC89_画面操作で入れた本と記録としおりと設定が再起動後もすべて残る]' passed (56.139 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる]' passed (19.752 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC114_読み始めるインテントでアプリを開かず読書とLiveActivityが始まる]' passed (11.330 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC143_電子書籍の位置番号とパーセントに応じてどこまで読んだインテントが答える]' passed (12.382 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC116_LiveActivityの終えるで動いた時刻で記録し場面に応じて画面を出す]' passed (25.462 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC119_読み始めるインテントで保存失敗時はエラーを返しLiveActivityを出さない]' passed (8.584 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC131_読み始めるインテントでLiveActivity要求が失敗したらアプリを開いて読書を続ける]' passed (10.251 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC117_今の本がないときに読み始めるインテントはアプリを開いて空状態を見せる]' passed (16.593 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC135_今の本がないときに続きを読むインテントはしおり画面の空状態を出す]' passed (14.367 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC132_LiveActivityの終えるで保存失敗時は読書を消さずS2にエラーを出す]' passed (9.374 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC124_続きを読むインテントはしおり画面を開き始まった読書にintent_openを付ける]' passed (9.617 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる]' passed (20.735 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC109_決済不可の端末では購入ボタンを出さず案内を出す]' passed (8.238 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC105_鍵つき見た目を押すと見本と購入シートが出て閉じると標準に戻る]' passed (22.655 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC93_設定画面にNDLの3条件とCCBYリンクが出てしおり画面と読書中画面には出ない]' passed (34.305 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC133_どこまで読んだインテントで読込失敗時はエラー文言だけを返し書名やページを出さない]' passed (9.543 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC111_購入が返金されると前面復帰時に標準の見た目へ戻る]' passed (8.992 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC125_オフラインでも外からの3つのインテントとしおり保存がすべて動く]' passed (12.898 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる]' passed (17.060 seconds).
+Test Suite 'SettingsStoreIntentsAcceptanceTests' passed at 2026-11-03 22:36:04.975.
+	 Executed 41 tests, with 0 failures (0 unexpected) in 756.796 (756.875) seconds
+Test Suite 'ReadingSessionAcceptanceTests' started at 2026-11-03 22:36:04.978.
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC55_終える1タップで確認なしに500ミリ秒以内にしおり画面が出る]' passed (50.783 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC58_端末時刻が開始より前に戻ったときは記録せず知らせを出す]' passed (15.361 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC61_開始と終了の二度押しで記録や画面が重複しない]' passed (9.607 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC59_読み始めの保存失敗時はidleのままエラーを出す]' passed (16.533 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC44_しおり画面で伏せて1秒たつと触覚が1回鳴り読み始める]' passed (11.403 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC53_読書中に強制終了しても再起動後に続きから数える]' passed (19.197 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC57_24時間超は1440分で止めて上限の知らせを出す]' passed (39.132 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC43_読書中の画面は押せる要素が終えるの1つだけになる]' passed (12.590 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない]' passed (13.814 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC56_59秒は記録せず60秒ちょうどから1分として記録する]' passed (12.958 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC50_しおり画面に伏せて始める案内の1行が出る]' passed (7.917 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC45_伏せて1秒未満で起こすと読み始めない]' passed (14.421 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC60_終わりの保存失敗時は読書中を保ち再試行で合算保存される]' passed (16.800 seconds).
+Test Suite 'Selected tests' started at 2026-11-03 22:41:22.876.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 22:41:22.881.
+Test Suite 'WidgetAndActivityAcceptanceTests' started at 2026-11-03 22:41:22.881.
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC29_26字以上の一行の句読点位置による縮め方を検証する]' passed (50.302 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC32_今の本がないときはウィジェットに空の文言が出る]' passed (14.742 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC35_StandBy用の小ウィジェットに縦書きの一行とページが出る]' passed (7.783 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC30_欧文のみの一行は横書き1行で出る]' passed (7.518 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC40_入口のURLと300秒境界で記録の入口の印が決まる]' passed (92.202 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない]' passed (8.625 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC98_読まなかった晩のLiveActivityは翌朝前面復帰で終了し今夜分を予約する]' passed (11.733 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC33_しおり保存でウィジェットが1回だけ再読み込みされる]' passed (23.374 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC34_隠す設定オンでウィジェットとLiveActivityから書名と一行を隠す]' passed (9.704 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC27_ロック画面ウィジェットに縦書きの一行とページが出る]' passed (7.488 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC28_縦書きの字形置換と行頭禁則処理を検証する]' passed (43.667 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC96_ウィジェットの置き方案内は最初の1回だけ出る]' passed (23.619 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC39_予約がない晩でもアイコン起動でしおり画面が開き伏せ監視がオンになる]' passed (10.981 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC97_LiveActivity予約失敗時はアラートを出さず次回前面復帰時に予約し直す]' passed (12.578 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC41_表示中の予約LiveActivityが読書中から結果表示へ遷移する]' passed (11.242 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC37_LiveActivityオフ時は予約要求を出さず設定に案内を出す]' passed (14.285 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC38_夜の入口の時刻を15分刻みで変えると予約時刻が変わる]' passed (14.177 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC31_一行がないときは書名とページをウィジェットに出す]' passed (15.065 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC36_しおり保存で翌晩21時のLiveActivityが1件予約される]' passed (24.370 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC130_入口時刻前の読書開始で今夜の予約を取り消し終了時に予約を見直す]' passed (26.267 seconds).
+Test Suite 'WidgetAndActivityAcceptanceTests' passed at 2026-11-03 22:48:32.636.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 429.725 (429.755) seconds
+Test Suite 'ReadingSessionAcceptanceTests' started at 2026-11-03 22:48:32.642.
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC52_バックグラウンドの間も開始時刻からの差で時間を数える]' passed (21.783 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る]' passed (9.848 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC51_伏せる設定オフまたは非対応環境では伏せても始まらない]' passed (26.012 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC62_オフラインでもウィジェット起動からしおり保存まで完走する]' passed (22.104 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC54_読書中も自動ロック無効化と近接センサー監視を使わない]' passed (29.432 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC46_今の本がないときは伏せの監視がオフで始まらない]' passed (26.881 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC42_起動から1タップで確認や入力なしに読み始められる]' passed (10.698 seconds).
+Test Suite 'ReadingSessionAcceptanceTests' passed at 2026-11-03 22:50:59.411.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 146.758 (146.770) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 22:50:59.416.
+	 Executed 27 tests, with 0 failures (0 unexpected) in 576.483 (576.535) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 22:50:59.416.
+	 Executed 27 tests, with 0 failures (0 unexpected) in 576.483 (576.540) seconds
+Test Suite 'Selected tests' started at 2026-11-03 22:51:02.571.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 22:51:02.573.
+Test Suite 'WidgetAndActivityAcceptanceTests' started at 2026-11-03 22:51:02.573.
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC40_入口のURLと300秒境界で記録の入口の印が決まる]' passed (92.092 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC34_隠す設定オンでウィジェットとLiveActivityから書名と一行を隠す]' passed (9.788 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC38_夜の入口の時刻を15分刻みで変えると予約時刻が変わる]' passed (14.228 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC29_26字以上の一行の句読点位置による縮め方を検証する]' passed (50.961 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC130_入口時刻前の読書開始で今夜の予約を取り消し終了時に予約を見直す]' passed (22.425 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC32_今の本がないときはウィジェットに空の文言が出る]' passed (14.439 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC30_欧文のみの一行は横書き1行で出る]' passed (7.458 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC37_LiveActivityオフ時は予約要求を出さず設定に案内を出す]' passed (14.576 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC28_縦書きの字形置換と行頭禁則処理を検証する]' passed (44.130 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC98_読まなかった晩のLiveActivityは翌朝前面復帰で終了し今夜分を予約する]' passed (10.444 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC27_ロック画面ウィジェットに縦書きの一行とページが出る]' passed (7.656 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC97_LiveActivity予約失敗時はアラートを出さず次回前面復帰時に予約し直す]' passed (12.645 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC35_StandBy用の小ウィジェットに縦書きの一行とページが出る]' passed (7.768 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC31_一行がないときは書名とページをウィジェットに出す]' passed (14.845 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC39_予約がない晩でもアイコン起動でしおり画面が開き伏せ監視がオンになる]' passed (11.085 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC41_表示中の予約LiveActivityが読書中から結果表示へ遷移する]' passed (11.438 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC96_ウィジェットの置き方案内は最初の1回だけ出る]' passed (23.490 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC33_しおり保存でウィジェットが1回だけ再読み込みされる]' passed (15.972 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない]' passed (8.867 seconds).
+Test Case '-[ReadingAcceptanceTests.WidgetAndActivityAcceptanceTests test_AC36_しおり保存で翌晩21時のLiveActivityが1件予約される]' passed (24.446 seconds).
+Test Suite 'WidgetAndActivityAcceptanceTests' passed at 2026-11-03 22:58:01.354.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 418.752 (418.781) seconds
+Test Suite 'SettingsStoreIntentsAcceptanceTests' started at 2026-11-03 22:58:01.356.
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC126_AppShortcuts3種とControl1種の登録内容と言い方を検証する]' passed (7.523 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC143_電子書籍の位置番号とパーセントに応じてどこまで読んだインテントが答える]' passed (14.793 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC144_電子書籍のしおり画面と読書中画面に専用案内が出てLiveActivityから終えられる]' passed (8.633 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC124_続きを読むインテントはしおり画面を開き始まった読書にintent_openを付ける]' passed (11.023 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC136_4時をまたぎLiveActivityが8時間上限で消えても読書は続き全分数が記録される]' passed (10.608 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC104_未購入でも毎晩の道と読み終えた画面に課金案内が出ない]' passed (11.404 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC105_鍵つき見た目を押すと見本と購入シートが出て閉じると標準に戻る]' passed (10.977 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC114_読み始めるインテントでアプリを開かず読書とLiveActivityが始まる]' passed (12.943 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる]' passed (22.085 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC125_オフラインでも外からの3つのインテントとしおり保存がすべて動く]' passed (13.870 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC89_画面操作で入れた本と記録としおりと設定が再起動後もすべて残る]' passed (61.216 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる]' passed (23.579 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC88_設定画面からプライバシーポリシーのURLを開く]' passed (10.002 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC115_どの状態から読み始めるインテントを動かしても二重に始まらない]' passed (50.098 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる]' passed (22.410 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる]' passed (23.664 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC103_登録から読了カード共有まで外部HTTP通信が0件である]' passed (30.445 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC90_起動時の保存先読込失敗でエラーを出し再起動で元のデータが戻る]' passed (16.158 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC134_読書中に続きを読むインテントを動かすと読書中の画面を出す]' passed (10.650 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC122_どこまで読んだインテントでページや今の本がないときの応答を検証する]' passed (40.384 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC135_今の本がないときに続きを読むインテントはしおり画面の空状態を出す]' passed (29.008 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC106_購入すると見た目を選べてウィジェットと再起動後にも反映される]' passed (19.710 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC120_隠す設定オンのとき読み始めるインテントのLiveActivityに書名を出さない]' passed (8.712 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC109_決済不可の端末では購入ボタンを出さず案内を出す]' passed (9.295 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC116_LiveActivityの終えるで動いた時刻で記録し場面に応じて画面を出す]' passed (29.231 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC107_購入の取りやめとエラー時に未購入と標準の見た目が保たれる]' passed (19.028 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる]' passed (21.520 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC118_LiveActivityオフ時の読み始めるインテントは読書を開始し前面可ならS2を出す]' passed (22.112 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC117_今の本がないときに読み始めるインテントはアプリを開いて空状態を見せる]' passed (18.707 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる]' passed (23.107 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC131_読み始めるインテントでLiveActivity要求が失敗したらアプリを開いて読書を続ける]' passed (11.409 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC119_読み始めるインテントで保存失敗時はエラーを返しLiveActivityを出さない]' passed (9.774 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC108_購入の復元で履歴の有無に応じた結果と文言が出る]' passed (17.053 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC133_どこまで読んだインテントで読込失敗時はエラー文言だけを返し書名やページを出さない]' passed (7.456 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC121_どこまで読んだインテントは認証なしでページだけ答え一行と書名を出さない]' passed (7.461 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC93_設定画面にNDLの3条件とCCBYリンクが出てしおり画面と読書中画面には出ない]' passed (13.270 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC123_隠す設定オンでもどこまで読んだインテントはページを答え書名と一行を出さない]' passed (7.524 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる]' passed (18.323 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC111_購入が返金されると前面復帰時に標準の見た目へ戻る]' passed (10.342 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC132_LiveActivityの終えるで保存失敗時は読書を消さずS2にエラーを出す]' passed (10.805 seconds).
+Test Case '-[ReadingAcceptanceTests.SettingsStoreIntentsAcceptanceTests test_AC110_オフラインで商品を読めないときは案内を出し読書は妨げない]' passed (11.774 seconds).
+Test Suite 'SettingsStoreIntentsAcceptanceTests' passed at 2026-11-03 23:10:19.496.
+	 Executed 41 tests, with 0 failures (0 unexpected) in 738.086 (738.140) seconds
+Test Suite 'ReadingSessionAcceptanceTests' started at 2026-11-03 23:10:19.503.
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC55_終える1タップで確認なしに500ミリ秒以内にしおり画面が出る]' passed (68.592 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る]' passed (9.918 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC58_端末時刻が開始より前に戻ったときは記録せず知らせを出す]' passed (18.092 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC45_伏せて1秒未満で起こすと読み始めない]' passed (9.862 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない]' passed (36.210 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC57_24時間超は1440分で止めて上限の知らせを出す]' passed (38.930 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC43_読書中の画面は押せる要素が終えるの1つだけになる]' passed (11.340 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC62_オフラインでもウィジェット起動からしおり保存まで完走する]' passed (23.526 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC42_起動から1タップで確認や入力なしに読み始められる]' passed (11.357 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC51_伏せる設定オフまたは非対応環境では伏せても始まらない]' passed (36.204 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない]' passed (13.956 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC44_しおり画面で伏せて1秒たつと触覚が1回鳴り読み始める]' passed (9.993 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC56_59秒は記録せず60秒ちょうどから1分として記録する]' passed (13.013 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC53_読書中に強制終了しても再起動後に続きから数える]' passed (18.831 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC46_今の本がないときは伏せの監視がオフで始まらない]' passed (17.548 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC59_読み始めの保存失敗時はidleのままエラーを出す]' passed (18.056 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC60_終わりの保存失敗時は読書中を保ち再試行で合算保存される]' passed (15.590 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC50_しおり画面に伏せて始める案内の1行が出る]' passed (8.319 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC61_開始と終了の二度押しで記録や画面が重複しない]' passed (15.712 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC52_バックグラウンドの間も開始時刻からの差で時間を数える]' passed (36.849 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC54_読書中も自動ロック無効化と近接センサー監視を使わない]' passed (25.883 seconds).
+Test Suite 'ReadingSessionAcceptanceTests' passed at 2026-11-03 23:17:57.328.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 457.779 (457.825) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 23:17:57.329.
+	 Executed 82 tests, with 0 failures (0 unexpected) in 1614.618 (1614.756) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 23:17:57.331.
+	 Executed 82 tests, with 0 failures (0 unexpected) in 1614.618 (1614.759) seconds
 ** TEST FAILED **
-ios-test exit=2
+
+=== [4] ReadingSessionAcceptanceTests (21 tests ja clean run, r14/accept2-rs-ja.log) ===
+Test Suite 'Selected tests' started at 2026-11-03 23:31:56.913.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 23:31:56.917.
+Test Suite 'ReadingSessionAcceptanceTests' started at 2026-11-03 23:31:56.917.
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC51_伏せる設定オフまたは非対応環境では伏せても始まらない]' passed (27.464 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る]' passed (9.945 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC61_開始と終了の二度押しで記録や画面が重複しない]' passed (11.399 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC52_バックグラウンドの間も開始時刻からの差で時間を数える]' passed (21.780 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない]' passed (36.456 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC44_しおり画面で伏せて1秒たつと触覚が1回鳴り読み始める]' passed (9.862 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC56_59秒は記録せず60秒ちょうどから1分として記録する]' passed (12.970 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC53_読書中に強制終了しても再起動後に続きから数える]' passed (18.889 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC45_伏せて1秒未満で起こすと読み始めない]' passed (9.824 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC60_終わりの保存失敗時は読書中を保ち再試行で合算保存される]' passed (15.192 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC55_終える1タップで確認なしに500ミリ秒以内にしおり画面が出る]' passed (58.347 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC54_読書中も自動ロック無効化と近接センサー監視を使わない]' passed (17.816 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC50_しおり画面に伏せて始める案内の1行が出る]' passed (7.473 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC58_端末時刻が開始より前に戻ったときは記録せず知らせを出す]' passed (18.120 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC43_読書中の画面は押せる要素が終えるの1つだけになる]' passed (11.484 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC62_オフラインでもウィジェット起動からしおり保存まで完走する]' passed (22.496 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない]' passed (14.216 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC57_24時間超は1440分で止めて上限の知らせを出す]' passed (39.268 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC59_読み始めの保存失敗時はidleのままエラーを出す]' passed (17.635 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC46_今の本がないときは伏せの監視がオフで始まらない]' passed (17.074 seconds).
+Test Case '-[ReadingAcceptanceTests.ReadingSessionAcceptanceTests test_AC42_起動から1タップで確認や入力なしに読み始められる]' passed (10.217 seconds).
+Test Suite 'ReadingSessionAcceptanceTests' passed at 2026-11-03 23:38:44.873.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 407.927 (407.956) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 23:38:44.879.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 407.927 (407.962) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 23:38:44.880.
+	 Executed 21 tests, with 0 failures (0 unexpected) in 407.927 (407.967) seconds
+** TEST EXECUTE SUCCEEDED **
+EXIT=0

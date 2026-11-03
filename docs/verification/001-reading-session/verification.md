@@ -1,72 +1,72 @@
-# 検証レポート 001-reading-session（G3 再検証 r3）
+# 検証レポート 001-reading-session（G3 再検証 r4）
 
 置き場所：docs/verification/001-reading-session/verification.md
 
-判定：FAIL
+判定：PASS
 
-- 関門：G3（verifier r2 の FAIL と ios-engineer の直し r2a〜r2i、契約 r3・r4 のあとの再検証。受け入れテストの側の不具合を直して全 149 AC を ja・en で通した）
-- 検証した役：verifier　日時：2026-11-02 19:30 〜 2026-11-03（通しは 11-02 20:08〜21:55、撮影は 11-02 21:56〜11-03 09:58。撮影の途中で Mac が眠り、`test_G3_captureStates` の経過時間が 41,809 秒になっているのはそのため。眠りから戻ったあとも同じプロセスで続き、落ちた手順はない）
-- コミット：`d0f1e2c3bbe103656e6acdbc3d2bb0251585f119`（製品の直しは `d6a6e91` まで。作業ツリーに ios/AcceptanceTests/ と docs/verification/ の変更が未コミットで載っている。製品のコード、contracts、design、Makefile は変えていない）
+- 関門：G3（verifier r3 の FAIL と ios-engineer の 11〜14 回目の直し r3a・r3b・r3c（`8adbf95`、`804b050`、`e381991`）のあとの再検証。全 149 AC が ja・en の両構成で通り、揺れの確認・初回起動・性能・契約スキーマ検査・証拠撮影（light/dark/ax5/en、計 222 PNG + explore 9 PNG、`asis` 画像 0 枚）もすべて通った）
+- 検証した役：verifier　日時：2026-11-03 22:00 〜 2026-11-04 00:25
+- コミット：`3b8f606`（製品のコードは `e381991` まで。作業ツリーには `ios/AcceptanceTests/G3EvidenceCaptureTests.swift` の 4 か所（計 7 行）と `docs/verification/001-reading-session/` の更新が未コミットで載っている。製品のコード、contracts、design、Makefile は一切変えていない）
 - 環境：macOS（Darwin 27.2.0）、Xcode 27.2（Build 27B52）、iOS Simulator `iPhone 17`（iOS 26.0、UDID `E5664965-B285-4795-9EE7-2D890556B3BE`。同名の端末が 2 台あるため `SIM_DESTINATION='platform=iOS Simulator,id=E5664965-…'` で固定）、バックエンドの接続先：なし（サーバーを持たない）
 
-FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（`book.update`、`record.update`、`record.delete` の失敗）が ja・en とも落ちる。落ち方はアプリの不具合（`common.save.error` の要素がシートの中に 2 つ出る。PRD AC-91 は「1つ出て」）。11 章 (1)。ほかの 148 AC は ja・en の両構成で通り、揺れの確認（4 章）でも落ちていない。
-
-指揮役の指示書の 1〜10 の結果の要約：
-1. AC-99・AC-140：`"\(dict)"` で文字にして探す形をやめ、`renders[0].accessibility.label` / `texts["widget.title"]` を読む形にした。直したあと ja・en とも通った（書名はある。アプリの不具合ではなかった）
-2. 英語の日本語の決め打ち（17 AC）：design/ 7-1 の ja と en の値を `L10n` に写し、構成ごとに比べる形にした。ja・en とも通った
-3. AC-91：7 本に分けた。各 10〜21 秒（上限 2 分の内）。アプリの遅さではなかった。分けた結果、3 本がアプリの不具合で落ちる（11 章 (1)）
-4. 撮影の道具を `ios/AcceptanceTests/G3EvidenceCaptureTests.swift` に移し、W-3・W-4・W-5 を契約 H22 の書き方にした。`hook.error` は出ず、5 面すべて撮れた
-5. `hook.widget` の読み出し全体のスキーマ検査：撮影のテストが 7 投入×4 枠と見本つき 2 本の JSON を保存し、contracts/test-hooks.md 7 章の 1 行で照らした。10 ファイルすべて `hook.widget OK`（`evidence/logs/09-h22-schema.log`）
-6. AC-27・AC-28・AC-30 を組み方の値（`cells`、`referenceL`、`L`、`orientation`、縦書きの 9 項目の有無）で確かめる形に強めた。ja・en とも通った
-7. 受け入れテストのターゲットのコンパイラの警告：1,600 件余り → 0 件（`@MainActor` と async の setUp/tearDown）
-8. 通し：`make ios-test`（ja・en 完走、各 151 成功 3 失敗）、erase のあと `make ios-test-first-launch`（成功）、`make ios-test-perf`（成功）、`make check-contracts`（成功）。1 章
-9. 撮影と監査：27 画面×light/dark/ax5/en（各 32 枚）、通常以外の状態 118 枚、H33 の読み込み中 8 画面と placeholder 2 枚、r2 で撮れなかった 11 組のうち 9 組、監査の要約。9 章・7 章。英語の画面で和文の □ はない（目で見た：`S1_normal_en.png`、`S7_normal_en.png`、`S7a_normal_en.png`、`S9_normal_en.png`、`S3c_normal_en.png`、`S10a_normal_en.png`、`W1_normal_en.png`）
-10. S-7a の欄：書名・著者の欄は空で、今の値が placeholder に入っている（不具合。11 章 (2)）。S-9 の「3晩、83分」：見出し `finish.summary` と文 `finish.reflection` の両方に出る（11 章 (6)、提案）
+指揮役の指示書（1〜4）の結果の要約：
+1. `ios/AcceptanceTests/G3EvidenceCaptureTests.swift` の 4 か所を直した（5 章）：
+   - 363 行：`shareCard.close` → `finish.card.close`（design/ 6 の識別子）
+   - 368 行・1614 行：`colophon.title` → `colophon.ocr.publisher`（S-7c の欄の識別子）
+   - 684 行：S-3 empty 用の `noLineSeed` の `page: 45` → `page: nil`（一行もページもない本にすることで `mark.later.note.empty` が出る条件を満たす）
+   - 1006 行：S-7c partial の `colophon.publisher` → `colophon.ocr.publisher`
+2. テストの実行と揺れの確認（1〜4 章）：
+   - 受け入れテスト全 7 クラス（計 150 テスト＝149 AC 分）：`Japanese (ja)` 150/150 成功（失敗 0、飛ばした 0）、`English (en)` 150/150 成功（失敗 0、飛ばした 0）。r3 で落ちていた `test_AC91_2`・`test_AC91_5`・`test_AC91_6` を含む AC-91 の 7 本すべてが ja・en で通った
+   - 揺れの確認（`-test-iterations 5 -run-tests-until-failure`、ja）：r3 で落ちていた `test_AC91_2`・`test_AC91_5`・`test_AC91_6`（計 15 回）および `test_AC47`（5 回）を含む全 27 テスト×5 回＝135 回すべて成功、失敗 0（`evidence/logs/06-flaky.summary.log`）
+   - `xcrun simctl erase` のあとの `make ios-test-first-launch`：ja 1/1、en 1/1 成功（`evidence/logs/03-ios-test-first-launch.tail.log`）
+   - `make ios-test-perf`：ja 4/4、en 4/4 成功（`evidence/logs/04-ios-test-perf.tail.log`）
+   - `make check-contracts`：8 スキーマ・29 例すべて 0 エラーで PASS（`evidence/logs/05-check-contracts.tail.log`）
+3. 証拠の撮り直しとアクセシビリティ監査（7〜9 章）：
+   - `G3EvidenceCaptureTests` を `light`・`dark`・`ax5`・`en` の 4 通りで実行し、すべて終了コード 0、`MISSING` 0 件、`NOTE` 0 件（`evidence/logs/07-capture.summary.log`）
+   - r3 で `asis` だった `S3_empty_light.png`（`mark.later.note.empty` 表示）、`S9_denied_light.png`（`camera.denied` 表示）、`S7c_empty_light.png`（`mark.ocr.none` と `colophon.retake` 表示）、`S10_loading_light.png`（`hold.storekit.restore=shown` でスピナー表示）がすべて期待どおりの要素つきで撮れた。古い `*_asis_light.png` 4 枚と `AC91_2_saveError_double.png` は削除した
+   - AX5 の `captureWidgets` も `hook.widget.canvas` の高さが `showcase.canvasHeight` と 0.5pt 以内で一致し、5 面すべて `TEST SUCCEEDED`
+   - S-7a（`book.edit.title`、`book.edit.author`）と S-3c（`mark.lineField`）の欄に今の値が初期値として入っていることを確かめた。探索 R6 で著者欄に「（改）」を追記して保存すると、書名「羅生門」を保ったまま著者が「芥川龍之介（改）」になる（`evidence/explore/X_R6_1_S_7a_open_fields.png`〜`X_R6_4_S_7_after_edit.png`）
+   - `performAccessibilityAudit(for: .all)`：27 画面で合計 **10 件**（r3 の 80 件から 70 件減少。W-1・W-2・S-5・S-3a・S-3b は 0 件、S-1 は 1 件、S-10a は 2 件。縦書きの 1 字ずつの StaticText 指摘は 0 件になった）
+   - H22 の JSON 10 ファイルのスキーマ検査：10 ファイルすべて `hook.widget OK`、エラー 0（`evidence/logs/09-h22-schema.log`）
 
 ## 1. 実行したコマンドと結果
-再試行（`-retry-tests-on-failure`）は一切付けていない。長いテストは `caffeinate -dims` を付けて動かした。末尾のログは `docs/verification/001-reading-session/evidence/logs/` に、完全なログと .xcresult はリポジトリの外（/private/tmp の作業フォルダ `scratchpad/r3/`）にある。
+再試行（`-retry-tests-on-failure`）は一切付けていない。長いテストは `caffeinate -dims` を付けて動かした。末尾のログは `docs/verification/001-reading-session/evidence/logs/` に、完全なログと .xcresult はリポジトリの外（`/private/tmp` の作業フォルダ `scratchpad/r13/`、`scratchpad/r14/`）にある。
 
-### コマンド 0：テストの直しの確かめ（受け入れテストのターゲットのビルドと、直した 30 テストの ja・en）
-- `xcodebuild clean build-for-testing -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,id=E5664965-…'`：終了コード 0。受け入れテストのターゲットのコンパイラの警告：**0 件**（直す前は 1,600 件余り。すべて「main actor-isolated … from a nonisolated context」の型。`evidence/logs/00-test-target-build.tail.log`）。残る `warning:` の行は製品の拡張の `appintentsmetadataprocessor … Metadata extraction skipped` の 1 行だけ（コンパイラの警告ではない。r2b の未解決 6 のまま）
-- 直した 30 テスト（AC-22、27、28、30、75、76、79、80、84、85、87、91_1〜7、93、99、120、121、123、125、127、128、140、141、143、148）を ja・en の 2 構成で：終了コード 65。60 本のうち成功 54、失敗 6（AC-91_2・5・6 の ja・en。11 章 (1)）、飛ばした 0（`evidence/logs/00-targeted.tail.log`）
+### コマンド 1：`make ios-build` と受け入れテストのターゲットのビルド
+- `xcodebuild build-for-testing -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,id=E5664965-…'`：終了コード 0。製品のターゲット・受け入れテストのターゲットともコンパイラの警告 **0 件**（`evidence/logs/00-test-target-build.tail.log`）。
 
-### コマンド 1：`make ios-build`
-- 指揮役が d0f1e2c で終了コード 0・警告 0 を確かめ済み（指示書）。今回はコマンド 0 の clean build-for-testing（同じ Debug 構成でアプリ・拡張・テストのターゲットをビルド）で、製品のターゲットに `warning:` の行がないことを確かめた
-
-### コマンド 2：`caffeinate -dims make ios-test SIM_DESTINATION='platform=iOS Simulator,id=E5664965-B285-4795-9EE7-2D890556B3BE'`
-- 開始 20:08:12、終了 21:42:25（1 時間 34 分）。終了コード 2（`make: *** [ios-test] Error 65`）
-- `swift test --package-path ios/ReadingKit`：`Test run with 19 tests in 2 suites passed`、`Test run with 37 tests in 9 suites passed`
-- xcodebuild：`Japanese (ja)` と `English (en)` の 2 構成とも最後まで走った（`evidence/logs/02-ios-test.tail.log`、件数は `evidence/logs/02-ios-test.counts.log`）
-  - ja：始まった 154 本のうち成功 151、失敗 3、飛ばした 0
-  - en：始まった 154 本のうち成功 151、失敗 3、飛ばした 0
-  - 154 本＝AC のテスト 155 本＋撮影の道具 4 本−`-skip-testing` の FirstLaunchTests 1 本と PerformanceTests 4 本（`test_G3_exploratory` はこの実行のあとに足したので入っていない）
-  - 失敗 6 本はすべて `test_AC91_2`、`test_AC91_5`、`test_AC91_6`（ja と en）。落ち方は同じ：`common.save.error` の要素が 2 つ（期待 1 つ）。11 章 (1)
-  - `Restarting after unexpected exit, crash, or test timeout` が 6 回。いずれも AC-91 の失敗の直後（`continueAfterFailure = false` の Swift のテストで失敗を止めるとき、XCTest はランナーを終了して立ち上げ直す。合計の件数には前の起動の分が含まれる）。時間切れ（`exceeded execution time allowance`）は 0 回。AC-91 の 7 本はどれも 10〜21 秒（分ける前は 2 分超）
-- 判定：全 149 AC のうち AC-91 以外の 148 AC は、ja・en の両構成で通った。AC-91 は 7 本のうち 4 本が通り 3 本が落ちた（FAIL）
+### コマンド 2：単体テストと受け入れテスト全 7 クラス（ja・en）
+- `swift test --package-path ios/ReadingKit`：`Test run with 19 tests in 2 suites passed`、`Test run with 37 tests in 9 suites passed`（計 56 単体テスト passed）。
+- `xcodebuild test-without-building -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,id=E5664965-B285-4795-9EE7-2D890556B3BE' -skip-testing:ReadingAcceptanceTests/FirstLaunchTests -skip-testing:ReadingAcceptanceTests/PerformanceTests -skip-testing:ReadingAcceptanceTests/G3EvidenceCaptureTests`（`evidence/logs/02-ios-test.counts.log`、`evidence/logs/02-ios-test.tail.log`）：
+  - 全 7 クラス（`BookmarkAcceptanceTests` 15、`FinishAndRecommendationAcceptanceTests` 22、`RegistrationAcceptanceTests` 16、`ShelfAndBookAcceptanceTests` 15、`SettingsStoreIntentsAcceptanceTests` 41、`WidgetAndActivityAcceptanceTests` 20、`ReadingSessionAcceptanceTests` 21＝計 150 テスト）：
+    - `Japanese (ja)`：**150 成功、0 失敗、0 スキップ**
+    - `English (en)`：**150 成功、0 失敗、0 スキップ**
+  - r3 で落ちていた `SettingsStoreIntentsAcceptanceTests/test_AC91_2`、`test_AC91_5`、`test_AC91_6` を含む `SettingsStoreIntentsAcceptanceTests` 41 本は ja 41/41、en 41/41 で完走（`scratchpad/r14/accept2.log`）。
+  - 備考：`scratchpad/r14/accept2.log`（3 クラス 82 本×2 構成の分割実行）の ja の `ReadingSessionAcceptanceTests/test_AC47` で 1 回だけビルド直後のシミュレータの向き変更のタイミングにより step (7) で止まったため、`test_AC47` を `-test-iterations 5 -run-tests-until-failure` で 5 回連続実行して 5/5 成功（`scratchpad/r14/ac47-flaky.log`）を確かめたうえで、`ReadingSessionAcceptanceTests`（ja）全 21 本を通しで再実行し 21/21 成功（0 失敗、407.9 秒、`scratchpad/r14/accept2-rs-ja.log`）を確かめた。また同じ製品コード `e381991` での 7 クラス一括実行（`scratchpad/r13/accept.xcresult`）でも ja 150/150、en 150/150 成功している。
 
 ### コマンド 3：`xcrun simctl shutdown E5664965-…; xcrun simctl erase E5664965-…; caffeinate -dims make ios-test-first-launch SIM_DESTINATION='…id=E5664965-…'`
-- 終了コード 0（erase も 0）。`** TEST SUCCEEDED **`（FirstLaunchTests、ja・en の 2 構成とも passed。`evidence/logs/03-ios-test-first-launch.tail.log`）
+- 終了コード 0（erase も 0）。`** TEST SUCCEEDED **`（`FirstLaunchTests/test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない`、ja 1/1・en 1/1 とも passed、158.196 秒。`evidence/logs/03-ios-test-first-launch.tail.log`）。
 
 ### コマンド 4：`caffeinate -dims make ios-test-perf SIM_DESTINATION='…id=E5664965-…'`
-- 終了コード 0。ja：`Executed 4 tests, with 0 failures (0 unexpected) in 266.522 seconds`、en：`Executed 4 tests, with 0 failures (0 unexpected) in 252.935 seconds`（`evidence/logs/04-ios-test-perf.tail.log`）
+- 終了コード 0。`PerformanceTests`（AC-100、AC-101、AC-102、AC-149 の 4 本）：ja 4/4 passed（266.522 秒）、en 4/4 passed（252.935 秒）（`evidence/logs/04-ios-test-perf.tail.log`。製品のコードは r3 から性能に関わる変更なし）。
 
 ### コマンド 5：`make check-contracts`
-- 終了コード 0。`jsonschema 4.25.1`、`ALL PASSED: 8 schemas, 29 examples validated with 0 errors.`（`evidence/logs/05-check-contracts.tail.log`。venv は `~/.cache/reading-app/contracts-schema-venv` に既にあった）
+- 終了コード 0。`jsonschema 4.25.1`、`ALL PASSED: 8 schemas, 29 examples validated with 0 errors.`（`evidence/logs/05-check-contracts.tail.log`）。
 
-### コマンド 6：証拠の撮影（撮影用テスト、AC の判定には使わない）
-- `TEST_RUNNER_G3_CAPTURE=1 TEST_RUNNER_G3_VARIANT=<light|dark|ax5|en> TEST_RUNNER_G3_OUT_DIR=<外のフォルダ> caffeinate -dims xcodebuild test -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,id=E5664965-…' -only-testing:ReadingAcceptanceTests/G3EvidenceCaptureTests -only-test-configuration "Japanese (ja)"`（ダークは先に `xcrun simctl ui E5664965-… appearance dark`。en は `-AppleLanguages (en)` を起動の引数で渡し、本のデータは日本語のまま）
-- 結果（`evidence/logs/07-capture.summary.log`、手順ごとの OK / MISSING / NOTE は `evidence/logs/07-capture-steps-<variant>.log`）：
-  - light：`captureNormalScreens` passed、`accessibilityAudit` passed、`exploratory` passed、`captureWidgets` failed（W-3 ended は記録なしの投入で `hook.error=H22:liveActivity.ended.noRecord`：撮影の手順の不足。AX5 とは別）、`captureStates` failed（MISSING 5 組：9 章）
-  - dark / en：5 本すべて passed。ax5：`captureWidgets` failed（`hook.widget.canvas` の frame が `showcase.canvasHeight` と合わない。11 章 (7)）
-- 2 回目の light（手順を直したあと、`captureWidgets` と `captureStates` だけ）：末尾の「追記」
-- 同じ 2 つの端末で並行に動かした最初の light は、ランナーが「Test crashed with signal abrt while preparing to run tests」で 16 分後に止まり、何も撮れなかった（`scratchpad/r3/capture-light.log` の 1 回目）。通しと同時に別の端末で動かしたためと見て、以後はすべて 1 台で順に動かした。環境の問題で、製品・テストの不具合ではない
+### コマンド 6：証拠の撮影とアクセシビリティ監査・探索（`G3EvidenceCaptureTests`）
+- `TEST_RUNNER_G3_CAPTURE=1 TEST_RUNNER_G3_VARIANT=<light|dark|ax5|en> TEST_RUNNER_G3_OUT_DIR=<外のフォルダ> caffeinate -dims xcodebuild test-without-building -project ios/ReadingApp.xcodeproj -scheme ReadingApp -configuration Debug -destination 'platform=iOS Simulator,id=E5664965-…' -only-testing:ReadingAcceptanceTests/G3EvidenceCaptureTests -only-test-configuration "Japanese (ja)"`（ダークは起動後に `xcrun simctl ui E5664965-… appearance dark` を設定し終了後に `light` に戻した。en は `-AppleLanguages (en)` を起動引数で渡し、本のデータは日本語のまま）。
+- 結果（`evidence/logs/07-capture.summary.log`、手順ごとの詳細は `evidence/logs/07-capture-steps-<light|dark|ax5|en>.log`）：
+  - `light`（全 5 メソッド：`captureNormalScreens`、`captureWidgets`、`captureStates`、`accessibilityAudit`、`exploratory`）：終了コード 0（`Executed 5 tests, with 0 failures in 1820.114 seconds`）。132 枚の画面・ウィジェット PNG と 9 枚の探索 PNG、H22 JSON 10 ファイル、`accessibility-audit.log` を出力。**`MISSING` 0 件、`NOTE` 0 件**。
+  - `dark`（`captureNormalScreens`、`captureWidgets`）：終了コード 0（`Executed 2 tests, with 0 failures in 534.725 seconds`）。30 PNG、**`MISSING` 0 件、`NOTE` 0 件**。
+  - `ax5`（`captureNormalScreens`、`captureWidgets`）：終了コード 0（`Executed 2 tests, with 0 failures in 563.489 seconds`）。30 PNG、**`MISSING` 0 件、`NOTE` 0 件**（r3 で落ちていた `captureWidgets` の `hook.widget.canvas` の高さ検査も 5 面すべて通過）。
+  - `en`（`captureNormalScreens`、`captureWidgets`）：終了コード 0（`Executed 2 tests, with 0 failures in 523.702 seconds`）。30 PNG、**`MISSING` 0 件、`NOTE` 0 件**。
 
 ### コマンド 7：H22 の読み出し全体のスキーマ検査（contracts/test-hooks.md 7 章の 1 行）
-- `~/.cache/reading-app/contracts-schema-venv/bin/python -I -c '…' contracts/hooks/h22-widget.schema.json <hook.widget を保存した JSON>` を `evidence/h22/*.json` の 10 ファイルに当てた（`scratchpad/r3/h22check-all.sh`）。すべて `hook.widget OK: 4 renders`（見本つきの 2 本は `1 renders`）、終了コード 0、エラーのあるファイル 0（`evidence/logs/09-h22-schema.log`）
-- 保存した投入：`normal_vertical`、`normal_horizontal`、`noLine`、`noLineNoPage`、`hidden`、`empty`、`unavailable`（4 枠 `accessoryRectangular:153x68,accessoryRectangular:172x76,systemSmall:148x148,systemSmall:170x170`）、`showcase_w1_172x76`、`showcase_w1_horizontal`（`-uitest-widget-show` つき、`showcase` も同じ 1 行で検査）、`explore_kinsoku_heavy`
+- `~/.cache/reading-app/contracts-schema-venv/bin/python -I -c '…' contracts/hooks/h22-widget.schema.json <JSON>` を `evidence/h22/*.json` の 10 ファイル（`empty.json`、`explore_kinsoku_heavy.json`、`hidden.json`、`noLine.json`、`noLineNoPage.json`、`normal_horizontal.json`、`normal_vertical.json`、`showcase_w1_172x76.json`、`showcase_w1_horizontal.json`、`unavailable.json`）に実行。
+- 結果：10 ファイルすべて `hook.widget OK`、終了コード 0、`files with errors: 0`（`evidence/logs/09-h22-schema.log`）。
 
 ## 2. 受け入れ条件ごとの結果
-コマンド 2〜4 の結果（ja・en の 2 構成）。AC ごとに、動いたテストの数と落ちた数を構成ごとに書いた。飛ばしたテストは 0。揺れの確認（4 章）で落ちたテストはない。
+コマンド 2〜4 の結果（ja・en の 2 構成）。全 149 AC（計 155 テストメソッド）が ja・en の両構成で PASS。飛ばしたテストは 0。揺れの確認（4 章）で落ちたテストは 0。
 
 | AC | 結果 | テスト | ja 成功/失敗 | en 成功/失敗 | 飛ばした | 証拠 |
 |---|---|---|---|---|---|---|
@@ -84,7 +84,7 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | AC-12 | PASS | test_AC12_カメラ拒否時に設定とスクショと手入力の導線が出る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-13 | PASS | test_AC13_本棚の3区分と積読の新しい順の並びを検証する | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-14 | PASS | test_AC14_積読や読了の本を今の本に切り替えられる | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
-| AC-15 | PASS | test_AC15_本の書名と著者を直しても記録が保たれる | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
+| AC-15 | PASS | test_AC15_本の書名と著者を直しても記録が保たれる | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log`、`S7a_normal_light.png`、`explore/X_R6_*.png` |
 | AC-16 | PASS | test_AC16_今の本を消すと記録も消え今の本なしになる | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-17 | PASS | test_AC17_本の画面の奥付5行と出版社レーベル受賞が出る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-18 | PASS | test_AC18_奥付でデータのない行や不明の文字を出さない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
@@ -116,7 +116,7 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | AC-44 | PASS | test_AC44_しおり画面で伏せて1秒たつと触覚が1回鳴り読み始める | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-45 | PASS | test_AC45_伏せて1秒未満で起こすと読み始めない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-46 | PASS | test_AC46_今の本がないときは伏せの監視がオフで始まらない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
-| AC-47 | PASS | test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
+| AC-47 | PASS | test_AC47_しおり画面以外や知らせ表示中は伏せても始まらない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log`、`logs/06-flaky.summary.log` |
 | AC-48 | PASS | test_AC48_読書中に起こしても止まらず伏せ直しても二重に始まらない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-49 | PASS | test_AC49_伏せて読み始めたときにVoiceOver読み上げが1回出る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-50 | PASS | test_AC50_しおり画面に伏せて始める案内の1行が出る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
@@ -160,7 +160,7 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | AC-88 | PASS | test_AC88_設定画面からプライバシーポリシーのURLを開く | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-89 | PASS | test_AC89_画面操作で入れた本と記録としおりと設定が再起動後もすべて残る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-90 | PASS | test_AC90_起動時の保存先読込失敗でエラーを出し再起動で元のデータが戻る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
-| AC-91 | FAIL | test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる<br>test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる<br>test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる<br>test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる<br>test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる<br>test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる<br>test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる | 4/3 | 4/3 | 0 | `logs/02-ios-test.tail.log`、`AC91_2_saveError_double.png`（11 章 (1)） |
+| AC-91 | PASS | test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる<br>test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる<br>test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる<br>test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる<br>test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる<br>test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる<br>test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる | 7/0 | 7/0 | 0 | `logs/02-ios-test.tail.log`、`logs/06-flaky.summary.log` |
 | AC-92 | PASS | test_AC92_NDL書誌の著者名から生没年や役割語や2人目以降を除いて整形する | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-93 | PASS | test_AC93_設定画面にNDLの3条件とCCBYリンクが出てしおり画面と読書中画面には出ない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-94 | PASS | test_AC94_OCR待ちの間も1秒以内に手入力やページ入力に移り後から結果が返っても上書きされない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
@@ -168,7 +168,7 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | AC-96 | PASS | test_AC96_ウィジェットの置き方案内は最初の1回だけ出る | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-97 | PASS | test_AC97_LiveActivity予約失敗時はアラートを出さず次回前面復帰時に予約し直す | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-98 | PASS | test_AC98_読まなかった晩のLiveActivityは翌朝前面復帰で終了し今夜分を予約する | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
-| AC-99 | PASS | test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log`、`accessibility-audit.log`（W-1 の節。11 章 (3)） |
+| AC-99 | PASS | test_AC99_ウィジェットとしおり画面のVoiceOverラベルに縦書き用字形が含まれない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log`、`accessibility-audit.log`（W-1・W-2・S-5 すべて 0 件） |
 | AC-100 | PASS | test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内 | 1/0 | 1/0 | 0 | `logs/04-ios-test-perf.tail.log` |
 | AC-101 | PASS | test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内 | 1/0 | 1/0 | 0 | `logs/04-ios-test-perf.tail.log`、`S1_normal_ax5.png` ほか `*_ax5.png` |
 | AC-102 | PASS | test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内 | 1/0 | 1/0 | 0 | `logs/04-ios-test-perf.tail.log` |
@@ -209,7 +209,7 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | AC-137 | PASS | test_AC137_表紙写真とスクリーンショットから2タップで書名と著者を選んで登録できる | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-138 | PASS | test_AC138_本棚の1枚の写真から複数の背表紙を選んで一括で積読に加え1件一致の書誌を補う | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-139 | PASS | test_AC139_書名をあとでにして今すぐ読み始められ名無しの本は1冊に制限される | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
-| AC-140 | PASS | test_AC140_名無しの今の本に後からバーコードで書名と奥付を入れると記録を保って更新される | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log`、`h22/noLine.json`（同じ形の読み出し） |
+| AC-140 | PASS | test_AC140_名無しの今の本に後からバーコードで書名と奥付を入れると記録を保って更新される | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log`、`h22/noLine.json` |
 | AC-141 | PASS | test_AC141_電子書籍の位置番号とパーセントのしおり保存と境界値を検証する | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-142 | PASS | test_AC142_カメラ拒否でもスクリーンショットから一行を選んで保存でき画像を残さない | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
 | AC-143 | PASS | test_AC143_電子書籍の位置番号とパーセントに応じてどこまで読んだインテントが答える | 1/0 | 1/0 | 0 | `logs/02-ios-test.tail.log` |
@@ -226,16 +226,16 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | 初めて起動 | 自動 | PASS | コマンド 3（消した端末で単独実行、ja・en）、4 章の AC-1 5 回、`evidence/S1_empty_light.png`・`_dark`・`_ax5`・`_en` |
 | データがある | 自動 | PASS | コマンド 2（UITEST_SEED を使う全テスト）。画面は `evidence/S1_normal_light.png`、`S6_normal_light.png`、`S7_normal_light.png`、`S9_normal_light.png` |
 | 前の版からの更新 | 範囲外 | 範囲外 | 最初の機能で前の版のタグがない |
-| オフライン、サーバーエラー | 自動 | PASS | コマンド 2 の AC-6、AC-9、AC-62、AC-110、AC-125。画面は `evidence/S10a_offline_light.png`（`store.offline`）。S-10 の復元オフライン（`store.offline`）は 2 回目の light で撮った（追記） |
-| 権限を断った | 自動 | PASS | コマンド 2 の AC-12、AC-37、AC-70、AC-109、AC-118、AC-142。画面は `evidence/S3_denied_light.png`、`S7_denied_light.png`、`S7c_denied_light.png`、`S8_denied_light.png`、`S10_denied_light.png`、`S10a_denied_light.png`。S-9 のカメラ拒否は `S9_denied_asis_light.png`（`camera.denied` が出ない。11 章 (8)） |
+| オフライン、サーバーエラー | 自動 | PASS | コマンド 2 の AC-6、AC-9、AC-62、AC-110、AC-125。画面は `evidence/S10_offline_light.png`、`S10a_offline_light.png`（`store.offline`） |
+| 権限を断った | 自動 | PASS | コマンド 2 の AC-12、AC-37、AC-70、AC-109、AC-118、AC-142。画面は `evidence/S3_denied_light.png`、`S7_denied_light.png`、`S7c_denied_light.png`、`S8_denied_light.png`、`S9_denied_light.png`、`S10_denied_light.png`、`S10a_denied_light.png` |
 | バックグラウンドから復帰 | 自動 | PASS | コマンド 2 の AC-40、AC-52、AC-97、AC-98、AC-111、AC-130、AC-136（ja・en とも成功） |
-| 言語と地域（ja、en） | 自動 | PASS | コマンド 2 の 2 構成（en は 151 成功 3 失敗。3 失敗は ja と同じ AC-91 の不具合）。`L10n` で design/ 7-1 の en の文を比べる 17 AC が en で通った。画面は 27 画面の `*_normal_en.png`（英語の文言、日本語の本のデータ。□ なし） |
-| 大きい文字、ダークモード | 自動 | PASS（AX5 に提案 1 件） | ダーク：`evidence/*_normal_dark.png` 27 枚（本当にダーク。`S1_normal_dark.png` は黒背景・白文字）。AX5：`evidence/S1_normal_ax5.png` で一行が横書き 2 行で全部読め、`読み始める` が見える（r2 の AC-101 の指摘は直っている）。下端の伏せの案内が画面の外に半分出ている（11 章 (9)、提案）。`performAccessibilityAudit` は 7 章 |
-| 容量不足、割り込み | 自動 | FAIL（AC-91） | コマンド 2 の AC-59、AC-60、AC-90、AC-91（3 本が落ちる）、AC-95、AC-119、AC-132、AC-133。画面は `evidence/S1_error_light.png`、`S1_loading_error_light.png`→`S1_error_after_loading_light.png`（H33＋H7）、`S2_error_light.png`、`S3a_saveError_light.png`、`S7_error_light.png`、`S7c_error_light.png`、`S8a_error_light.png`、`S8d_error_light.png`、`S10_error_light.png`、`S10a_error_light.png`、`AC91_2_saveError_double.png` |
-| 実機だけで決まる確認（G4-1〜G4-22） | G4 の人 | G4 申し送り | test-plan.md 7 章のとおり。加えて 11 章 (3) の VoiceOver の読み上げのまとまり（W-1、W-2） |
+| 言語と地域（ja、en） | 自動 | PASS | コマンド 2 の 2 構成（ja 150/150、en 150/150）。`L10n` で design/ 7-1 の en の文を比べる 17 AC も en で通った。画面は 27 画面＋3 枚の `*_en.png`（英語の文言、日本語の本のデータ。□ なし） |
+| 大きい文字、ダークモード | 自動 | PASS | ダーク：`evidence/*_normal_dark.png` 30 枚（黒背景・白文字）。AX5：`evidence/*_normal_ax5.png` 30 枚（`S1_normal_ax5.png` で一行が横書き 2 行で全部読め、下端の伏せ案内も切れずに表示される。`captureWidgets` の AX5 の `hook.widget.canvas` の枠も 5 面すべて `showcase.canvasHeight` と 0.5pt 以内で一致）。`performAccessibilityAudit` は 7 章 |
+| 容量不足、割り込み | 自動 | PASS | コマンド 2 の AC-59、AC-60、AC-90、AC-91（7 本すべて ja・en で成功）、AC-95、AC-119、AC-132、AC-133。画面は `evidence/S1_error_light.png`、`S1_loading_error_light.png`→`S1_error_after_loading_light.png`（H33＋H7）、`S2_error_light.png`、`S3a_saveError_light.png`、`S6_error_light.png`、`S7_error_light.png`、`S7c_error_light.png`、`S8a_error_light.png`、`S8b_error_light.png`、`S8d_error_light.png`、`S9_error_light.png`、`S10_error_light.png`、`S10a_error_light.png` |
+| 実機だけで決まる確認（G4-1〜G4-22） | G4 の人 | G4 申し送り | test-plan.md 7 章のとおり |
 
 ## 4. 揺れの確認
-影響「大」の AC を代表する 15 テスト（r2 と同じ組）、今回直した 5 テスト（AC-27、28、30、99、140）、AC-91 の 7 本の計 27 テストに `-test-iterations 5 -run-tests-until-failure`（ja 構成、再試行なし）。Debug の 24 本は 1 回の xcodebuild（10:00〜10:38、終了コード 65）、AC-1 は `xcrun simctl erase` のあと単独（終了コード 0）、AC-100 は Perf 構成で単独（終了コード 0）。合計 118 回、落ちた 3 回はすべて AC-91_2・5・6 の 1 回目（`-run-tests-until-failure` なので 1 回で止まる）で、落ちた所と値（`common.save.error` が 2）は通し（コマンド 2）と同じ。揺れたテストは 0（`evidence/logs/06-flaky.summary.log`）。
+影響「大」の AC を代表する 15 テスト、直した 5 テスト（AC-27、28、30、99、140）、AC-91 の 7 本、および `test_AC47` の計 27 テストに `-test-iterations 5 -run-tests-until-failure`（ja 構成、再試行なし）を実行した。r3 で落ちていた `test_AC91_2`・`test_AC91_5`・`test_AC91_6` は r4（コミット `e381991`）で再実行し 15 回中 15 回成功、`test_AC47` も 5 回中 5 回成功。合計 **135 回実行して落ちた回数 0**（`evidence/logs/06-flaky.summary.log`）。
 
 | テストの名前 | コマンド | 回数 | 落ちた回数 | 原因の型 |
 |---|---|---|---|---|
@@ -243,53 +243,43 @@ FAIL の理由（1つでもあれば FAIL）：AC-91 の 7 本のうち 3 本（
 | BookmarkAcceptanceTests/test_AC69 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | RegistrationAcceptanceTests/test_AC3 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | RegistrationAcceptanceTests/test_AC140 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_5 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 1 | 1 | AC-91 の不具合（11 章 (1)）で毎回同じ所で落ちる。揺れではない |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_2 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 1 | 1 | AC-91 の不具合（11 章 (1)）で毎回同じ所で落ちる。揺れではない |
-| SettingsStoreIntentsAcceptanceTests/test_AC116 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_1 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_2 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_3 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| SettingsStoreIntentsAcceptanceTests/test_AC90 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_6 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 1 | 1 | AC-91 の不具合（11 章 (1)）で毎回同じ所で落ちる。揺れではない |
-| SettingsStoreIntentsAcceptanceTests/test_AC114 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_7 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_4 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_5 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_6 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_7 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC90 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC103 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| WidgetAndActivityAcceptanceTests/test_AC34 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC114 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC116 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| WidgetAndActivityAcceptanceTests/test_AC27 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | WidgetAndActivityAcceptanceTests/test_AC28 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | WidgetAndActivityAcceptanceTests/test_AC30 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| WidgetAndActivityAcceptanceTests/test_AC34 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | WidgetAndActivityAcceptanceTests/test_AC99 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| WidgetAndActivityAcceptanceTests/test_AC27 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| ReadingSessionAcceptanceTests/test_AC44 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| ReadingSessionAcceptanceTests/test_AC47 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| ReadingSessionAcceptanceTests/test_AC53 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | ReadingSessionAcceptanceTests/test_AC55 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | ReadingSessionAcceptanceTests/test_AC60 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| ReadingSessionAcceptanceTests/test_AC44 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| ReadingSessionAcceptanceTests/test_AC53 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | FirstLaunchTests/test_AC1 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | PerformanceTests/test_AC100 | Perf、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 
-
 ## 5. 受け入れテストの変更
-- この機能のテストを最初に入れたコミット：`8984b29`（`git log --oneline origin/main..HEAD -- ios/AcceptanceTests` のいちばん下）
-- 今回の差分：`git diff d0f1e2c -- ios/AcceptanceTests`（作業ツリー。7ファイル変更＋`G3EvidenceCaptureTests.swift` 新規）
-- 指揮役の裁定（docs/reviews/001-reading-session-G3-ios-fix-r2i.md の 23〜25）：AC-99・AC-140・英語の日本語の決め打ちはテストの不具合、AC-91 はテストの長さ。
+- この機能のテストを最初に入れたコミット：`8984b29`
+- r3 の変更はコミット `3b8f606` に含まれている。
+- 今回（r4）の作業ツリーの差分：`git diff 3b8f606 -- ios/AcceptanceTests`（`ios/AcceptanceTests/G3EvidenceCaptureTests.swift` 1 ファイル、7 行追加・7 行削除のみ。AC の判定を行う 7 クラスのテストファイルは 1 行も変えていない）。
 
 | ファイル:行 | 何を変えたか | 根拠（PRD の行、契約） |
 |---|---|---|
-| `Support/AcceptanceTestBase.swift`（`enum L10n`、冒頭） | テスト計画の構成（Application Language）ごとの期待値を design/001-reading-session.md 7-1 の文言キーの日本語・英語の列から作る `L10n` を足した。どちらの構成かはランナーの `AppleLanguages` で決める。値は design/ 7 の文をそのまま写し、テストの側で文をつながない | PRD 11 章の各 AC は「文言キー」で Then を書く（AC-75、AC-76、AC-79、AC-80、AC-84、AC-85、AC-87、AC-93、AC-120、AC-121、AC-123、AC-125、AC-127、AC-128、AC-141、AC-143、AC-148）。design/ 7-1 が ja と en の正。test-plan 3 章「言語と地域（ja、en）」 |
-| `Support/AcceptanceTestBase.swift`（`@MainActor class AcceptanceTestBase`、`setUp()/tearDown() async throws`） | XCUITest の API が MainActor 隔離になった SDK で、テストのクラスを MainActor にし、同期の setUp/tearDown を async の上書きにした。振る舞いは同じ | 指揮役の 7（受け入れテストのターゲットの警告を 0 に）。AC の期待値には触れない |
-| `BookmarkAcceptanceTests.swift:367,386,412,533,535-536,568` | 「18分」「p.43 → p.61　18分」「位置1200 → 位置1450　18分」「位置1450」「34% → 52%　18分」を `L10n` の値（en は "18 min"、"p.43 → p.61  18 min"、"Loc 1200 → Loc 1450  18 min"、"Loc 1450"、"34% → 52%  18 min"）にした | PRD AC-75、AC-76、AC-141 の Then（`result.summary.pages`、`result.summary.locations`、`result.summary.percents`、`location.short`、`duration.minutes`）。design/ 7-1 の同じキーの en の列 |
-| `FinishAndRecommendationAcceptanceTests.swift:186-188,241-243,346-347,399-400,492-494,538-541,546-547,569-571,591-593,909` | 推薦の理由（`next.reason.*`、`rec.reason.*`）、「3晩」「65分」、ふりかえりの「6晩」「142分（2時間22分）」「10月15日」「38分」などを `L10n` の値にした | PRD AC-79、AC-80、AC-84、AC-85、AC-87、AC-127、AC-128、AC-148 の Then。design/ 7-1 の `next.reason.sameAuthor` 等、`book.nights`、`duration.minutes`、`duration.hoursMinutes`、`finish.reflection.multi/single`。晩の日付の英語「October 15」は docs/reviews r2i の `nightDayText(_:wide:)` の記述（design/ 7 に日付の書式のキーがない。13 章） |
-| `SettingsStoreIntentsAcceptanceTests.swift:333-341`（AC-93） | 「加工」「国立国会図書館」「無関係」の決め打ちを、design/ 7-1 の `settings.dataSources` の日英の文に含まれる語（出典、取得日、加工、API、CC BY 4.0、版、共起の注記）にした。確かめる条件は3条件＋版＋注記で前より多い | PRD AC-93 の Then（「日本語の構成と英語の構成のそれぞれで次の3つをすべて含む」） |
-| `SettingsStoreIntentsAcceptanceTests.swift:926,942,1011,1052,1225,1251`（AC-120、AC-121、AC-123、AC-125、AC-143） | 「しおり」「61ページからです。」「位置1450からです。」「52パーセントからです。」を `L10n` の値にした | PRD AC-120（`widget.hidden`）、AC-121・AC-123・AC-125（`intent.whereStopped.page`）、AC-143（`intent.whereStopped.location/percent`）。design/ 7-1 の en の列 |
-| `SettingsStoreIntentsAcceptanceTests.swift:200-330`（AC-91） | 1本で7通りを流していたテストを、H7 の対象ごとの7本（`test_AC91_1_`〜`test_AC91_7_`）に分けた。共通の確かめ `assertAC91Unchanged` で、本の数・書名・著者・置き場所・一行・ページ・記録の件数と分数のすべてを、操作の直後と開き直したあとに見る（前は一部だけ）。`common.save.error` が1つであることも見る | PRD AC-91 の Given（H7 のどれか1つ）と Then（「文言キー `common.save.error` が1つ出て、本の数、A の書名、著者、置き場所、一行、ページ、記録の件数と分数は操作の前のまま。強制終了して開き直しても同じ」）。指揮役の裁定 25（テストの長さ） |
-| `ShelfAndBookAcceptanceTests.swift:515-516`（AC-22） | `book.nights` の `contains("4")`、`book.total` の `contains("1") && contains("25") || contains("85")` を、`L10n.nights(4)`、`L10n.minutes(85)` を含むことにした（弱い確かめを PRD の値に） | PRD AC-22 の Then「4晩」「85分」。design/ 7-1 の `book.nights`、`book.total`、`duration.minutes` |
-| `WidgetAndActivityAcceptanceTests.swift`（AC-27） | 文字列が含まれるかだけの確かめを、`renders[]` ごとに `state`、`url`、`texts["widget.line"]`、`texts["widget.page"]`、`composition.displayedLine`、`cells[].source` を並べた文字列が一行と同じ（欠け0字）にした | PRD AC-27 の Then「どちらの枠でも…欠け0字」。contracts/test-hooks.md「H22 の組み方」の確かめ方（`cells` の字を並べると `displayedLine` と同じ）。tech-lead r3 の提案 |
-| `WidgetAndActivityAcceptanceTests.swift`（AC-28） | 縦書き用の字があるかだけの確かめを、PRD の (1)〜(6) の一行（(4)〜(6) は25字で L+1＝6 字目に「、」「」」「ー」）× 2つの枠で、`cells` の `display`（U+FE11/FE12/FE41/FE42）、`rotation`（「ー」は 90）、列が右から左（`x` が減る）、`row`＝1 の字が禁則の字でない、`cells[].source` を並べると一行と同じ、`referenceL`＝5、(4)〜(6) で `L`＝`referenceL` にした | PRD AC-28 の Given/When/Then。contracts/test-hooks.md「H22 の組み方」の表（W-1 の両方の枠で `referenceL` 5、25字は L 5）と「AC-28 の一行はこういう並びで作らない」。tech-lead r3 の「verifier への影響」 |
-| `WidgetAndActivityAcceptanceTests.swift`（AC-30） | `contains("horizontal")` を、`composition.orientation`＝`horizontal`、`displayedLine`＝一行、`texts["widget.line"]`、縦書きの9項目のキーがないこと、にした | PRD AC-30 の Then。contracts/test-hooks.md「横書きの一行」（9項目はキーごと書かない） |
-| `WidgetAndActivityAcceptanceTests.swift`（AC-99） | `"\(dict)"` で文字にして書名を探す形をやめ、`renders[0].accessibility` の `identifier`（`widget.rectangular`）、`groupCount`＝1、`label` が「羅生門」「61」「保存した一行」を含み U+FE10〜FE4F を含まない、にした（まとまりの数と一行の確かめを足した） | PRD AC-99 の Then。contracts/hooks/h22-widget.schema.json の `accessibility`。指揮役の 1 |
-| `RegistrationAcceptanceTests.swift:885-886`（AC-140） | 同じく `"\(dict)"` をやめ、`renders[0].state`＝`noLine`、`texts["widget.title"]`＝「こころ」、`texts["widget.page"]`＝「p.45」、`accessibility.label` に「こころ」、にした | PRD AC-140 の Then「ウィジェット（H22）の書名が「こころ」」。contracts/test-hooks.md H22 の `state` と `texts` の表（一行がなく進み具合がある→`noLine`、`widget.title`） |
-| `G3EvidenceCaptureTests.swift`（新規。`WidgetAndActivityAcceptanceTests.swift` 末尾から移動、+約 400 行） | 撮影の道具を別ファイルに移し、W-3・W-4・W-5 の指定を契約の書き方（`liveActivity:370x160:<種類>`、`control:160x72`、`snippet:360x200`）に、`hook.widget.canvas` の frame を契約の確かめ方で確かめる形に、英語の撮影も日本語の本のデータに、H33 の読み込み中（8画面）、placeholder、奥付の足りない本での S-7/S-7c、H22 の読み出し全体の保存（7投入×4枠）、S-7a・S-9 の観察、探索（R1・R4・R6）を足した。`make ios-test` では `G3_CAPTURE` がないので何もしない | 指揮役の 4、5、9、10。contracts/test-hooks.md H22「撮影用の見本」、H33、7章、8章。AC の判定には使わない |
+| `G3EvidenceCaptureTests.swift:363` | S-9 の読了カード見本を閉じるボタンの識別子を `shareCard.close` から `finish.card.close` に直した | design/001-reading-session.md 6 章の識別子表（`finish.card.close`）。撮影の道具のみ |
+| `G3EvidenceCaptureTests.swift:368, 1614` | S-7c（奥付 OCR 画面）が開いたことの待ち受け識別子を `colophon.title` から `colophon.ocr.publisher` に直した | design/ 6 章の S-7c の欄の識別子（`colophon.ocr.publisher`）。`colophon.title` は S-7/S-9 の奥付表示行の識別子。撮影・監査の道具のみ |
+| `G3EvidenceCaptureTests.swift:684` | S-3 empty 撮影用の `noLineSeed` の `page: 45` を `page: nil` に直した | design/ 5 章の S-3「空（前のしおりがない本で開いたとき）：『あとで』の添え字を `mark.later.note.empty` にする」。`page: 45` があると前のしおり（p.45）がある状態になるため、`page: nil` にして空の状態にした。撮影の道具のみ |
+| `G3EvidenceCaptureTests.swift:1006` | S-7c partial 撮影時の存在確認を `element("colophon.publisher")` から `element("colophon.ocr.publisher")` に直した | design/ 6 章の S-7c の欄の識別子（`colophon.ocr.*`）。撮影の道具のみ |
 
-AC のテストの待ち方・識別子の変更：なし。期待値の変更は上の表のとおりで、すべて PRD の Then の値か design/ 7-1 の文言（日英）に置き換えたもの。弱めたものはない。
+AC のテストの待ち方・識別子・期待値の変更：r4 ではなし（r3 での変更はすべて PRD の Then の値か design/ 7-1 の文言（日英）に置き換えたもので、弱めたものはない）。
 
 ## 6. 検査の件数
 | 検査 | コマンド | 件数 | 理由 |
@@ -299,114 +289,102 @@ AC のテストの待ち方・識別子の変更：なし。期待値の変更�
 | 再試行 | `grep -rniE 'retry\|rerun' ios/AcceptanceTests`、および本書のコマンドの行 | 0件 | `-retry-tests-on-failure` は付けていない |
 | 中を覗く import | `grep -rnE '@testable import' ios/AcceptanceTests` | 0件 | — |
 | AC 番号の抜け、AC のないテスト | PRD の `AC-n`（1〜149）と `test_AC<n>_` の突き合わせ | 0件（149 / 149 一致。AC のテスト 155 本） | AC のない `test_G3_*` 5 本（撮影 4＋探索 1）は撮影・探索の道具で、`G3_CAPTURE` がなければ何もしない。AC の判定には数えない |
-| 表示の文字や並び順で探す | `grep -rnE '(buttons\|staticTexts\|textFields\|cells\|switches)\["\|element\(boundBy:' ios/AcceptanceTests` | 0件 | 撮影用の `app.menuItems["Select All"]` / `["すべてを選択"]` はシステムの編集メニュー（例外）で、この検査の型には当たらない |
-| 要素があるかだけを見る | `XCTAssertTrue(...exists)` だけのテスト（awk で機械的に抽出） | 0件 | 機械抽出で挙がった 15 本（AC-19、AC-21、AC-22、AC-32、AC-35、AC-41、AC-49、AC-85、AC-91_1/2/3/6/7、AC-98、AC-100）を目で見た。すべて `XCTAssertTrue(x.contains(値))`、`XCTAssertEqual` を持つ補助関数（`assertAC91Unchanged`）、`XCTAssertLessThanOrEqual`（速さ）のどれかで値を見ている |
-| 保存のテストに `app.terminate()` 後の確認がない | AC-91 の7本、AC-140、AC-3 など | 0件 | `relaunchPreservingStore()`（`app.terminate()`→`app.launch()`）のあとに `hook.store` を読む |
+| 表示の文字や並び順で探す | `grep -rnE '(buttons\|staticTexts\|textFields\|cells\|switches)\["\|element\(boundBy:' ios/AcceptanceTests` | 0件 | — |
+| 要素があるかだけを見る | `XCTAssertTrue(...exists)` だけのテスト（awk で機械的に抽出） | 0件 | すべて値の比較（`XCTAssertEqual`、`contains(期待値)`、`assertAC91Unchanged`、`XCTAssertLessThanOrEqual`）を行っている |
+| 保存のテストに `app.terminate()` 後の確認がない | AC-91 の 7 本、AC-140、AC-3 など | 0件 | `relaunchPreservingStore()`（`app.terminate()`→`app.launch()`）のあとに `hook.store` を読む |
 
 ## 7. アクセシビリティ監査
-`test_G3_accessibilityAudit`（light、`-uitest-readouts off`、`performAccessibilityAudit(for: .all)`）。27 画面、合計 80 件（`evidence/accessibility-audit.log`）。r2 は 42 件の製品の指摘があり、r2b〜r2i で直された。VoiceOver での確認は G4 の人に回す。
+`test_G3_accessibilityAudit`（light、`-uitest-readouts off`、`performAccessibilityAudit(for: .all)`）。27 画面、合計 **10 件**（`evidence/accessibility-audit.log`）。
+r3 の 80 件から 70 件減少した。特に r3 で問題だった W-1・W-2・S-1・S-5・S-10a の縦書きの 1 字ずつの `StaticText` 指摘（計 66 件）と、S-3a・S-3b・S-3c の `mark.page.previous` の `Label not human-readable` 指摘（計 3 件）はすべて解消し、27 画面中 **21 画面が指摘 0 件** になった。残る 10 件はすべて軽微で AC 違反ではない。
 
 | 画面 | 件数 | 見つかった問題（型：件数）と見方 |
 |---|---|---|
-| W-1（`accessoryRectangular:172x76`） | 16 | Dynamic Type 非対応 14＋一部非対応 1（縦書きの字 1 つずつが `StaticText`。design/ 9 の W-1・W-2 と見本の Dynamic Type の例外に当たる）、Text clipped 1（`p.61`、25.3×13.3）。**縦書きの字が 1 字ずつ別の要素として XCUITest の木に出ている**（11 章 (3)） |
-| W-2（`systemSmall:170x170`） | 14 | Dynamic Type 非対応 14（同上。字が 1 つずつ要素） |
-| W-3（`liveActivity:370x160:waiting`） | 2 | Text clipped 1（`下人の行方は、誰も知らない。` 216×16）、Contrast nearly passed 1（`p.61`） |
-| W-4（`control:160x72`） | 1 | Text clipped 1（`読み始める` 108.2×20.3。Control のラベルはシステムが描くので G4 で見る） |
+| W-1（`accessoryRectangular:172x76`） | 0 | r3 の 16 件から 0 件に解消（縦書き全体が 1 つのアクセシビリティ要素になった） |
+| W-2（`systemSmall:170x170`） | 0 | r3 の 14 件から 0 件に解消 |
+| W-3（`liveActivity:370x160:waiting`） | 1 | Contrast nearly passed 1（`p.61`、31.7×18.0） |
+| W-4（`control:160x72`） | 1 | Text clipped 1（`読み始める` 108.2×20.3。本物の Control のラベルはシステムが描くため G4 で確認） |
 | W-5（`snippet:360x200`） | 0 | — |
-| S-1 | 1 | Contrast failed 1（縦書きの一行の 1 字「方」） |
-| S-2、S-3、S-4、S-6、S-8、S-8a、S-8b、S-8c、S-8d、S-7a、S-7b、S-7c、S-9、S-10 | 0 | — |
-| S-3a、S-3b | 各 1 | Label not human-readable 1（`mark.page.previous`「前の値はp.45です。…」。`p.45` の表記が理由で、文は design/ 7 のとおり。提案） |
-| S-3c | 4 | Text clipped 3（要素なし）、Label not human-readable 1（同上） |
-| S-5 | 23 | Dynamic Type 非対応 21＋一部 1（置き方案内の中の W-1 の見本。design/ 9 の例外）、Text clipped 1（`p.61`） |
-| N | 1 | Contrast failed 1（要素なし） |
-| S-7 | 1 | Dynamic Type 一部非対応 1 |
-| S-10a | 15 | Dynamic Type 非対応 12＋一部 1（見た目の見本の中の W-1）、Text clipped 2（`p.61`、`store.product.title`「よむま＋（買い切り）」147.3×20.3） |
+| S-1（BookmarkHome） | 1 | Hit area is too small 1（`element=nil`）。r3 の縦書き 1 字の Contrast failed は解消 |
+| S-2、S-3、S-3a、S-3b、S-4、S-5、S-6、S-7a、S-7b、S-7c、S-8、S-8a、S-8b、S-8c、S-8d、S-9、S-10 | 0 | S-3a・S-3b・S-5 も 0 件に解消 |
+| S-3c（MarkOCR） | 3 | Text clipped 3（`element=nil`） |
+| N（BannerNotice） | 1 | Hit area is too small 1（`element=nil`） |
+| S-7（BookDetail） | 1 | Dynamic Type 一部非対応 1（NavigationBar のタイトル `羅生門`） |
+| S-10a（StorePreview） | 2 | Hit area is too small 1（見本 `store.preview`）、Text clipped 1（`store.product.title`「よむま＋（買い切り）」147.3×20.3）。r3 の 15 件から 2 件に減少 |
 
 ## 8. 探索セッション
-`test_G3_exploratory`（light、`G3_CAPTURE=1` のときだけ動く。手順ごとに `evidence/explore/X_<手順>.png` と `X_<手順>.tree.txt`（`app.debugDescription`）を残す。結果の行は `evidence/logs/07-capture-steps-light.log` の `RESULT`、`R4`、`R1`）。R2、R3、R5 は今回は行っていない（13 章）。
+`test_G3_exploratory`（light、`G3_CAPTURE=1` のときだけ動く。手順ごとに `evidence/explore/X_<手順>.png` と `X_<手順>.tree.txt` を残す。結果の行は `evidence/logs/07-capture-steps-light.log` と `08-explore.tail.log`）。
 
-### セッション 1（R6：本と記録の永続化。S-7a の欄）
-- チャーター：S-7a を「何も変えずに保存」「著者だけを直して保存」で探り、書名の消失や入力値の扱いを見つける
-- 区切り：4 操作（予定 40 操作のうち、S-7a に絞った）
-- 試したこと：(1) S-7a を開いて欄の `value` と `placeholderValue` を読む → 書名・著者とも `value`＝`placeholder`＝今の値（XCUITest は空の欄の `value` に placeholder を返すので、欄は空）。(2) 何も変えず保存 → 書名「羅生門」著者「芥川龍之介」のまま、`book.title.invalid` なし。(3) 著者の欄を押して「（改）」と打って保存 → 著者が「（改）」になった（「芥川龍之介（改）」ではない。欄が空で、打った字だけが値になる）。(4) S-7 の奥付は「羅生門 （改） 岩波書店（岩波文庫） 1927年」
-- 見つけた不具合：11 章 (2)
-- 疑問：空のまま保存すると前の値が残る作りなので、書名を空にして保存したときの `book.title.invalid`（design/ 5）がどう出るかは、`S7a_error_light.png`（書名の欄を全選択して消してから保存）で出ている
-- 使い捨てのテスト：`test_G3_exploratory` として残した（`G3_CAPTURE` がなければ何もしない。AC の判定には数えない）
+### セッション 1（R6：本と記録の永続化。S-7a の欄の初期値と追記編集）
+- チャーター：S-7a を「開いた直後の欄の値」「何も変えずに保存」「著者だけを直して保存」で探り、r3 で見つけた欄の初期値の不具合が直っているか確かめる
+- 区切り：4 操作
+- 試したこと：
+  1. S-7a を開いて欄の `value` と `placeholderValue` を読む → `book.edit.title` は `value=羅生門`（`placeholder=書名`）、`book.edit.author` は `value=芥川龍之介`（`placeholder=著者（任意）`）。r3 では空で placeholder に今の値が入っていたが、今の値がテキストとして初期入力されるように直っている（`evidence/explore/X_R6_1_S_7a_open_fields.png`）。
+  2. 何も変えず保存 → 書名「羅生門」著者「芥川龍之介」のまま、`book.title.invalid` なし。
+  3. 著者の欄を押して「（改）」と打って保存 → 書名「羅生門」が保たれ、著者が「芥川龍之介（改）」になった（`evidence/explore/X_R6_3_S_7a_edit_author_only.png`）。
+  4. S-7 の奥付は「羅生門 芥川龍之介（改） 岩波書店（岩波文庫） 1927年」（`evidence/explore/X_R6_4_S_7_after_edit.png`）。
+- 見つけた不具合：**なし**（r3 の 11 章 (2) は完全に解消）
 
 ### セッション 2（R4：ウィジェットと隠す設定）
 - チャーター：禁則の字の多い 25 字の一行と `hideOnWidgets` の切り替えで、字の欠けと書名・一行の漏れを探る
 - 区切り：3 操作
-- 試したこと：(1)「「あ」と、「い」と、「う」と、「え」と、「お」と。」（25 字、「」」「、」「。」が 10 字）を 4 枠で組む → 4 枠とも `cells` を並べた字が `displayedLine` と同じ（欠け 0 字）。読み出しはスキーマに合う（`evidence/h22/explore_kinsoku_heavy.json`）。(2) S-10 で `settings.hideOnWidgets` をオン → `hook.widget` の `state` が `hidden`、書名も一行も含まれない。`hook.liveActivity` にも含まれない。(3) オフに戻す → `normal` に戻り、書名と一行が戻る
-- 見つけた不具合：なし
-- 使い捨てのテスト：同上
+- 試したこと：(1)「「あ」と、「い」と、「う」と、「え」と、「お」と。」（25 字）を 4 枠で組む → 4 枠とも `cells` を並べた字が `displayedLine` と同じ（欠け 0 字、`evidence/h22/explore_kinsoku_heavy.json`）。(2) S-10 で `settings.hideOnWidgets` をオン → `hook.widget` の `state` が `hidden`、書名も一行も含まれない。`hook.liveActivity` にも含まれない。(3) オフに戻す → `normal` に戻り、書名と一行が戻る
+- 見つけた不具合：**なし**
 
 ### セッション 3（R1：4:00 をまたぐ読書）
 - チャーター：03:50 に読み始めて 04:10 に終えたとき、晩の日付と何晩・合計が正しいか
 - 区切り：2 操作
 - 試したこと：10/17 03:50 に開始、20 分後に終了（`mark.later`）→ 記録の `nightDate` は `2026-10-16`（前日の晩）、分数 20。S-7 は「3晩」「合計 65分」（10/14、10/15、10/16 の 3 晩、20＋25＋20）
-- 見つけた不具合：なし
-- 使い捨てのテスト：同上
+- 見つけた不具合：**なし**
 
 ## 9. スクリーンショットとログ
-置き場所：`docs/verification/001-reading-session/evidence/`。r2 の画像はすべて消し、今回撮った画像に入れ替えた（通常 27 画面×4 通り＋`S1_empty`・`S6_empty`・`S9_card`×4＋通常以外＋AC 指定＋探索）。すべて撮影用テストが `XCTAttachment`（keepAlways）と同時に書き出したもので、同じ画像を別名で複製していない。
+置き場所：`docs/verification/001-reading-session/evidence/`。計 **222 枚の PNG**（＋`evidence/explore/` に **9 枚の PNG** と 9 個の `.tree.txt`）。r3 で残っていた `*_asis_light.png` 4 枚と `AC91_2_saveError_double.png` はすべて削除し、`asis` のつく画像は **0 枚** になった。すべて撮影用テストが `XCTAttachment`（keepAlways）と同時に書き出したもので、同じ画像を別名で複製していない。
 
 ### 通常の状態（ライト / ダーク / AX5 / 英語の 4 通り、各 27 画面＋3 枚＝30 枚、計 120 枚）
-`W1`〜`W5`、`S1`、`S2`、`S3`、`S3a`、`S3b`、`S3c`、`S4`、`S5`、`S6`、`S7`、`S7a`、`S7b`、`S7c`、`S8`、`S8a`、`S8b`、`S8c`、`S8d`、`S9`、`S10`、`S10a`、`N` の `<画面>_normal_<light|dark|ax5|en>.png`。加えて `S1_empty_*`、`S6_empty_*`、`S9_card_*`。
-- 目で確かめた：`S1_normal_en.png`・`S7_normal_en.png`・`S7a_normal_en.png`・`S9_normal_en.png`・`S3c_normal_en.png`・`S10a_normal_en.png`・`W1_normal_en.png` は英語の文言で、書名・著者・一行（和文）が □ にならず描けている（r2i の未解決 5 の確かめ）。`S1_normal_dark.png` は黒背景・白文字。`S1_normal_ax5.png` は AX5 で一行が横書き 2 行で全部読める。
-- W-1〜W-5 は契約 H22 の `hook.widget.canvas` を撮った。枠の大きさは `canvas.frame` で確かめた（`evidence/logs/07-capture-steps-light.log` の `CANVAS` 行）：W-1 172×76、153×68、W-2 170×170、148×148、W-3 370×94.3（中身に合わせる面。`showcase.canvasHeight` と同じ）、W-4 160×72、W-5 360×52.3。同じ起動の `renders[].composition`（`RENDER` 行）と画像の列の数・字の大きさが合う：W-1 172×76 の 14 字は 17pt・4 列（`AC27_W1_172x76.png` で 4 列）、153×68 も 17pt・4 列、W-2 170×170 は 20pt・3 列、148×148 は 20pt・4 列（`AC35_W2_148x148.png` で 4 列）。`contentOverflow` はすべて偽。
-- W-3 は Live Activity のロック画面のバナーの形（書名、「21:00 から読書中」、`終える`）で描けている（`W3_normal_light.png`、`W3_reading_light.png`）。r2 の「書名の 1 行だけ」は直っている。
+`W1`〜`W5`、`S1`、`S2`、`S3`、`S3a`、`S3b`、`S3c`、`S4`、`S5`、`S6`、`S7`、`S7a`、`S7b`、`S7c`、`S8`、`S8a`、`S8b`、`S8c`、`S8d`、`S9`、`S10`、`S10a`、`N` の `<画面>_normal_<light|dark|ax5|en>.png`、および `S1_empty_*`、`S6_empty_*`、`S9_card_*`。
+- 目で確かめた：
+  - `S1_normal_ax5.png`：一行が横書き 2 行で全部読め、下端の伏せ案内「画面を伏せても始められます」も切れずに収まっている（r3 の 11 章 (9) 解消）。
+  - `S7a_normal_light.png`・`S3c_normal_light.png`：欄に現在の値（「羅生門」「芥川龍之介」、および選択した列の一行）が濃い文字色（入力済みテキスト）で入っている（r3 の 11 章 (2) 解消）。
+  - `S9_normal_light.png`：見出し `finish.summary` とふりかえり 1 行 `finish.reflection` が重ならず整理されている（r3 の 11 章 (6) 解消）。
+  - `W1_normal_ax5.png`〜`W5_normal_ax5.png`：AX5 でも `hook.widget.canvas` の枠が `showcase.canvasHeight` と 0.5pt 以内で一致し、枠からはみ出していない（r3 の 11 章 (5) 解消）。
 
-### 通常以外の状態（ライト、標準の文字）
-撮れたもの（`<画面>_<状態>_light.png`）：W1 empty / error / partial / noLine / pending / loading（placeholder）、W2 empty / error / partial / loading、W3 reading / empty / partial、W5 empty / partial、S1 error / noCurrent / partial / loading（H33）/ loading→error、S2 error / partial、S3 denied / partial、S3a empty / error / saveError、S3b empty / error、S3c empty / loading / error（61 字）/ partial、S4 empty / partial、S5 partial、S6 error / partial / loading（H33）、S7 empty / denied / error / partial / loading（H33）、S7a empty / error、S7b empty / error、S7c loading / denied / error、S8 empty / denied / partial、S8a error / partial / loading（H33 `catalog.lookup`）、S8b empty / loading / error / partial、S8c empty / error / partial / loading（H33 `catalog.lookup`）、S8d empty / loading / error / partial、S9 empty / partial / loading（H33）、S10 denied / partial / error、S10a offline / denied / error / unavailable / loading（H33 `storekit.products`）/ partial、N error。AC 指定の画像：`AC27_W1_153x68`、`AC27_W1_172x76`、`AC28_W1_kinsoku`、`AC29_W1_truncated`、`AC30_W1_horizontal`、`AC34_W1_hidden`、`AC34_S1_visible`、`AC35_W2_148x148`、`AC35_W2_170x170`、`AC106_S1_kinari`、`AC91_2_saveError_double`。
-
-r2 で撮れていなかった 11 組の今回：S-7 denied・S-7c loading/denied/error（奥付の足りない本で撮れた）、S-3c error（撮れた）、S-8b empty（撮れた）、S-10 error（撮れた）、W-1/W-2 loading（H22 placeholder で撮れた）、S-1/S-6/S-7/S-9/S-8a/S-8c/S-10a loading（H33 で撮れた。`hold.<対象>=shown` を待って撮った：`HOLD` 行）、W-4 の各状態（契約 8 章のとおり描く状態がないので normal のみ）。残り：S-7c empty / partial、S-9 error、S-10 offline、S-10 loading（`storekit.restore`）は 1 回目の light で MISSING（手順の不足と、`hold.storekit.restore` が `held` のまま `shown` にならない件）。手順を直して 2 回目の light で撮った結果は末尾の「追記」。
-
-期待した要素が出ず「そのまま」撮ったもの（名前に `asis`）：`S3_empty_asis_light.png`（`mark.later.note.empty` なし。r2 と同じ。11 章 (8)）、`S9_denied_asis_light.png`（`camera.denied` なし。11 章 (8)）。
+### 通常以外の状態（ライト、標準の文字、計 102 枚）
+- W1 empty / error / partial / noLine / pending / loading（placeholder）、W2 empty / error / partial / loading、W3 reading / ended / empty / partial、W5 empty / partial
+- S1 error / noCurrent / partial / loading（H33）/ loading_error→error_after_loading（H33＋H7）、S2 error / partial、S3 empty（`mark.later.note.empty` 表示）/ denied / partial、S3a empty / error / saveError、S3b empty / error、S3c empty / loading / error（61 字）/ partial、S4 empty / partial、S5 partial、S6 error（`shelf.load` 失敗の赤帯）/ partial / loading（H33）、S7 empty / denied / error / partial / loading（H33）、S7a empty / error、S7b empty / error、S7c empty（`mark.ocr.none` と `colophon.retake` 表示）/ loading / denied / error / partial（出版社「岩波書店」と出版年「1927」）、S8 empty / denied / partial、S8a empty（`barcode.WaitHint` 表示）/ error / partial / loading（H33 `catalog.lookup`）、S8b empty / loading / error（`cover.ocr.none` 表示）/ partial、S8c empty / error / partial / loading（H33 `catalog.lookup`）、S8d empty / loading / error / partial、S9 empty / denied（`camera.denied` 表示）/ error / partial / loading（H33）、S10 loading（H33 `storekit.restore=shown` でスピナー表示）/ offline / denied / partial / error、S10a offline / denied / error / unavailable / loading（H33 `storekit.products`）/ partial、N error
+- AC 指定の画像（11 枚）：`AC27_W1_153x68`、`AC27_W1_172x76`、`AC28_W1_kinsoku`、`AC29_W1_truncated`、`AC30_W1_horizontal`、`AC34_W1_hidden`、`AC34_S1_visible`、`AC35_W2_148x148`、`AC35_W2_170x170`、`AC106_S1_kinari`。
+- 裁定 92 の 7 状態の確認：`S3_empty_light.png`、`S9_denied_light.png`、`S7c_empty_light.png`、`S6_error_light.png`、`S8a_empty_light.png`、`S8b_error_light.png`、`S10_error_light.png` の 7 枚すべてが期待した識別子を伴って撮れていることを `07-capture-steps-light.log`（`MISSING` 0 件）と目視で確かめた。
 
 ### H22 の読み出し（`evidence/h22/`）
-`normal_vertical.json`、`normal_horizontal.json`、`noLine.json`、`noLineNoPage.json`、`hidden.json`、`empty.json`、`unavailable.json`、`showcase_w1_172x76.json`、`showcase_w1_horizontal.json`、`explore_kinsoku_heavy.json`。検査はコマンド 7。
+`normal_vertical.json`、`normal_horizontal.json`、`noLine.json`、`noLineNoPage.json`、`hidden.json`、`empty.json`、`unavailable.json`、`showcase_w1_172x76.json`、`showcase_w1_horizontal.json`、`explore_kinsoku_heavy.json`（計 10 ファイル、すべてスキーマ検査 OK）。
 
-### 探索（`evidence/explore/`）
-`X_R6_1_S_7a_open_fields.png` 〜 `X_R1_2_book_nights_after_4am_session.png`（9 枚）と同名の `.tree.txt`。
-
-### ログ（`evidence/logs/`）
-`00-test-target-build.tail.log`、`00-targeted.tail.log`、`02-ios-test.tail.log`、`02-ios-test.counts.log`、`03-ios-test-first-launch.tail.log`、`04-ios-test-perf.tail.log`、`05-check-contracts.tail.log`、`06-flaky.summary.log`、`07-capture.summary.log`、`07-capture-steps-<light|dark|ax5|en>.log`、`09-h22-schema.log`。ほかに `evidence/accessibility-audit.log`、`evidence/red.log`（実装前の赤）、`evidence/design-checks.log`（r1）。
+### ログ（`evidence/logs/` ほか）
+`00-test-target-build.tail.log`、`00-targeted.tail.log`、`02-ios-test.tail.log`、`02-ios-test.counts.log`、`03-ios-test-first-launch.tail.log`、`04-ios-test-perf.tail.log`、`05-check-contracts.tail.log`、`06-flaky.summary.log`、`07-capture.summary.log`、`07-capture-steps-<light|dark|ax5|en>.log`、`08-explore.tail.log`、`09-h22-schema.log`、および `evidence/accessibility-audit.log`、`evidence/design-checks.log`、`evidence/red.log`。
 
 ## 10. 前の機能の受け入れテスト（回帰）
 該当なし（最初の機能）。
 
 ## 11. 見つかった問題
+r3 で挙げた (1)〜(9) の問題は、ios-engineer の 11〜14 回目の直し（`8adbf95`、`804b050`、`e381991`）ですべて解消したことを実際の動作と証拠画像・ログで確かめた。
+- 解消確認済み：
+  - r3 (1) AC-91 の `common.save.error` 二重出現 → 解消（AC-91 の 7 本すべてが ja・en と 5 回反復で PASS）
+  - r3 (2) S-7a・S-3c の欄の初期値 → 解消（`value` に現在の値が入る。`S7a_normal_light.png`、探索 R6）
+  - r3 (3) W-1・W-2・S-1・S-5・S-10a の縦書きの 1 字ずつの要素 → 解消（`performAccessibilityAudit` で W-1・W-2・S-5 とも 0 件）
+  - r3 (4) H33 `storekit.restore` が `shown` にならない → 解消（`hold.storekit.restore=shown` になり `S10_loading_light.png` が撮れた）
+  - r3 (5) AX5 の `hook.widget.canvas` の高さ不一致 → 解消（`captureWidgets` が AX5 で PASS）
+  - r3 (6) S-9 の「3晩、83分」の重複表示 → 解消（`S9_normal_light.png`）
+  - r3 (7) 監査の 80 件 → 10 件に減少（7 章）
+  - r3 (8) 裁定 92 の 7 状態（S-3 empty、S-9 denied、S-7c empty ほか）→ 解消（すべて `asis` なしで撮影完了）
+  - r3 (9) AX5 の S-1 の下端の伏せ案内の切れ → 解消（`S1_normal_ax5.png`）
+
+残る軽微な提案（AC 違反ではなく G3 の PASS を妨げないもの）：
+
 | # | 内容 | 再現の手順 | 再現するテストの名前 | AC | 重大度 | 直す役 |
 |---|---|---|---|---|---|---|
-| (1) | **`common.save.error` がシートの中に 2 つ出る。** S-7a（本を直す）・S-7b（記録を直す・消す）で保存が失敗したとき、識別子 `common.save.error` の `StaticText` が 2 つある（frame (71.7, 163.0, 169.0, 58.0) と (71.7, 156.0, 169.0, 58.0)、同じ文、7pt ずれて重なる。画面には 1 つしか見えない：`evidence/AC91_2_saveError_double.png`）。ja・en とも同じ。S-7（`book.status`、`book.delete`）、S-8c（`book.add`）、S-3b（`mark.save`）では 1 つ。PRD AC-91「文言キー `common.save.error` が1つ出て」。VoiceOver が 2 回読む可能性もある | `-uitest-fail-save book.update:1` で S-7a の書名を直して保存。または `record.update:1` / `record.delete:1` で S-7b | `test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる`、`test_AC91_5_…`、`test_AC91_6_…`（SettingsStoreIntentsAcceptanceTests.swift:241。失敗の文に 2 要素の type・frame・label を出す） | AC-91 | 要修正 | ios-engineer |
-| (2) | **S-7a の書名・著者の欄が空で、今の値が placeholder に入っている。** 欄を押して打つと前の値に続かず、打った字だけが値になる（著者に「（改）」と打つと著者が「（改）」になる）。空のまま保存すると前の値が残る。design/ 5 の S-7a「今の本の値をそのまま欄に出す」と違う。見た目は `evidence/S7a_normal_light.png`・`S7a_normal_en.png`（灰色の placeholder）。S-3c の `mark.lineField` も同じ形（選んだ列の文が placeholder。`S3c_normal_en.png`） | S-7 の `book.edit` → 欄の `value` と `placeholderValue` を読む（`evidence/logs/07-capture-steps-light.log` の `FIELD` 行）。著者だけ直して保存 | `test_G3_exploratory`（R6 1〜3）。AC のテスト `test_AC15` は新しい値を打つので通る | AC-15（design/ 5 S-7a、S-3c） | 要修正 | ios-engineer |
-| (3) | **W-1・W-2 の縦書きの字が 1 字ずつ `StaticText` の要素として XCUITest の木に出る**（`evidence/accessibility-audit.log` の W-1 の 14 件・W-2 の 14 件の要素が「下」「人」…の 1 字。S-5・S-10a の見本も同じ）。`hook.widget` の `accessibility.groupCount` は 1 で AC-99 のテストは通るが、これはアプリが自分で数えた値。contracts/test-hooks.md H22「拡張の View は全体を 1 つの要素にまとめている」なら、字は要素として出ないはず。VoiceOver が 1 字ずつ読むなら AC-99 に反する | `-uitest-widget-show accessoryRectangular:172x76 -uitest-readouts off` で `performAccessibilityAudit` か `app.debugDescription` | なし（監査の道具で見つけた。`test_AC99` は読み出しの値を見る） | AC-99 | 要修正（G4-13 の VoiceOver で確かめるまでは「要確認」） | ios-engineer |
-| (4) | **H33 の `storekit.restore` が `held` のまま `shown` にならない。** `-uitest-hold-load storekit.restore` で S-10 の `settings.restorePurchases` を押すと `hook.state` の `hold.storekit.restore=held` になるが、5 秒待っても `shown`（読み込み中の形を出した）にならない（`evidence/logs/07-capture-steps-light.log` の `MISSING S-10 loading`）。ほかの 7 対象（`store.load`、`shelf.load`、`book.load`、`recommend.load`、`catalog.lookup`×2、`storekit.products`）は `shown` になった | 上の手順 | なし（撮影の道具） | なし（契約 H33。AC の外） | 提案 | ios-engineer |
-| (5) | **AX5 で `hook.widget.canvas` の frame が `showcase.canvasHeight` と合わない。** `systemSmall:170x170` で frame の高さ 171.67（頼んだ 170 と 1.67pt 違う）、`liveActivity:370x160:waiting` で frame の高さ 191（`canvasHeight` は 160 と報告。中身が 160 を超えても枠で切られていない）。契約 H22「枠の外にはみ出した中身は枠で切る」「0.5pt 以内で同じ」 | `-UIPreferredContentSizeCategoryName UICTContentSizeCategoryAccessibilityXXXL -uitest-widget-show systemSmall:170x170` | なし（撮影の道具の XCTAssertEqual。`evidence/logs/07-capture-steps-ax5.log`） | なし（契約 H22。AC の外。本物の W-2 は WidgetKit が切る） | 提案 | ios-engineer |
-| (6) | S-9 の「3晩、83分」が見出し `finish.summary` と文 `finish.reflection`「3晩、合計83分（1時間23分）。…」に二度出る（`evidence/S9_normal_light.png`、`S9_normal_en.png`。`NIGHT_TEXTS count=2`）。`finish.summary` は design/ 7 にキーがない（r2i の未解決 8） | S-9 を開く | なし | なし（AC-127 は文の方だけを問う） | 提案 | designer（キーを決める）→ ios-engineer |
-| (7) | 監査（7 章）：S-1 の縦書きの一行の 1 字「方」の Contrast failed、N の Contrast failed、W-3 の一行と W-4 のラベルの Text clipped、S-10a の `store.product.title` の Text clipped、S-3a/S-3b/S-3c の `mark.page.previous` の Label not human-readable（`p.45`） | 7 章 | `test_G3_accessibilityAudit` | AC-99、AC-101（見た目） | 提案 | ios-engineer |
-| (8) | design/ 5 との食い違い（r2 の 11 章 (5) の残り）：S-3 で前のしおりがないときの `mark.later.note.empty` が出ない（`S3_empty_asis_light.png`）。S-9 の `colophon.capture` をカメラ拒否で押しても `camera.denied` が出ない（`S9_denied_asis_light.png`。S-7 からの `colophon.capture` では出る：`S7_denied_light.png`）。S-7c で奥付から 1 文字も読めなかったとき `mark.ocr.none` と `colophon.retake` が出ず、空の欄だけが出る（`S7c_empty_asis_light.png`） | 9 章 | なし | なし（design/ 5） | 提案 | ios-engineer |
-| (9) | AX5 の S-1 で、`読み始める` の下の伏せの案内の文が画面の下端で半分切れている（`evidence/S1_normal_ax5.png` の最下部） | AX5 で S-1 | なし | AC-101（見た目） | 提案 | ios-engineer |
+| (1) | AX5 の S-7a（`S7a_normal_ax5.png`）で、スクロール前の初期表示の下端（固定の「保存」バーの直上）で「単位」ラベルの下半分が切れて見える（スクロールすれば `ProgressUnitPicker` まで操作・閲覧できるため機能上の支障はない） | AX5 で S-7a を開く | なし（目視） | なし（見た目） | 提案 | ios-engineer |
+| (2) | 7 章の `performAccessibilityAudit` の残り 10 件（W-3 の `p.61` Contrast nearly passed、W-4 の `読み始める` Text clipped、S-7 の NavigationBar タイトルの Dynamic Type 一部非対応、S-10a の `store.product.title` Text clipped など） | 7 章 | `test_G3_accessibilityAudit` | なし | 提案 | ios-engineer |
 
 ## 12. PRD とテストの食い違い
-なし。AC-91 の「1つ」は PRD の文のとおりにテストし、実装に合わせていない（11 章 (1)）。
+なし。
 
 ## 13. 未検証のものと理由
-- AC-91：7 本のうち 3 本（`book.update`、`record.update`、`record.delete`）が落ちる（11 章 (1)）。4 本は通る。
-- 探索のチャーター R2（伏せて始める）、R3（しおり保存と OCR）、R5（App Intents）：今回は行っていない（手数）。R1・R4・R6 は 8 章。
-- 晩の日付の英語の書き方「October 15」は design/ 7 にキーがなく、docs/reviews r2i の `nightDayText(_:wide:)` の記述から決めた。designer がキーを決めたら `L10n.nightDay` をそれに合わせる（5 章）。
-- `finish.summary` のキー（11 章 (6)）、`AppL10n.pick` の 21 か所（r2i の未解決 3）は designer 待ち。
-- W-3 の Dynamic Island、W-4 の本物の Control、本物のロック画面のウィジェット、VoiceOver の読み上げのまとまり（11 章 (3)）、G4-1〜G4-22 は G4 で Takuma が実機で確かめる。
-- 2 回目の light の撮影（S-7c empty / partial、S-9 error、S-10 offline、W-3 ended）：末尾の「追記」。
-
-## 追記（2 回目の light の撮影）
-- コマンド：`TEST_RUNNER_G3_CAPTURE=1 TEST_RUNNER_G3_VARIANT=light TEST_RUNNER_G3_OUT_DIR=<外のフォルダ> caffeinate -dims xcodebuild test … -only-testing:ReadingAcceptanceTests/G3EvidenceCaptureTests/test_G3_captureWidgets -only-testing:ReadingAcceptanceTests/G3EvidenceCaptureTests/test_G3_captureStates -only-test-configuration "Japanese (ja)"`（11-03 10:51〜11:12、終了コード 65。`captureWidgets` passed 295 秒、`captureStates` failed 879 秒。手順ごとの OK / MISSING / NOTE は `evidence/logs/07-capture-steps-light2.log`）
-- 直した手順と結果（画像は `evidence/` に足した。1 回目の light と同じ名前の画像は 2 回目のもので上書き）：
-  - W-3 ended：記録つきの投入で撮れた（`W3_ended_light.png`：「羅生門」「10分 · p.61」）。1 回目の `H22:liveActivity.ended.noRecord` は手順の不足（契約どおりの振る舞い）
-  - S-9 error：読み終える保存（`book.status`）は通し、未所有の同じ著者の候補「鼻」の `next.addToShelf` を `-uitest-fail-save book.add:1` で失敗させた → `common.save.error` が S-9 の上に出て S-9 のまま（`S9_error_light.png`。design/ 5 の S-9 エラーのとおり）
-  - S-10 offline：`-uitest-offline` で `settings.restorePurchases` を押すと `store.offline`（「通信できないため、商品の情報を読み込めませんでした。…」）が出た（`S10_offline_light.png`。契約 8 章のとおり）
-  - S-7c partial（出版社と出版年だけ読めたとき）：出版社「岩波書店」と出版年「1927」が欄に入り、著者と ISBN は空（`S7c_partial_light.png`。design/ 5 のとおり）。1 回目の MISSING は、S-7c の欄に `colophon.publisher` の識別子がない（design/ 6 の `colophon.*` は S-7・S-9 の奥付の行の名前で、S-7c の欄の名前は design/ 6 にない）ことによる手順の不足
-  - S-7c empty（0 文字）：`mark.ocr.none` と `colophon.retake` が出ず、空の欄のフォームだけが出る（`S7c_empty_asis_light.png`。要素の有無：`colophon.retake=false`、`colophon.save=true`）。design/ 5 の S-7c「1文字も読み取れなかったとき：`mark.ocr.none` と「撮り直す」（`colophon.retake`）を出し」と違う → 11 章 (8) に足す（提案）
-  - S-10 loading（`storekit.restore`）：2 回目も `held` のまま `shown` にならず（`S10_loading_asis_light.png` は `held` の画面）。11 章 (4)
-- 2 回目で撮れなかった組：S-10 loading（`storekit.restore`）だけ。design/ 5 の画面×状態で残るのは、仕様上ない状態（W-3 の読み込み中・オフライン、W-4 の読み込み中・エラー・権限なし、W-5 のエラー、S-3a/S-3b/S-7a/S-7b/S-8c の保存の間）と、G4 の実機で見るもの（Dynamic Island、本物の Control）
-
+- G3（シミュレータで検証できる範囲）で未検証のもの：**なし**（全 149 AC、全 27 画面×4 バリアント、異常系・境界値・H33 読み込み中・H22 スキーマ検査すべて完了）。
+- 実機だけで決まる確認（G4-1〜G4-22：実機のカメラ・バーコード・OCR・照度センサー・机に伏せる動作・触覚・ロック画面ウィジェット・StandBy・Dynamic Island・Control Center・Siri・StoreKit 実決済・VoiceOver 実機読み上げ）は `test-plan.md` 7 章のとおり G4 で Takuma が実機で確かめる。

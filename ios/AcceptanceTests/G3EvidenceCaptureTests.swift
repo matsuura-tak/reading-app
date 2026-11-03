@@ -360,12 +360,12 @@ final class G3EvidenceCaptureTests: AcceptanceTestBase {
             try require("finish.card.share").tap()
             _ = try require("sheet.shareCard")
             capture("S9_card_\(v)")
-            try require("shareCard.close").tap()
+            try require("finish.card.close").tap()
         }
         step("S-7c normal (colophon read)") {
             try require("colophon.capture").tap()
             _ = try require("colophon.cancel")
-            _ = try require("colophon.title")
+            _ = try require("colophon.ocr.publisher")
             capture("S7c_normal_\(v)")
             try require("colophon.cancel").tap()
             try require("finish.close").tap()
@@ -681,7 +681,7 @@ final class G3EvidenceCaptureTests: AcceptanceTestBase {
         let pendingBook = makeSeedBook(id: uuidBookA, title: "今の本", status: "current", isTitlePending: true, page: 12,
                                        lastLine: "ある日の暮方の事である。")
         let pendingSeed = makeSeedJSON(books: [pendingBook, bookB], records: [record1])
-        let noLineSeed = makeSeedJSON(books: [makeSeedBook(id: uuidBookA, title: "羅生門", author: "芥川龍之介", status: "current", page: 45, lastLine: nil)])
+        let noLineSeed = makeSeedJSON(books: [makeSeedBook(id: uuidBookA, title: "羅生門", author: "芥川龍之介", status: "current", page: nil, lastLine: nil)])
         let noCurrentSeed = makeSeedJSON(books: [bookB, bookC])
         let noRecordSeed = makeSeedJSON(books: [makeSeedBook(id: uuidBookA, title: "羅生門", status: "current", page: 45)])
         // 奥付（出版社・出版年・ISBN）の足りない本。S-7 に `colophon.capture` / `book.captureColophon` が出る（design/ 5 の S-7）。
@@ -1003,11 +1003,11 @@ final class G3EvidenceCaptureTests: AcceptanceTestBase {
             try require("shelf.row.\(uuidBookA.lowercased())").tap()
             try tapColophonCapture()
             _ = try require("colophon.cancel")
-            if element("colophon.publisher").waitForExistence(timeout: uiTimeout) {
-                log("S-7c partial elements: " + ["colophon.title", "colophon.author", "colophon.publisher", "colophon.label", "colophon.year", "colophon.isbn", "colophon.save"].map { "\($0)=\(element($0).exists) value=\(element($0).exists ? (element($0).value.map { "\($0)" } ?? "nil") : "-")" }.joined(separator: " "))
+            if element("colophon.ocr.publisher").waitForExistence(timeout: uiTimeout) {
+                log("S-7c partial elements: " + ["colophon.ocr.title", "colophon.ocr.author", "colophon.ocr.publisher", "colophon.ocr.label", "colophon.ocr.year", "colophon.ocr.isbn", "colophon.save"].map { "\($0)=\(element($0).exists) value=\(element($0).exists ? (element($0).value.map { "\($0)" } ?? "nil") : "-")" }.joined(separator: " "))
                 capture("S7c_partial_light")
             } else {
-                log("NOTE S-7c partial: colophon.publisher not found; elements: " + ["mark.ocr.none", "colophon.retake", "colophon.title", "colophon.author", "colophon.save"].map { "\($0)=\(element($0).exists)" }.joined(separator: " ") + "; captured as-is")
+                log("NOTE S-7c partial: colophon.ocr.publisher not found; elements: " + ["mark.ocr.none", "colophon.retake", "colophon.ocr.title", "colophon.ocr.author", "colophon.save"].map { "\($0)=\(element($0).exists)" }.joined(separator: " ") + "; captured as-is")
                 capture("S7c_partial_asis_light")
             }
         }
@@ -1611,7 +1611,7 @@ final class G3EvidenceCaptureTests: AcceptanceTestBase {
             _ = try require("screen.finishNight")
             runAudit("S-9", "FinishNight")
             try require("colophon.capture").tap()
-            _ = try require("colophon.title")
+            _ = try require("colophon.ocr.publisher")
             runAudit("S-7c", "ColophonOCR")
             try require("colophon.cancel").tap()
             try require("finish.close").tap()

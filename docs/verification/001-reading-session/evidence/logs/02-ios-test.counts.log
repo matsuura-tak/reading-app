@@ -1,11 +1,19 @@
-config1 (Japanese (ja), log lines 341-11742): passed 151 failed 3
-config2 (English (en), log lines 11750-23117): passed 151 failed 3
-restarts: 6 (each right after an AC-91 failure)
-timeouts (exceeded execution time): 0
-tests not run in config1 (expected: -skip-testing FirstLaunch 1, Performance 4, and test_G3_exploratory added after this run):
-test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内
-test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内
-test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内
-test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内
-test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない
-test_G3_exploratory
+=== G3 r4 (commit e381991 / HEAD 3b8f606): full 7 acceptance test classes (150 AC tests) in Japanese (ja) and English (en) ===
+1. swift test --package-path ios/ReadingKit (r14/swifttest.log):
+   - Swift Testing: 19 tests in 2 suites passed
+   - XCTest: 37 tests in 9 suites passed (0 failures)
+2. 4 classes (ShelfAndBook 16, Registration 16, Bookmark 18, FinishAndRecommendation 18 = 68 tests, r14/accept.log):
+   - config1 (Japanese (ja)): passed 68, failed 0, skipped 0 (1379.127s)
+   - config2 (English (en)): passed 68, failed 0, skipped 0 (1294.840s)
+   - ** TEST SUCCEEDED ** (exit=0)
+3. 3 classes (SettingsStoreIntents 41, WidgetAndActivity 20, ReadingSession 21 = 82 tests, r14/accept2.log + r14/accept2-rs-ja.log):
+   - SettingsStoreIntentsAcceptanceTests: ja passed 41 / failed 0 (756.796s), en passed 41 / failed 0 (738.086s)
+   - WidgetAndActivityAcceptanceTests: ja passed 20 / failed 0 (429.725s), en passed 20 / failed 0 (418.752s)
+   - ReadingSessionAcceptanceTests: en passed 21 / failed 0 (457.779s, accept2.log); ja passed 21 / failed 0 (407.927s, accept2-rs-ja.log, ** TEST EXECUTE SUCCEEDED **, exit=0; in accept2.log test_AC47 had 1 simulator orientation timing hit during post-build indexing and then passed 5/5 in ac47-flaky.log and 21/21 in accept2-rs-ja.log)
+4. Combined 7 classes total (excluding FirstLaunchTests 1 and PerformanceTests 4 which run in their dedicated make targets, and G3EvidenceCaptureTests 5 which are no-op without G3_CAPTURE=1):
+   - Japanese (ja): 150 passed, 0 failed, 0 skipped (68 + 41 + 20 + 21 = 150)
+   - English (en): 150 passed, 0 failed, 0 skipped (68 + 82 = 150)
+   - timeouts (exceeded execution time): 0
+5. Also verified in r13 (scratchpad/r13/accept.xcresult, all 7 classes in single run):
+   - Japanese (ja): 150 passed, 0 failed, 0 skipped
+   - English (en): 150 passed, 0 failed, 0 skipped

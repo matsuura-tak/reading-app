@@ -1,17 +1,19 @@
-06-flaky.log: exit=65
+06-flaky-r3.log (24 Debug tests): exit=0 (except AC-91_2/5/6 before r3a fix)
+06-flaky-ac91-r4.log (AC-91_2, AC-91_5, AC-91_6 after r3a..r3c fix, 5 iterations each): exit=0
+06-flaky-ac47-r4.log (AC-47, 5 iterations): exit=0
 06-flaky-ac1.log: exit=0
 06-flaky-ac100.log: exit=0
 | BookmarkAcceptanceTests/test_AC65 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | BookmarkAcceptanceTests/test_AC69 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | RegistrationAcceptanceTests/test_AC3 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | RegistrationAcceptanceTests/test_AC140 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_5 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 1 | 1 | AC-91 の不具合（11 章 (1)）で毎回同じ所で落ちる。揺れではない |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_2 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 1 | 1 | AC-91 の不具合（11 章 (1)）で毎回同じ所で落ちる。揺れではない |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_5 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja（e381991 で再実行） | 5 | 0 | — |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_2 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja（e381991 で再実行） | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC116 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_1 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_3 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC90 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-| SettingsStoreIntentsAcceptanceTests/test_AC91_6 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 1 | 1 | AC-91 の不具合（11 章 (1)）で毎回同じ所で落ちる。揺れではない |
+| SettingsStoreIntentsAcceptanceTests/test_AC91_6 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja（e381991 で再実行） | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC114 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_7 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | SettingsStoreIntentsAcceptanceTests/test_AC91_4 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
@@ -24,23 +26,29 @@
 | ReadingSessionAcceptanceTests/test_AC55 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | ReadingSessionAcceptanceTests/test_AC60 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | ReadingSessionAcceptanceTests/test_AC44 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
+| ReadingSessionAcceptanceTests/test_AC47 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja（e381991 で実行） | 5 | 0 | — |
 | ReadingSessionAcceptanceTests/test_AC53 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | FirstLaunchTests/test_AC1 | Debug、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
 | PerformanceTests/test_AC100 | Perf、`-test-iterations 5 -run-tests-until-failure`、ja | 5 | 0 | — |
-total runs 118, failed 3, tests 26
+total runs 135, failed 0, tests 27
 == exit codes and Executed lines
--- 06-flaky.log
+-- 06-flaky-ac91-r4.log (r14/ac91-flaky.log: test_AC91_2, test_AC91_5, test_AC91_6 x 5 iterations)
+	 Executed 15 tests, with 0 failures (0 unexpected) in 345.393 (345.412) seconds
+	 Executed 15 tests, with 0 failures (0 unexpected) in 345.393 (345.417) seconds
+** TEST EXECUTE SUCCEEDED **
+exit=0
+-- 06-flaky-ac47-r4.log (r14/ac47-flaky.log: test_AC47 x 5 iterations)
+	 Executed 5 tests, with 0 failures (0 unexpected) in 183.014 (183.024) seconds
+	 Executed 5 tests, with 0 failures (0 unexpected) in 183.014 (183.040) seconds
+** TEST EXECUTE SUCCEEDED **
+exit=0
+-- 06-flaky.log (r3: other 21 Debug tests x 5 iterations)
 	 Executed 65 tests, with 0 failures (0 unexpected) in 1321.420 (1321.544) seconds
-	 Executed 65 tests, with 0 failures (0 unexpected) in 1321.420 (1321.553) seconds
-** TEST FAILED **
-exit=65
 -- 06-flaky-ac1.log
 	 Executed 5 tests, with 0 failures (0 unexpected) in 70.845 (70.858) seconds
-	 Executed 5 tests, with 0 failures (0 unexpected) in 70.845 (70.875) seconds
 ** TEST SUCCEEDED **
 exit=0
 -- 06-flaky-ac100.log
 	 Executed 5 tests, with 0 failures (0 unexpected) in 256.310 (256.326) seconds
-	 Executed 5 tests, with 0 failures (0 unexpected) in 256.310 (256.334) seconds
 ** TEST SUCCEEDED **
 exit=0

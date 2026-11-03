@@ -268,11 +268,11 @@
 | AC-27, AC-28, AC-29 | `-uitest-widget-show accessoryRectangular:153x68` と `172x76` で縦書き一行と禁則・縮め方を表示して撮る | `AC27_W1_153x68.png`、`AC27_W1_172x76.png`、`AC28_W1_kinsoku.png`、`AC29_W1_truncated.png` |
 | AC-34 | `settings.hideOnWidgets=true` の W-1・W-2 と S-1 を表示して撮る | `AC34_W1_hidden.png`、`AC34_S1_visible.png` |
 | AC-35 | `-uitest-widget-show systemSmall:148x148` と `170x170` を表示して撮る | `AC35_W2_148x148.png`、`AC35_W2_170x170.png` |
-| AC-43, AC-144 | S-2（読書中の画面：紙の本・電子書籍）をライト・ダーク・AX5・英語で撮る | `S2_reading_light.png`、`S2_reading_dark.png`、`S2_reading_ax5.png`、`S2_reading_en.png`、`AC144_S2_ebook.png` |
-| AC-63, AC-65, AC-141 | S-3（5つの道）、S-3c（縦書き列の枠選択）、S-3a/S-3b（位置・％入力）と S-4（結果画面）を撮る | `S3_choices_light.png`、`AC65_S3c_ocr.png`、`AC141_S4_location.png`、`S4_result_light.png` |
-| AC-13, AC-17, AC-146 | S-6（本棚3区分）と S-7（奥付・記録・「この本のあとに」）をライト・ダーク・AX5・英語で撮る | `S6_shelf_light.png`、`S6_shelf_dark.png`、`S7_book_light.png`、`AC146_S7_after.png` |
-| AC-77, AC-78, AC-84, AC-127 | S-9（読み終えた画面：ふりかえり1行・奥付・次の1冊）と共有カード画像を撮る | `S9_finish_light.png`、`S9_finish_dark.png`、`AC84_finish_card.png` |
-| AC-88, AC-93, AC-105, AC-106 | S-10（設定・NDL 出典）と S-10a（見た目見本 `store.preview`・購入シート・生成り/墨/朱）を撮る | `S10_settings_light.png`、`AC93_S10_dataSources.png`、`AC105_S10a_preview.png`、`AC106_S1_kinari.png` |
+| AC-43, AC-144 | S-2（読書中の画面：紙の本・電子書籍）をライト・ダーク・AX5・英語で撮る | `S2_normal_light.png`、`S2_normal_dark.png`、`S2_normal_ax5.png`、`S2_normal_en.png`、`S2_partial_light.png` |
+| AC-63, AC-65, AC-141 | S-3（5つの道）、S-3c（縦書き列の枠選択）、S-3a/S-3b（位置・％入力）と S-4（結果画面）を撮る | `S3_normal_light.png`、`S3c_normal_light.png`、`S3a_normal_light.png`、`S3b_normal_light.png`、`S4_normal_light.png` |
+| AC-13, AC-17, AC-146 | S-6（本棚3区分）と S-7（奥付・記録・「この本のあとに」）をライト・ダーク・AX5・英語で撮る | `S6_normal_light.png`、`S6_normal_dark.png`、`S7_normal_light.png`、`S7_normal_dark.png` |
+| AC-77, AC-78, AC-84, AC-127 | S-9（読み終えた画面：ふりかえり1行・奥付・次の1冊）と共有カード画像を撮る | `S9_normal_light.png`、`S9_normal_dark.png`、`S9_card_light.png` |
+| AC-88, AC-93, AC-105, AC-106 | S-10（設定・NDL 出典）と S-10a（見た目見本 `store.preview`・購入シート・生成り/墨/朱）を撮る | `S10_normal_light.png`、`S10a_normal_light.png`、`AC106_S1_kinari.png` |
 | G4-1〜G4-22（実機確認） | PRD 11章末尾の表（G4-1 ロック画面ウィジェット、G4-2 5秒以内ロック反映、G4-3 StandBy、G4-4 機内モード連続登録、G4-5 カメラ拒否とスクショ導線、G4-6 翌晩の予約 Live Activity、G4-7 机・ベッド・膝での伏せ開始、G4-8 ロック中計測、G4-9 端末再起動後計測、G4-10 手元の本10冊バーコード・表紙・本棚・奥付撮影、G4-11 自動ロック消灯、G4-12 文庫本5枚 OCR 速度、G4-13 VoiceOver 読み上げ、G4-14 誤開始回数記録、G4-15 最古対応機種での速度60fps録画計測、G4-16 LINE カード共有、G4-17 iCloud バックアップ復元、G4-18 ウィジェット/Live Activity タップ遷移、G4-19 Sandbox 購入と復元、G4-20 App プライバシーレポート外部通信0件、G4-21 ロック中の Control/Action ボタン/Siri「読み始める」と「終える」、G4-22 ロック中の Siri「どこまで読んだ？」「続きを読む」）を Release ビルドの実機で行う | `docs/verification/001-reading-session/evidence/g4/` 配下の実機スクリーンショットおよび60fps録画 |
 
 ## 8. 赤の証拠（実装の前に落ちたこと）

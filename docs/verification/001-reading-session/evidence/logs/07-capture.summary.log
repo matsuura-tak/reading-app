@@ -1,30 +1,55 @@
-Mon Nov  2 21:56:01 JST 2026
-light Tue Nov  3 09:47:52 JST 2026
-dark Tue Nov  3 09:51:33 JST 2026
-ax5 Tue Nov  3 09:55:05 JST 2026
-en Tue Nov  3 09:58:14 JST 2026
-
-== light: exit=65
-G3_captureNormalScreens passed 209.254s
-G3_accessibilityAudit passed 202.552s
-G3_captureWidgets failed 307.169s
-G3_captureStates failed 41809.403s
-G3_exploratory passed 77.966s
-== dark: exit=0
-G3_captureStates passed 0.379s
-G3_exploratory passed 0.072s
-G3_captureNormalScreens passed 149.525s
-G3_accessibilityAudit passed 0.117s
-G3_captureWidgets passed 40.861s
-== ax5: exit=65
-G3_captureNormalScreens passed 141.143s
-G3_captureStates passed 0.075s
-G3_exploratory passed 0.058s
-G3_captureWidgets failed 39.161s
-G3_accessibilityAudit passed 0.080s
-== en: exit=0
-G3_captureWidgets passed 38.941s
-G3_captureStates passed 0.061s
-G3_captureNormalScreens passed 139.545s
-G3_exploratory passed 0.074s
-G3_accessibilityAudit passed 0.059s
+=== variant=light ===
+Test Suite 'Selected tests' started at 2026-11-03 23:56:13.876.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 23:56:13.882.
+Test Suite 'G3EvidenceCaptureTests' started at 2026-11-03 23:56:13.882.
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_exploratory]' passed (86.368 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' passed (848.108 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (138.904 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (191.668 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (292.468 seconds).
+Test Suite 'G3EvidenceCaptureTests' passed at 2026-11-04 00:22:11.412.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 1557.516 (1557.530) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-04 00:22:11.416.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 1557.516 (1557.534) seconds
+Test Suite 'Selected tests' passed at 2026-11-04 00:22:11.417.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 1557.516 (1557.542) seconds
+** TEST EXECUTE SUCCEEDED **
+=== variant=dark ===
+Test Suite 'Selected tests' started at 2026-11-03 23:45:18.669.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 23:45:18.693.
+Test Suite 'G3EvidenceCaptureTests' started at 2026-11-03 23:45:18.694.
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (158.023 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (39.927 seconds).
+Test Suite 'G3EvidenceCaptureTests' passed at 2026-11-03 23:48:36.649.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 197.950 (197.955) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 23:48:36.656.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 197.950 (197.963) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 23:48:36.657.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 197.950 (197.987) seconds
+** TEST EXECUTE SUCCEEDED **
+=== variant=ax5 ===
+Test Suite 'Selected tests' started at 2026-11-03 23:48:49.728.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 23:48:49.730.
+Test Suite 'G3EvidenceCaptureTests' started at 2026-11-03 23:48:49.730.
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (41.306 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (150.841 seconds).
+Test Suite 'G3EvidenceCaptureTests' passed at 2026-11-03 23:52:01.881.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 192.147 (192.151) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 23:52:01.885.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 192.147 (192.155) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 23:52:01.886.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 192.147 (192.158) seconds
+** TEST EXECUTE SUCCEEDED **
+=== variant=en ===
+Test Suite 'Selected tests' started at 2026-11-03 23:52:13.631.
+Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-03 23:52:13.633.
+Test Suite 'G3EvidenceCaptureTests' started at 2026-11-03 23:52:13.633.
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (40.412 seconds).
+Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (147.057 seconds).
+Test Suite 'G3EvidenceCaptureTests' passed at 2026-11-03 23:55:21.109.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 187.469 (187.475) seconds
+Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-03 23:55:21.112.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 187.469 (187.479) seconds
+Test Suite 'Selected tests' passed at 2026-11-03 23:55:21.113.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 187.469 (187.482) seconds
+** TEST EXECUTE SUCCEEDED **
