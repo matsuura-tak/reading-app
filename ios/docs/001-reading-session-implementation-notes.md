@@ -260,3 +260,17 @@ designer が決めた文言キー（design/ 7、決定 82〜86）をアプリに
 - S-9 の `finish.summary`（何晩・合計分）は出さない（決定 89）。帯の題も出さず、`finish.title` は内容に1回。
 - S-10a の今の本なし：仮の本（書名・著者・p.61）を描かず、見本の一行 `store.preview.sample.line` と注記 `store.preview.sample.note` だけ（決定 88）。
 - 残り：S-7c の「写す」（`colophon.shutter`）とカメラの面は作っていない。S-3c・S-8b の「写す」も実際のカメラで撮る作りがなく、H23 の読み取りの設定だけを読む（Release では常に0文字になる）。S-8c に `manual.isEbook` と単位の切り替えがない。どれも決定 87〜96 の範囲の外で、報告で上げた。
+
+## 15. 14体目（BASE a2dfd57）：実際のカメラで撮る部品（裁定 42・43）
+- 写す面 `PhotoCaptureSurface`（ReadingApp/Model/CameraAndOCRService.swift）を1つ作り、S-3c（`mark.photo` → 撮る前の面、`mark.camera.hint`・`mark.shutter`）、S-8（`register.cover`・`scan.row.captureCover` → `BookAddStep.coverCamera`、`register.bookshelf` → `BookAddStep.bookshelfCamera`）、S-7c（上部、`colophon.shutter`）で使う。
+  - AVCaptureSession・AVCaptureDeviceInput（背面の広角）・AVCapturePhotoOutput・AVCaptureVideoPreviewLayer だけで作る（外部ライブラリなし）。
+  - セッションの構成・開始・停止・撮影は `PhotoCaptureEngine`（actor）の中だけで行う。actor の実行者は専用の `DispatchSerialQueue`（`unownedExecutor`）なので、`startRunning` は主スレッドの外の直列の流れで動く。
+  - 撮った写真は `AVCapturePhoto.fileDataRepresentation()` の記憶の中の Data → `UIImage(data:)` → `CameraAndOCRService.evaluate*`（Vision は `@concurrent` で主スレッドの外）に渡すだけ。ファイル、写真ライブラリ、キャッシュに書く API は呼ばない（AC-69、H27）。評価の Task が終われば参照は消える。
+  - 写真の向き：アプリは縦向き固定なので、写すときに写真の接続へ `videoRotationAngle = 90` を付け、Vision には `UIImage.imageOrientation` から作った `CGImagePropertyOrientation` を渡す（写真・スクリーンショットを選ぶ道も同じ関数を通るので、向きの付いた写真も正しく読む）。
+  - 許可：面を開いたとき、未決定なら `AVCaptureDevice.requestAccess(for: .video)` で聞く。拒否・制限なら呼び出し元が S-3／S-8／S-7c の中に `camera.denied`＋`camera.openSettings` を出す（決定 92）。
+  - カメラがない端末（シミュレーター）では許可を聞かず、`register.scanUnavailable` の文と写真から選ぶ道（S-3c は `mark.screenshot`、S-8 は `register.photo`、S-7c は `colophon.pickPhoto`）を出す。
+- **@unchecked Sendable を1か所だけ使った（`CaptureSessionHandle`）。理由**：AVCaptureSession は SDK で Sendable ではなく、プレビュー層（主アクター）に `AVCaptureVideoPreviewLayer.session` として渡す道が Swift 6 の型にはない（`sending` も、actor が持ち続ける値には使えない）。入れ物は `let session` を1つ持つだけで、主アクターはプレビュー層への代入しかしない。構成・開始・停止・撮影は actor の直列のキューだけで行う（Apple の AVCam と同じ分け方）。`@preconcurrency import AVFoundation` はファイル全体の検査を弱めるので使わなかった。
+- H23 との関係：`#if UITEST_HOOKS` の中で、H23 の差し替えがあるときだけ `mark.photo`・`register.cover`・`register.bookshelf`・`colophon.capture`（開いたとき）と写す面の「写す」（`.uiTestShutter`）が差し替えの値を読む。`#if UITEST_HOOKS` の外（Release）には、`ocrConfiguration`・`ocrHoldEnabled`・`isOCRHoldReleased` を読む行も `triggerPageOCR`・`evaluateConfiguredColophon`・`uiTestShutter` もない。
+- 単位の切り替え `ProgressUnitPicker`（BookmarkMarkFlowViews.swift）：標準の文字は `.segmented`、accessibility1 以上は選択肢を1行ずつの Button にして選んだ行に印（`.inline` の Picker は List／Form の外で何も描かなかった）。S-3a〜S-3c の `mark.progressUnit`、S-7a の `book.edit.progressUnit`、S-8c の `mark.progressUnit` で使う。
+- S-8c に `manual.isEbook`（Toggle）と `mark.progressUnit` を足し、`addBook(isEbook:progressUnit:)` に渡す。書名待ちの本を埋める道（`titlePendingMode`）は `populateTitlePendingBook` に電子書籍の引数がないため出していない。
+- `NSCameraUsageDescription`（Info.plist と InfoPlist.xcstrings の ja・en）を design/ 7-3 の文に合わせた。

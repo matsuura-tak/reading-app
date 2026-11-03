@@ -8,6 +8,10 @@ public enum BookAddStep: Equatable, Sendable {
     case menu
     case barcodeScanner
     case barcodeCameraDenied
+    /// 表紙・背表紙を写す面（`register.cover`、`scan.row.captureCover`）。
+    case coverCamera(isbn13: String?)
+    /// 本棚・積読をまとめて写す面（`register.bookshelf`）。
+    case bookshelfCamera
     case coverCandidates(isbn13: String?, candidates: [String])
     case coverEmpty(isbn13: String?)
     case manualInput(isbn13: String?, prefillTitle: String, prefillAuthor: String, prefillPublisher: String?)
@@ -86,6 +90,8 @@ public struct BookAddFlowSheetView: View {
     @State private var coverPickTapCount: Int = 0
     @State private var selectedCoverPhotoItem: PhotosPickerItem?
     @State private var selectedBookshelfPhotoItem: PhotosPickerItem?
+    /// 写した画像を Vision が読んでいる間 true（写す面に ProgressView と `mark.ocr.recognizing`）。
+    @State private var isRecognizingPhoto = false
 
     public init(model: ReadingAppModel, titlePendingMode: Bool = false, initialStep: BookAddStep = .menu) {
         self.model = model
@@ -101,11 +107,11 @@ public struct BookAddFlowSheetView: View {
                 : String(localized: "register.navTitle")
         case .barcodeScanner:
             return String(localized: "scan.navTitle")
-        case .coverCandidates, .coverEmpty:
+        case .coverCamera, .coverCandidates, .coverEmpty:
             return String(localized: "cover.navTitle")
         case .manualInput:
             return String(localized: "register.manual")
-        case .bookshelfCandidates:
+        case .bookshelfCamera, .bookshelfCandidates:
             return String(localized: "bookshelf.navTitle")
         }
     }
@@ -125,11 +131,11 @@ public struct BookAddFlowSheetView: View {
             return "register.cancel"
         case .barcodeScanner:
             return "scan.cancel"
-        case .coverCandidates, .coverEmpty:
+        case .coverCamera, .coverCandidates, .coverEmpty:
             return "cover.cancel"
         case .manualInput:
             return "manual.cancel"
-        case .bookshelfCandidates:
+        case .bookshelfCamera, .bookshelfCandidates:
             return "bookshelf.cancel"
         }
     }
@@ -157,6 +163,10 @@ public struct BookAddFlowSheetView: View {
                         barcodeScannerContent
                     case .barcodeCameraDenied:
                         barcodeCameraDeniedContent
+                    case .coverCamera(let isbn13):
+                        coverCameraContent(isbn13: isbn13)
+                    case .bookshelfCamera:
+                        bookshelfCameraContent
                     case .coverCandidates(let isbn13, let candidates):
                         coverCandidatesContent(isbn13: isbn13, candidates: candidates)
                     case .coverEmpty(let isbn13):
@@ -179,31 +189,24 @@ public struct BookAddFlowSheetView: View {
         }
         .onChange(of: selectedCoverPhotoItem) { _, newItem in
             guard let newItem else { return }
+            var isbn13: String?
+            if case .coverCamera(let cameraISBN) = step { isbn13 = cameraISBN }
             Task { @MainActor in
-                if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
-                    let lines = CameraAndOCRService.evaluateCoverLines(from: image)
-                    coverPickedTitle = ""
-                    coverPickedAuthor = ""
-                    coverPickTapCount = 0
-                    if lines.isEmpty {
-                        step = .coverEmpty(isbn13: nil)
-                    } else {
-                        step = .coverCandidates(isbn13: nil, candidates: lines)
-                    }
-                    model.currentScreen = .coverScan
-                    model.notifyHookChanged()
+                let image = await CameraAndOCRService.loadUIImage(from: newItem)
+                // 同じ写真を選び直しても読めるように外す（画像は残さない。AC-69）。
+                selectedCoverPhotoItem = nil
+                if let image {
+                    await recognizeCover(image, isbn13: isbn13)
                 }
             }
         }
         .onChange(of: selectedBookshelfPhotoItem) { _, newItem in
             guard let newItem else { return }
             Task { @MainActor in
-                if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
-                    let catBooks = model.store.catalogDB.allBooks()
-                    let cands = CameraAndOCRService.evaluateBookshelfSpines(from: image, catalog: catBooks)
-                    step = .bookshelfCandidates(spines: cands, selectedIds: [])
-                    model.currentScreen = .bookshelfScan
-                    model.notifyHookChanged()
+                let image = await CameraAndOCRService.loadUIImage(from: newItem)
+                selectedBookshelfPhotoItem = nil
+                if let image {
+                    await recognizeBookshelf(image)
                 }
             }
         }
@@ -346,7 +349,8 @@ public struct BookAddFlowSheetView: View {
                 showDiscardScanConfirm = true
                 model.notifyHookChanged()
             }
-        case .coverCandidates, .coverEmpty, .manualInput, .bookshelfCandidates:
+        case .coverCamera, .bookshelfCamera, .coverCandidates, .coverEmpty, .manualInput, .bookshelfCandidates:
+            isRecognizingPhoto = false
             step = .menu
             model.currentScreen = .bookAddActionSheet
             model.notifyHookChanged()
@@ -393,7 +397,13 @@ public struct BookAddFlowSheetView: View {
 
             Button {
                 model.store.activeErrorKey = nil
-                openCoverOCRFlow(isbn13: nil)
+                if isCameraDeniedOrRestricted {
+                    // カメラを断っているとき：カメラ画面を開かず S-8 の中に `camera.denied`（design/ 5 の S-8、AC-12）。
+                    step = .barcodeCameraDenied
+                    model.notifyHookChanged()
+                } else {
+                    openCoverOCRFlow(isbn13: nil)
+                }
             } label: {
                 Text(String(localized: "register.cover"))
                     .frame(maxWidth: .infinity)
@@ -401,33 +411,12 @@ public struct BookAddFlowSheetView: View {
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("register.cover")
 
-            if model.store.ocrConfiguration != nil {
-                Button {
-                    model.store.activeErrorKey = nil
-                    openCoverOCRFlow(isbn13: nil)
-                } label: {
-                    Text(String(localized: "register.screenshot"))
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                .accessibilityIdentifier("register.screenshot")
-            } else {
-                let screenshotLabel = PhotosPickerThemedLabel(
-                    text: String(localized: "register.screenshot"),
-                    palette: palette
-                )
-                PhotosPicker(
-                    selection: $selectedCoverPhotoItem,
-                    matching: .screenshots
-                ) {
-                    screenshotLabel
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("register.screenshot")
-            }
+            registerScreenshotControl
 
             if !titlePendingMode {
+                #if UITEST_HOOKS
                 if model.store.ocrConfiguration != nil {
+                    // H23 の差し替えがあるときは、カメラの代わりに差し替えの背表紙を読む（受け入れテスト。Release には無い）。
                     Button {
                         model.store.activeErrorKey = nil
                         let rawSpines = model.store.ocrConfiguration?.spineItems ?? []
@@ -443,19 +432,11 @@ public struct BookAddFlowSheetView: View {
                     .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
                     .accessibilityIdentifier("register.bookshelf")
                 } else {
-                    let bookshelfLabel = PhotosPickerThemedLabel(
-                        text: String(localized: "register.bookshelf"),
-                        palette: palette
-                    )
-                    PhotosPicker(
-                        selection: $selectedBookshelfPhotoItem,
-                        matching: .images
-                    ) {
-                        bookshelfLabel
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("register.bookshelf")
+                    registerBookshelfCameraButton
                 }
+                #else
+                registerBookshelfCameraButton
+                #endif
             }
 
             Button {
@@ -509,17 +490,227 @@ public struct BookAddFlowSheetView: View {
         .accessibilityIdentifier("sheet.addBook")
     }
 
+    private var isCameraDeniedOrRestricted: Bool {
+        let status = CameraAndOCRService.currentCameraAuthorizationStatus(overrideStatus: model.store.cameraAuthorization)
+        return status == "denied" || status == "restricted"
+    }
+
+    /// 表紙・背表紙を写す面（S-8 の「カメラで1枚写す」）を開く。
     private func openCoverOCRFlow(isbn13: String?) {
         coverPickedTitle = ""
         coverPickedAuthor = ""
         coverPickTapCount = 0
-        let covLines = model.store.ocrConfiguration?.coverLines ?? []
-        if covLines.isEmpty {
-            step = .coverEmpty(isbn13: isbn13)
-        } else {
-            step = .coverCandidates(isbn13: isbn13, candidates: covLines)
+        #if UITEST_HOOKS
+        if let stub = model.store.ocrConfiguration {
+            // H23 の差し替えがあるときは、カメラの代わりに差し替えの行を読む（受け入れテスト。Release には無い）。
+            let covLines = stub.coverLines ?? []
+            if covLines.isEmpty {
+                step = .coverEmpty(isbn13: isbn13)
+            } else {
+                step = .coverCandidates(isbn13: isbn13, candidates: covLines)
+            }
+            model.currentScreen = .coverScan
+            model.notifyHookChanged()
+            return
         }
+        #endif
+        isRecognizingPhoto = false
+        step = .coverCamera(isbn13: isbn13)
         model.currentScreen = .coverScan
+        model.notifyHookChanged()
+    }
+
+    /// `register.screenshot`（PhotosPicker、許可を求めない。AC-12、AC-137）。
+    @ViewBuilder
+    private var registerScreenshotControl: some View {
+        #if UITEST_HOOKS
+        if model.store.ocrConfiguration != nil {
+            Button {
+                model.store.activeErrorKey = nil
+                openCoverOCRFlow(isbn13: nil)
+            } label: {
+                Text(String(localized: "register.screenshot"))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("register.screenshot")
+        } else {
+            registerScreenshotPicker
+        }
+        #else
+        registerScreenshotPicker
+        #endif
+    }
+
+    private var registerScreenshotPicker: some View {
+        // PhotosPicker の label は Sendable の閉包なので、主アクターの palette は外で読んで渡す。
+        let label = PhotosPickerThemedLabel(
+            text: String(localized: "register.screenshot"),
+            palette: palette
+        )
+        return PhotosPicker(
+            selection: $selectedCoverPhotoItem,
+            matching: .screenshots
+        ) {
+            label
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("register.screenshot")
+    }
+
+    /// `register.bookshelf`：本棚・積読をまとめて写す面を開く。
+    private var registerBookshelfCameraButton: some View {
+        Button {
+            model.store.activeErrorKey = nil
+            if isCameraDeniedOrRestricted {
+                step = .barcodeCameraDenied
+            } else {
+                isRecognizingPhoto = false
+                step = .bookshelfCamera
+                model.currentScreen = .bookshelfScan
+            }
+            model.notifyHookChanged()
+        } label: {
+            Text(String(localized: "register.bookshelf"))
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+        .accessibilityIdentifier("register.bookshelf")
+    }
+
+    /// 写す面で、写真から選ぶ補助（`register.photo`。design/ 6 の S-8 の写真全般を選ぶ PhotosPicker）。
+    private func registerPhotoPicker(selection: Binding<PhotosPickerItem?>) -> some View {
+        let label = PhotosPickerThemedLabel(
+            text: String(localized: "colophon.pickPhoto"),
+            palette: palette
+        )
+        return PhotosPicker(selection: selection, matching: .images) {
+            label
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("register.photo")
+    }
+
+    private var photoRecognizingRow: some View {
+        HStack(spacing: ThemeSpace.s8) {
+            ProgressView()
+                .tint(palette.actionTint)
+            Text(String(localized: "mark.ocr.recognizing"))
+                .font(.subheadline)
+                .foregroundStyle(palette.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("mark.ocr.recognizing")
+    }
+
+    private func showCameraDeniedInSheet() {
+        // 写す面で拒否された：S-8 に戻って `camera.denied` を出す（design/ 5 の S-8b・S-8d）。
+        isRecognizingPhoto = false
+        step = .barcodeCameraDenied
+        model.currentScreen = .bookAddActionSheet
+        model.notifyHookChanged()
+    }
+
+    /// S-8 の表紙・背表紙を写す面。
+    private func coverCameraContent(isbn13: String?) -> some View {
+        VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+            if isRecognizingPhoto {
+                photoRecognizingRow
+            }
+            PhotoCaptureSurface(
+                hint: nil,
+                hintIdentifier: nil,
+                shutterTitle: String(localized: "mark.shutter"),
+                shutterIdentifier: "mark.shutter",
+                previewLabel: String(localized: "register.cover"),
+                onCaptured: { image in
+                    Task { @MainActor in
+                        await recognizeCover(image, isbn13: isbn13)
+                    }
+                },
+                onDenied: {
+                    showCameraDeniedInSheet()
+                }
+            ) {
+                registerPhotoPicker(selection: $selectedCoverPhotoItem)
+            }
+            .disabled(isRecognizingPhoto)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("sheet.cover.camera")
+    }
+
+    /// S-8 の本棚・積読をまとめて写す面。
+    private var bookshelfCameraContent: some View {
+        VStack(alignment: .leading, spacing: ThemeSpace.s16) {
+            if isRecognizingPhoto {
+                photoRecognizingRow
+            }
+            PhotoCaptureSurface(
+                hint: nil,
+                hintIdentifier: nil,
+                shutterTitle: String(localized: "mark.shutter"),
+                shutterIdentifier: "mark.shutter",
+                previewLabel: String(localized: "register.bookshelf"),
+                onCaptured: { image in
+                    Task { @MainActor in
+                        await recognizeBookshelf(image)
+                    }
+                },
+                onDenied: {
+                    showCameraDeniedInSheet()
+                }
+            ) {
+                registerPhotoPicker(selection: $selectedBookshelfPhotoItem)
+            }
+            .disabled(isRecognizingPhoto)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("sheet.bookshelf.camera")
+    }
+
+    /// 写した（選んだ）表紙・背表紙を端末内の Vision で読み、S-8b へ。画像は記憶の中だけで、読み終えたら捨てる（AC-69、H27）。
+    private func recognizeCover(_ image: UIImage?, isbn13: String?) async {
+        coverPickedTitle = ""
+        coverPickedAuthor = ""
+        coverPickTapCount = 0
+        var lines: [String] = []
+        if let image {
+            isRecognizingPhoto = true
+            lines = await CameraAndOCRService.evaluateCoverLines(from: image)
+            isRecognizingPhoto = false
+        }
+        // 読む間に取り消して一覧に戻っていたら、結果で画面を変えない。
+        switch step {
+        case .coverCamera, .menu, .barcodeCameraDenied:
+            break
+        default:
+            return
+        }
+        step = lines.isEmpty ? .coverEmpty(isbn13: isbn13) : .coverCandidates(isbn13: isbn13, candidates: lines)
+        model.currentScreen = .coverScan
+        model.notifyHookChanged()
+    }
+
+    /// 写した（選んだ）本棚の写真を端末内の Vision で読み、S-8d へ。画像は記憶の中だけ（AC-69、H27）。
+    private func recognizeBookshelf(_ image: UIImage?) async {
+        var cands: [BookshelfSpineCandidate] = []
+        if let image {
+            isRecognizingPhoto = true
+            let catBooks = model.store.catalogDB.allBooks()
+            cands = await CameraAndOCRService.evaluateBookshelfSpines(from: image, catalog: catBooks)
+            isRecognizingPhoto = false
+        }
+        switch step {
+        case .bookshelfCamera, .menu:
+            break
+        default:
+            return
+        }
+        step = .bookshelfCandidates(spines: cands, selectedIds: [])
+        model.currentScreen = .bookshelfScan
         model.notifyHookChanged()
     }
 
@@ -896,14 +1087,7 @@ public struct BookAddFlowSheetView: View {
             .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
             .accessibilityIdentifier("camera.openSettings")
 
-            Button {
-                openCoverOCRFlow(isbn13: nil)
-            } label: {
-                Text(String(localized: "register.screenshot"))
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
-            .accessibilityIdentifier("register.screenshot")
+            registerScreenshotControl
 
             Button {
                 manualISBN = nil
@@ -1110,6 +1294,35 @@ public struct BookAddFlowSheetView: View {
                     .accessibilityValue(manualAuthor)
             }
 
+            if !titlePendingMode {
+                // design/ 5 の S-8c：電子書籍の切り替え（`manual.isEbook`）と単位（`mark.progressUnit`）。AC-141。
+                HStack {
+                    Text(String(localized: "manual.isEbook"))
+                        .font(.body)
+                        .foregroundStyle(palette.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    Toggle(String(localized: "manual.isEbook"), isOn: $manualIsEbook)
+                        .labelsHidden()
+                        .tint(palette.actionTint)
+                        .accessibilityIdentifier("manual.isEbook")
+                }
+                .padding(ThemeSpace.s12)
+                .background(
+                    RoundedRectangle(cornerRadius: ThemeRadius.control, style: .continuous)
+                        .fill(palette.groupedRow)
+                )
+
+                ProgressUnitPicker(selection: Binding(
+                    get: { manualProgressUnit },
+                    set: { newUnit in
+                        manualProgressUnit = newUnit
+                        // S-3 と同じく、位置・％を選んだら電子書籍にする。
+                        if newUnit != .page { manualIsEbook = true }
+                    }
+                ), identifier: "mark.progressUnit")
+            }
+
             if catalogLookupPending {
                 // H33 の catalog.lookup を止めている間：0件の文を先に出さず、0.3秒を超えたら候補の行の形の灰の帯。
                 catalogLookupPlaceholder(rowCount: 3)
@@ -1216,7 +1429,9 @@ public struct BookAddFlowSheetView: View {
                     publishedYear: entry.publishedYear,
                     seriesTitle: entry.seriesTitle,
                     volumeNumber: entry.volumeNumber,
-                    ndc: entry.ndc
+                    ndc: entry.ndc,
+                    isEbook: manualIsEbook,
+                    progressUnit: manualProgressUnit
                 )
                 if case .success = res {
                     closeSheet()
@@ -1238,7 +1453,9 @@ public struct BookAddFlowSheetView: View {
                 isbn13: manualISBN,
                 title: manualTitle,
                 author: manualAuthor,
-                publisher: manualPublisher.isEmpty ? nil : manualPublisher
+                publisher: manualPublisher.isEmpty ? nil : manualPublisher,
+                isEbook: manualIsEbook,
+                progressUnit: manualProgressUnit
             )
             if case .success = res {
                 closeSheet()
@@ -1351,4 +1568,17 @@ struct PhotosPickerThemedLabel: View {
                     .strokeBorder(palette.hairline, lineWidth: 1)
             )
     }
+}
+
+#Preview("S-8/coverCamera") {
+    BookAddFlowSheetView(model: ReadingAppModel(), initialStep: .coverCamera(isbn13: nil))
+}
+
+#Preview("S-8/bookshelfCamera") {
+    BookAddFlowSheetView(model: ReadingAppModel(), initialStep: .bookshelfCamera)
+}
+
+#Preview("S-8c Manual Input AX5") {
+    BookAddFlowSheetView(model: ReadingAppModel(), initialStep: .manualInput(isbn13: nil, prefillTitle: "", prefillAuthor: "", prefillPublisher: nil))
+        .environment(\.dynamicTypeSize, .accessibility5)
 }

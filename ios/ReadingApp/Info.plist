@@ -41,7 +41,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>本のページ番号や残したい一行、裏表紙のバーコード、表紙や奥付の文字を読み取るためにカメラを使います。撮影した画像は文字の読み取りにだけ使い、端末にも外にも保存しません。</string>
+	<string>本のバーコードや表紙・背表紙・奥付、および読み止めたページの文字をこの iPhone の中で読み取るためにカメラを使います。写真は保存せず、外部へ送信しません。</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>PrivacyPolicyURL</key>

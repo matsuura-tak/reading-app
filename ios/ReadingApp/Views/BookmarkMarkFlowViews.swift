@@ -95,16 +95,21 @@ public struct BookmarkMarkFlowSheet: View {
             bottomSaveInset
         }
         .background(palette.bgPrimary.ignoresSafeArea())
+        #if UITEST_HOOKS
         .onChange(of: model.store.isOCRHoldReleased) { _, released in
             if released, case .ocrProcessing = step {
                 completePageOCREvaluation()
             }
         }
+        #endif
         .onChange(of: selectedScreenshotItem) { _, newItem in
             guard let newItem else { return }
             Task { @MainActor in
-                if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
-                    applyVisionPageOCRResult(CameraAndOCRService.evaluatePageOCR(from: image))
+                let image = await CameraAndOCRService.loadUIImage(from: newItem)
+                // 同じスクリーンショットを選び直しても読めるように外す（画像は残さない。AC-69）。
+                selectedScreenshotItem = nil
+                if let image {
+                    recognizePage(image)
                 }
             }
         }
@@ -227,7 +232,7 @@ public struct BookmarkMarkFlowSheet: View {
                     step = .ocrCameraDenied
                     model.currentScreen = .bookmarkMarkCamera
                 } else {
-                    triggerPageOCR()
+                    openPageCamera()
                 }
                 model.notifyHookChanged()
             } label: {
@@ -236,26 +241,7 @@ public struct BookmarkMarkFlowSheet: View {
             .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
             .accessibilityIdentifier("mark.photo")
 
-            if model.store.ocrConfiguration != nil {
-                Button {
-                    model.store.activeErrorKey = nil
-                    triggerPageOCR()
-                    model.notifyHookChanged()
-                } label: {
-                    Text(String(localized: "mark.screenshot"))
-                }
-                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                .accessibilityIdentifier("mark.screenshot")
-            } else {
-                PhotosPicker(
-                    selection: $selectedScreenshotItem,
-                    matching: .screenshots
-                ) {
-                    Text(String(localized: "mark.screenshot"))
-                }
-                .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-                .accessibilityIdentifier("mark.screenshot")
-            }
+            screenshotPickerControl
 
             Button {
                 model.store.activeErrorKey = nil
@@ -366,34 +352,65 @@ public struct BookmarkMarkFlowSheet: View {
 
     // MARK: - S-3c OCR Camera & Candidates
 
+    /// S-3c の撮る前（design/ 5）：カメラの面に案内 `mark.camera.hint`、枠、「写す」（`mark.shutter`）、スクリーンショットから選ぶ道。
     private var markOCRCameraContent: some View {
-        VStack(spacing: ThemeSpace.s24) {
-            RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                .fill(palette.groupedRow)
-                .frame(minHeight: 180)
-                .overlay(
-                    RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
-                        .stroke(palette.hairline, lineWidth: 1)
-                )
-                .overlay {
-                    Text(String(localized: "mark.camera.hint"))
-                        .font(.subheadline)
-                        .foregroundStyle(palette.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .padding(ThemeSpace.s16)
-                        .accessibilityIdentifier("mark.camera.hint")
-                }
-
-            Button {
-                triggerPageOCR()
-            } label: {
-                Text(String(localized: "mark.shutter"))
+        PhotoCaptureSurface(
+            hint: String(localized: "mark.camera.hint"),
+            hintIdentifier: "mark.camera.hint",
+            shutterTitle: String(localized: "mark.shutter"),
+            shutterIdentifier: "mark.shutter",
+            previewLabel: String(localized: "mark.camera.hint"),
+            onCaptured: { image in
+                recognizePage(image)
+            },
+            onDenied: {
+                // 写す面を開いたときに拒否された（またはすでに拒否）：S-3 に戻って `camera.denied` を出す（design/ 5 の S-3c）。
+                step = .ocrCameraDenied
+                model.currentScreen = .bookmarkMarkCamera
+                model.notifyHookChanged()
             }
-            .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
-            .accessibilityIdentifier("mark.shutter")
+        ) {
+            screenshotPickerControl
         }
+        #if UITEST_HOOKS
+        .uiTestShutter(model.store.ocrConfiguration != nil ? { triggerPageOCR() } : nil)
+        #endif
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("sheet.mark.camera")
+    }
+
+    /// `mark.screenshot`（PhotosPicker、許可を求めない。AC-142）。
+    @ViewBuilder
+    private var screenshotPickerControl: some View {
+        #if UITEST_HOOKS
+        if model.store.ocrConfiguration != nil {
+            // H23 の差し替えがあるときは、選ぶ画面を開かずに差し替えの値を読む（テストのつなぎ口。Release には無い）。
+            Button {
+                model.store.activeErrorKey = nil
+                triggerPageOCR()
+                model.notifyHookChanged()
+            } label: {
+                Text(String(localized: "mark.screenshot"))
+            }
+            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+            .accessibilityIdentifier("mark.screenshot")
+        } else {
+            screenshotPhotosPicker
+        }
+        #else
+        screenshotPhotosPicker
+        #endif
+    }
+
+    private var screenshotPhotosPicker: some View {
+        PhotosPicker(
+            selection: $selectedScreenshotItem,
+            matching: .screenshots
+        ) {
+            Text(String(localized: "mark.screenshot"))
+        }
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+        .accessibilityIdentifier("mark.screenshot")
     }
 
     private var markOCRProcessingContent: some View {
@@ -685,7 +702,7 @@ public struct BookmarkMarkFlowSheet: View {
 
         return VStack(alignment: .leading, spacing: ThemeSpace.s8) {
             if let book {
-                Picker(String(localized: "mark.progressUnit.label"), selection: Binding(
+                ProgressUnitPicker(selection: Binding(
                     get: { book.progressUnit },
                     set: { newUnit in
                         _ = model.store.updateBook(
@@ -697,13 +714,7 @@ public struct BookmarkMarkFlowSheet: View {
                         )
                         model.notifyHookChanged()
                     }
-                )) {
-                    Text(String(localized: "mark.progressUnit.page")).tag(ProgressUnit.page)
-                    Text(String(localized: "mark.progressUnit.location")).tag(ProgressUnit.location)
-                    Text("%").tag(ProgressUnit.percent)
-                }
-                .progressUnitPickerStyle()
-                .accessibilityIdentifier("mark.progressUnit")
+                ), identifier: "mark.progressUnit")
             }
 
             Text(labelText)
@@ -757,6 +768,41 @@ public struct BookmarkMarkFlowSheet: View {
         }
     }
 
+    /// `mark.photo`：写す面（S-3c の撮る前）を開く。許可が未決定なら、面を開いたときに OS が聞く。
+    private func openPageCamera() {
+        #if UITEST_HOOKS
+        if model.store.ocrConfiguration != nil {
+            // H23 の差し替えがあるときは、カメラの代わりに差し替えの値を読む（受け入れテスト。Release には無い）。
+            triggerPageOCR()
+            return
+        }
+        #endif
+        step = .ocrCamera
+        model.currentScreen = .bookmarkMarkCamera
+    }
+
+    /// 写した（または選んだ）画像を端末内の Vision で読む。読む間は `mark.ocr.recognizing`。
+    /// 読む間に `mark.manual` か `mark.pageOnly` に移ったら、あとから返った結果で上書きしない（AC-94）。
+    /// 画像は記憶の中の UIImage だけで、読み終えたら参照を捨てる（AC-69、H27）。
+    private func recognizePage(_ image: UIImage?) {
+        guard let image else {
+            step = .ocrEmpty
+            model.currentScreen = .bookmarkMarkCamera
+            model.notifyHookChanged()
+            return
+        }
+        step = .ocrProcessing
+        model.currentScreen = .bookmarkMarkCamera
+        model.notifyHookChanged()
+        Task { @MainActor in
+            let result = await CameraAndOCRService.evaluatePageOCR(from: image)
+            guard case .ocrProcessing = step else { return }
+            applyVisionPageOCRResult(result)
+        }
+    }
+
+    #if UITEST_HOOKS
+    /// H23（contracts/test-hooks.md）の差し替えの値で読み取りを済ませる。受け入れテストだけの道で、Release には無い。
     private func triggerPageOCR() {
         model.store.clock.beginInterval(.markWait)
         if model.store.ocrHoldEnabled && !model.store.isOCRHoldReleased {
@@ -790,6 +836,7 @@ public struct BookmarkMarkFlowSheet: View {
         }
         model.notifyHookChanged()
     }
+    #endif
 
     /// 選んだ列の文を mark.lineField の値にする（AC-65、AC-66）。次に欄に触れたときは全体を選ぶ。
     private func fillLineField(columns: [OCRPageColumnItem], selectedIndices: [Int]) {
@@ -841,6 +888,83 @@ public struct BookmarkMarkFlowSheet: View {
     }
 }
 
+/// 進み具合の単位の切り替え（`mark.progressUnit`、`book.edit.progressUnit`。S-3a〜S-3c、S-7a、S-8c）。
+/// 標準の文字の大きさでは `.segmented` の Picker。accessibility1 以上では、セグメントの字が大きくならず切れるため、
+/// 選択肢を1行に1つずつ縦に並べ、選んだ行に印を付ける（決定 93 の「3行にチェック」。`.inline` の Picker は List／Form の外では何も描かないため、
+/// 同じ形を Button の行で作る。tokens.md 7 の「大きい文字で切れない形」）。
+public struct ProgressUnitPicker: View {
+    @Binding private var selection: ProgressUnit
+    private let identifier: String
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.themePalette) private var palette
+
+    public init(selection: Binding<ProgressUnit>, identifier: String) {
+        _selection = selection
+        self.identifier = identifier
+    }
+
+    private func title(for unit: ProgressUnit) -> String {
+        switch unit {
+        case .page: return String(localized: "mark.progressUnit.page")
+        case .location: return String(localized: "mark.progressUnit.location")
+        case .percent: return String(localized: "mark.progressUnit.percent")
+        }
+    }
+
+    public var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(String(localized: "mark.progressUnit.label"))
+                    .font(.subheadline)
+                    .foregroundStyle(palette.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+                ForEach(ProgressUnit.allCases, id: \.self) { unit in
+                    Button {
+                        selection = unit
+                    } label: {
+                        HStack(spacing: ThemeSpace.s8) {
+                            Text(title(for: unit))
+                                .font(.body)
+                                .foregroundStyle(palette.textPrimary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: ThemeSpace.s8)
+                            if selection == unit {
+                                Image(systemName: "checkmark")
+                                    .font(.body.weight(.semibold))
+                                    .foregroundStyle(palette.actionTint)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                        .padding(.vertical, ThemeSpace.s12)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selection == unit ? .isSelected : [])
+                    if unit != ProgressUnit.allCases.last {
+                        Divider()
+                    }
+                }
+            }
+            .padding(.horizontal, ThemeSpace.s12)
+            .background(
+                RoundedRectangle(cornerRadius: ThemeRadius.control, style: .continuous)
+                    .fill(palette.groupedRow)
+            )
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier(identifier)
+        } else {
+            Picker(String(localized: "mark.progressUnit.label"), selection: $selection) {
+                ForEach(ProgressUnit.allCases, id: \.self) { unit in
+                    Text(title(for: unit)).tag(unit)
+                }
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier(identifier)
+        }
+    }
+}
+
 #Preview("S-3 Mark Select") {
     let model = ReadingAppModel()
     BookmarkMarkFlowSheet(model: model, initialStep: .select)
@@ -865,4 +989,27 @@ public struct BookmarkMarkFlowSheet: View {
     BookmarkMarkFlowSheet(model: model, initialStep: .ocrCandidates(columns: cols, selectedIndices: [2]))
         .environment(\.dynamicTypeSize, .accessibility5)
         .preferredColorScheme(.dark)
+}
+
+#Preview("S-3c/camera") {
+    BookmarkMarkFlowSheet(model: ReadingAppModel(), initialStep: .ocrCamera)
+}
+
+#Preview("S-3c/recognizing") {
+    BookmarkMarkFlowSheet(model: ReadingAppModel(), initialStep: .ocrProcessing)
+}
+
+#Preview("S-3c/empty") {
+    BookmarkMarkFlowSheet(model: ReadingAppModel(), initialStep: .ocrEmpty)
+}
+
+#Preview("S-3/cameraDenied") {
+    BookmarkMarkFlowSheet(model: ReadingAppModel(), initialStep: .ocrCameraDenied)
+}
+
+#Preview("ProgressUnitPicker AX5") {
+    @Previewable @State var unit: ProgressUnit = .location
+    ProgressUnitPicker(selection: $unit, identifier: "mark.progressUnit")
+        .padding()
+        .environment(\.dynamicTypeSize, .accessibility5)
 }

@@ -1053,13 +1053,7 @@ public struct BookEditSheetView: View {
                             .stroke(palette.hairline, lineWidth: 1)
                     )
 
-                    Picker(String(localized: "mark.progressUnit.label"), selection: $editedUnit) {
-                        Text(String(localized: "mark.progressUnit.page")).tag(ProgressUnit.page)
-                        Text(String(localized: "mark.progressUnit.location")).tag(ProgressUnit.location)
-                        Text("%").tag(ProgressUnit.percent)
-                    }
-                    .progressUnitPickerStyle()
-                    .accessibilityIdentifier("book.edit.progressUnit")
+                    ProgressUnitPicker(selection: $editedUnit, identifier: "book.edit.progressUnit")
                 }
                 .padding(ThemeSpace.s24)
             }
@@ -1351,6 +1345,8 @@ public struct ColophonOCRSheetView: View {
     @State private var yearText: String = ""
     @State private var isbnText: String = ""
     @State private var selectedPhotoItem: PhotosPickerItem?
+    /// 写す面を開いたときに許可を拒否された（S-7c の中に `camera.denied` を出す）。
+    @State private var cameraDeniedOnSurface = false
     @Environment(\.themePalette) private var palette
 
     public init(model: ReadingAppModel, bookId: UUID, initialPhase: ColophonOCRPhase = .idle, onClose: @escaping () -> Void) {
@@ -1361,8 +1357,50 @@ public struct ColophonOCRSheetView: View {
     }
 
     private var isCameraDenied: Bool {
+        if cameraDeniedOnSurface { return true }
         let status = CameraAndOCRService.currentCameraAuthorizationStatus(overrideStatus: model.store.cameraAuthorization)
         return status == "denied" || status == "restricted"
+    }
+
+    /// S-7c の上部（design/ 5）：奥付のカメラプレビューと「写す」（`colophon.shutter`）。読み取る前だけ出す。
+    private var colophonCameraSurface: some View {
+        PhotoCaptureSurface(
+            hint: nil,
+            hintIdentifier: nil,
+            shutterTitle: String(localized: "colophon.shutter"),
+            shutterIdentifier: "colophon.shutter",
+            previewLabel: String(localized: "colophon.capture"),
+            onCaptured: { image in
+                recognizeColophon(image)
+            },
+            onDenied: {
+                cameraDeniedOnSurface = true
+                model.notifyHookChanged()
+            }
+        ) {
+            EmptyView()
+        }
+        #if UITEST_HOOKS
+        .uiTestShutter(model.store.ocrConfiguration?.colophon != nil ? { evaluateConfiguredColophon() } : nil)
+        #endif
+    }
+
+    /// 写した奥付を端末内の Vision で読む。読む間は `mark.ocr.recognizing`、欄はそのまま手で打てる。
+    /// 画像は記憶の中だけで、読み終えたら捨てる（AC-69、H27）。
+    private func recognizeColophon(_ image: UIImage?) {
+        guard let image else {
+            phase = .nothingRead
+            model.notifyHookChanged()
+            return
+        }
+        phase = .recognizing
+        model.notifyHookChanged()
+        Task { @MainActor in
+            let result = await CameraAndOCRService.evaluateColophon(from: image)
+            guard phase == .recognizing else { return }
+            applyColophonResult(result)
+            model.notifyHookChanged()
+        }
     }
 
     public var body: some View {
@@ -1411,6 +1449,10 @@ public struct ColophonOCRSheetView: View {
                         }
                     }
 
+                    if !isCameraDenied && phase == .idle {
+                        colophonCameraSurface
+                    }
+
                     PhotosPicker(
                         selection: $selectedPhotoItem,
                         matching: .images
@@ -1424,7 +1466,7 @@ public struct ColophonOCRSheetView: View {
                         phase = .recognizing
                         Task { @MainActor in
                             if let image = await CameraAndOCRService.loadUIImage(from: newItem) {
-                                applyColophonResult(CameraAndOCRService.evaluateColophon(from: image))
+                                applyColophonResult(await CameraAndOCRService.evaluateColophon(from: image))
                             } else {
                                 phase = .idle
                             }
@@ -1511,6 +1553,7 @@ public struct ColophonOCRSheetView: View {
             .background(palette.bgPrimary)
         }
         .background(palette.bgPrimary.ignoresSafeArea())
+        #if UITEST_HOOKS
         .onAppear {
             evaluateConfiguredColophon()
         }
@@ -1519,6 +1562,7 @@ public struct ColophonOCRSheetView: View {
                 evaluateConfiguredColophon()
             }
         }
+        #endif
     }
 
     /// 読み取り中・読み取れなかったときの行（design/ 5 の S-7c の「読み込み中」「空」）。欄は下にそのまま出し、手で打てる。
@@ -1561,27 +1605,29 @@ public struct ColophonOCRSheetView: View {
         }
     }
 
-    /// 撮り直す（`colophon.retake`）。H23 の読み取りの設定があるときはそれを読み直し、ないときは写真を選び直す。
+    /// 撮り直す（`colophon.retake`）。読み取る前に戻し、上部の写す面（と写真から読み取る）をもう一度出す。
     @ViewBuilder
     private var colophonRetakeButton: some View {
-        if model.store.ocrConfiguration?.colophon != nil {
-            Button {
+        Button {
+            #if UITEST_HOOKS
+            if model.store.ocrConfiguration?.colophon != nil {
+                // H23 の差し替えがあるときは、それを読み直す（受け入れテスト。Release には無い）。
                 evaluateConfiguredColophon()
-            } label: {
-                Text(String(localized: "mark.retake"))
+                return
             }
-            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-            .accessibilityIdentifier("colophon.retake")
-        } else {
-            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                Text(String(localized: "mark.retake"))
-            }
-            .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
-            .accessibilityIdentifier("colophon.retake")
+            #endif
+            phase = .idle
+            model.notifyHookChanged()
+        } label: {
+            Text(String(localized: "mark.retake"))
         }
+        .buttonStyle(ThemeSecondaryButtonStyle(palette: palette))
+        .accessibilityIdentifier("colophon.retake")
     }
 
+    #if UITEST_HOOKS
     /// H23 の奥付の読み取り（契約 test-hooks.md）を読む。設定がなければ読み取る前のまま、欄は空で手で打てる。
+    /// 受け入れテストだけの道で、Release には無い。
     private func evaluateConfiguredColophon() {
         guard let colCfg = model.store.ocrConfiguration?.colophon else {
             phase = .idle
@@ -1596,6 +1642,7 @@ public struct ColophonOCRSheetView: View {
         applyColophonResult(OCRPipeline.parseColophon(colCfg))
         model.notifyHookChanged()
     }
+    #endif
 
     /// 読めた項目だけ欄に入れる。1つも読めなければ `nothingRead`（前に入れた欄の値は変えない）。
     private func applyColophonResult(_ res: ColophonExtractionResult) {
@@ -1650,4 +1697,16 @@ public struct ColophonOCRSheetView: View {
     }
     .environment(\.dynamicTypeSize, .accessibility5)
     .preferredColorScheme(.dark)
+}
+
+#Preview("S-7c/idle") {
+    ColophonOCRSheetView(model: ReadingAppModel(), bookId: ReadingDataStore.uuidBookA) {}
+}
+
+#Preview("S-7c/recognizing") {
+    ColophonOCRSheetView(model: ReadingAppModel(), bookId: ReadingDataStore.uuidBookA, initialPhase: .recognizing) {}
+}
+
+#Preview("S-7c/nothingRead") {
+    ColophonOCRSheetView(model: ReadingAppModel(), bookId: ReadingDataStore.uuidBookA, initialPhase: .nothingRead) {}
 }

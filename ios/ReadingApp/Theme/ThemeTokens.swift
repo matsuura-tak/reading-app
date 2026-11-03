@@ -475,26 +475,6 @@ public struct SheetContentTitle: View {
     }
 }
 
-/// 進み具合の単位の切り替え（`mark.progressUnit`、`book.edit.progressUnit`）の形。
-/// 標準は `.segmented`、accessibility1 以上は `.inline`（3行にチェック）。セグメントの字は Dynamic Type で大きくならないため（決定 93）。
-public struct ProgressUnitPickerStyleModifier: ViewModifier {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    public func body(content: Content) -> some View {
-        if dynamicTypeSize.isAccessibilitySize {
-            content.pickerStyle(.inline)
-        } else {
-            content.pickerStyle(.segmented)
-        }
-    }
-}
-
-public extension View {
-    func progressUnitPickerStyle() -> some View {
-        modifier(ProgressUnitPickerStyleModifier())
-    }
-}
-
 public struct InvisibleAccessibleButtonRepresentable: UIViewRepresentable {
     public let identifier: String
     public let label: String

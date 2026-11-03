@@ -45,13 +45,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "本のページ番号や残したい一行、裏表紙のバーコード、表紙や奥付の文字を読み取るためにカメラを使います。撮影した画像は文字の読み取りにだけ使い、端末にも外にも保存しません。"
+            "value": "本のバーコードや表紙・背表紙・奥付、および読み止めたページの文字をこの iPhone の中で読み取るためにカメラを使います。写真は保存せず、外部へ送信しません。"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yomuma uses the camera to read page numbers, a line to save, back-cover barcodes, and book details from covers or colophons. Captured images are used only for text recognition and are never saved on your device or sent anywhere."
+            "value": "Yomuma uses the camera to scan barcodes, covers, spines, colophons, and the line where you stopped on this iPhone. Photos are never saved or sent outside."
           }
         }
       }

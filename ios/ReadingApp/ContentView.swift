@@ -23,6 +23,16 @@ public struct ContentView: View {
         return palette.preferredColorScheme
     }
 
+    /// 表紙を写すシートの最初の段。ふだんは写す面、H23 の差し替えがあるとき（受け入れテストだけ）は差し替えの行。
+    private func coverCaptureInitialStep(isbn13: String?) -> BookAddStep {
+        #if UITEST_HOOKS
+        if let stub = model.store.ocrConfiguration {
+            return .coverCandidates(isbn13: isbn13, candidates: stub.coverLines ?? [])
+        }
+        #endif
+        return .coverCamera(isbn13: isbn13)
+    }
+
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
             #if UITEST_HOOKS
@@ -85,7 +95,7 @@ public struct ContentView: View {
                     BookAddFlowSheetView(
                         model: model,
                         titlePendingMode: pending,
-                        initialStep: .coverCandidates(isbn13: isbn, candidates: model.store.ocrConfiguration?.coverLines ?? [])
+                        initialStep: coverCaptureInitialStep(isbn13: isbn)
                     )
                 case .colophonCapture(let bookId):
                     ColophonOCRSheetView(model: model, bookId: bookId) {
