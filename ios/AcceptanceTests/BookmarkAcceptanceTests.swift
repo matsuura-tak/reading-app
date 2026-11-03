@@ -364,7 +364,7 @@ final class BookmarkAcceptanceTests: AcceptanceTestBase {
         element("reading.end").tap()
         element("mark.later").tap()
 
-        XCTAssertEqual(readHookString("result.summary"), "18分")
+        XCTAssertEqual(readHookString("result.summary"), L10n.minutes(18))
         let books = readStoreBooks()
         XCTAssertEqual(books.first?["lastLine"] as? String, "ある日の暮方の事である。")
         XCTAssertEqual(books.first?["page"] as? Int, 43)
@@ -383,7 +383,7 @@ final class BookmarkAcceptanceTests: AcceptanceTestBase {
         pageField1.typeText("61")
         element("mark.save").tap()
 
-        XCTAssertEqual(readHookString("result.summary"), "p.43 → p.61　18分")
+        XCTAssertEqual(readHookString("result.summary"), L10n.resultSummaryPages(from: 43, to: 61, minutes: 18))
         element("result.close").tap()
         XCTAssertTrue(element("bookmark.start").waitForExistence(timeout: uiTimeout))
 
@@ -409,7 +409,7 @@ final class BookmarkAcceptanceTests: AcceptanceTestBase {
 
         let summary2 = readHookString("result.summary")
         XCTAssertTrue(summary2.contains("p.61"))
-        XCTAssertTrue(summary2.contains("18分"))
+        XCTAssertTrue(summary2.contains(L10n.minutes(18)))
         XCTAssertFalse(summary2.contains("→"))
         element("result.close").tap()
         XCTAssertTrue(element("bookmark.start").waitForExistence(timeout: uiTimeout))
@@ -530,10 +530,10 @@ final class BookmarkAcceptanceTests: AcceptanceTestBase {
         pageField1.typeText("1450")
         element("mark.save").tap()
 
-        XCTAssertEqual(readHookString("result.summary"), "位置1200 → 位置1450　18分")
+        XCTAssertEqual(readHookString("result.summary"), L10n.resultSummaryLocations(from: 1200, to: 1450, minutes: 18))
         element("result.close").tap()
-        XCTAssertEqual(readHookString("bookmark.page"), "位置1450")
-        XCTAssertTrue(readHookString("hook.widget").contains("位置1450"))
+        XCTAssertEqual(readHookString("bookmark.page"), L10n.locationShort(1450))
+        XCTAssertTrue(readHookString("hook.widget").contains(L10n.locationShort(1450)))
         relaunchPreservingStore()
         XCTAssertEqual(readStoreBooks().first?["location"] as? Int, 1450)
 
@@ -565,7 +565,7 @@ final class BookmarkAcceptanceTests: AcceptanceTestBase {
         pageField2.typeText("52")
         element("mark.save").tap()
 
-        XCTAssertEqual(readHookString("result.summary"), "34% → 52%　18分")
+        XCTAssertEqual(readHookString("result.summary"), L10n.pick("34% → 52%　18分", "34% → 52%  18 min"))
         element("result.close").tap()
         XCTAssertEqual(readHookString("bookmark.page"), "52%")
         XCTAssertTrue(readHookString("hook.widget").contains("52%"))

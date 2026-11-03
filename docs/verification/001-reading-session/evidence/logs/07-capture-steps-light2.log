@@ -1,0 +1,313 @@
+CAPTURED S1_error_light.png (205124 bytes)
+OK S-1 error (store load)
+CAPTURED S1_noCurrent_light.png (176081 bytes)
+OK S-1 noCurrent (tsundoku only)
+CAPTURED S1_partial_light.png (201677 bytes)
+OK S-1 partial (title pending)
+CAPTURED S2_partial_light.png (113480 bytes)
+OK S-2 partial (title pending)
+CAPTURED S2_error_light.png (154893 bytes)
+CAPTURED N_error_light.png (154893 bytes)
+OK S-2 error / N error (session end save fails)
+NOTE S-3 empty: mark.later.note.empty (design 5章 S-3 空) not found; captured as-is
+CAPTURED S3_empty_asis_light.png (162221 bytes)
+OK S-3 empty (no previous mark)
+CAPTURED S3_denied_light.png (218065 bytes)
+OK S-3 denied (camera)
+CAPTURED S3_partial_light.png (162716 bytes)
+OK S-3 partial (title pending)
+CAPTURED S3a_empty_light.png (163781 bytes)
+OK S-3a empty (save with empty line)
+CAPTURED S3a_error_light.png (212080 bytes)
+OK S-3a error (page 0)
+CAPTURED S3a_saveError_light.png (217456 bytes)
+OK S-3a save error (common.save.error)
+CAPTURED S3b_empty_light.png (160910 bytes)
+OK S-3b empty (save with empty page)
+CAPTURED S3b_error_light.png (224478 bytes)
+OK S-3b error (page 10000)
+CAPTURED S3c_empty_light.png (123234 bytes)
+OK S-3c empty (0 columns)
+CAPTURED S3c_loading_light.png (111100 bytes)
+OK S-3c loading (OCR held)
+CAPTURED S3c_error_light.png (223459 bytes)
+OK S-3c error (61-character line, AC-72)
+CAPTURED S3c_partial_light.png (246841 bytes)
+OK S-3c partial (column 2 chosen, text editable)
+CAPTURED S4_empty_light.png (89302 bytes)
+OK S-4 empty (mark later)
+CAPTURED S4_partial_light.png (123995 bytes)
+OK S-4 partial (1440 minutes cap)
+CAPTURED S5_partial_light.png (139734 bytes)
+OK S-5 partial (hideOnWidgets)
+CAPTURED S6_error_light.png (192922 bytes)
+OK S-6 error (store load)
+CAPTURED S6_partial_light.png (134227 bytes)
+OK S-6 partial (title pending row)
+CAPTURED S7_empty_light.png (193550 bytes)
+OK S-7 empty (no records)
+CAPTURED S7_denied_light.png (189974 bytes)
+OK S-7 denied (camera, colophon.capture)
+CAPTURED S7_partial_light.png (175414 bytes)
+OK S-7 partial (title pending)
+CAPTURED S7_error_light.png (225235 bytes)
+OK S-7 save error (status change fails)
+CAPTURED S7a_empty_light.png (115829 bytes)
+OK S-7a empty (author empty)
+CAPTURED S7a_error_light.png (195824 bytes)
+OK S-7a error (title cleared)
+CAPTURED S7b_empty_light.png (179503 bytes)
+OK S-7b empty (minutes cleared)
+CAPTURED S7b_error_light.png (178933 bytes)
+OK S-7b error (1441)
+NOTE S-7c empty: mark.ocr.none (design 5章 S-7c 空) not found with colophon.lines=[]; elements: colophon.retake=false colophon.title=true colophon.author=true colophon.publisher=false colophon.save=true; captured as-is
+CAPTURED S7c_empty_asis_light.png (142001 bytes)
+OK S-7c empty (nothing read)
+CAPTURED S7c_loading_light.png (144098 bytes)
+OK S-7c loading (OCR held)
+CAPTURED S7c_denied_light.png (190846 bytes)
+OK S-7c denied (camera)
+NOTE S-7c partial: colophon.publisher not found; elements: mark.ocr.none=false colophon.retake=false colophon.title=true colophon.author=true colophon.save=true; captured as-is
+CAPTURED S7c_partial_asis_light.png (143627 bytes)
+OK S-7c partial (publisher and year only)
+CAPTURED S7c_error_light.png (191683 bytes)
+OK S-7c error (save fails)
+CAPTURED S8_empty_light.png (200710 bytes)
+OK S-8 empty (first book, from S-1)
+CAPTURED S8_denied_light.png (152227 bytes)
+OK S-8 denied (camera)
+CAPTURED S8_partial_light.png (200710 bytes)
+OK S-8 partial (catalog not downloaded)
+CAPTURED S8a_empty_light.png (154392 bytes)
+OK S-8a empty (nothing scanned)
+CAPTURED S8a_partial_light.png (199513 bytes)
+OK S-8a partial (catalog not downloaded)
+CAPTURED S8a_error_light.png (188445 bytes)
+OK S-8a error (add fails)
+CAPTURED S8b_empty_light.png (152312 bytes)
+OK S-8b empty (0 lines)
+CAPTURED S8b_loading_light.png (103440 bytes)
+OK S-8b loading (OCR held)
+CAPTURED S8b_error_light.png (146467 bytes)
+OK S-8b error (title empty on save)
+CAPTURED S8b_partial_light.png (105099 bytes)
+OK S-8b partial (1 line only)
+CAPTURED S8c_empty_light.png (204765 bytes)
+OK S-8c empty (no catalog match)
+CAPTURED S8c_error_light.png (126489 bytes)
+OK S-8c error (title empty)
+CAPTURED S8c_partial_light.png (199725 bytes)
+OK S-8c partial (catalog not downloaded)
+CAPTURED S8d_empty_light.png (120503 bytes)
+OK S-8d empty (nothing chosen)
+CAPTURED S8d_loading_light.png (134208 bytes)
+OK S-8d loading (OCR held)
+CAPTURED S8d_error_light.png (200188 bytes)
+OK S-8d error (add fails)
+CAPTURED S8d_partial_light.png (155215 bytes)
+OK S-8d partial (exact match enriched)
+CAPTURED S9_empty_light.png (240723 bytes)
+OK S-9 empty (no candidates)
+CAPTURED S9_denied_light.png (190963 bytes)
+OK S-9 denied (camera)
+CAPTURED S9_error_light.png (270697 bytes)
+OK S-9 error (add next to shelf fails)
+CAPTURED S9_partial_light.png (229346 bytes)
+OK S-9 partial (one night only)
+CAPTURED S10_denied_light.png (253204 bytes)
+OK S-10 denied (Live Activity off)
+CAPTURED S10_partial_light.png (241423 bytes)
+OK S-10 partial (flip unavailable)
+CAPTURED S10_offline_light.png (244373 bytes)
+OK S-10 offline (restore)
+CAPTURED S10_error_light.png (236869 bytes)
+OK S-10 error (settings save fails)
+CAPTURED S10a_offline_light.png (255584 bytes)
+OK S-10a offline
+CAPTURED S10a_denied_light.png (252071 bytes)
+OK S-10a denied (cannot make payments)
+CAPTURED S10a_error_light.png (267945 bytes)
+OK S-10a error (purchase fails)
+CAPTURED S10a_unavailable_light.png (254330 bytes)
+OK S-10a unavailable (product load unavailable)
+CAPTURED AC106_S1_kinari.png (284312 bytes)
+CAPTURED S10a_partial_light.png (222323 bytes)
+OK S-10a partial (refund)
+HOLD store.load=shown
+CAPTURED S1_loading_light.png (59658 bytes)
+RELEASE holds
+OK S-1 loading (hold store.load)
+HOLD shelf.load=shown
+CAPTURED S6_loading_light.png (70182 bytes)
+RELEASE holds
+OK S-6 loading (hold shelf.load)
+HOLD book.load=shown
+CAPTURED S7_loading_light.png (185354 bytes)
+RELEASE holds
+OK S-7 loading (hold book.load)
+HOLD recommend.load=shown
+CAPTURED S9_loading_light.png (190648 bytes)
+RELEASE holds
+OK S-9 loading (hold recommend.load)
+HOLD catalog.lookup=shown
+CAPTURED S8a_loading_light.png (123144 bytes)
+RELEASE holds
+OK S-8a loading (hold catalog.lookup)
+HOLD catalog.lookup=shown
+CAPTURED S8c_loading_light.png (166265 bytes)
+RELEASE holds
+OK S-8c loading (hold catalog.lookup)
+NOTE S-10 loading: hold.storekit.restore did not reach shown within 5.0s; hook.state=announce=;entry=app;flipMonitoring=off;haptic=0;idleTimerDisabled=false;notice=;proximity=false;startedBy=tap;state=idle;widgetReloads=;hold.storekit.restore=held; captured as-is (held but not shown)
+CAPTURED S10_loading_asis_light.png (212989 bytes)
+RELEASE holds
+MISSING S-10 loading (hold storekit.restore): hold.storekit.restore did not reach shown within 5.0s; hook.state=announce=;entry=app;flipMonitoring=off;haptic=0;idleTimerDisabled=false;notice=;proximity=false;startedBy=tap;state=idle;widgetReloads=;hold.storekit.restore=held
+HOLD storekit.products=shown
+CAPTURED S10a_loading_light.png (225387 bytes)
+RELEASE holds
+OK S-10a loading (hold storekit.products)
+HOLD store.load=shown
+CAPTURED S1_loading_error_light.png (59486 bytes)
+RELEASE holds
+CAPTURED S1_error_after_loading_light.png (203789 bytes)
+OK S-1 loading then error (hold store.load + fail store.load)
+CAPTURED AC34_S1_visible.png (192590 bytes)
+OK AC-34 S-1 visible while hidden on widgets
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["spec": accessoryRectangular:172x76, "dynamicTypeSize": large, "variant": normal, "requestedHeight": 76, "colorScheme": dark, "contentOverflow": 0, "canvasWidth": 172, "requestedWidth": 172, "canvasHeight": 76, "surface": accessoryRectangular, "idealHeight": 76, "viewType": ReadingLockScreenWidgetView]
+RENDER spec=accessoryRectangular:172x76 request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W1_normal_light.png (68705 bytes)
+OK W-1 normal 172x76
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["spec": systemSmall:170x170, "dynamicTypeSize": large, "variant": normal, "requestedHeight": 170, "colorScheme": light, "contentOverflow": 0, "canvasWidth": 170, "requestedWidth": 170, "canvasHeight": 170, "surface": systemSmall, "idealHeight": 170, "viewType": ReadingHomeSmallWidgetView]
+RENDER spec=systemSmall:170x170 request=["width": 170, "height": 170, "family": systemSmall] state=normal fontSize=20 L=5 columnCount=3 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W2_normal_light.png (85958 bytes)
+OK W-2 normal 170x170
+CANVAS spec=liveActivity:370x160:waiting frame=(16.0, 404.0, 370.0, 94.33333333333331) showcase=["requestedHeight": 160, "dynamicTypeSize": large, "variant": waiting, "surface": liveActivity, "spec": liveActivity:370x160:waiting, "viewType": ReadingLiveActivityLockScreenView, "canvasHeight": 94.33333333333333, "colorScheme": light, "contentOverflow": 0, "canvasWidth": 370, "requestedWidth": 370, "idealHeight": 94.33333333333333]
+RENDER spec=liveActivity:370x160:waiting request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W3_normal_light.png (84995 bytes)
+OK W-3 normal (waiting)
+CANVAS spec=control:160x72 frame=(121.0, 415.0, 160.0, 72.0) showcase=["canvasWidth": 160, "viewType": ReadingControlLabelView, "requestedHeight": 72, "variant": startReading, "contentOverflow": 0, "colorScheme": light, "idealHeight": 20.33333333333333, "dynamicTypeSize": large, "spec": control:160x72, "requestedWidth": 160, "canvasHeight": 72, "surface": control]
+RENDER spec=control:160x72 request=["width": 172, "family": accessoryRectangular, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W4_normal_light.png (70381 bytes)
+OK W-4 normal (control)
+CANVAS spec=snippet:360x200 frame=(21.0, 425.0, 360.0, 52.333333333333314) showcase=["surface": snippet, "contentOverflow": 0, "canvasWidth": 360, "idealHeight": 52.33333333333333, "canvasHeight": 52.33333333333333, "spec": snippet:360x200, "requestedHeight": 200, "requestedWidth": 360, "viewType": WhereStoppedSnippetView, "variant": whereStopped, "dynamicTypeSize": large, "colorScheme": light]
+RENDER spec=snippet:360x200 request=["height": 76, "family": accessoryRectangular, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W5_normal_light.png (70343 bytes)
+OK W-5 normal (snippet)
+CANVAS spec=accessoryRectangular:153x68 frame=(124.5, 417.0, 153.16665649414062, 68.0) showcase=["colorScheme": dark, "viewType": ReadingLockScreenWidgetView, "canvasHeight": 68, "spec": accessoryRectangular:153x68, "requestedWidth": 153, "surface": accessoryRectangular, "dynamicTypeSize": large, "variant": normal, "idealHeight": 68, "canvasWidth": 153, "contentOverflow": 0, "requestedHeight": 68]
+RENDER spec=accessoryRectangular:153x68 request=["family": accessoryRectangular, "width": 153, "height": 68] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED AC27_W1_153x68.png (68529 bytes)
+OK AC-27 W-1 153x68
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["dynamicTypeSize": large, "canvasHeight": 76, "canvasWidth": 172, "spec": accessoryRectangular:172x76, "contentOverflow": 0, "surface": accessoryRectangular, "colorScheme": dark, "requestedWidth": 172, "variant": normal, "viewType": ReadingLockScreenWidgetView, "idealHeight": 76, "requestedHeight": 76]
+RENDER spec=accessoryRectangular:172x76 request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED AC27_W1_172x76.png (68705 bytes)
+OK AC-27 W-1 172x76
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["spec": accessoryRectangular:172x76, "canvasWidth": 172, "idealHeight": 76, "requestedHeight": 76, "surface": accessoryRectangular, "contentOverflow": 0, "colorScheme": dark, "viewType": ReadingLockScreenWidgetView, "variant": normal, "canvasHeight": 76, "dynamicTypeSize": large, "requestedWidth": 172]
+RENDER spec=accessoryRectangular:172x76 request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=15 L=5 columnCount=5 displayedLine=「ある日の暮方の事である。」と、下人は言った。 contentOverflow=false
+CAPTURED AC28_W1_kinsoku.png (72682 bytes)
+OK AC-28 W-1 kinsoku
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["spec": accessoryRectangular:172x76, "canvasWidth": 172, "idealHeight": 76, "requestedHeight": 76, "surface": accessoryRectangular, "contentOverflow": 0, "colorScheme": dark, "viewType": ReadingLockScreenWidgetView, "variant": normal, "canvasHeight": 76, "dynamicTypeSize": large, "requestedWidth": 172]
+RENDER spec=accessoryRectangular:172x76 request=["height": 76, "family": accessoryRectangular, "width": 172] state=normal fontSize=17 L=4 columnCount=6 displayedLine=一人の下人が、羅生門の下で雨やみを待っていた。 contentOverflow=false
+CAPTURED AC29_W1_truncated.png (75538 bytes)
+CAPTURED W1_partial_light.png (75538 bytes)
+OK AC-29 W-1 truncated / W-1 partial
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["canvasHeight": 76, "contentOverflow": 0, "dynamicTypeSize": large, "surface": accessoryRectangular, "requestedWidth": 172, "viewType": ReadingLockScreenWidgetView, "spec": accessoryRectangular:172x76, "colorScheme": dark, "requestedHeight": 76, "variant": normal, "canvasWidth": 172, "idealHeight": 76]
+RENDER spec=accessoryRectangular:172x76 request=["width": 172, "height": 76, "family": accessoryRectangular] state=hidden fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED AC34_W1_hidden.png (54007 bytes)
+OK AC-34 W-1 hidden
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["requestedWidth": 170, "requestedHeight": 170, "viewType": ReadingHomeSmallWidgetView, "canvasWidth": 170, "dynamicTypeSize": large, "spec": systemSmall:170x170, "variant": normal, "contentOverflow": 0, "idealHeight": 170, "surface": systemSmall, "canvasHeight": 170, "colorScheme": light]
+RENDER spec=systemSmall:170x170 request=["family": systemSmall, "width": 170, "height": 170] state=normal fontSize=20 L=5 columnCount=3 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED AC35_W2_170x170.png (85313 bytes)
+OK AC-35 W-2 170x170
+CANVAS spec=systemSmall:148x148 frame=(127.0, 377.0, 148.0, 148.0) showcase=["colorScheme": light, "requestedHeight": 148, "dynamicTypeSize": large, "canvasWidth": 148, "requestedWidth": 148, "contentOverflow": 0, "variant": normal, "spec": systemSmall:148x148, "canvasHeight": 148, "surface": systemSmall, "viewType": ReadingHomeSmallWidgetView, "idealHeight": 148]
+RENDER spec=systemSmall:148x148 request=["family": systemSmall, "width": 148, "height": 148] state=normal fontSize=20 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED AC35_W2_148x148.png (84758 bytes)
+OK AC-35 W-2 148x148
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["requestedWidth": 172, "idealHeight": 76, "colorScheme": dark, "requestedHeight": 76, "canvasHeight": 76, "canvasWidth": 172, "surface": accessoryRectangular, "variant": normal, "spec": accessoryRectangular:172x76, "dynamicTypeSize": large, "contentOverflow": 0, "viewType": ReadingLockScreenWidgetView]
+RENDER spec=accessoryRectangular:172x76 request=["width": 172, "family": accessoryRectangular, "height": 76] state=empty fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W1_empty_light.png (62447 bytes)
+OK W-1 empty (no current book)
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["requestedWidth": 172, "requestedHeight": 76, "variant": normal, "viewType": ReadingLockScreenWidgetView, "dynamicTypeSize": large, "surface": accessoryRectangular, "colorScheme": dark, "contentOverflow": 0, "canvasHeight": 76, "canvasWidth": 172, "idealHeight": 76, "spec": accessoryRectangular:172x76]
+RENDER spec=accessoryRectangular:172x76 request=["height": 76, "family": accessoryRectangular, "width": 172] state=noLine fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W1_noLine_light.png (54670 bytes)
+OK W-1 noLine (title + page)
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["canvasHeight": 76, "colorScheme": dark, "idealHeight": 76, "contentOverflow": 0, "viewType": ReadingLockScreenWidgetView, "dynamicTypeSize": large, "requestedHeight": 76, "spec": accessoryRectangular:172x76, "variant": normal, "canvasWidth": 172, "surface": accessoryRectangular, "requestedWidth": 172]
+RENDER spec=accessoryRectangular:172x76 request=["height": 76, "family": accessoryRectangular, "width": 172] state=unavailable fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W1_error_light.png (62473 bytes)
+OK W-1 error (snapshot missing)
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["viewType": ReadingLockScreenWidgetView, "dynamicTypeSize": large, "idealHeight": 76, "requestedHeight": 76, "canvasHeight": 76, "colorScheme": dark, "variant": normal, "canvasWidth": 172, "contentOverflow": 0, "requestedWidth": 172, "surface": accessoryRectangular, "spec": accessoryRectangular:172x76]
+RENDER spec=accessoryRectangular:172x76 request=["height": 76, "family": accessoryRectangular, "width": 172] state=noLine fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W1_pending_light.png (54035 bytes)
+OK W-1 partial (title pending)
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["viewType": ReadingHomeSmallWidgetView, "surface": systemSmall, "idealHeight": 170, "spec": systemSmall:170x170, "colorScheme": light, "canvasHeight": 170, "requestedWidth": 170, "dynamicTypeSize": large, "requestedHeight": 170, "variant": normal, "contentOverflow": 0, "canvasWidth": 170]
+RENDER spec=systemSmall:170x170 request=["height": 170, "width": 170, "family": systemSmall] state=empty fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W2_empty_light.png (82923 bytes)
+OK W-2 empty
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["contentOverflow": 0, "canvasHeight": 170, "surface": systemSmall, "spec": systemSmall:170x170, "requestedWidth": 170, "colorScheme": light, "canvasWidth": 170, "requestedHeight": 170, "idealHeight": 170, "viewType": ReadingHomeSmallWidgetView, "dynamicTypeSize": large, "variant": normal]
+RENDER spec=systemSmall:170x170 request=["height": 170, "width": 170, "family": systemSmall] state=unavailable fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W2_error_light.png (81365 bytes)
+OK W-2 error (snapshot missing)
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["contentOverflow": 0, "spec": systemSmall:170x170, "requestedWidth": 170, "surface": systemSmall, "colorScheme": light, "dynamicTypeSize": large, "variant": normal, "viewType": ReadingHomeSmallWidgetView, "canvasWidth": 170, "idealHeight": 170, "requestedHeight": 170, "canvasHeight": 170]
+RENDER spec=systemSmall:170x170 request=["family": systemSmall, "height": 170, "width": 170] state=noLine fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W2_partial_light.png (65018 bytes)
+OK W-2 partial (title pending)
+CANVAS spec=liveActivity:370x160:reading frame=(16.0, 414.0, 370.0, 74.33333333333331) showcase=["spec": liveActivity:370x160:reading, "canvasHeight": 74.33333333333333, "contentOverflow": 0, "idealHeight": 74.33333333333333, "canvasWidth": 370, "viewType": ReadingLiveActivityLockScreenView, "requestedHeight": 160, "colorScheme": light, "requestedWidth": 370, "variant": reading, "surface": liveActivity, "dynamicTypeSize": large]
+RENDER spec=liveActivity:370x160:reading request=["height": 76, "family": accessoryRectangular, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W3_reading_light.png (79631 bytes)
+OK W-3 reading
+CANVAS spec=liveActivity:370x160:ended frame=(16.0, 414.0, 370.0, 74.33333333333331) showcase=["dynamicTypeSize": large, "viewType": ReadingLiveActivityLockScreenView, "surface": liveActivity, "variant": ended, "requestedHeight": 160, "spec": liveActivity:370x160:ended, "contentOverflow": 0, "canvasHeight": 74.33333333333333, "canvasWidth": 370, "requestedWidth": 370, "colorScheme": light, "idealHeight": 74.33333333333333]
+RENDER spec=liveActivity:370x160:ended request=["height": 76, "width": 172, "family": accessoryRectangular] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W3_ended_light.png (67929 bytes)
+OK W-3 ended
+CANVAS spec=liveActivity:370x160:waiting frame=(16.0, 414.0, 370.0, 74.33333333333331) showcase=["requestedHeight": 160, "contentOverflow": 0, "canvasHeight": 74.33333333333333, "idealHeight": 74.33333333333333, "variant": waiting, "colorScheme": light, "canvasWidth": 370, "requestedWidth": 370, "spec": liveActivity:370x160:waiting, "surface": liveActivity, "viewType": ReadingLiveActivityLockScreenView, "dynamicTypeSize": large]
+RENDER spec=liveActivity:370x160:waiting request=["family": accessoryRectangular, "width": 172, "height": 76] state=noLine fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W3_empty_light.png (65642 bytes)
+OK W-3 empty (no line)
+CANVAS spec=liveActivity:370x160:waiting frame=(16.0, 414.0, 370.0, 74.33333333333331) showcase=["contentOverflow": 0, "spec": liveActivity:370x160:waiting, "viewType": ReadingLiveActivityLockScreenView, "colorScheme": light, "requestedWidth": 370, "requestedHeight": 160, "canvasWidth": 370, "variant": waiting, "idealHeight": 74.33333333333333, "surface": liveActivity, "canvasHeight": 74.33333333333333, "dynamicTypeSize": large]
+RENDER spec=liveActivity:370x160:waiting request=["height": 76, "family": accessoryRectangular, "width": 172] state=hidden fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W3_partial_light.png (65177 bytes)
+OK W-3 partial (hidden)
+CANVAS spec=snippet:360x200 frame=(21.0, 414.0, 360.0, 74.33333333333331) showcase=["idealHeight": 74.33333333333333, "contentOverflow": 0, "colorScheme": light, "viewType": WhereStoppedSnippetView, "variant": whereStopped, "requestedHeight": 200, "canvasHeight": 74.33333333333333, "spec": snippet:360x200, "surface": snippet, "dynamicTypeSize": large, "requestedWidth": 360, "canvasWidth": 360]
+RENDER spec=snippet:360x200 request=["height": 76, "width": 172, "family": accessoryRectangular] state=noLineNoPage fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W5_empty_light.png (88661 bytes)
+OK W-5 empty (no progress)
+CANVAS spec=snippet:360x200 frame=(21.0, 425.0, 360.0, 52.333333333333314) showcase=["contentOverflow": 0, "canvasWidth": 360, "requestedHeight": 200, "surface": snippet, "viewType": WhereStoppedSnippetView, "requestedWidth": 360, "colorScheme": light, "spec": snippet:360x200, "idealHeight": 52.33333333333333, "variant": whereStopped, "dynamicTypeSize": large, "canvasHeight": 52.33333333333333]
+RENDER spec=snippet:360x200 request=["width": 172, "height": 76, "family": accessoryRectangular] state=hidden fontSize=- L=- columnCount=- displayedLine=- contentOverflow=false
+CAPTURED W5_partial_light.png (70503 bytes)
+OK W-5 partial (hidden)
+CANVAS spec=accessoryRectangular:172x76:placeholder frame=(115.0, 413.0, 172.0, 76.0) showcase=["requestedWidth": 172, "canvasHeight": 76, "canvasWidth": 172, "variant": placeholder, "spec": accessoryRectangular:172x76:placeholder, "viewType": ReadingLockScreenWidgetView, "idealHeight": 76, "requestedHeight": 76, "dynamicTypeSize": large, "contentOverflow": 0, "surface": accessoryRectangular, "colorScheme": dark]
+RENDER spec=accessoryRectangular:172x76:placeholder request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W1_loading_light.png (50020 bytes)
+OK W-1 loading (placeholder)
+CANVAS spec=systemSmall:170x170:placeholder frame=(116.0, 366.0, 170.0, 170.0) showcase=["dynamicTypeSize": large, "requestedWidth": 170, "colorScheme": light, "contentOverflow": 0, "requestedHeight": 170, "variant": placeholder, "idealHeight": 170, "spec": systemSmall:170x170:placeholder, "surface": systemSmall, "canvasWidth": 170, "canvasHeight": 170, "viewType": ReadingHomeSmallWidgetView]
+RENDER spec=systemSmall:170x170:placeholder request=["height": 170, "family": systemSmall, "width": 170] state=normal fontSize=20 L=5 columnCount=3 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W2_loading_light.png (59897 bytes)
+OK W-2 loading (placeholder)
+H22 normal_vertical renders=4 states=["normal", "normal", "normal", "normal"]
+H22JSON normal_vertical.json bytes=9025
+OK H22 readout normal_vertical
+H22 normal_horizontal renders=4 states=["normal", "normal", "normal", "normal"]
+H22JSON normal_horizontal.json bytes=2643
+OK H22 readout normal_horizontal
+H22 noLine renders=4 states=["noLine", "noLine", "noLine", "noLine"]
+H22JSON noLine.json bytes=2050
+OK H22 readout noLine
+H22 noLineNoPage renders=4 states=["noLineNoPage", "noLineNoPage", "noLineNoPage", "noLineNoPage"]
+H22JSON noLineNoPage.json bytes=1945
+OK H22 readout noLineNoPage
+H22 hidden renders=4 states=["hidden", "hidden", "hidden", "hidden"]
+H22JSON hidden.json bytes=2136
+OK H22 readout hidden
+H22 empty renders=4 states=["empty", "empty", "empty", "empty"]
+H22JSON empty.json bytes=2415
+OK H22 readout empty
+H22 unavailable renders=4 states=["unavailable", "unavailable", "unavailable", "unavailable"]
+H22JSON unavailable.json bytes=2627
+OK H22 readout unavailable
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["surface": accessoryRectangular, "dynamicTypeSize": large, "idealHeight": 76, "variant": normal, "requestedHeight": 76, "canvasHeight": 76, "viewType": ReadingLockScreenWidgetView, "spec": accessoryRectangular:172x76, "contentOverflow": 0, "colorScheme": dark, "requestedWidth": 172, "canvasWidth": 172]
+RENDER spec=accessoryRectangular:172x76 request=["family": accessoryRectangular, "height": 76, "width": 172] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+H22JSON showcase_w1_172x76.json bytes=2640
+OK H22 readout with showcase
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["canvasWidth": 172, "surface": accessoryRectangular, "requestedHeight": 76, "colorScheme": dark, "variant": normal, "viewType": ReadingLockScreenWidgetView, "canvasHeight": 76, "idealHeight": 76, "requestedWidth": 172, "dynamicTypeSize": large, "contentOverflow": 0, "spec": accessoryRectangular:172x76]
+RENDER spec=accessoryRectangular:172x76 request=["height": 76, "family": accessoryRectangular, "width": 172] state=normal fontSize=- L=- columnCount=- displayedLine=It was raining. contentOverflow=false
+CAPTURED AC30_W1_horizontal.png (55796 bytes)
+H22JSON showcase_w1_horizontal.json bytes=1030
+OK H22 readout with showcase (horizontal)

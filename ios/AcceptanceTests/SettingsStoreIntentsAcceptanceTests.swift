@@ -197,8 +197,10 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(readStoreRecords().count, 3)
     }
 
-    func test_AC91_7種類の保存失敗時にエラーが出て変更前のデータが保たれる() {
-        let baseSeed = makeSeedJSON(
+    // MARK: AC-91（7種類の保存失敗。PRD AC-91 の H7 の対象ごとに1テスト。1つのテストで7通りを流すとテストの上限2分を超えるため分けた）
+
+    private var ac91Seed: String {
+        makeSeedJSON(
             books: [
                 makeSeedBook(
                     id: uuidBookA,
@@ -214,27 +216,51 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
                 makeSeedRecord(id: makeRecordUUID(2), bookId: uuidBookA, minutes: 30, nightDate: "2026-10-17")
             ]
         )
+    }
 
-        // (1) book.add:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "book.add:1")
+    /// PRD AC-91 Then：本の数、A の書名、著者、置き場所、一行、ページ、記録の件数と分数が操作の前のまま。
+    private func assertAC91Unchanged(_ phase: String) {
+        let books = readStoreBooks()
+        XCTAssertEqual(books.count, 1, phase)
+        let bookA = books.first
+        XCTAssertEqual(bookA?["title"] as? String, "羅生門", phase)
+        XCTAssertEqual(bookA?["author"] as? String, "芥川龍之介", phase)
+        XCTAssertEqual(bookA?["status"] as? String, "current", phase)
+        XCTAssertEqual(bookA?["lastLine"] as? String, "雨は、まだやまなかった。", phase)
+        XCTAssertEqual(bookA?["page"] as? Int, 43, phase)
+        let records = readStoreRecords()
+        XCTAssertEqual(records.count, 2, phase)
+        let minutes = records.compactMap { $0["minutes"] as? Int }.sorted()
+        XCTAssertEqual(minutes, [20, 30], phase)
+    }
+
+    /// `common.save.error` が1つ出て、開き直しても変更前のまま。
+    private func assertAC91SaveErrorAndUnchanged() {
+        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
+        let saveErrors = app.descendants(matching: .any).matching(identifier: "common.save.error").allElementsBoundByIndex
+        XCTAssertEqual(saveErrors.count, 1, "common.save.error: " + saveErrors.map { "type=\($0.elementType.rawValue) frame=\($0.frame) label=\($0.label)" }.joined(separator: " | "))
+        assertAC91Unchanged("操作の直後")
+        relaunchPreservingStore()
+        assertAC91Unchanged("開き直したあと")
+    }
+
+    func test_AC91_1_本を加える保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "book.add:1")
         element("toolbar.shelf").tap()
         element("shelf.addBook").tap()
         let regManual = element("register.manual")
-        if regManual.waitForExistence(timeout: uiTimeout) {
-            regManual.tap()
-        }
+        XCTAssertTrue(regManual.waitForExistence(timeout: uiTimeout))
+        regManual.tap()
         let mt = element("manual.title")
         XCTAssertTrue(mt.waitForExistence(timeout: uiTimeout))
         mt.tap()
         mt.typeText("新しい本")
         element("manual.save").tap()
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readStoreBooks().count, 1)
-        relaunchPreservingStore()
-        XCTAssertEqual(readStoreBooks().count, 1)
+        assertAC91SaveErrorAndUnchanged()
+    }
 
-        // (2) book.update:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "book.update:1")
+    func test_AC91_2_本を直す保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "book.update:1")
         element("toolbar.shelf").tap()
         element("shelf.row.\(uuidBookA)").tap()
         element("book.edit").tap()
@@ -243,36 +269,28 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         et.tap()
         et.typeText("変更後の書名")
         element("book.edit.save").tap()
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readStoreBooks().first?["title"] as? String, "羅生門")
-        relaunchPreservingStore()
-        XCTAssertEqual(readStoreBooks().first?["title"] as? String, "羅生門")
+        assertAC91SaveErrorAndUnchanged()
+    }
 
-        // (3) book.delete:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "book.delete:1")
+    func test_AC91_3_本を消す保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "book.delete:1")
         element("toolbar.shelf").tap()
         element("shelf.row.\(uuidBookA)").tap()
         element("book.delete").tap()
         let confirmDelBook = element("book.delete.confirmButton")
-        if confirmDelBook.waitForExistence(timeout: uiTimeout) {
-            confirmDelBook.tap()
-        }
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readStoreBooks().count, 1)
-        XCTAssertEqual(readStoreRecords().count, 2)
-        relaunchPreservingStore()
-        XCTAssertEqual(readStoreBooks().count, 1)
+        XCTAssertTrue(confirmDelBook.waitForExistence(timeout: uiTimeout))
+        confirmDelBook.tap()
+        assertAC91SaveErrorAndUnchanged()
+    }
 
-        // (4) book.status:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "book.status:1")
+    func test_AC91_4_読み終える保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "book.status:1")
         element("bookmark.finish").tap()
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readStoreBooks().first?["status"] as? String, "current")
-        relaunchPreservingStore()
-        XCTAssertEqual(readStoreBooks().first?["status"] as? String, "current")
+        assertAC91SaveErrorAndUnchanged()
+    }
 
-        // (5) record.update:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "record.update:1")
+    func test_AC91_5_記録の分数を直す保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "record.update:1")
         element("toolbar.shelf").tap()
         element("shelf.row.\(uuidBookA)").tap()
         element("book.record.row.\(makeRecordUUID(1))").tap()
@@ -281,30 +299,25 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         mf.tap()
         mf.typeText("45")
         element("record.save").tap()
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        let rec1 = readStoreRecords().first { ($0["id"] as? String) == makeRecordUUID(1) }
-        XCTAssertEqual(rec1?["minutes"] as? Int, 20)
-        relaunchPreservingStore()
+        assertAC91SaveErrorAndUnchanged()
         let rec1After = readStoreRecords().first { ($0["id"] as? String) == makeRecordUUID(1) }
         XCTAssertEqual(rec1After?["minutes"] as? Int, 20)
+    }
 
-        // (6) record.delete:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "record.delete:1")
+    func test_AC91_6_記録を消す保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "record.delete:1")
         element("toolbar.shelf").tap()
         element("shelf.row.\(uuidBookA)").tap()
         element("book.record.row.\(makeRecordUUID(1))").tap()
         element("record.delete").tap()
         let confirmDelRec = element("record.delete.confirmButton")
-        if confirmDelRec.waitForExistence(timeout: uiTimeout) {
-            confirmDelRec.tap()
-        }
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readStoreRecords().count, 2)
-        relaunchPreservingStore()
-        XCTAssertEqual(readStoreRecords().count, 2)
+        XCTAssertTrue(confirmDelRec.waitForExistence(timeout: uiTimeout))
+        confirmDelRec.tap()
+        assertAC91SaveErrorAndUnchanged()
+    }
 
-        // (7) mark.save:1
-        resetAndLaunch(seedJSON: baseSeed, now: "2026-10-18T21:00:00+09:00", failSave: "mark.save:1")
+    func test_AC91_7_しおりを挟む保存に失敗すると変更前のデータが保たれる() {
+        resetAndLaunch(seedJSON: ac91Seed, now: "2026-10-18T21:00:00+09:00", failSave: "mark.save:1")
         element("bookmark.setMark").tap()
         element("mark.pageOnly").tap()
         let pf = element("mark.pageField")
@@ -312,11 +325,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         pf.tap()
         pf.typeText("80")
         element("mark.save").tap()
-        XCTAssertTrue(element("common.save.error").waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(readStoreBooks().first?["page"] as? Int, 43)
-        XCTAssertEqual(readStoreBooks().first?["lastLine"] as? String, "雨は、まだやまなかった。")
-        relaunchPreservingStore()
-        XCTAssertEqual(readStoreBooks().first?["page"] as? Int, 43)
+        assertAC91SaveErrorAndUnchanged()
     }
 
     func test_AC93_設定画面にNDLの3条件とCCBYリンクが出てしおり画面と読書中画面には出ない() {
@@ -329,11 +338,16 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         XCTAssertTrue(ds.waitForExistence(timeout: uiTimeout))
         XCTAssertEqual(matchingCount("settings.dataSources"), 1)
         let dsText = readHookString("settings.dataSources")
-        XCTAssertTrue(dsText.contains("国立国会図書館"))
-        XCTAssertTrue(dsText.contains("加工"))
-        XCTAssertTrue(dsText.contains("API"))
-        XCTAssertTrue(dsText.contains("CC BY 4.0"))
-        XCTAssertTrue(dsText.contains("無関係"))
+        // AC-93 の3条件＋版＋共起の注記（design/ 7 の `settings.dataSources` の日英の文）
+        XCTAssertTrue(dsText.contains(L10n.pick("国立国会図書館", "National Diet Library")), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("国立国会図書館蔵書", "National Diet Library Catalog")), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("取得日", "retrieved on")), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("加工", "processed it")), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("国立国会図書館サーチの API", "NDL Search API")), dsText)
+        XCTAssertTrue(dsText.contains("CC BY 4.0"), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("版：", "version ")), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("「この本を読み終えた人が、次に読んだ本」", "“Read next by people who finished this book”")), dsText)
+        XCTAssertTrue(dsText.contains(L10n.pick("無関係", "unrelated to National Diet Library data")), dsText)
 
         let licenseBtn = element("settings.dataSources.license")
         XCTAssertTrue(licenseBtn.exists)
@@ -923,7 +937,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         let laHook = readHookJSON("hook.liveActivity")
         let activities = laHook["activities"] as? [[String: Any]] ?? []
         let activeLA = activities.first ?? [:]
-        XCTAssertEqual(activeLA["title"] as? String, "しおり")
+        XCTAssertEqual(activeLA["title"] as? String, L10n.widgetHidden)
         XCTAssertNil(activeLA["line"] as? String)
         XCTAssertEqual(activeLA["endButtonIdentifier"] as? String, "liveActivity.end")
         let laRaw = readHookString("hook.liveActivity")
@@ -939,7 +953,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(inv["authenticationPolicy"] as? String, "alwaysAllowed")
         XCTAssertEqual(inv["dialogKey"] as? String, "intent.whereStopped.page")
         let spoken = inv["spokenText"] as? String ?? ""
-        XCTAssertEqual(spoken, "61ページからです。")
+        XCTAssertEqual(spoken, L10n.whereStoppedPage(61))
         XCTAssertFalse(spoken.contains("羅生門"))
         XCTAssertFalse(spoken.contains("ある日の暮方の事である。"))
         let snippets = inv["snippetTexts"] as? [String] ?? []
@@ -1008,7 +1022,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         let inv = (readHookJSON("hook.intents")["invocations"] as? [[String: Any]] ?? []).last ?? [:]
         XCTAssertEqual(inv["opensApp"] as? Bool, false)
         XCTAssertEqual(inv["authenticationPolicy"] as? String, "alwaysAllowed")
-        XCTAssertEqual(inv["spokenText"] as? String, "61ページからです。")
+        XCTAssertEqual(inv["spokenText"] as? String, L10n.whereStoppedPage(61))
         let snippets = inv["snippetTexts"] as? [String] ?? []
         XCTAssertFalse(snippets.joined(separator: " ").contains("羅生門"))
         XCTAssertFalse(snippets.joined(separator: " ").contains("ある日の暮方の事である。"))
@@ -1049,7 +1063,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         )
         runExternalIntent("WhereStoppedIntent")
         let inv = (readHookJSON("hook.intents")["invocations"] as? [[String: Any]] ?? []).last ?? [:]
-        XCTAssertEqual(inv["spokenText"] as? String, "43ページからです。")
+        XCTAssertEqual(inv["spokenText"] as? String, L10n.whereStoppedPage(43))
 
         runExternalIntent("StartReadingIntent")
         advanceClock(seconds: 120)
@@ -1222,7 +1236,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         let inv1 = (readHookJSON("hook.intents")["invocations"] as? [[String: Any]] ?? []).last ?? [:]
         XCTAssertEqual(inv1["dialogKey"] as? String, "intent.whereStopped.location")
         let spoken1 = inv1["spokenText"] as? String ?? ""
-        XCTAssertEqual(spoken1, "位置1450からです。")
+        XCTAssertEqual(spoken1, L10n.whereStoppedLocation(1450))
         XCTAssertFalse(spoken1.contains("羅生門"))
         XCTAssertFalse(spoken1.contains("下人は、雨やみを待っていた。"))
 
@@ -1243,7 +1257,7 @@ final class SettingsStoreIntentsAcceptanceTests: AcceptanceTestBase {
         let inv2 = (readHookJSON("hook.intents")["invocations"] as? [[String: Any]] ?? []).last ?? [:]
         XCTAssertEqual(inv2["dialogKey"] as? String, "intent.whereStopped.percent")
         let spoken2 = inv2["spokenText"] as? String ?? ""
-        XCTAssertEqual(spoken2, "52パーセントからです。")
+        XCTAssertEqual(spoken2, L10n.pick("52パーセントからです。", "From 52 percent."))
         XCTAssertFalse(spoken2.contains("羅生門"))
         XCTAssertFalse(spoken2.contains("下人は、雨やみを待っていた。"))
     }

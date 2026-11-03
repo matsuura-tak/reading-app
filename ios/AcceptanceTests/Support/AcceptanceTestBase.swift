@@ -4,6 +4,75 @@ import notify
 
 let uiTimeout: TimeInterval = 5.0
 
+/// テスト計画（AcceptanceTests.xctestplan）の構成（Application Language）ごとの期待値。
+/// 値は design/001-reading-session.md 7-1 の文言キーの日本語・英語の列をそのまま写す（テストの側で文をつながない）。
+/// どちらの構成かは、テストランナーの `AppleLanguages`（テスト計画の language がランナーにも入る）で決める。
+enum L10n {
+    static var isEnglish: Bool {
+        let languages = UserDefaults.standard.stringArray(forKey: "AppleLanguages") ?? Locale.preferredLanguages
+        return languages.first?.lowercased().hasPrefix("en") ?? false
+    }
+
+    static func pick(_ ja: String, _ en: String) -> String {
+        isEnglish ? en : ja
+    }
+
+    /// `duration.minutes`：「%lld分」／"%lld min"
+    static func minutes(_ n: Int) -> String { pick("\(n)分", "\(n) min") }
+    /// `book.nights`：「%lld晩」／one: "%lld night", other: "%lld nights"
+    static func nights(_ n: Int) -> String { pick("\(n)晩", n == 1 ? "1 night" : "\(n) nights") }
+    /// `page.short`：「p.%lld」（日英同じ）
+    static func pageShort(_ n: Int) -> String { "p.\(n)" }
+    /// `location.short`：「位置%lld」／"Loc %lld"
+    static func locationShort(_ n: Int) -> String { pick("位置\(n)", "Loc \(n)") }
+    /// `result.summary.pages`：「p.%1$lld → p.%2$lld　%3$@」／"p.%1$lld → p.%2$lld  %3$@"（%3$@ は `duration.minutes`）
+    static func resultSummaryPages(from: Int, to: Int, minutes m: Int) -> String {
+        pick("p.\(from) → p.\(to)　\(minutes(m))", "p.\(from) → p.\(to)  \(minutes(m))")
+    }
+    /// `result.summary.pages.first`：「p.%1$lld　%2$@」／"p.%1$lld  %2$@"
+    static func resultSummaryPagesFirst(_ page: Int, minutes m: Int) -> String {
+        pick("p.\(page)　\(minutes(m))", "p.\(page)  \(minutes(m))")
+    }
+    /// `result.summary.locations`：「位置%1$lld → 位置%2$lld　%3$@」／"Loc %1$lld → Loc %2$lld  %3$@"
+    static func resultSummaryLocations(from: Int, to: Int, minutes m: Int) -> String {
+        pick("位置\(from) → 位置\(to)　\(minutes(m))", "Loc \(from) → Loc \(to)  \(minutes(m))")
+    }
+    /// `intent.whereStopped.page`：「%lldページからです。」／"From page %lld."
+    static func whereStoppedPage(_ n: Int) -> String { pick("\(n)ページからです。", "From page \(n).") }
+    /// `intent.whereStopped.location`：「位置%lldからです。」／"From location %lld."
+    static func whereStoppedLocation(_ n: Int) -> String { pick("位置\(n)からです。", "From location \(n).") }
+    /// `widget.hidden`：「しおり」／"Bookmark"
+    static var widgetHidden: String { pick("しおり", "Bookmark") }
+    /// `next.reason.tsundoku`：「積読から」／"From your pile"
+    static var reasonTsundoku: String { pick("積読から", "From your pile") }
+    /// `next.reason.sameAuthor`：「積読から・同じ著者」／"From your pile · Same author"
+    static var reasonTsundokuSameAuthor: String { pick("積読から・同じ著者", "From your pile · Same author") }
+    /// `next.reason.sameAward`：「積読から・同じ賞（%@）」／"From your pile · Same award (%@)"
+    static func reasonTsundokuSameAward(_ award: String) -> String {
+        pick("積読から・同じ賞（\(award)）", "From your pile · Same award (\(award))")
+    }
+    /// `rec.reason.sameAward`：「同じ賞（%@）」／"Same award (%@)"
+    static func reasonSameAward(_ award: String) -> String { pick("同じ賞（\(award)）", "Same award (\(award))") }
+    /// `rec.reason.nextVolume`：「シリーズの次の巻」／"Next volume in the series"
+    static var reasonNextVolume: String { pick("シリーズの次の巻", "Next volume in the series") }
+    /// `rec.reason.sameAuthor`：「同じ著者の本」／"By the same author"
+    static var reasonSameAuthor: String { pick("同じ著者の本", "By the same author") }
+    /// `rec.reason.readers`：「この本を読み終えた人が、次に読んだ本」／"Read next by people who finished this book"
+    static var reasonReaders: String { pick("この本を読み終えた人が、次に読んだ本", "Read next by people who finished this book") }
+    /// `duration.hoursMinutes`：「%1$lld時間%2$lld分」／"%1$lld hr %2$lld min"
+    static func hoursMinutes(_ h: Int, _ m: Int) -> String { pick("\(h)時間\(m)分", "\(h) hr \(m) min") }
+    /// `finish.reflection.multi` の `%2$lld分（%3$@）`：「142分（2時間22分）」／"142 min (2 hr 22 min)"
+    static func totalWithHours(minutes m: Int, _ h: Int, _ mm: Int) -> String {
+        pick("\(m)分（\(hoursMinutes(h, mm))）", "\(m) min (\(hoursMinutes(h, mm)))")
+    }
+    /// 晩の日付（広い形）：「10月15日」／"October 15"（docs/reviews r2i の `nightDayText(_:wide:)`。design/ 7 の `finish.reflection.multi` の `%4$@`）
+    static func nightDay(month: Int, day: Int) -> String {
+        let names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+        return pick("\(month)月\(day)日", "\(names[month - 1]) \(day)")
+    }
+}
+
+@MainActor
 class AcceptanceTestBase: XCTestCase {
     var app: XCUIApplication!
     private var accumulatedClockMs: UInt64 = 0
@@ -37,8 +106,9 @@ class AcceptanceTestBase: XCTestCase {
         String(format: "00000000-0000-4000-9000-%012d", index)
     }
 
-    override func setUp() {
-        super.setUp()
+    // 同期の setUp / tearDown は XCTestCase の nonisolated の関数なので、MainActor のクラスからは async の形で上書きする。
+    override func setUp() async throws {
+        try await super.setUp()
         continueAfterFailure = false
         XCUIDevice.shared.orientation = .portrait
         accumulatedClockMs = 0
@@ -46,13 +116,13 @@ class AcceptanceTestBase: XCTestCase {
         registerDarwinTokens()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         for (_, token) in notifyTokens {
             notify_cancel(token)
         }
         notifyTokens.removeAll()
         XCUIDevice.shared.orientation = .portrait
-        super.tearDown()
+        try await super.tearDown()
     }
 
     private func registerDarwinTokens() {

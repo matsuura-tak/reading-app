@@ -881,9 +881,17 @@ final class RegistrationAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(records.count, 1)
         XCTAssertEqual(records.first?["minutes"] as? Int, 20)
 
-        let widget = readHookJSON("hook.widget")
-        let widgetRaw = "\(widget)"
-        XCTAssertTrue(widgetRaw.contains("こころ"))
+        // PRD AC-140 Then：ウィジェット（H22）の書名が「こころ」。一行がなく進み具合がある本なので state は noLine、
+        // 書名は texts["widget.title"]（contracts/test-hooks.md H22 の state と texts の表）。
+        let widgetRenders = readHookJSON("hook.widget")["renders"] as? [[String: Any]] ?? []
+        XCTAssertEqual(widgetRenders.count, 1, "renders: \(widgetRenders)")
+        let widgetRender = widgetRenders.first ?? [:]
+        let widgetTexts = widgetRender["texts"] as? [String: Any] ?? [:]
+        XCTAssertEqual(widgetRender["state"] as? String, "noLine", "render: \(widgetRender)")
+        XCTAssertEqual(widgetTexts["widget.title"] as? String, "こころ", "texts: \(widgetTexts)")
+        XCTAssertEqual(widgetTexts["widget.page"] as? String, "p.45", "texts: \(widgetTexts)")
+        let widgetAccessibilityLabel = (widgetRender["accessibility"] as? [String: Any])?["label"] as? String ?? ""
+        XCTAssertTrue(widgetAccessibilityLabel.contains("こころ"), widgetAccessibilityLabel)
 
         relaunchPreservingStore()
         XCTAssertTrue(element("bookmark.title").waitForExistence(timeout: uiTimeout))

@@ -1,0 +1,86 @@
+Optional(Attributes: Application, 0x15560cf60, pid: 42709, label: 'よむま'
+Element subtree:
+ →Application, 0x15560cf60, pid: 42709, label: 'よむま'
+    Window (Main), 0x155636b50, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x15561ce00, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x155631ea0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x15564e5b0, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x15561f340, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x155648620, {{0.0, 62.0}, {402.0, 778.0}}
+              Other, 0x15564f520, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x155621bc0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '羅生門'
+                  Button, 0x155621cf0, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: '本棚'
+                  StaticText, 0x155621e20, {{177.0, 73.8}, {48.0, 20.3}}, label: '羅生門'
+                    Other, 0x15561fc40, {{177.0, 73.8}, {48.0, 20.3}}
+                      StaticText, 0x15561fd70, {{177.0, 73.8}, {48.0, 20.3}}, label: '羅生門'
+                Other, 0x15561fea0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x15561ffd0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x155620100, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x155620230, {{0.0, 0.0}, {402.0, 874.0}}
+                        ScrollView, 0x155620360, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.bookDetail'
+                          Other, 0x15562c1b0, {{0.0, 0.0}, {402.0, 170.8}}
+                          Other, 0x15562c2e0, {{0.0, 116.0}, {402.0, 783.0}}
+                            Other, 0x15562c410, {{40.0, 156.0}, {322.0, 132.3}}, identifier: 'book.colophon', label: '羅生門 （改） 岩波書店（岩波文庫） 1927年'
+                              Other, 0x15562c540, {{40.0, 156.0}, {322.0, 1.0}}
+                              StaticText, 0x15562c670, {{40.0, 171.0}, {24.3, 15.7}}, label: '書名'
+                              StaticText, 0x15562c7a0, {{108.0, 167.0}, {48.0, 20.3}}, identifier: 'colophon.title', label: '羅生門', value: 羅生門
+                              StaticText, 0x155624890, {{40.0, 201.3}, {24.3, 15.7}}, label: '著者'
+                              StaticText, 0x1556249c0, {{108.0, 199.3}, {28.3, 18.0}}, identifier: 'colophon.author', label: '（改）', value: （改）
+                              StaticText, 0x155624af0, {{40.0, 231.3}, {36.7, 15.7}}, label: '出版社'
+                              StaticText, 0x155624c20, {{108.0, 229.3}, {130.0, 18.0}}, identifier: 'colophon.publisher', label: '岩波書店（岩波文庫）', value: 岩波書店（岩波文庫）
+                              StaticText, 0x155624d50, {{40.0, 261.3}, {36.7, 15.7}}, label: '出版年'
+                              StaticText, 0x155624e80, {{108.0, 259.3}, {49.3, 18.0}}, identifier: 'colophon.year', label: '1927年', value: 1927年
+                              Other, 0x155624fb0, {{40.0, 287.3}, {322.0, 1.0}}
+                            StaticText, 0x1556452d0, {{40.0, 304.3}, {25.3, 18.0}}, identifier: 'book.nights', label: '2晩', value: 2晩
+                            StaticText, 0x155645400, {{77.3, 304.3}, {66.7, 18.0}}, identifier: 'book.total', label: '合計 45分', value: 合計 45分
+                            StaticText, 0x155645530, {{40.0, 343.3}, {56.3, 18.0}}, label: '電子書籍'
+                            Switch, 0x155645660, {{301.0, 338.3}, {61.0, 28.0}}, identifier: 'book.ebookToggle', label: '電子書籍', value: 0
+                              Switch, 0x155645790, {{301.0, 338.3}, {63.0, 28.0}}, value: 0
+                            Button, 0x1556458c0, {{40.0, 382.3}, {102.0, 50.0}}, identifier: 'book.unit.page', label: 'ページ', Selected
+                            Button, 0x1556459f0, {{150.0, 385.3}, {102.0, 44.0}}, identifier: 'book.unit.location', label: 'Loc'
+                            Button, 0x155645b20, {{260.0, 385.3}, {102.0, 44.0}}, identifier: 'book.unit.percent', label: '%'
+                            Button, 0x155645c50, {{24.0, 472.3}, {354.0, 44.3}}, identifier: 'book.markFinished', label: '読み終えた'
+                            Button, 0x155645d80, {{24.0, 528.7}, {354.0, 44.3}}, identifier: 'book.edit', label: '直す'
+                            Button, 0x155645eb0, {{24.0, 585.0}, {354.0, 44.3}}, identifier: 'colophon.capture', label: '奥付を撮って補う'
+                              Image, 0x155645fe0, {{125.0, 599.0}, {16.7, 16.7}}, identifier: 'text.viewfinder', label: 'text.viewfinder'
+                              StaticText, 0x155646110, {{24.0, 585.0}, {354.0, 44.3}}, label: '奥付を撮って補う'
+                            Button, 0x155646240, {{24.0, 641.3}, {354.0, 45.7}}, identifier: 'book.delete', label: 'この本を消す'
+                              Image, 0x155646370, {{141.0, 654.7}, {16.7, 19.0}}, identifier: 'trash', label: 'ゴミ箱'
+                              StaticText, 0x155644810, {{24.0, 641.3}, {354.0, 45.7}}, label: 'この本を消す'
+                            StaticText, 0x155644940, {{24.0, 711.0}, {32.0, 20.3}}, label: '記録'
+                            Other, 0x155644a70, {{24.0, 743.3}, {354.0, 69.7}}, identifier: 'book.record.row.00000000-0000-4000-9000-000000000002', label: '10月15日の晩、25分', value: 10月15日の晩、25分
+                              Button, 0x155644ba0, {{24.0, 743.3}, {354.0, 69.7}}, label: '10/15、25分、ある日の暮方の事である。'
+                                StaticText, 0x155644cd0, {{40.0, 759.3}, {41.3, 18.0}}, label: '10/15'
+                                StaticText, 0x155634c60, {{326.7, 759.3}, {35.3, 18.0}}, label: '25分'
+                                StaticText, 0x155634d90, {{40.0, 781.3}, {140.0, 15.7}}, label: 'ある日の暮方の事である。'
+                            Other, 0x155634ec0, {{24.0, 825.0}, {354.0, 50.0}}, identifier: 'book.record.row.00000000-0000-4000-9000-000000000001', label: '10月14日の晩、20分', value: 10月14日の晩、20分
+                              Button, 0x155634ff0, {{24.0, 825.0}, {354.0, 50.0}}, label: '10/14、20分'
+                                StaticText, 0x155635120, {{40.0, 841.0}, {41.3, 18.0}}, label: '10/14'
+                                StaticText, 0x155635250, {{326.7, 841.0}, {35.3, 18.0}}, label: '20分'
+                          Other, 0x155635380, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                            Other, 0x1556354b0, {{396.0, 119.0}, {3.0, 646.3}}
+                          Other, 0x1556355e0, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                            Other, 0x155635710, {{396.0, 119.0}, {3.0, 646.3}}
+                Other, 0x155635840, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x155635970, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x155635aa0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+              Other, 0x155635bd0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+              Other, 0x155635d00, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"outputVersion":1...
+              Other, 0x155635e30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+              Other, 0x155635f60, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+              Other, 0x155636420, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+              Other, 0x15561b920, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+              Other, 0x15561bdf0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+              Other, 0x15561bf20, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+              Other, 0x15561c050, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+    Window, 0x15561c180, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x15561c2b0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x15560aaf0, {{0.0, 0.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x15560cf60, pid: 42709, label: 'よむま'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x15564d6f0, pid: 42709, label: 'よむま'
+  }
+)

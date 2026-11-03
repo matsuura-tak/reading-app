@@ -1,0 +1,76 @@
+variant=dark args=["-uitest-readouts", "off"]
+CAPTURED S1_normal_dark.png (171697 bytes)
+OK S-1 normal
+CAPTURED S2_normal_dark.png (102017 bytes)
+OK S-2 normal
+CAPTURED S3_normal_dark.png (153466 bytes)
+OK S-3 normal (after session)
+CAPTURED S3a_normal_dark.png (185608 bytes)
+OK S-3a normal
+CAPTURED S3b_normal_dark.png (174437 bytes)
+OK S-3b normal
+CAPTURED S3c_normal_dark.png (281299 bytes)
+OK S-3c normal
+CAPTURED S5_normal_dark.png (155317 bytes)
+OK S-5 normal (after first mark save)
+CAPTURED S4_normal_dark.png (84715 bytes)
+OK S-4 normal (page moved)
+CAPTURED N_normal_dark.png (204539 bytes)
+OK N normal (info banner: session under 1 minute)
+CAPTURED S6_normal_dark.png (130771 bytes)
+OK S-6 normal
+CAPTURED S8_normal_dark.png (191008 bytes)
+OK S-8 normal
+CAPTURED S8a_normal_dark.png (138905 bytes)
+OK S-8a normal
+CAPTURED S8b_normal_dark.png (118580 bytes)
+OK S-8b normal
+CAPTURED S8c_normal_dark.png (192735 bytes)
+OK S-8c normal
+CAPTURED S8d_normal_dark.png (149860 bytes)
+OK S-8d normal
+CAPTURED S7_normal_dark.png (205526 bytes)
+OK S-7 normal
+FIELD book.edit.title exists=true value=羅生門 placeholder=羅生門 label=書名
+FIELD book.edit.author exists=true value=芥川龍之介 placeholder=芥川龍之介 label=著者
+CAPTURED S7a_normal_dark.png (114563 bytes)
+OK S-7a normal
+CAPTURED S7b_normal_dark.png (139945 bytes)
+OK S-7b normal
+TEXT finish.summary exists=true label=3晩、83分 value=3晩、83分
+TEXT finish.reflection exists=true label=3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。 value=3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。
+NIGHT_TEXTS count=2 ["3晩、83分", "3晩、合計83分（1時間23分）。いちばん長かったのは10月16日の晩の38分でした。"]
+CAPTURED S9_normal_dark.png (241491 bytes)
+OK S-9 normal
+CAPTURED S9_card_dark.png (103777 bytes)
+OK S-9 finish card
+CAPTURED S7c_normal_dark.png (140743 bytes)
+OK S-7c normal (colophon read)
+CAPTURED S10_normal_dark.png (203124 bytes)
+OK S-10 normal
+CAPTURED S10a_normal_dark.png (234969 bytes)
+OK S-10a normal
+CAPTURED S1_empty_dark.png (117312 bytes)
+OK S-1 empty
+CAPTURED S6_empty_dark.png (111978 bytes)
+OK S-6 empty
+CANVAS spec=accessoryRectangular:172x76 frame=(115.0, 413.0, 172.0, 76.0) showcase=["requestedHeight": 76, "dynamicTypeSize": large, "variant": normal, "surface": accessoryRectangular, "requestedWidth": 172, "colorScheme": dark, "viewType": ReadingLockScreenWidgetView, "canvasWidth": 172, "spec": accessoryRectangular:172x76, "idealHeight": 76, "contentOverflow": 0, "canvasHeight": 76]
+RENDER spec=accessoryRectangular:172x76 request=["width": 172, "height": 76, "family": accessoryRectangular] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W1_normal_dark.png (68610 bytes)
+OK W-1 normal 172x76
+CANVAS spec=systemSmall:170x170 frame=(116.0, 366.0, 170.0, 170.0) showcase=["variant": normal, "dynamicTypeSize": large, "canvasWidth": 170, "spec": systemSmall:170x170, "requestedWidth": 170, "canvasHeight": 170, "viewType": ReadingHomeSmallWidgetView, "idealHeight": 170, "requestedHeight": 170, "contentOverflow": 0, "colorScheme": dark, "surface": systemSmall]
+RENDER spec=systemSmall:170x170 request=["family": systemSmall, "height": 170, "width": 170] state=normal fontSize=20 L=5 columnCount=3 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W2_normal_dark.png (72081 bytes)
+OK W-2 normal 170x170
+CANVAS spec=liveActivity:370x160:waiting frame=(16.0, 404.0, 370.0, 94.33333333333331) showcase=["variant": waiting, "dynamicTypeSize": large, "canvasWidth": 370, "spec": liveActivity:370x160:waiting, "requestedWidth": 370, "canvasHeight": 94.33333333333333, "viewType": ReadingLiveActivityLockScreenView, "idealHeight": 94.33333333333333, "requestedHeight": 160, "contentOverflow": 0, "colorScheme": dark, "surface": liveActivity]
+RENDER spec=liveActivity:370x160:waiting request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W3_normal_dark.png (69114 bytes)
+OK W-3 normal (waiting)
+CANVAS spec=control:160x72 frame=(121.0, 415.0, 160.0, 72.0) showcase=["canvasWidth": 160, "idealHeight": 20.33333333333333, "requestedHeight": 72, "viewType": ReadingControlLabelView, "requestedWidth": 160, "contentOverflow": 0, "surface": control, "variant": startReading, "spec": control:160x72, "colorScheme": dark, "dynamicTypeSize": large, "canvasHeight": 72]
+RENDER spec=control:160x72 request=["width": 172, "height": 76, "family": accessoryRectangular] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W4_normal_dark.png (59888 bytes)
+OK W-4 normal (control)
+CANVAS spec=snippet:360x200 frame=(21.0, 425.0, 360.0, 52.333333333333314) showcase=["requestedWidth": 360, "viewType": WhereStoppedSnippetView, "dynamicTypeSize": large, "contentOverflow": 0, "spec": snippet:360x200, "requestedHeight": 200, "variant": whereStopped, "canvasWidth": 360, "idealHeight": 52.33333333333333, "surface": snippet, "colorScheme": dark, "canvasHeight": 52.33333333333333]
+RENDER spec=snippet:360x200 request=["family": accessoryRectangular, "width": 172, "height": 76] state=normal fontSize=17 L=4 columnCount=4 displayedLine=下人の行方は、誰も知らない。 contentOverflow=false
+CAPTURED W5_normal_dark.png (59794 bytes)
+OK W-5 normal (snippet)

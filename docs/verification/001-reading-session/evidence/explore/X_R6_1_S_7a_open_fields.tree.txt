@@ -1,0 +1,112 @@
+Optional(Attributes: Application, 0x14a721b60, pid: 42709, label: 'よむま'
+Element subtree:
+ →Application, 0x14a721b60, pid: 42709, label: 'よむま'
+    Window (Main), 0x14a721c90, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x14a720410, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x14a720540, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x14a721dc0, {{-402.0, -874.0}, {1206.0, 2622.0}}
+          Other, 0x14a721ef0, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x14a720670, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x14a7207a0, {{0.0, 62.0}, {402.0, 778.0}}
+              Other, 0x14a726140, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x14a726270, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '羅生門'
+                  Button, 0x14a7263a0, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: '本棚'
+                  StaticText, 0x14a7264d0, {{177.0, 73.8}, {48.0, 20.3}}, label: '羅生門'
+                    Other, 0x14a726600, {{177.0, 73.8}, {48.0, 20.3}}
+                      StaticText, 0x14a726730, {{177.0, 73.8}, {48.0, 20.3}}, label: '羅生門'
+                Other, 0x14a726860, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x14a726990, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x14a726ac0, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x14a726bf0, {{0.0, 0.0}, {402.0, 874.0}}
+                        ScrollView, 0x14a726d20, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.bookDetail'
+                          Other, 0x14a726e50, {{0.0, 0.0}, {402.0, 170.8}}
+                          Other, 0x14a726f80, {{0.0, 116.0}, {402.0, 783.0}}
+                            Other, 0x14a7270b0, {{40.0, 156.0}, {322.0, 132.3}}, identifier: 'book.colophon', label: '羅生門 芥川龍之介 岩波書店（岩波文庫） 1927年'
+                              Other, 0x14a720b80, {{40.0, 156.0}, {322.0, 1.0}}
+                              StaticText, 0x14a720cb0, {{40.0, 171.0}, {24.3, 15.7}}, label: '書名'
+                              StaticText, 0x14a720de0, {{108.0, 167.0}, {48.0, 20.3}}, identifier: 'colophon.title', label: '羅生門', value: 羅生門
+                              StaticText, 0x14a720f10, {{40.0, 201.3}, {24.3, 15.7}}, label: '著者'
+                              StaticText, 0x14a721040, {{108.0, 199.3}, {70.3, 18.0}}, identifier: 'colophon.author', label: '芥川龍之介', value: 芥川龍之介
+                              StaticText, 0x14a721170, {{40.0, 231.3}, {36.7, 15.7}}, label: '出版社'
+                              StaticText, 0x14a7212a0, {{108.0, 229.3}, {130.0, 18.0}}, identifier: 'colophon.publisher', label: '岩波書店（岩波文庫）', value: 岩波書店（岩波文庫）
+                              StaticText, 0x14a72b7a0, {{40.0, 261.3}, {36.7, 15.7}}, label: '出版年'
+                              StaticText, 0x14a72b8d0, {{108.0, 259.3}, {49.3, 18.0}}, identifier: 'colophon.year', label: '1927年', value: 1927年
+                              Other, 0x14a72ba00, {{40.0, 287.3}, {322.0, 1.0}}
+                            StaticText, 0x14a72bb30, {{40.0, 304.3}, {25.3, 18.0}}, identifier: 'book.nights', label: '2晩', value: 2晩
+                            StaticText, 0x14a72bc60, {{77.3, 304.3}, {66.7, 18.0}}, identifier: 'book.total', label: '合計 45分', value: 合計 45分
+                            StaticText, 0x14a723830, {{40.0, 343.3}, {56.3, 18.0}}, label: '電子書籍'
+                            Switch, 0x14a723960, {{301.0, 338.3}, {61.0, 28.0}}, identifier: 'book.ebookToggle', label: '電子書籍', value: 0
+                              Switch, 0x14a723a90, {{301.0, 338.3}, {63.0, 28.0}}, value: 0
+                            Button, 0x14a723bc0, {{40.0, 382.3}, {102.0, 50.0}}, identifier: 'book.unit.page', label: 'ページ', Selected
+                            Button, 0x14a723cf0, {{150.0, 385.3}, {102.0, 44.0}}, identifier: 'book.unit.location', label: 'Loc'
+                            Button, 0x14a723e20, {{260.0, 385.3}, {102.0, 44.0}}, identifier: 'book.unit.percent', label: '%'
+                            Button, 0x14a723f50, {{24.0, 472.3}, {354.0, 44.3}}, identifier: 'book.markFinished', label: '読み終えた'
+                            Button, 0x14a724080, {{24.0, 528.7}, {354.0, 44.3}}, identifier: 'book.edit', label: '直す'
+                            Button, 0x14a7241b0, {{24.0, 585.0}, {354.0, 44.3}}, identifier: 'colophon.capture', label: '奥付を撮って補う'
+                              Image, 0x14a7242e0, {{125.0, 599.0}, {16.7, 16.7}}, identifier: 'text.viewfinder', label: 'text.viewfinder'
+                              StaticText, 0x14a729f20, {{24.0, 585.0}, {354.0, 44.3}}, label: '奥付を撮って補う'
+                            Button, 0x14a72a050, {{24.0, 641.3}, {354.0, 45.7}}, identifier: 'book.delete', label: 'この本を消す'
+                              Image, 0x14a72a180, {{141.0, 654.7}, {16.7, 19.0}}, identifier: 'trash', label: 'ゴミ箱'
+                              StaticText, 0x14a72a2b0, {{24.0, 641.3}, {354.0, 45.7}}, label: 'この本を消す'
+                            StaticText, 0x14a72a3e0, {{24.0, 711.0}, {32.0, 20.3}}, label: '記録'
+                            Other, 0x14a72a510, {{24.0, 743.3}, {354.0, 69.7}}, identifier: 'book.record.row.00000000-0000-4000-9000-000000000002', label: '10月15日の晩、25分', value: 10月15日の晩、25分
+                              Button, 0x14a72a640, {{24.0, 743.3}, {354.0, 69.7}}, label: '10/15、25分、ある日の暮方の事である。'
+                                StaticText, 0x14a72a770, {{40.0, 759.3}, {41.3, 18.0}}, label: '10/15'
+                                StaticText, 0x14a72aa00, {{326.7, 759.3}, {35.3, 18.0}}, label: '25分'
+                                StaticText, 0x14a72ab30, {{40.0, 781.3}, {140.0, 15.7}}, label: 'ある日の暮方の事である。'
+                            Other, 0x14a72ac60, {{24.0, 825.0}, {354.0, 50.0}}, identifier: 'book.record.row.00000000-0000-4000-9000-000000000001', label: '10月14日の晩、20分', value: 10月14日の晩、20分
+                              Button, 0x14a72ad90, {{24.0, 825.0}, {354.0, 50.0}}, label: '10/14、20分'
+                                StaticText, 0x14a72aec0, {{40.0, 841.0}, {41.3, 18.0}}, label: '10/14'
+                                StaticText, 0x14a72aff0, {{326.7, 841.0}, {35.3, 18.0}}, label: '20分'
+                          Other, 0x14a72b120, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                            Other, 0x14a7228d0, {{396.0, 119.0}, {3.0, 646.3}}
+                          Other, 0x14a722a00, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                            Other, 0x14a722b30, {{396.0, 119.0}, {3.0, 646.3}}
+                Other, 0x14a722c60, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x14a722d90, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x14a722ec0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+              Other, 0x14a722ff0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+              Other, 0x14a723120, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"outputVersion":1...
+              Other, 0x14a723250, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+              Other, 0x14a727750, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+              Other, 0x14a727c10, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+              Other, 0x14a727d40, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+              Other, 0x14a745120, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+              Other, 0x14a727e70, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+              Other, 0x14a7453c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+      Other, 0x14a7454f0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x14a745620, {{-402.0, -874.0}, {1206.0, 2622.0}}
+        Other, 0x14a73b8c0, {{0.0, 62.0}, {402.0, 812.0}}
+          Other, 0x14a73b9f0, {{0.0, 62.0}, {402.0, 812.0}}
+            Other, 0x14a73bb20, {{0.0, 62.0}, {402.0, 812.0}}
+              Other, 0x14a73bc50, {{0.0, 62.0}, {402.0, 812.0}}
+                Other, 0x14a73bd80, {{0.0, 62.0}, {402.0, 812.0}}
+                  StaticText, 0x14a73beb0, {{169.2, 81.8}, {63.7, 20.3}}, label: '本を直す'
+                  Button, 0x14a73bfe0, {{16.0, 70.0}, {79.7, 44.0}}, identifier: 'book.edit.cancel', label: '取り消す'
+                  Other, 0x14a7420f0, {{0.0, 122.0}, {402.0, 1.0}}
+                  ScrollView, 0x14a742220, {{0.0, 123.0}, {402.0, 631.0}}
+                    Other, 0x14a742350, {{0.0, 123.0}, {402.0, 323.0}}
+                      StaticText, 0x14a742480, {{24.0, 147.0}, {28.3, 18.0}}, label: '書名'
+                      TextField, 0x14a7425b0, {{23.5, 172.5}, {355.0, 47.0}}, identifier: 'book.edit.title', label: '書名', placeholderValue: '羅生門', value: 羅生門
+                      StaticText, 0x14a7428a0, {{24.0, 235.0}, {28.3, 18.0}}, label: '著者'
+                      TextField, 0x14a7429d0, {{23.5, 260.5}, {355.0, 47.0}}, identifier: 'book.edit.author', label: '著者', placeholderValue: '芥川龍之介', value: 芥川龍之介
+                      StaticText, 0x14a742b00, {{36.0, 338.8}, {63.7, 20.3}}, label: '電子書籍'
+                      Switch, 0x14a742c30, {{305.0, 335.0}, {61.0, 28.0}}, identifier: 'book.edit.isEbook', label: '電子書籍', value: 0
+                        Switch, 0x14a742d60, {{305.0, 335.0}, {63.0, 28.0}}, value: 0
+                      SegmentedControl, 0x14a73c300, {{24.0, 391.0}, {354.0, 31.0}}, identifier: 'book.edit.progressUnit'
+                        Button, 0x14a73c430, {{24.0, 391.0}, {118.0, 32.0}}, label: 'ページ', Selected
+                        Button, 0x14a73c560, {{142.0, 391.0}, {118.0, 32.0}}, label: '位置'
+                        Button, 0x14a73c690, {{260.0, 391.0}, {118.0, 32.0}}, label: '%'
+                    Other, 0x14a73c7c0, {{369.0, 123.0}, {30.0, 631.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                      Other, 0x14a73c8f0, {{396.0, 744.0}, {3.0, 7.0}}
+                    Other, 0x14a73ca20, {{369.0, 123.0}, {30.0, 631.0}}, label: '垂直スクロールバー, 1ページ', value: 0%
+                      Other, 0x14a73cb50, {{396.0, 744.0}, {3.0, 7.0}}
+                  Button, 0x14a73cc80, {{24.0, 766.0}, {354.0, 50.0}}, identifier: 'book.edit.save', label: '保存'
+Path to element:
+ →Application, 0x14a721b60, pid: 42709, label: 'よむま'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x15560cf60, pid: 42709, label: 'よむま'
+  }
+)

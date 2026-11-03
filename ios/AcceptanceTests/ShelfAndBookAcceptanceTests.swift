@@ -512,8 +512,9 @@ final class ShelfAndBookAcceptanceTests: AcceptanceTestBase {
             let totalEl = element("book.total")
             XCTAssertTrue(nightsEl.waitForExistence(timeout: uiTimeout))
             XCTAssertTrue(totalEl.waitForExistence(timeout: uiTimeout))
-            XCTAssertTrue(nightsEl.label.contains("4"))
-            XCTAssertTrue(totalEl.label.contains("1") && totalEl.label.contains("25") || totalEl.label.contains("85"))
+            // PRD AC-22：「4晩」「85分」（design/ 7 の `book.nights`、`book.total`＋`duration.minutes`）
+            XCTAssertTrue(nightsEl.label.contains(L10n.nights(4)), nightsEl.label)
+            XCTAssertTrue(totalEl.label.contains(L10n.minutes(85)), totalEl.label)
         }
     }
 

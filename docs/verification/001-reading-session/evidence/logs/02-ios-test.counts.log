@@ -1,0 +1,11 @@
+config1 (Japanese (ja), log lines 341-11742): passed 151 failed 3
+config2 (English (en), log lines 11750-23117): passed 151 failed 3
+restarts: 6 (each right after an AC-91 failure)
+timeouts (exceeded execution time): 0
+tests not run in config1 (expected: -skip-testing FirstLaunch 1, Performance 4, and test_G3_exploratory added after this run):
+test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内
+test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内
+test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内
+test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内
+test_AC1_初回起動で空のしおり画面が出て許可ダイアログが出ない
+test_G3_exploratory

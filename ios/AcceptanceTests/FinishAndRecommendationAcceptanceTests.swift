@@ -183,9 +183,9 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         let reasonN = candN.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
 
         XCTAssertTrue(reasonP.waitForExistence(timeout: uiTimeout))
-        XCTAssertEqual(reasonP.label, "積読から・同じ著者")
-        XCTAssertEqual(reasonQ.label, "積読から・同じ賞（直木三十五賞）")
-        XCTAssertEqual(reasonN.label, "同じ賞（第157回 直木三十五賞）")
+        XCTAssertEqual(reasonP.label, L10n.reasonTsundokuSameAuthor)
+        XCTAssertEqual(reasonQ.label, L10n.reasonTsundokuSameAward("直木三十五賞"))
+        XCTAssertEqual(reasonN.label, L10n.reasonSameAward("第157回 直木三十五賞"))
     }
 
     func test_AC80_未所有の候補がないときは積読から最大3冊を出す() {
@@ -238,9 +238,9 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         let reasonP = candP.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
         let reasonR = candR.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
         let reasonS = candS.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
-        XCTAssertEqual(reasonP.label, "積読から・同じ著者")
-        XCTAssertEqual(reasonR.label, "積読から")
-        XCTAssertEqual(reasonS.label, "積読から")
+        XCTAssertEqual(reasonP.label, L10n.reasonTsundokuSameAuthor)
+        XCTAssertEqual(reasonR.label, L10n.reasonTsundoku)
+        XCTAssertEqual(reasonS.label, L10n.reasonTsundoku)
     }
 
     func test_AC81_積読も未所有の候補もないときは本を加える案内が出る() {
@@ -343,8 +343,8 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         let texts = firstCard["renderedTexts"] as? [String] ?? []
         XCTAssertTrue(texts.contains("蜜蜂と遠雷"))
         XCTAssertTrue(texts.contains("恩田陸"))
-        XCTAssertTrue(texts.contains("3晩"))
-        XCTAssertTrue(texts.contains("65分"))
+        XCTAssertTrue(texts.contains(L10n.nights(3)))
+        XCTAssertTrue(texts.contains(L10n.minutes(65)))
         XCTAssertEqual(firstCard["containsSavedLine"] as? Bool, false)
         XCTAssertEqual(firstCard["containsPhoto"] as? Bool, false)
     }
@@ -396,8 +396,8 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
 
         let cards = readHookJSON("hook.shareCard")["cards"] as? [[String: Any]] ?? []
         let texts = cards.first?["renderedTexts"] as? [String] ?? []
-        XCTAssertTrue(texts.contains("2晩"))
-        XCTAssertTrue(texts.contains("65分"))
+        XCTAssertTrue(texts.contains(L10n.nights(2)))
+        XCTAssertTrue(texts.contains(L10n.minutes(65)))
     }
 
     func test_AC86_今の本がある毎晩の道には次の1冊の候補を出さない() {
@@ -489,9 +489,9 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         let reasonP = candP.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
         let reasonU1 = candU1.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
         let reasonU2 = candU2.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
-        XCTAssertEqual(reasonP.label, "積読から・同じ著者")
-        XCTAssertEqual(reasonU1.label, "シリーズの次の巻")
-        XCTAssertEqual(reasonU2.label, "同じ著者の本")
+        XCTAssertEqual(reasonP.label, L10n.reasonTsundokuSameAuthor)
+        XCTAssertEqual(reasonU1.label, L10n.reasonNextVolume)
+        XCTAssertEqual(reasonU2.label, L10n.reasonSameAuthor)
 
         let addU1 = candU1.descendants(matching: .any).matching(identifier: "next.addToShelf").firstMatch
         addU1.tap()
@@ -535,17 +535,17 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         element("bookmark.finish").tap()
 
         let reflection = readHookString("finish.reflection")
-        XCTAssertTrue(reflection.contains("6晩"))
-        XCTAssertTrue(reflection.contains("142分（2時間22分）"))
-        XCTAssertTrue(reflection.contains("10月15日"))
-        XCTAssertTrue(reflection.contains("38分"))
+        XCTAssertTrue(reflection.contains(L10n.nights(6)), reflection)
+        XCTAssertTrue(reflection.contains(L10n.totalWithHours(minutes: 142, 2, 22)), reflection)
+        XCTAssertTrue(reflection.contains(L10n.nightDay(month: 10, day: 15)), reflection)
+        XCTAssertTrue(reflection.contains(L10n.minutes(38)), reflection)
 
         element("finish.card.share").tap()
         let cards = readHookJSON("hook.shareCard")["cards"] as? [[String: Any]] ?? []
         let firstCard = cards.first ?? [:]
         let texts = firstCard["renderedTexts"] as? [String] ?? []
-        XCTAssertFalse(texts.joined(separator: " ").contains("10月15日"))
-        XCTAssertFalse(texts.joined(separator: " ").contains("38分"))
+        XCTAssertFalse(texts.joined(separator: " ").contains(L10n.nightDay(month: 10, day: 15)))
+        XCTAssertFalse(texts.joined(separator: " ").contains(L10n.minutes(38)))
         XCTAssertEqual(firstCard["containsReflection"] as? Bool, false)
     }
 
@@ -566,9 +566,9 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         resetAndLaunch(seedJSON: singleNightSeed, now: "2026-10-18T21:00:00+09:00", timezone: "Asia/Tokyo")
         element("bookmark.finish").tap()
         let singleRef = readHookString("finish.reflection")
-        XCTAssertTrue(singleRef.contains("1晩"))
-        XCTAssertTrue(singleRef.contains("30分"))
-        XCTAssertFalse(singleRef.contains("10月15日"))
+        XCTAssertTrue(singleRef.contains(L10n.nights(1)), singleRef)
+        XCTAssertTrue(singleRef.contains(L10n.minutes(30)), singleRef)
+        XCTAssertFalse(singleRef.contains(L10n.nightDay(month: 10, day: 15)), singleRef)
 
         let tieSeed = makeSeedJSON(
             books: [
@@ -588,9 +588,9 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         resetAndLaunch(seedJSON: tieSeed, now: "2026-10-18T21:00:00+09:00", timezone: "Asia/Tokyo")
         element("bookmark.finish").tap()
         let tieRef = readHookString("finish.reflection")
-        XCTAssertTrue(tieRef.contains("3晩"))
-        XCTAssertTrue(tieRef.contains("70分（1時間10分）"))
-        XCTAssertTrue(tieRef.contains("10月15日"))
+        XCTAssertTrue(tieRef.contains(L10n.nights(3)), tieRef)
+        XCTAssertTrue(tieRef.contains(L10n.totalWithHours(minutes: 70, 1, 10)), tieRef)
+        XCTAssertTrue(tieRef.contains(L10n.nightDay(month: 10, day: 15)), tieRef)
     }
 
     func test_AC129_記録が0件の本を読み終えたときはふりかえり1行を出さない() {
@@ -906,7 +906,7 @@ final class FinishAndRecommendationAcceptanceTests: AcceptanceTestBase {
         XCTAssertEqual(matchingCount("next.candidate.9784101234038"), 0)
 
         let reasonEl = candI2.descendants(matching: .any).matching(identifier: "next.reason").firstMatch
-        XCTAssertEqual(reasonEl.label, "この本を読み終えた人が、次に読んだ本")
+        XCTAssertEqual(reasonEl.label, L10n.reasonReaders)
         XCTAssertFalse(reasonEl.label.contains("12"))
         XCTAssertFalse(candI2.label.contains("12"))
     }

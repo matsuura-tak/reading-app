@@ -1,60 +1,16 @@
-/Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Products/Perf-iphonesimulator/ReadingAcceptanceTests-Runner.app: replacing existing signature
-
-PruneExplicitPrecompiledModules /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Intermediates.noindex/ExplicitPrecompiledModules
-
-PruneExplicitPrecompiledModules /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
-
-PruneExplicitPrecompiledModules /Users/takumamatsuura/Library/Developer/Xcode/DerivedData/SDKExplicitPrecompiledModules
-
-2026-11-02 00:06:59.900526+0900 ReadingAcceptanceTests-Runner[29130:4145902] [Default] Running tests...
-2026-11-02 00:07:00.203227+0900 ReadingAcceptanceTests-Runner[29130:4146045] [General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
-2026-11-02 00:07:00.247161+0900 ReadingAcceptanceTests-Runner[29130:4146051] [General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
-Test Suite 'Selected tests' started at 2026-11-02 00:07:10.094.
-Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-02 00:07:10.098.
-Test Suite 'PerformanceTests' started at 2026-11-02 00:07:10.099.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' started.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' passed (96.536 seconds).
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' started.
-<unknown>:0: Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' measured [Duration (ApplicationFirstFramePresentationResponsive), s] average: 2.792, relative standard deviation: 1.400%, values: [2.860638, 2.786843, 2.783538, 2.789816, 2.738888], performanceMetricID:com.apple.dt.XCTMetric_ApplicationLaunch-ApplicationFirstFramePresentationResponsive.duration, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.000, maxStandardDeviation: 0.000
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' passed (43.403 seconds).
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' started.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' passed (83.442 seconds).
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' started.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' passed (42.198 seconds).
-Test Suite 'PerformanceTests' passed at 2026-11-02 00:11:35.687.
-	 Executed 4 tests, with 0 failures (0 unexpected) in 265.579 (265.588) seconds
-Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-02 00:11:35.690.
-	 Executed 4 tests, with 0 failures (0 unexpected) in 265.579 (265.592) seconds
-Test Suite 'Selected tests' passed at 2026-11-02 00:11:35.690.
-	 Executed 4 tests, with 0 failures (0 unexpected) in 265.579 (265.597) seconds
-2026-11-02 00:11:37.038816+0900 ReadingAcceptanceTests-Runner[31253:4154947] [Default] Running tests...
-Test Suite 'Selected tests' started at 2026-11-02 00:11:38.026.
-Test Suite 'ReadingAcceptanceTests.xctest' started at 2026-11-02 00:11:38.027.
-Test Suite 'PerformanceTests' started at 2026-11-02 00:11:38.028.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' started.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' passed (37.002 seconds).
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' started.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' passed (81.937 seconds).
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' started.
-<unknown>:0: Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' measured [Duration (ApplicationFirstFramePresentationResponsive), s] average: 2.718, relative standard deviation: 0.836%, values: [2.689812, 2.691876, 2.743355, 2.723888, 2.738664], performanceMetricID:com.apple.dt.XCTMetric_ApplicationLaunch-ApplicationFirstFramePresentationResponsive.duration, baselineName: "", baselineAverage: , polarity: prefers smaller, maxPercentRegression: 10.000%, maxPercentRelativeStandardDeviation: 10.000%, maxRegression: 0.000, maxStandardDeviation: 0.000
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' passed (41.108 seconds).
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' started.
-Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' passed (82.783 seconds).
-Test Suite 'PerformanceTests' passed at 2026-11-02 00:15:40.862.
-	 Executed 4 tests, with 0 failures (0 unexpected) in 242.830 (242.835) seconds
-Test Suite 'ReadingAcceptanceTests.xctest' passed at 2026-11-02 00:15:40.866.
-	 Executed 4 tests, with 0 failures (0 unexpected) in 242.830 (242.838) seconds
-Test Suite 'Selected tests' passed at 2026-11-02 00:15:40.867.
-	 Executed 4 tests, with 0 failures (0 unexpected) in 242.830 (242.840) seconds
-2026-11-02 00:15:41.401 xcodebuild[27541:4138541] [MT] IDETestOperationsObserverDebug: 575.548 elapsed -- Testing started completed.
-2026-11-02 00:15:41.401 xcodebuild[27541:4138541] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
-2026-11-02 00:15:41.401 xcodebuild[27541:4138541] [MT] IDETestOperationsObserverDebug: 575.548 sec, +575.548 sec -- end
-
-Test session results, code coverage, and logs:
-	/Users/takumamatsuura/Library/Developer/Xcode/DerivedData/ReadingApp-hgwzrztlbsbysvdourzihxpxbpes/Logs/Test/Test-ReadingApp-2026.11.02_00-05-19-+0900.xcresult
-
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' passed (98.587 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' passed (40.434 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' passed (41.295 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' passed (86.206 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 266.522 (266.530) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 266.522 (266.536) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 266.522 (266.709) seconds
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' passed (85.110 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' passed (39.049 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' passed (82.192 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' passed (46.584 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 252.935 (252.941) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 252.935 (252.947) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 252.935 (252.948) seconds
 ** TEST SUCCEEDED **
-
-Testing started
-end 2026-11-02 00:15:46
-exit=0
+perf exit=0

@@ -1,28 +1,30 @@
-## capture-light
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (315.598 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (217.442 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (152.046 seconds).
-exit=65
-## capture-light3
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (223.826 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' failed (783.703 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (294.239 seconds).
-exit=65
-## capture-dark
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (143.075 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' passed (0.112 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (0.067 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (59.624 seconds).
-exit=0
-## capture-ax5
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' passed (0.255 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (0.256 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (150.927 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (59.084 seconds).
-exit=0
-## capture-en
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureNormalScreens]' passed (147.254 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureWidgets]' passed (58.952 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_accessibilityAudit]' passed (0.063 seconds).
-Test Case '-[ReadingAcceptanceTests.G3EvidenceCaptureTests test_G3_captureStates]' passed (0.057 seconds).
-exit=0
+Mon Nov  2 21:56:01 JST 2026
+light Tue Nov  3 09:47:52 JST 2026
+dark Tue Nov  3 09:51:33 JST 2026
+ax5 Tue Nov  3 09:55:05 JST 2026
+en Tue Nov  3 09:58:14 JST 2026
+
+== light: exit=65
+G3_captureNormalScreens passed 209.254s
+G3_accessibilityAudit passed 202.552s
+G3_captureWidgets failed 307.169s
+G3_captureStates failed 41809.403s
+G3_exploratory passed 77.966s
+== dark: exit=0
+G3_captureStates passed 0.379s
+G3_exploratory passed 0.072s
+G3_captureNormalScreens passed 149.525s
+G3_accessibilityAudit passed 0.117s
+G3_captureWidgets passed 40.861s
+== ax5: exit=65
+G3_captureNormalScreens passed 141.143s
+G3_captureStates passed 0.075s
+G3_exploratory passed 0.058s
+G3_captureWidgets failed 39.161s
+G3_accessibilityAudit passed 0.080s
+== en: exit=0
+G3_captureWidgets passed 38.941s
+G3_captureStates passed 0.061s
+G3_captureNormalScreens passed 139.545s
+G3_exploratory passed 0.074s
+G3_accessibilityAudit passed 0.059s
