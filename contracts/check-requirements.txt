@@ -1,0 +1,9 @@
+# make check-contracts が使う Python パッケージ（JSON Schema の検査だけに使う。アプリには入らない）
+# 版と理由は contracts/dependencies.md の「契約の検査の道具（アプリの依存ではない）」の表。版を変えるときは表も直す。
+# 入れる場所はリポジトリの外の ~/.cache/reading-app/contracts-schema-venv（Makefile の SCHEMA_VENV）。Makefile の contracts-venv が作る。
+jsonschema==4.25.1
+referencing==0.36.2
+jsonschema-specifications==2025.9.1
+rpds-py==0.27.1
+attrs==26.1.0
+typing_extensions==4.16.0

@@ -1,0 +1,77 @@
+Optional(Attributes: Application, 0x156f69d60, pid: 51181, label: 'よむま'
+Element subtree:
+ →Application, 0x156f69d60, pid: 51181, label: 'よむま'
+    Window (Main), 0x156f6fc10, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x156f66580, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x156f666b0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x156f6ec20, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x156f709e0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x156f667e0, {{0.0, 62.0}, {402.0, 778.0}}
+              Other, 0x156f66910, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x156f66b00, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '設定'
+                  Button, 0x156f66c30, {{16.0, 62.0}, {44.0, 44.0}}, identifier: 'BackButton', label: 'しおり'
+                  StaticText, 0x156f66d60, {{185.0, 73.8}, {32.0, 20.3}}, label: '設定'
+                Other, 0x156f66e90, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x156f66fc0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x156f78300, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x156f78430, {{0.0, 0.0}, {402.0, 874.0}}
+                        ScrollView, 0x156f78560, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.settings'
+                          Other, 0x156f78690, {{0.0, 0.0}, {402.0, 170.8}}
+                          Other, 0x156f787c0, {{0.0, 116.0}, {402.0, 1193.3}}
+                            StaticText, 0x156f788f0, {{20.0, 132.0}, {126.3, 18.0}}, label: '読み始めと夜の入口'
+                            StaticText, 0x156f78a20, {{32.0, 185.8}, {95.7, 20.3}}, label: '伏せて始める'
+                            Switch, 0x156f78b50, {{309.0, 182.0}, {61.0, 28.0}}, identifier: 'settings.flipToStart', label: '伏せて始める', value: 1
+                              Switch, 0x156f78c80, {{309.0, 182.0}, {63.0, 28.0}}, value: 1
+                            StaticText, 0x156f78db0, {{32.0, 254.8}, {111.3, 20.3}}, label: '夜の入口の時刻'
+                            Button, 0x156f78ee0, {{300.0, 243.0}, {70.0, 44.0}}, identifier: 'settings.entryTime', label: '夜の入口の時刻', value: 21:00
+                            StaticText, 0x156f79010, {{20.0, 327.0}, {70.3, 18.0}}, label: 'ロック画面'
+                            StaticText, 0x156f79140, {{32.0, 380.8}, {127.3, 20.3}}, label: '一行と書名を隠す'
+                            Switch, 0x156f79270, {{309.0, 377.0}, {61.0, 28.0}}, identifier: 'settings.hideOnWidgets', label: '一行と書名を隠す', value: 1
+                              Switch, 0x156f793a0, {{309.0, 377.0}, {63.0, 28.0}}, value: 1
+                            StaticText, 0x156f794d0, {{20.0, 453.0}, {84.3, 18.0}}, label: '見た目と購入'
+                            Button, 0x156f79600, {{32.0, 506.8}, {338.0, 20.3}}, identifier: 'settings.appearance', label: '見た目、標準（白と黒）'
+                              StaticText, 0x156f79730, {{32.0, 506.8}, {48.0, 20.3}}, label: '見た目'
+                              StaticText, 0x156f79860, {{282.3, 508.0}, {87.7, 18.0}}, label: '標準（白と黒）'
+                            Button, 0x156f79990, {{32.0, 551.0}, {338.0, 44.0}}, identifier: 'appearance.row.default', label: '標準（白と黒）', value: selected, Selected
+                              StaticText, 0x156f79ac0, {{44.0, 562.8}, {99.7, 20.3}}, label: '標準（白と黒）'
+                              Image, 0x156f79bf0, {{342.7, 566.7}, {13.3, 13.0}}, identifier: 'checkmark', label: '選択済み', Selected
+                            Button, 0x156f79d20, {{32.0, 603.0}, {338.0, 44.0}}, identifier: 'appearance.row.kinari', label: '生成り', value: locked
+                              StaticText, 0x156f79e50, {{44.0, 614.8}, {48.0, 20.3}}, label: '生成り'
+                              Image, 0x156f79f80, {{346.0, 617.7}, {10.0, 14.7}}, identifier: 'lock', label: 'ロック'
+                            Button, 0x156f7a0b0, {{32.0, 655.0}, {338.0, 44.0}}, identifier: 'appearance.row.sumi', label: '墨', value: locked
+                              StaticText, 0x156f7a1e0, {{44.0, 666.8}, {16.0, 20.3}}, label: '墨'
+                              Image, 0x156f7a310, {{346.0, 669.7}, {10.0, 14.7}}, identifier: 'lock', label: 'ロック'
+                            Button, 0x156f7a440, {{32.0, 707.0}, {338.0, 44.0}}, identifier: 'appearance.row.shu', label: '朱', value: locked
+                              StaticText, 0x156f7c8a0, {{44.0, 718.8}, {16.0, 20.3}}, label: '朱'
+                              Image, 0x156f7c9d0, {{346.0, 721.7}, {10.0, 14.7}}, identifier: 'lock', label: 'ロック'
+                            Button, 0x156f7cb00, {{32.0, 763.0}, {338.0, 44.3}}, identifier: 'settings.restorePurchases', label: '購入を復元する'
+                            StaticText, 0x156f7cc30, {{20.0, 847.3}, {70.3, 18.0}}, label: '書誌データ'
+                            StaticText, 0x156f7cd60, {{32.0, 889.3}, {274.0, 15.7}}, identifier: 'catalog.status', label: '端末内の書誌データ（1.0版）は準備できています。'
+                            StaticText, 0x156f7ce90, {{20.0, 945.0}, {28.3, 18.0}}, label: '情報'
+                            Button, 0x156f7cfc0, {{32.0, 987.0}, {338.0, 44.3}}, identifier: 'settings.privacyPolicy', label: 'プライバシーポリシー'
+                            StaticText, 0x156f7d0f0, {{32.0, 1043.3}, {338.0, 177.7}}, identifier: 'settings.dataSources', label: '書誌（書名、著者、出版社など）は、国立国会図書館書誌データ（「国立国会図書館蔵書」「国立国会図書館新着書誌情報」「全国書誌情報」、データ提供機関：国立国会図書館、取得日：1.0）を出典とし、国立国会図書館サーチの API を用いて取得したデータをこのアプリで加工して端末内の書誌データベース（版：1.0）を作成しています。ライセンスはクリエイティブ・コモンズ 表示 4.0 国際 パブリック・ライセンス（CC BY 4.0）です。なお、「この本を読み終えた人が、次に読んだ本」の候補は、利用者の同意のもとで集計した読書順序データに基づくもので、国立国会図書館のデータとは無関係です。', value: 書誌（書名、著者、出版社など）は、国...
+                            Button, 0x156f7d6e0, {{32.0, 1233.0}, {338.0, 44.3}}, identifier: 'settings.dataSources.license', label: 'ライセンス（CC BY 4.0）'
+                          Other, 0x156f7d810, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                            Other, 0x156f7d940, {{396.0, 119.0}, {3.0, 449.0}}
+                          Other, 0x156f7da70, {{369.0, 116.0}, {30.0, 696.0}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                            Other, 0x156f7dba0, {{396.0, 119.0}, {3.0, 449.0}}
+                Other, 0x156f7dcd0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x156f7de00, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x156f7df30, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+              Other, 0x156f7e060, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+              Other, 0x156f7e190, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"outputVersion":1...
+              Other, 0x156f7e2c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+              Other, 0x156f7e3f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+              Other, 0x156f7e880, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+              Other, 0x156f7e9b0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+              Other, 0x156f7ee80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+              Other, 0x156f7efb0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+              Other, 0x156f7f0e0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x156f69d60, pid: 51181, label: 'よむま'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156f65350, pid: 51181, label: 'よむま'
+  }
+)

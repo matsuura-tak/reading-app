@@ -1,0 +1,61 @@
+Optional(Attributes: Application, 0x156f6fc10, pid: 51254, label: 'よむま'
+Element subtree:
+ →Application, 0x156f6fc10, pid: 51254, label: 'よむま'
+    Window (Main), 0x156f7c080, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x156f69d60, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x156f7eaf0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x156f7e9a0, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x156f78300, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x156f7ecb0, {{0.0, 62.0}, {402.0, 778.0}}
+              Other, 0x156f7ede0, {{0.0, 0.0}, {402.0, 874.0}}
+                NavigationBar, 0x156f7ef10, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおり'
+                  Button, 0x156f7f040, {{20.0, 66.0}, {36.0, 36.0}}, identifier: 'toolbar.shelf', label: '本棚'
+                  StaticText, 0x156f78790, {{177.0, 73.8}, {48.0, 20.3}}, label: 'しおり'
+                  Button, 0x156f788c0, {{346.0, 66.0}, {36.0, 36.0}}, identifier: 'toolbar.settings', label: '設定'
+                Other, 0x156f789f0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x156f78b20, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x156f78c50, {{0.0, 0.0}, {402.0, 874.0}}
+                      Other, 0x156f78d80, {{0.0, 0.0}, {402.0, 874.0}}
+                        Other, 0x156f78eb0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.bookmark'
+                          ScrollView, 0x156f78fe0, {{0.0, 0.0}, {402.0, 874.0}}
+                            Other, 0x156f79110, {{0.0, 0.0}, {402.0, 170.8}}
+                            Other, 0x156f79240, {{0.0, 116.0}, {402.0, 754.7}}
+                              StaticText, 0x156f79370, {{177.0, 140.0}, {48.0, 20.3}}, identifier: 'bookmark.title', label: '羅生門', value: 羅生門
+                              StaticText, 0x156f794a0, {{165.8, 168.3}, {70.3, 18.0}}, identifier: 'bookmark.author', label: '芥川龍之介', value: 芥川龍之介
+                              StaticText, 0x156f795d0, {{185.2, 194.3}, {31.7, 18.0}}, identifier: 'bookmark.page', label: 'p.45', value: p.45
+                              Button, 0x156f79700, {{24.0, 228.3}, {171.0, 66.3}}, identifier: 'bookmark.setMark', label: 'どこまで読んだかを入れる'
+                              Button, 0x156f79830, {{207.0, 239.3}, {171.0, 44.3}}, identifier: 'bookmark.finish', label: '読み終えた'
+                              Other, 0x156f79960, {{187.0, 326.7}, {354.0, 10.0}}, identifier: 'bookmark.line', label: 'ある日の暮方の事である。', value: ある日の暮方の事である。
+                              Button, 0x156f79a90, {{179.0, 786.7}, {44.0, 44.0}}, identifier: 'bookmark.addBook', label: '本を加える'
+                            Other, 0x156f79bc0, {{0.0, 738.3}, {402.0, 135.7}}
+                            Other, 0x156f79cf0, {{0.0, 738.3}, {402.0, 135.7}}
+                              Other, 0x156f79e20, {{0.0, 738.3}, {402.0, 135.7}}
+                              Other, 0x156f79f50, {{0.0, 738.3}, {402.0, 135.7}}
+                                Other, 0x156f7a080, {{0.0, 738.3}, {402.0, 135.7}}
+                              Other, 0x156f7a1b0, {{0.0, 765.3}, {402.0, 108.7}}
+                            Other, 0x156f7a2e0, {{369.0, 116.0}, {30.0, 622.3}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                              Other, 0x156f7a410, {{396.0, 119.0}, {3.0, 535.3}}
+                            Other, 0x156f82a10, {{369.0, 116.0}, {30.0, 622.3}}, label: '垂直スクロールバー, 2ページ', value: 0%
+                              Other, 0x156f82b40, {{396.0, 119.0}, {3.0, 535.3}}
+                          Button, 0x156f82c70, {{24.0, 750.3}, {354.0, 50.0}}, identifier: 'bookmark.start', label: '読み始める'
+                          StaticText, 0x156f82da0, {{52.0, 808.3}, {298.3, 15.7}}, identifier: 'bookmark.flipHint', label: 'この画面で iPhone を伏せて置いても、読み始めます。'
+                Other, 0x156f82ed0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x156f83000, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x156f83130, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+              Other, 0x156f83260, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.store', label: 'hook.store', value: {"books":[{"author...
+              Other, 0x156f83390, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.widget', label: 'hook.widget', value: {"outputVersion":1...
+              Other, 0x156f834c0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.outbound', label: 'hook.outbound', value: {"openedURLs":[],"...
+              Other, 0x156f835f0, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.liveActivity', label: 'hook.liveActivity', value: {"activities":[{"i...
+              Other, 0x156f83720, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.storekit', label: 'hook.storekit', value: {"appearanceID":"d...
+              Other, 0x156f83850, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.intents', label: 'hook.intents', value: {"invocations":[],...
+              Other, 0x156f83d20, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.shareCard', label: 'hook.shareCard', value: {"cards":[]}
+              Other, 0x156f83e50, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.awards', label: 'hook.awards', value: {"activeItems":[{"...
+              Other, 0x156f83f80, {{0.0, 796.0}, {44.0, 44.0}}, identifier: 'hook.mediaAudit', label: 'hook.mediaAudit', value: {"photoLibraryWrit...
+Path to element:
+ →Application, 0x156f6fc10, pid: 51254, label: 'よむま'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156e3c110, pid: 51254, label: 'よむま'
+  }
+)

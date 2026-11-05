@@ -1,0 +1,52 @@
+FIELD book.edit.title exists=true value=羅生門 placeholder=書名
+FIELD book.edit.author exists=true value=芥川龍之介 placeholder=著者
+FIELD book.edit.publisher exists=false value=- placeholder=-
+FIELD book.edit.label exists=false value=- placeholder=-
+FIELD book.edit.year exists=false value=- placeholder=-
+CAPTURED X_R6_1_S_7a_open_fields.png (122220 bytes)
+OK R6 1 S-7a open fields
+RESULT save-without-change title.invalid=false title=羅生門 author=芥川龍之介 publisher=岩波書店 year=1927
+CAPTURED X_R6_2_S_7a_save_without_change.png (217986 bytes)
+OK R6 2 S-7a save without change
+RESULT edit-author-only title.invalid=false title=羅生門 author=芥川龍之介（改） publisher=岩波書店 year=1927
+CAPTURED X_R6_3_S_7a_edit_author_only.png (220349 bytes)
+OK R6 3 S-7a edit author only
+COLOPHON label=羅生門 芥川龍之介（改） 岩波書店（岩波文庫） 1927年
+CAPTURED X_R6_4_S_7_after_edit.png (220349 bytes)
+OK R6 4 S-7 after edit
+R4 {
+    family = accessoryRectangular;
+    height = 68;
+    width = 153;
+} s=13 L=5 C=5 feed=0 relaxed=0 joined==line:true heads=["「", "「", "「", "「", "「"]
+R4 {
+    family = accessoryRectangular;
+    height = 76;
+    width = 172;
+} s=15 L=5 C=5 feed=0 relaxed=0 joined==line:true heads=["「", "「", "「", "「", "「"]
+R4 {
+    family = systemSmall;
+    height = 148;
+    width = 148;
+} s=19 L=5 C=5 feed=0 relaxed=0 joined==line:true heads=["「", "「", "「", "「", "「"]
+R4 {
+    family = systemSmall;
+    height = 170;
+    width = 170;
+} s=20 L=5 C=5 feed=0 relaxed=0 joined==line:true heads=["「", "「", "「", "「", "「"]
+H22JSON explore_kinsoku_heavy.json bytes=13582
+CAPTURED X_R4_1_widget_25_chars_kinsoku_heavy.png (183649 bytes)
+OK R4 1 widget 25 chars kinsoku heavy
+R4 hidden: contains title=false contains line=false state=hidden
+R4 hidden liveActivity: contains title=false contains line=false
+CAPTURED X_R4_2_toggle_hideOnWidgets_on.png (216996 bytes)
+OK R4 2 toggle hideOnWidgets on
+R4 shown again: contains title=true contains line=true state=normal
+CAPTURED X_R4_3_toggle_hideOnWidgets_off_again.png (216174 bytes)
+OK R4 3 toggle hideOnWidgets off again
+R1 record nightDate=2026-10-16 minutes=20 count=3
+CAPTURED X_R1_1_read_across_4am.png (194531 bytes)
+OK R1 1 read across 4am
+R1 nights=3晩 total=合計 65分
+CAPTURED X_R1_2_book_nights_after_4am_session.png (218819 bytes)
+OK R1 2 book nights after 4am session

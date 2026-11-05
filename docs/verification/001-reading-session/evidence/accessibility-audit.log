@@ -1,0 +1,163 @@
+=== performAccessibilityAudit(for: .all), -uitest-readouts off (no hook elements on screen) ===
+Screens audited: 27
+Total issues: 10
+W-1 (accessoryRectangular:172x76): 0 issues
+W-2 (systemSmall:170x170): 0 issues
+W-3 (liveActivity:370x160:waiting): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 1): Contrast nearly passed [element=Attributes: StaticText, 0x156f2d0e0, {{32.0, 464.3}, {31.7, 18.0}}, label: 'p.61'
+Element subtree:
+ →StaticText, 0x156f2d0e0, {{32.0, 464.3}, {31.7, 18.0}}, label: 'p.61'
+Path to element:
+ →Application, 0x156f99700, pid: 53492, label: 'よむま'
+  ↳Window (Main), 0x156f522b0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x156f08110, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x156f37ee0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x156f3b550, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x156f8a770, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x156f4ab90, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'hook.widget.showcase'
+        ↳ScrollView, 0x156f425b0, {{16.0, 404.0}, {370.0, 94.3}}, identifier: 'hook.widget.canvas'
+         ↳Other, 0x156f3f780, {{16.0, 404.0}, {370.0, 94.3}}
+          ↳Other, 0x156f4ee30, {{32.0, 420.0}, {216.0, 62.3}}, identifier: 'liveActivity.banner'
+           ↳Other, 0x156f47fd0, {{32.0, 420.0}, {216.0, 62.3}}, label: '羅生門、61ページ。下人の行方は、誰も知らない。'
+            ↳StaticText, 0x156f2d0e0, {{32.0, 464.3}, {31.7, 18.0}}, label: 'p.61'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156e42040, pid: 53492, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 53492, elementOrHash.elementID: 6047298640.17
+    Output: {
+      StaticText, 0x156e42890, {{32.0, 464.3}, {31.7, 18.0}}, label: 'p.61'
+    }
+]
+W-4 (control:160x72): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x156e39dd0, {{148.0, 440.8}, {108.2, 20.3}}, label: '読み始める'
+Element subtree:
+ →StaticText, 0x156e39dd0, {{148.0, 440.8}, {108.2, 20.3}}, label: '読み始める'
+Path to element:
+ →Application, 0x156e4a1f0, pid: 53519, label: 'よむま'
+  ↳Window (Main), 0x156e379d0, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x156e49550, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x156e39450, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x156e26ce0, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x156e3cf70, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x156e396b0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'hook.widget.showcase'
+        ↳ScrollView, 0x156e39910, {{121.0, 415.0}, {160.0, 72.0}}, identifier: 'hook.widget.canvas'
+         ↳Other, 0x156e39a40, {{121.0, 415.0}, {160.0, 72.0}}
+          ↳Button, 0x156e39b70, {{148.0, 440.8}, {108.2, 20.3}}, identifier: 'control.startReading', label: '読み始める'
+           ↳StaticText, 0x156e39dd0, {{148.0, 440.8}, {108.2, 20.3}}, label: '読み始める'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156f991b0, pid: 53519, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 53519, elementOrHash.elementID: 6030638304.15
+    Output: {
+      StaticText, 0x156f98a30, {{148.0, 440.8}, {108.2, 20.3}}, label: '読み始める'
+    }
+]
+W-5 (snippet:360x200): 0 issues
+S-1 (BookmarkHome): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 4): Hit area is too small [element=nil]
+S-2 (ReadingSession): 0 issues
+S-3 (MarkSelect): 0 issues
+S-3a (MarkLineInput): 0 issues
+S-3b (MarkPageOnly): 0 issues
+S-3c (MarkOCR): 3 issues
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=nil]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=nil]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=nil]
+S-5 (WidgetGuide): 0 issues
+S-4 (SessionResult): 0 issues
+N (BannerNotice): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 4): Hit area is too small [element=nil]
+S-6 (Shelf): 0 issues
+S-8 (AddBookMenu): 0 issues
+S-8a (BarcodeScan): 0 issues
+S-8b (CoverOCR): 0 issues
+S-8c (ManualInput): 0 issues
+S-8d (BookshelfOCR): 0 issues
+S-7 (BookDetail): 1 issues
+  - XCUIAccessibilityAuditType(rawValue: 65536): Dynamic Type font sizes are partially unsupported [element=Attributes: StaticText, 0x156fa81a0, {{177.0, 74.0}, {48.0, 20.3}}, label: '羅生門'
+Element subtree:
+ →StaticText, 0x156fa81a0, {{177.0, 74.0}, {48.0, 20.3}}, label: '羅生門'
+Path to element:
+ →Application, 0x156f991b0, pid: 53552, label: 'よむま'
+  ↳Window (Main), 0x156fa5130, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x156f2d0e0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x156fa5ae0, {{0.0, 0.0}, {402.0, 874.0}}
+     ↳Other, 0x156f56d00, {{0.0, 0.0}, {402.0, 874.0}}
+      ↳Other, 0x156f7c3e0, {{0.0, 0.0}, {402.0, 874.0}}
+       ↳Other, 0x156fa5d40, {{0.0, 0.0}, {402.0, 874.0}}
+        ↳NavigationBar, 0x156fa5e70, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '羅生門'
+         ↳StaticText, 0x156fa7f40, {{177.0, 71.3}, {48.0, 25.3}}, label: '羅生門'
+          ↳Other, 0x156fa8070, {{177.0, 71.3}, {48.0, 25.3}}
+           ↳StaticText, 0x156fa81a0, {{177.0, 74.0}, {48.0, 20.3}}, label: '羅生門'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156fb76c0, pid: 53552, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 53552, elementOrHash.elementID: 482342206368.563
+    Output: {
+      StaticText, 0x156e8b840, {{177.0, 74.0}, {48.0, 20.3}}, label: '羅生門'
+    }
+]
+S-7a (BookEdit): 0 issues
+S-7b (RecordEdit): 0 issues
+S-9 (FinishNight): 0 issues
+S-7c (ColophonOCR): 0 issues
+S-10 (Settings): 0 issues
+S-10a (StorePreview): 2 issues
+  - XCUIAccessibilityAuditType(rawValue: 4): Hit area is too small [element=Attributes: Other, 0x156fca430, {{24.0, 139.0}, {354.0, 10.0}}, identifier: 'store.preview', label: 'kinari', value: kinari
+Element subtree:
+ →Other, 0x156fca430, {{24.0, 139.0}, {354.0, 10.0}}, identifier: 'store.preview', label: 'kinari', value: kinari
+Path to element:
+ →Application, 0x156fbc960, pid: 53552, label: 'よむま'
+  ↳Window (Main), 0x156fc4b10, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x156fc94c0, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x156fc9720, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x156fc9850, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x156fc9980, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x156fc9ab0, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x156fc9be0, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x156fc9d10, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x156fca1d0, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x156fca300, {{0.0, 123.0}, {402.0, 496.0}}
+            ↳Other, 0x156fca430, {{24.0, 139.0}, {354.0, 10.0}}, identifier: 'store.preview', label: 'kinari', value: kinari
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156fd9ea0, pid: 53552, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 53552, elementOrHash.elementID: 6170217712.851
+    Output: {
+      Other, 0x156fdf300, {{24.0, 139.0}, {354.0, 10.0}}, identifier: 'store.preview', label: 'kinari', value: kinari
+    }
+]
+  - XCUIAccessibilityAuditType(rawValue: 131072): Text clipped [element=Attributes: StaticText, 0x156fe60d0, {{24.0, 516.7}, {147.3, 20.3}}, identifier: 'store.product.title', label: 'よむま＋（買い切り）'
+Element subtree:
+ →StaticText, 0x156fe60d0, {{24.0, 516.7}, {147.3, 20.3}}, identifier: 'store.product.title', label: 'よむま＋（買い切り）'
+Path to element:
+ →Application, 0x156fd9860, pid: 53552, label: 'よむま'
+  ↳Window (Main), 0x156fd8610, {{0.0, 0.0}, {402.0, 874.0}}
+   ↳Other, 0x156fe4a40, {{0.0, 0.0}, {402.0, 874.0}}
+    ↳Other, 0x156fe4ca0, {{0.0, 62.0}, {402.0, 812.0}}
+     ↳Other, 0x156fe4dd0, {{0.0, 62.0}, {402.0, 812.0}}
+      ↳Other, 0x156fe4f00, {{0.0, 62.0}, {402.0, 812.0}}
+       ↳Other, 0x156fe5030, {{0.0, 62.0}, {402.0, 812.0}}
+        ↳Other, 0x156fe5160, {{0.0, 62.0}, {402.0, 812.0}}
+         ↳Other, 0x156fe5290, {{0.0, 62.0}, {402.0, 812.0}}, identifier: 'sheet.storePreview'
+          ↳ScrollView, 0x156fe5750, {{0.0, 123.0}, {402.0, 590.7}}
+           ↳Other, 0x156fe5880, {{0.0, 123.0}, {402.0, 496.0}}
+            ↳StaticText, 0x156fe60d0, {{24.0, 516.7}, {147.3, 20.3}}, identifier: 'store.product.title', label: 'よむま＋（買い切り）'
+Query chain:
+ →Find: Target Application 'com.takumamatsuura.readingapp'
+  Output: {
+    Application, 0x156ec7440, pid: 53552, label: 'よむま'
+  }
+  ↪︎Find: Descendant with identity binding to AX element pid: 53552, elementOrHash.elementID: 6170226144.857
+    Output: {
+      StaticText, 0x156ff0ad0, {{24.0, 516.7}, {147.3, 20.3}}, identifier: 'store.product.title', label: 'よむま＋（買い切り）'
+    }
+]

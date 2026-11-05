@@ -1,0 +1,2 @@
+ERROR: ios/ReadingApp.xcodeproj does not exist yet (G1 design phase; ios-engineer/verifier will create ios/ in G2/G3).
+make: *** [ios-test] Error 1

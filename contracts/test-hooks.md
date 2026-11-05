@@ -1,0 +1,787 @@
+# テストのつなぎ口（H1〜H33）
+
+- 書いた役：tech-lead　日付：2026-10-20（G1 の 7-4a。裁定 27、28）。2026-10-25 に更新（G1 の 7-A：これまで選択肢だった H19、H23、H24、H25、H27、H30、H32 をすべて v1.0 標準仕様に昇格し、H20 を端末内の書誌 SQLite DB および共起テーブルの差し替えに、H29 を外部 HTTP 通信 0 件の検証用に更新。全149 AC に対応）。2026-11-02 に更新（G3 r2 の verifier の指摘：H22 の撮影用の見本を細かく決め、H33 を足し、H8 と H30 の復元の通信なしを決め、8 に画面×状態の撮り方を足した）。同日に G3 の契約の reviewer の要修正を受けて、1-1 の置き場所、H22 の「終える」の操作と余白、H33 の止める門の置き場所を直した。同日に G3 のコードの reviewer の要修正（docs/reviews/001-reading-session-G3-reviewer-code-r1.md）と指揮役の裁定を受けて、H22 の `composition` の組み方（枠から字の大きさと列を決め直す。「H22 の組み方」）を決め、H33 の門の置き場所を「読み込みの関数の中、または読み込んだ結果を画面に渡す所」に広げた。同日に G3 の契約 r3 の reviewer の要修正と指揮役の裁定（docs/reviews/001-reading-session-G3-contracts-reviewer-r2.md）を受けて、横書きの `composition` の形（縦書きの升目の項目を `orientation` が `vertical` のときだけ必須に）、`state` と `texts` の組、1-1 の門の置き場所を H33 (b) にそろえる直し、2度押しの印、7 の読み出しの全体の検査を決めた
+- 大きな版：1。同じ大きな版の中では足すことだけをする（引数、環境変数、通知、要素の名前と、値の意味と範囲を変えない、消さない）。
+- 範囲：v1.0 の全149 AC（AC-1〜AC-149）が使う30個（H1、H2、H4〜H10、H12〜H32。H3 と H11 は欠番）と、G3 の画面×状態の証拠のための H33（AC の判定には使わない）の、計31個。
+- 関係：PRD 11 の冒頭（H1〜H32 と読み方の決まり）、設計メモ 2 と 5、ADR 0001〜0005、contracts/entry-urls.md、contracts/widget-snapshot.schema.json、contracts/hooks/ の JSON Schema、design/001-reading-session.md の 6 と 7。
+- 前の案：H1〜H14 は docs/reviews/001-reading-session-G0-verifier-r1.md の証拠の 4、H15〜H18 は docs/reviews/001-reading-session-G0-tech-lead-flip-research.md の 4-3、変更差分は docs/reviews/001-reading-session-G0-prd3-verifier-r1.md。この契約が正で、前の案と違う所は「5. 前の案から変えた所」に書いた。
+- 確かめたこと：6 の spike 2つと、JSON Schema の検査。
+
+## 1. どのつなぎ口にも効く決まり
+
+### 1-1 入る構成（ADR 0005）
+| 構成 | つなぎ口 | 最適化 | 使う所 |
+|---|---|---|---|
+| Debug | 入る（コンパイルの条件 `UITEST_HOOKS`） | なし | 開発、G3 の画面とウィジェットのテスト |
+| Perf | 入る | Release と同じ（-O、DEBUG なし） | 速さの AC（AC-55、AC-100〜AC-102、AC-114、AC-115、AC-149）、G4-15 の投入 |
+| Release | 入らない（os_signpost のみ残す） | -O | TestFlight、App Store、G4 |
+
+- つなぎ口の型と関数は、アプリのターゲットの `UITestHooks/` の下だけに置き、ファイルごと `#if UITEST_HOOKS` で包む。ローカルのパッケージとウィジェットの拡張には、つなぎ口の入口（引数、環境変数、設定のファイル、Darwin の通知を読んで設定する側、`hook.*` の読み出し）を置かない。
+  - 例外は「実行時の門」だけ。保存や読み込みの関数の中、または（H33 だけは）View の側で、読み込みを呼ぶ所か読み込んだ結果を画面に渡す所（H33 の「本番」の (a)・(b)）で「止めるか、失敗させるか」を聞く小さな関数で、既定は素通り（何もしない）。H7 の `ReadingDataStore.consumeFailSave(for:)` と H33 の止める門がこれに当たる。
+  - 門はローカルのパッケージ `ReadingStore` に `#if` なしで置いてよい。パッケージには `UITEST_HOOKS` を定義しない（SwiftPM の `define` は構成を問わず効くので、Release でも有効になってしまうため）。
+  - 門の値を変えてよいのは、アプリの `#if UITEST_HOOKS` の中のつなぎ口（`UITestHooks/` の下）だけ。Release は門を設定する入口を持たないので、門は常に素通りする。
+  - 門の型と関数の名前は `UITestHook` で始めない（1-2 の nm の検査は Release に入らないものの目印なので、Release に残る門は対象の外にする）。ADR 0005 の追記。
+- 設定がない起動（テストの起動でなく、1-3 のファイルもない）では、Debug と Perf でもつなぎ口は何もしない（本物の時計、本物の DB、読み出しの要素なし）。
+
+### 1-2 名前の決まり（G2 の grep と nm の目印。ADR 0005）
+| 種類 | 形 |
+|---|---|
+| 起動の引数 | `-uitest-<名前>` |
+| 環境変数 | `UITEST_<名前>` |
+| Darwin の通知の名前 | `yomuma.uitest.<名前>` |
+| 読み出しの要素の識別子 | `hook.<名前>` |
+| Swift の型 | `UITestHook` で始める |
+
+### 1-3 テストの起動と、設定のファイル
+- テストの起動：`-uitest-` の引数か `UITEST_` の環境変数が1つ以上ある起動。
+  - アプリは、その引数と環境変数だけから設定を作る（前の設定と混ぜない）。
+  - 作った設定を、App Group の入れ物の `UITestHooks/config.json` に書き直す（形は contracts/hooks/hook-config.schema.json）。
+- 引数のない起動：開き直しと、システムが起こしたプロセス。
+  - `UITestHooks/config.json` を読み、同じ差し替えを効かせる（時計、タイムゾーン、保存の失敗の残りの回数、通信状態、カメラ、端末内書誌 DB、OCR、Live Activity、受賞一覧、StoreKit、インテント）。
+  - これで、強制終了して開き直しても時計が続き、システムが起こしたプロセスでも差し替えが効く（G0 の intents の verifier の要修正3）。
+- 開き直すとき、テストは `launchArguments` と `launchEnvironment` を空にしてから `launch()` する。`activate()` は前の引数を付け直す（G0 r1 の注）。
+- H1 と H2 は、テストの起動の中でだけ動く「する事」で、設定のファイルには残さない。
+
+### 1-4 動いている途中で変える口（Darwin の通知）
+- テストとアプリは、Swift の `import notify` で同じ名前に登録する（spike 1）。
+  - テストは状態を `notify_set_state` で書き、`notify_post` で知らせる。
+  - アプリは、知らせを main actor で受けて読み直す。
+- テストは setUp で登録して、tearDown まで登録を持つ。持つ者がいないと状態が消える［推測］。
+- アプリが後ろにいる間に書いた値も、前に戻ったときに読める（spike 1）。
+
+| 通知の名前 | 状態の値 | つなぎ口 |
+|---|---|---|
+| `yomuma.uitest.clock` | H4 の起点から進めたミリ秒（増やすだけ） | H5 |
+| `yomuma.uitest.offline` | 1＝通信なし、0＝通信あり | H8 |
+| `yomuma.uitest.ocr.release` | 使わない（知らせだけ） | H19 の hold |
+| `yomuma.uitest.barcode` | 読めたコード（13桁の数字を整数で。ISBN-13 または `192` で始まる2段目 Cコード） | H21 |
+| `yomuma.uitest.liveactivity.transition` | 1＝予約を始まった状態（`started`）にする、2＝システムが8時間で終えた状態（`dismissedBySystem`）にする | H23 |
+| `yomuma.uitest.storekit.refund` | 1＝購入を返金された状態にする | H30 |
+| `yomuma.uitest.intent.run` | 1＝`StartReadingIntent`、2＝`EndReadingFromActivityIntent`、3＝`WhereStoppedIntent`、4＝`ContinueReadingIntent` | H32 |
+| `yomuma.uitest.load.release` | 放す対象の番号（H33 の表。0＝止めているものをすべて） | H33 |
+
+### 1-5 読み出しの要素
+- 置き場所：つなぎ口だけの窓（UIWindow）。
+  - 窓の高さは alert の1つ上にする。触る操作を受けない（isUserInteractionEnabled を偽）。
+  - 中に 1×1 pt の UIView を置き、それぞれを accessibility の要素にする。
+- 値は、テストが読んだ瞬間に作る（accessibilityValue の getter）。
+- spike 2 の結果
+  - 要素の種類は other で、押せない（isHittable が偽）。押せる要素の数を変えない（buttons の数は同じだった）。
+  - 窓の下のボタンを押せた。
+  - シートと alert が出ている間も読めた。
+  - 91,500字の値を 63 ms で読めた。
+- テストの読み方：`app.descendants(matching: .any)["hook.state"].value as? String`
+
+| 識別子 | 中身 | 形 |
+|---|---|---|
+| `hook.state` | H9、H10、H17（状態、合図の回数、区間の時間、再読み込みの回数） | contracts/hooks/h17-state.schema.json（1行の文字列） |
+| `hook.store` | H13（保存先の全項目と写し） | contracts/hooks/h13-store.schema.json |
+| `hook.widget` | H22（ウィジェットの中身） | contracts/hooks/h22-widget.schema.json |
+| `hook.liveActivity` | H23（Live Activity の状態、要求の履歴・出どころ・読み上げラベル） | contracts/hooks/hook-config.schema.json の `$defs/h23LiveActivityReadout` |
+| `hook.shareCard` | H24（共有シートに渡した読み終えカード画像の検査結果） | contracts/hooks/hook-config.schema.json の `$defs/h24ShareCardReadout` |
+| `hook.awards` | H25（同梱および現在有効な受賞の一覧） | contracts/hooks/hook-config.schema.json の `$defs/h25AwardsReadout` |
+| `hook.mediaAudit` | H27（保存領域・App Group の画像ファイル数と写真ライブラリ書き込み回数） | contracts/hooks/hook-config.schema.json の `$defs/h27MediaAuditReadout` |
+| `hook.outbound` | H29（外部 HTTP 通信の要求 0 件）と H31（開いた外部 URL） | contracts/hooks/h29-outbound.schema.json |
+| `hook.storekit` | H30（StoreKit の購入・復元・返金の状態と回数） | contracts/hooks/hook-config.schema.json の `$defs/h30StoreKitReadout` |
+| `hook.intents` | H32（App Intents の実行結果・声・小窓と登録済みショートカット・Control 一覧） | contracts/hooks/hook-config.schema.json の `$defs/h32IntentsReadout` |
+| `hook.error` | つなぎ口の誤り（1-6） | 文字列 `<H番号>:<理由>` |
+
+- 速さを測る起動では `-uitest-readouts off` を付け、`hook.*` の要素を出さない（測る区間に読み出しを混ぜない）。
+- 例外：H22 の撮影用の見本の `hook.widget.showcase` と `hook.widget.canvas` は読み出しの要素ではなく（窓に置く 1×1 pt の要素でなく、見本を描く画面）、`-uitest-readouts off` でも出す。
+
+### 1-6 失敗のときの返り方（どのつなぎ口も同じ）
+- 引数か JSON が契約に合わないときは、次のようにする。
+  - アプリは何も書かない（H1 の初期化も、H2 の投入も、設定のファイルも）。
+  - 空の画面に `hook.error` の要素だけを出す（値の例 `H2:books[1].status`）。`hook.state` は出さない。
+- テストの起動の補助の関数は、起動のたびに `hook.error` がないことを確かめてから進む。
+- 契約の中で決めた振る舞い（H20 で該当する ISBN がない、H7 の回数を使い切った）は誤りではない。
+
+### 1-7 時刻の書き方
+- 入れる値：RFC 3339 の時差つき（例 `2026-10-15T23:50:00+09:00`）。
+- 読み出す値：UTC の Z とミリ秒（例 `2026-10-15T14:50:00.000Z`）。
+
+## 2. v1.0 標準のつなぎ口（全31個：H1、H2、H4〜H10、H12〜H33）
+- 各つなぎ口の「使う AC」は、設計メモ 2 の対応表と PRD の確かめ方の写し。
+- 「どの起動で効くか」の「全部」は、テストの起動、引数のない開き直し、システムが起こしたプロセスの3つ。
+
+### H1 データの初期化
+- 目的：本0冊、記録0件、読書なし、設定は既定、写しなし、置き方の案内は見ていない、から始める。テストの順番に頼らない。
+- 使う AC：AC-2、AC-4、AC-5、AC-6、AC-8、AC-9、AC-10、AC-11、AC-12、AC-16、AC-32、AC-46、AC-51、AC-53、AC-58、AC-89、AC-90、AC-92、AC-103、AC-117、AC-122、AC-126、AC-135、AC-137、AC-139。ほかのテストも最初の起動で使う（H2 は H1 を含む）。
+- 動かし方：起動の引数 `-uitest-reset`。テストの起動のときだけ動く。
+- 入力：なし。
+- 出力：消すものは次のとおり。消したあと、ふつうに起動する。
+  - 主の保存先（アプリの保存領域のストアファイル）
+  - App Group の写し（widget-snapshot.json）
+  - アプリの UserDefaults
+  - 予約中・進行中の Live Activity
+  - つなぎ口の記録（hook.outbound、hook.liveActivity、hook.shareCard、hook.intents、回数）
+- 失敗：消せなければ `hook.error`（`H1:<理由>`）。
+- 本番：Release に入らない（1-1）。
+
+### H2 データの投入
+- 目的：決まった id と値で、本、記録、読書中の1件、設定、推薦の重みを本番と同じ保存先に入れる。
+  - 入れられる項目：本ごとの置き場所（`status`）、積読に加えた日時（`tsundokuAt`）、読み終えた日時（`finishedAt`）、一行（`lastLine`）、進み具合の単位 `progressUnit`（`page` / `location` / `percent`）と値（`page` / `location` / `percent`）、電子書籍フラグ（`isEbook`）、書名未設定フラグ（`isTitlePending`）、ISBN、著者、出版社、レーベル、出版年、シリーズ名（`seriesTitle`）・巻数（`volumeNumber`）、NDC（`ndc`）、3つの設定（`flipToStartEnabled`、`hideOnWidgets`、`entryTime`）、見た目の id（`appearanceID`）、購入の状態（`isPlusPurchased`）、置き方の案内を見た印（`widgetGuideShown`）、推薦の理由分類（`readers` / `nextVolume` / `sameAuthor` / `sameAward` / `sameLabel`）ごとの `chosen` / `skipped` カウント、記録ごとの読み始め・読み終わりの日時・晩の日付・入口の印・進み具合。
+- 使う AC：AC-3、AC-7、AC-13〜AC-35、AC-36〜AC-64、AC-75〜AC-82、AC-85〜AC-91、AC-93、AC-95〜AC-102、AC-104、AC-113〜AC-125、AC-127〜AC-136、AC-138、AC-140〜AC-148。
+- 動かし方
+  - 小さい投入：環境変数 `UITEST_SEED` に JSON（UTF-8、200,000 バイトまで［推測。起動の環境変数の上限は確かめていない］）。
+  - 大きい投入：起動の引数 `-uitest-seed-preset perf500`（下の表）。
+  - どちらも H1 の初期化を含み、テストの起動のときだけ動く。
+- 入力：contracts/hooks/h02-seed.schema.json。
+  - 投入で `settings.widgetGuideShown` は AC-96 のみ `false`、他は `true` にする（PRD 11 の H2）。
+  - 読み終えた日時は `books[].finishedAt`。status が `finished` のときだけ書け、H13 の同じ名前で読める。
+  - 名無しの今の本（`title: "", isTitlePending: true`）は AC-139、AC-140 で使う。
+- 出力：主の保存先に入る。続けてアプリがふつうに起動し、写しを書く（widget-snapshot.schema.json の書く時）。
+- 失敗：スキーマに合わない、id が重なる、activeSession.bookId が今の本でない、字の数（書記素）が範囲の外。どれも `hook.error`（`H2:<JSON の場所>`）で、何も書かない。
+- 本番：Release に入らない。
+
+`perf500` の中身（AC-101、G4-15。毎回同じ）
+
+| 項目 | 値 |
+|---|---|
+| 本 | 500冊。id は `00000000-0000-4000-8000-` と12桁の番号（1〜500）。1冊目が本 A（`current`。id `00000000-0000-4000-8000-000000000001`）、2〜351冊目の350冊が `tsundoku`、352〜500冊目の149冊が `finished` |
+| 書名、著者、一行 | 20字、8字、40字の日本語。番号を含む決まった文字列 |
+| 記録 | 5,000件。分け方は AC-101 の Given のとおり：本 A（1冊目）に1,000件、2〜401冊目の400冊に10件ずつ、402〜500冊目の99冊は0件。本 b の r 件目（r は0から）の読み始めは 2026-10-15T21:00:00+09:00 から r 日と (b−1) 分前。通し番号 j（0〜4999。本 A の1,000件、2冊目の10件、…、401冊目の10件の順）で、記録の id は `00000000-0000-4000-9000-` と12桁の j+1、分は (j mod 60)+1。入口は `app`、タイムゾーンは `Asia/Tokyo` |
+| 設定 | 既定。置き方の案内は見た |
+
+- AC-101 の「A の本の画面を開く」は、本棚で `shelf.row.00000000-0000-4000-8000-000000000001` を押す。G4-15 も同じ中身を入れる（ADR 0005）。
+
+### H4 時刻の固定
+- 目的：アプリの「いま」を決まった時刻にする。壁時計と、経過を測る時計の両方を置き換える。
+- 使う AC：AC-33、AC-34、AC-36、AC-38、AC-40、AC-41、AC-48、AC-52、AC-53、AC-55〜AC-58、AC-60〜AC-63、AC-65、AC-75、AC-76、AC-86、AC-89、AC-95、AC-97、AC-98、AC-104、AC-114〜AC-116、AC-118、AC-120、AC-124、AC-125、AC-130〜AC-132、AC-134、AC-136、AC-139、AC-141、AC-144。
+- 動かし方：起動の引数 `-uitest-now <RFC 3339>`。全部の起動で効く（設定のファイルの clockBase）。
+  - テストの起動で付けると、H5 の進めた量を0に戻す。
+  - 時刻を戻すときは、前の時刻でテストの起動をし直す。
+- 入力：時差つきの日時（秒まで、ミリ秒は省ける）。
+- 出力：アプリの時計＝起点＋H5 の量。アプリの日時は、すべてこの時計から取る。
+  - 晩の日付、分、入口の300秒、Live Activity の予約時刻と古くなる時刻（staleDate）、写しの日時、記録の時刻。
+- 失敗：日時が読めなければ `hook.error`（`H4:<値>`）。
+- 本番：Release に入らない。Release の時計は本物だけ。
+
+### H5 時刻を進める
+- 目的：起動したまま、アプリが後ろにいる間も「いま」を進める。sleep で待たない。
+- 使う AC：AC-33、AC-34、AC-36、AC-38、AC-40、AC-41、AC-48、AC-52、AC-54〜AC-57、AC-60〜AC-63、AC-65、AC-75、AC-76、AC-86、AC-89、AC-95、AC-97、AC-98、AC-103、AC-104、AC-114〜AC-116、AC-118、AC-124、AC-125、AC-130〜AC-132、AC-134、AC-136、AC-139、AC-141、AC-144。
+- 動かし方：Darwin の通知 `yomuma.uitest.clock`（1-4）。全部の起動で効く。
+  - テストは状態に「いまの値＋進める量」を書いてから知らせる（例：301秒なら 301000 を足す）。
+- 入力：H4 の起点から進めたミリ秒。減らさない。
+- 出力
+  - アプリは知らせを受けたら、時計で決まることを判定し直す（伏せの待ち、経過の表示、入口の候補、Live Activity の staleDate 判定）。
+  - 判定し直したあとの値は hook.state で読む。
+- 失敗：前より小さい値は無視し、時計は動かさない。H4 がない起動では何もしない。
+- 本番：Release に入らない。
+
+### H6 タイムゾーンの固定
+- 目的：晩の日付の境目と表示を決める。ことわりがなければ Asia/Tokyo（PRD 11 の冒頭）。
+- 使う AC：AC-22、AC-34、AC-36、AC-38、AC-85、AC-89、AC-97、AC-98、AC-114、AC-115、AC-120、AC-127、AC-128、AC-130、AC-136、AC-139。
+- 動かし方：起動の引数 `-uitest-timezone <IANA の名前>`。全部の起動で効く。
+  - 端末のタイムゾーンが変わる場合（AC-22）は、別の名前でテストの起動をし直す。
+- 入力：IANA のタイムゾーンの名前（例 `Asia/Tokyo`、`America/Los_Angeles`）。
+- 出力：アプリが使うタイムゾーンが変わる。日時の計算と表示（SwiftUI の environment の timeZone を含む）が対象。
+- 失敗：知らない名前は `hook.error`（`H6:<値>`）。
+- 本番：Release に入らない。
+
+### H7 保存の失敗を起こす
+- 目的：決まった保存または読み込みを、決まった回数だけ失敗させる。
+- 使う AC：AC-59（session.start）、AC-60（session.end）、AC-90（store.load）、AC-91（book.add、book.update、book.delete、book.status、record.update、record.delete、mark.save）、AC-95（mark.save）、AC-119（session.start）、AC-132（session.end）、AC-133（store.load）。S-10 の保存の失敗（design/ 5）を確かめるときは settings.save。
+- 動かし方
+  - 起動の引数 `-uitest-fail-save <対象>:<回数>[:<種類>]`。`,` で区切って複数書ける。
+  - 全部の起動で効く。残りの回数は設定のファイルに書き直すので、開き直しても同じ失敗を繰り返さない。
+- 入力
+  - 対象：`session.start`、`session.end`、`book.add`、`book.update`、`book.status`、`book.delete`、`record.update`、`record.delete`、`mark.save`、`settings.save`、`store.load`。
+  - 回数：1以上の整数。
+  - 種類：`disk_full` か `unknown`（省くと unknown）。
+- 出力：その保存は書く前に失敗する。保存先は変わらず、アプリの失敗の道（文と読み上げ、またはインテントのエラー返却）が動く。
+  - 失敗させた回数は hook.state の notice と announce に出る。
+  - `store.load` は起動またはインテントの読み込みで失敗する。回数が1なら、次の読み込みは成功する。
+- 失敗：知らない対象、0回、知らない種類は `hook.error`（`H7:<値>`）。
+- 本番：Release に入らない。
+
+### H8 通信なし
+- 目的：機内モードの代わりに、アプリの通信状態を「つながっていない」にする。動いている途中で戻せる。
+- 使う AC：AC-6、AC-62、AC-110、AC-125。
+- 動かし方：全部の起動で効く。
+  - 起動の引数 `-uitest-offline`：起動のときから通信なし。テストの起動でこれがなければ、通信あり（状態0）にする。
+  - 途中で変える：Darwin の通知 `yomuma.uitest.offline`（1-4）。
+- 入力：1＝通信なし、0＝通信あり。
+- 出力
+  - 通信なしの間は、アプリの「通信の状態」がオフラインを返す。
+  - 書誌の検索は端末内の SQLite DB（H20）を使うため、通信なしでもバーコード登録や書名候補補完はその場で動き、外部 HTTP 通信要求（H29）は0件のまま（AC-6）。
+  - 課金シート（AC-110）では、通信なしのときに品が読めない状態として `store.offline` を出す。
+  - 購入の復元（S-10 の `settings.restorePurchases`、S-10a の `store.restore`）を通信なしで押したときは、H30 の `restoreOutcome` より通信なしを先にし、復元は通信の誤りで終わる。アプリは知らせ `store.offline` を出し（design/ 5 の S-10 のオフライン）、購入の状態は変えない。H30 の読み出しの `restoreAttempts` は1つ増やす（2026-11-02 に決めた）。
+- 失敗：0 と 1 のほかの値は 1 として扱う。
+- 本番：Release に入らない。
+
+### H9 状態を読む
+- 目的：`idle` か `reading` かと、画面を点けたままにする設定を、外から読む。
+- 使う AC：AC-39、AC-42〜AC-48、AC-51、AC-53、AC-54、AC-56、AC-58〜AC-61、AC-64、AC-114〜AC-119、AC-121、AC-123、AC-124、AC-130〜AC-136、AC-139。
+- 動かし方：要素 `hook.state` の値を読む（1-5）。全部の起動で効く。
+  - H9 と H17 の値を載せる要素はこれ1つで、画面ごとの根の要素には載せない。
+- 入力：なし。
+- 出力：contracts/hooks/h17-state.schema.json の `state`、`idleTimerDisabled`、`proximity`。
+- 失敗：要素がないときは、テストの起動でないか、1-6 の誤りか、`-uitest-readouts off`。
+- 本番：Release に入らない。
+
+### H10 区間の時間
+- 目的：アプリの中の区間を、アプリの中で測る（XCUITest の待ちで測らない）。
+- 使う AC：AC-55（endToMark）、AC-94（markWait）、AC-101（shelfOpen、bookOpen）、AC-114（intentStartRequest）、AC-115（intentStartForeground）、AC-149（barcodeLookup、titleSearch）。
+- 動かし方：要素 `hook.state` の `lat.<区間>` を読む。
+  - 速さの AC は Perf の構成で、`-uitest-readouts off` を付けて測る。測った値は `UITestHooks/latency.json` に残り、次に readouts を出す起動の hook.state の `prevLat.<区間>` で読む（形は h17-state.schema.json の `$defs/latencyFile`）。
+  - 同じ区間は os_signpost の区間でも出す（サブシステムはバンドル ID、カテゴリは latency、名前は区間の名前）。signpost は Release にも残す（G4-10、G4-15 で測るため）。
+- 入力：なし。
+- 出力：区間の実時間（ContinuousClock。H4 の仮の時計は使わない）を、ミリ秒の整数に切り上げ、測った順に並べる。
+
+| 区間 | 始まり | 終わり | 関わる AC |
+|---|---|---|---|
+| `endToMark` | `reading.end` のボタンの動作に入った時 | しおりを挟む画面（S-3）の根が最初に出た時 | AC-55 |
+| `shelfOpen` | `toolbar.shelf` のボタンの動作に入った時 | 本棚（S-6）の根が最初に出た時 | AC-101 |
+| `bookOpen` | `shelf.row.<id>` を押した動作に入った時 | 本の画面（S-7）の根が最初に出た時 | AC-101 |
+| `markWait` | OCR 待ちの間に `mark.manual` または `mark.pageOnly` を押した動作に入った時 | その入力画面の欄が最初に出た時 | AC-94 |
+| `intentStartRequest` | 「読み始める」（`StartReadingIntent.perform()`）に入った時 | すぐ始める Live Activity の要求が返った時 | AC-114 |
+| `intentStartForeground` | しおり画面が前面のときに「読み始める」（`StartReadingIntent.perform()`）に入った時 | 前面に読書中の画面（S-2）の根が最初に出た時 | AC-115 |
+| `barcodeLookup` | バーコード（H21 またはスキャナ）を1件受け取った時 | 読み取り一覧に `scan.row.<ISBN>` が最初に出た時 | AC-149 |
+| `titleSearch` | `manual.title` に3字以上入った時 | 候補の `search.row` が最初に出た時 | AC-149 |
+
+- 失敗：測れなかった区間はキーを出さない。
+- 本番：`lat.*` の読み出しは Release に入らない。signpost は入る。
+
+### H12 文言キーと識別子の対応
+- 目的：仮のキーを決めたキーに結び、その文を出す要素と、日英の文を引く。
+- 使う AC：AC-16、AC-56〜AC-60、AC-90、AC-91、AC-95、AC-96。文言キーを見るほかの AC も同じ。
+- 動かし方：アプリの口ではない。
+  - 識別子は design/ 6、文言は design/ 7 を正とする。
+  - 文を出す要素（知らせ、誤り、空の文）の識別子は、文言キーと同じ名前（design/ 6）。
+- 入力：テストのターゲットに、アプリと同じ String Catalog（Localizable.xcstrings）を入れる。
+  - ja.lproj か en.lproj から、キーで期待の文を引き、%lld などは AC の値で埋める。
+  - アプリは `-AppleLanguages (ja) -AppleLocale ja_JP` で起こす。英語の構成では en と en_US。
+- 出力：要素の label と、引いた文が同じかを比べる。
+- 失敗：キーがカタログにないとき、テストの補助の関数が落ちる（テストの誤り）。
+- 本番：該当なし（アプリにコードを足さない）。
+
+### H13 保存を読む
+- 目的：本ごとの全項目、記録、読書中の1件、設定、推薦の重み、破損退避ファイル一覧を、画面を通さずに外から読む。
+  - 本の項目：置き場所（`status`）、`isEbook`、`isTitlePending`、進み具合の単位（`progressUnit`）と値（`page` / `location` / `percent`）、ISBN、書名、著者、出版社、レーベル、出版年、シリーズ名・巻数、NDC、一行（`lastLine`）、加えた日時、更新日時、積読に加えた日時（`tsundokuAt`）、読み終えた日時（`finishedAt`）。
+  - 設定と重み：3つの設定（`flipToStartEnabled`、`hideOnWidgets`、`entryTime`）、置き方の案内を見た印（`widgetGuideShown`）、見た目の id（`appearanceID`）、購入の状態（`isPlusPurchased`）、推薦の理由ごとの `chosen` / `skipped` カウント。
+- 使う AC：AC-2〜AC-11、AC-13〜AC-16、AC-22、AC-24〜AC-26、AC-61、AC-64、AC-67〜AC-75、AC-77、AC-82、AC-83、AC-87、AC-89〜AC-92、AC-95、AC-96、AC-105〜AC-109、AC-111、AC-113〜AC-119、AC-121〜AC-123、AC-125、AC-130〜AC-135、AC-137〜AC-147。
+- 動かし方：要素 `hook.store` の値（JSON）を読む。全部の起動で効く。
+  - 保存する AC は、強制終了して引数なしで開き直したあとも、これで同じ値を読む（PRD 11 の冒頭）。
+- 入力：なし。
+- 出力：contracts/hooks/h13-store.schema.json。
+- 失敗：ストアを開けない間（H7 の store.load を含む）は、`hook.store` の値を空の文字列にする（空の本棚と見分けるため、`books` を空にして返さない）。テストは、開けたあとに読む。
+- 本番：Release に入らない。
+
+### H14 初めて起動した端末
+- 目的：通知やカメラなどの許可は API でも simctl でも完全には戻せないので、端末ごと消してから起動する。
+- 使う AC：AC-1。
+- 動かし方：アプリの口ではない。
+  - テストだけの端末を作り、`xcrun simctl erase <端末>` をしてから、その組のテスト（例 `FirstLaunchTests`）だけを `-only-testing` で動かす。
+  - ほかのテストと同じ実行に混ぜない。
+- 入力：消した端末。H1 と H2 は付けない。
+- 出力：springboard の alert の数と、アプリが出した画面を XCUITest で見る。
+- 失敗：消せないときは、その実行を落とす。
+- 本番：該当なし。
+
+### H15 伏せた向きを起こす（テストの側）
+- 目的：本物の向きの知らせの流れで、伏せる、起こすを起こす。
+- 使う AC：AC-44〜AC-49、AC-51、AC-54、AC-59。
+- 動かし方：テストの側だけ。`XCUIDevice.shared.orientation = .faceDown`、`.portrait`、`.faceUp`。
+  - 向きは次のテストに残るので、各テストの setUp で `.portrait` に戻す（flip-research の spike）。
+- 入力と出力：向き。アプリの側の口はない。
+- 失敗：該当なし。
+- 本番：該当なし（テストのコードだけ）。
+
+### H16 伏せの待ちの時計
+- 目的：伏せが1.0秒続いたかを、sleep なしで決める。
+- 使う AC：AC-44〜AC-49、AC-51、AC-54、AC-59。
+- 動かし方：アプリの側の決まりで、引数はない。
+  - H4 のある起動では、伏せの待ちを H4 の時計で数える。
+  - 本物のタイマーは使わず、H5 の知らせと向きの変わり目で判定し直す。
+- 入力：H15 の向きと、H5 の進めた量（1000 ms 以上で始まる。999 ms では始まらない）。
+- 出力：始まったかを hook.state の `state` と `startedBy=flip` で読む。
+- 失敗：H4 がない起動では、本物の1.0秒で数える。
+- 本番：Release に入らない（Release は本物のタイマーだけ）。
+
+### H17 合図と監視の状態を読む（H9 の続き）
+- 目的
+  - 次の回数を「アプリが出した回数」として数える：触覚、読み上げ、知らせ、置き方の案内、ウィジェットの再読み込みの要求。
+  - 伏せの監視、近接センサー、入口の印を読む。
+- 使う AC：AC-3、AC-39、AC-40、AC-44〜AC-49、AC-51、AC-54、AC-59、AC-96、AC-114、AC-116、AC-118、AC-124、AC-130、AC-131。
+- 動かし方：要素 `hook.state` の値を読む。全部の起動で効く。
+- 入力：なし。
+- 出力：contracts/hooks/h17-state.schema.json（値の書き方と読み方）。
+  | キー | 値 |
+  |---|---|
+  | `flipMonitoring` | `on` か `off` |
+  | `proximity` | `true` か `false` |
+  | `startedBy` | `flip`、`button`、`intent`、`none` |
+  | `haptic` | 回数 |
+  | `announce` | `<文言キー>:<回数>` を `,` で並べる。例 `session.flipStarted.announcement:1` |
+  | `notice` | `<文言キー>:<回数>`。置き方の案内は `widgetGuide`（AC-96） |
+  | `entry` | このプロセスで最後に残った記録の入口の印（`app`、`lock_widget`、`small_widget`、`live_activity`、`intent_start`、`intent_open`、`none`）。全部の記録の印は H13 |
+  | `sessionEntry` | 読書中の1件の入口の印（同じ enum） |
+  | `entryCandidate` | メモリの入口の候補（`lock_widget`、`small_widget`、`live_activity`、`intent_start`、`intent_open`、`none`） |
+  | `widgetReloads` | `<出どころ>:<回数>`（H22 の再読み込みの数え方） |
+  - 回数は、プロセスが始まってからの数（開き直すと0から）。
+  - 体に届いたか、聞こえたかは G4 で見る。
+- 失敗：H9 と同じ。
+- 本番：Release に入らない。
+
+### H18 伏せの検知を使えない状態のまね
+- 目的：Mac で動くときや、向きの知らせのない端末と同じ動きを、シミュレーターで作る。
+- 使う AC：AC-51。
+- 動かし方：起動の引数 `-uitest-flip-unavailable`。全部の起動で効く。
+- 入力：なし。
+- 出力
+  - アプリの伏せの検知が「使えない」を返す。
+  - 設定（S-10）に `settings.flipToStart.unavailable` が出る。S-1 に `bookmark.flipHint` は出ない（design/ 5、6）。
+- 失敗：該当なし。
+- 本番：Release に入らない。
+
+### H19 写真・スクリーンショットの読み取り結果（OCR）の差し替え
+- 目的：ページの本文（縦書きの列とノンブル）、表紙・背表紙、本棚（複数の背表紙）、奥付の読み取り結果を差し替え、カメラ撮影だけでなく `PhotosPicker`（`.screenshots` や写真選択）の操作も本物のピッカーなしで進められるようにする。結果を返すタイミングもテストから制御できる。
+- 使う AC：AC-65〜AC-69、AC-94、AC-113、AC-137、AC-138、AC-142。
+- 動かし方：全部の起動で効く。
+  - 環境変数 `UITEST_OCR` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h19OcrConfig`）を入れる。
+  - `hold: true` のときは、撮影または画像選択のあと結果をすぐには返さず、テストが Darwin の通知 `yomuma.uitest.ocr.release`（1-4）を送った瞬間に結果を返す（AC-94 の待ち時間の間の操作を検証するため）。
+  - カメラ撮影（`mark.photo`、`register.cover`、`register.bookshelf`、`colophon.capture`）およびスクリーンショット・写真選択（`mark.screenshot`、`register.screenshot`、`register.photo`）が押されたとき、本物のシステムカメラや PhotosPicker シートを出さず、注入された画像をメモリ上で作って処理へ進める。
+- 入力：`$defs/h19OcrConfig`。
+  - `page`：縦書きの列 `columns`（右から c1, c2, ...。空配列なら認識0件で `mark.ocr.none`）と `detectedPage`。
+  - `cover`：表紙・背表紙の認識行 `lines`（`cover.ocr.line.1`, `2`, ...）。
+  - `bookshelf`：本棚・平積みの背表紙行 `spines`（`bookshelf.row.1`, `2`, ...）。
+  - `colophon`：奥付の認識行 `lines`（書名・著者・出版年・出版社・レーベル・ISBN 抽出用）。
+- 出力：各画面の OCR 選択・確認 UI に結果が出る。一時画像データがファイルにも写真ライブラリにも残らないことは H27 で検証する。
+- 失敗：JSON がスキーマに合わなければ `hook.error`（`H19:<場所>`）。
+- 本番：Release に入らない。Release は本物のカメラ・PhotosPicker・Vision だけ。
+
+### H20 端末内の書誌 SQLite DB（Background Assets）および共起テーブルの差し替え
+- 目的：端末内の書誌 SQLite DB（Background Assets の `catalog.sqlite`、FTS5 `trigram` 索引つき）および共起テーブルの状態と中身を差し替える。外部への HTTP 通信は一切行わない。
+  - 差し替えられる状態：(a) テスト用の書誌レコード（ISBN、書名、著者、NDL 生データの `dc:creator` / `rawCreator` / `author`、出版社、レーベル、出版年、シリーズ名・巻数、NDC）、(b) Background Assets 未取得状態 `notDownloaded`（AC-9）、(c) 共起テーブルの行（`fromISBN`、`toISBN`、`count`、`ndc`。AC-148）。
+- 使う AC：AC-2〜AC-6、AC-9〜AC-11、AC-78〜AC-81、AC-87、AC-92、AC-103、AC-138、AC-140、AC-146〜AC-149。
+- 動かし方：全部の起動で効く。
+  - 環境変数 `UITEST_NDL_STUB` に JSON を入れる（設定ファイルの `ndlStub` に保存される）。
+- 入力：contracts/hooks/h20-ndl-stub.schema.json。
+  - `status`：`"ready"`（既定）または `"notDownloaded"`。
+  - `books`：端末内の SQLite DB に投入する書誌の配列。`dc:creator` または `rawCreator` が指定された行は、アプリの NDL 著者名整形ロジック（役割語・生没年・カンマ・空白・2人目以降の除去。AC-92）を通して保存・表示される。
+  - `cooccurrences`：共起テーブルの行（`fromISBN`、`toISBN`、`count`、`ndc`）。アプリは文学（`ndc` が `"9"` で始まる）かつ `count >= 10` の行だけを `rec.reason.readers` の候補に出す（AC-148）。
+- 出力
+  - `status: "ready"` のときは、インメモリまたはテスト用の一時 SQLite DB（本番と同じスキーマ・FTS5 `trigram` 索引）を構築して検索に応答する。
+  - `status: "notDownloaded"` のときは、DB 未取得として `scan.dbNotReady` を返す（AC-9）。
+  - どの状態でも外部への HTTP 通信は行わず、H29 の `requests` は 0 件になる（AC-103）。
+- 失敗：JSON がスキーマに合わなければ `hook.error`（`H20:<場所>`）。
+- 本番：Release に入らない。Release は Background Assets / バンドルの `catalog.sqlite` を読む。
+
+### H21 バーコードの読み取りの差し替え
+- 目的：読めたコードの並びを流す。1段目の ISBN（`978` / `979`）だけでなく、2段目の日本図書コード（`192` で始まる13桁の Cコード）も流せる。読み取りの画面を、本物のカメラなしで進める。
+- 使う AC：AC-2、AC-3、AC-6、AC-9〜AC-11、AC-92、AC-103、AC-140、AC-149。
+- 動かし方
+  - 起動の引数 `-uitest-barcode-fake` で、読み取りの部品を差し替える。S-8a はカメラの代わりの面を出す（識別子 `scan.camera` は同じ）。
+  - コードは Darwin の通知 `yomuma.uitest.barcode` で1つずつ流す（1-4）。
+  - 全部の起動で効く。
+- 入力：状態に13桁の数字を整数で書いてから知らせる。1回の知らせが1回の読み取り。
+  - `978` / `979` で始まる13桁は ISBN として扱う。同じコードを2回流せば、重なりの読み取り（AC-3）になる。
+  - `192` で始まる13桁（日本図書コード／Cコード）は単独の別の本としては追加せず、直前に読んだ ISBN の本（または同じ組の本）の判型・レーベル候補（5桁目：1＝文庫、2＝新書、0＝単行本）の補完に使う（AC-3、AC-11）。
+  - `490` などの本でない JAN コードは無視する（AC-3）。
+- 出力：アプリは本物の読み取りと同じ関数でコードを受ける（ISBN の確かめ、Cコード補完、重なり、端末内書誌 DB の検索）。
+- 失敗：13桁でない値は、読めたコードとして流さず、無視する。
+- 本番：Release に入らない。
+
+### H22 ウィジェットの中身を読む
+- 目的：ウィジェットの中身を、@testable import を使わずに外から読む（ADR 0003 の「H22 の口」）。
+  - 読めるもの：ファミリーと枠を選んで組んだ結果、タイムラインの項目、縦書きの組み方の結果、進み具合の表示（`p.61`、`位置1450`、`52%`）、名無しの今の本の書名表示（`今の本` / `widget.currentBookAsTitle`）、読み上げのラベルとまとまりの数、押したときの URL、再読み込みの要求の回数、項目を返すまでの時間、見た目の id。
+- 使う AC：AC-14、AC-16、AC-27〜AC-35、AC-37、AC-40、AC-62、AC-64、AC-73、AC-82、AC-97、AC-99、AC-102、AC-106、AC-111、AC-125、AC-139〜AC-141。
+- 動かし方：全部の起動で効く。
+  - 起動の引数 `-uitest-widget <ファミリー>:<幅>x<高さ>[,…]`（例 `accessoryRectangular:172x76,systemSmall:170x170`）。
+  - 写しを差し替えて組む：環境変数 `UITEST_WIDGET_SNAPSHOT` に写しの文字列そのもの。`@missing` はファイルなし。壊れた写しの AC に使う。
+  - スクリーンショット：起動の引数 `-uitest-widget-show <面>:<幅>x<高さ>[:<種類>]`。つなぎ口だけの画面にウィジェットの View を1つ出し、要素 `hook.widget.canvas` を XCUITest で撮る（下の「撮影用の見本」。2026-11-02 に細かく決めた）。
+- 入力：上の引数と環境変数。
+- 出力：要素 `hook.widget` の値。contracts/hooks/h22-widget.schema.json。
+  - 進み具合の文字列（`texts["widget.page"]` と `composition.page.text`）：紙の本（`page`）は `p.61`、電子書籍の位置番号（`location`）は `位置1450`（英語は `Loc 1450`）、パーセント（`percent`）は `52%`（AC-141）。
+  - 名無しの今の本（`isTitlePending = true`、AC-139）：状態は書名のある本と同じ（一行があれば `normal`、一行がなく進み具合があれば `noLine`、どちらもなければ `noLineNoPage`）。一行がなければ `texts["widget.title"]` に文言キー `widget.currentBookAsTitle` の文（「今の本」／英語 "Reading Now"）が入り、読み上げのラベルの書名の所も同じ文になる。
+  - 組み方の結果（`renders[].composition`）：`renders[]` の1つずつについて、その `request` の枠で、拡張と見本が実際に描くのと同じ組み方で組んだ結果（下の「H22 の組み方」）。
+  - 値の全体はスキーマのとおりで、スキーマにないキーを書かない（トップも `renders[]` も `additionalProperties: false`）。`state` と `texts` の組（2026-11-02、G3 の契約 r3 の reviewer の 4(a) と提案9を受けて書き足した。名前・型・enum は変えていない。上から順に当てはまった最初の行）：
+
+    | 当てはまる時 | `state` | `texts` に書くキー | `composition` |
+    |---|---|---|---|
+    | 写しを読めない（widget-snapshot.schema.json の読む側の決まり (1)〜(6)） | `unavailable`（`unavailableReason` も書く） | `messageKey`＝`widget.unavailable`、`message` | 書かない |
+    | 今の本がない | `empty` | `messageKey`＝`widget.empty`、`message` | 書かない |
+    | `settings.hideOnWidgets` がオン | `hidden` | `messageKey`＝`widget.hidden`、`message`（「しおり」）、進み具合があれば `widget.page` | 書かない |
+    | 一行がある | `normal` | `widget.line`、進み具合があれば `widget.page` | 書く |
+    | 一行がなく、進み具合がある | `noLine` | `widget.title`、`widget.page` | 書かない |
+    | 一行も進み具合もない | `noLineNoPage` | `widget.title` | 書かない |
+
+    - 書名は、一行があるときは `texts` に書かず、`accessibility.label`（AC-99 の形）にだけ入る。`timeline.entries[].state` も同じ enum。
+- 失敗：ファミリーか枠が読めなければ `hook.error`（`H22:<値>`）。
+- 本番：Release に入らない。拡張には何も足さない。
+
+#### H22 の組み方（`renders[].composition`。2026-11-02、G3 のコードの reviewer の要修正1と指揮役の裁定を受けて決めた）
+- 決めたこと：`renders[].composition` は、拡張（W-1、W-2）と撮影用の見本が実際に描く組み方と同じにする。`request.family` と `request.width`×`request.height` の枠から、下の手順で字の大きさ、1列の字数、列を決め直して組む。枠を使わない既定の値（いまの `VerticalLineLayout.defaultWidgetMaxColumns = 4`、`defaultWidgetRowsPerColumn = 8`）で組んだ結果を読み出しに出さない。
+  - 理由：AC-27、AC-28、AC-35 は「その枠で」組んだ結果（列ごとの字、1列の字数 L、欠けた字の数）を問う。G3 r2 の実装では、拡張と見本は枠から決め直して描く（172×76 の14字は 17pt の4列×4字）のに、読み出しは既定（2列×8字）のままで、`cells[].column`・`row` と禁則の位置が本物の W-1・W-2 を表していなかった。撮影用の見本の決まり「読み出しと画像が食い違えば、それ自体が不具合」もこの食い違いを許さない。
+- 計算の置き場所：`ReadingCore` の純粋な関数1つ（SwiftUI と WidgetKit を import しない。拡張も使うので nonisolated）。
+  - W-1、W-2 の View（アプリと拡張の両方に入る共有のファイル）と、H22 の読み出し（`ReadingStore` の `SnapshotStore`）の両方が、この関数を `request` と同じ枠（見本と拡張は描く枠の大きさ）で呼ぶ。View の側だけで字の大きさや列の数を決め直さない。
+  - 下の「記号の値」は、この関数の側の1か所だけに置く。View の余白（`contentMargins`）、帯の幅、帯と列の間、列の間も、そこの値を使う（アプリのターゲットの `ReadingWidgetMetrics` は、その値を SwiftUI の型に直して渡すだけにする）。
+  - 字の大きさは Dynamic Type に従わない（design/ の tokens.md の `type.book.line.widget.*` は「固定」）。そのため組み方の結果は、文字の大きさの設定によらず、枠と一行だけで決まる。
+- 記号の値（pt。ADR 0003 の 2026-11-02 の追記と同じ。design/ の screens.md の W-1、W-2、tokens.md の `type.book.line.widget.*`、`space.4`、`space.16` から）
+
+  | 記号（`composition.frame` の項目） | 意味 | W-1（`accessoryRectangular`） | W-2（`systemSmall`） |
+  |---|---|---|---|
+  | `W`、`H` | 枠（`request.width`、`request.height`） | 172×76〜153×68 | 148〜170 の四方 |
+  | `i` | 内側の余白（四方） | 0 | 16 |
+  | `B` | 左端の場所の帯の幅 | 43 | 0 |
+  | `g` | 帯と列の場所の間 | 4 | 0 |
+  | `R` | 列の場所の下の、場所の行（行の高さ 16 と `space.4`） | 0 | 20 |
+  | — | 列の場所の幅 A_w＝W−2i−B−g | 125（172）、106（153） | 138（170）、116（148） |
+  | — | 列の場所の高さ A_h＝H−2i−R | 76、68 | 118、96 |
+  | — | 字の大きさ s の始めの値と下限 | 17 と 13 | 20 と 13 |
+  | — | 列の間 | 0.25×s | 0.25×s |
+
+- 手順（縦書きになる一行。縮め方と、縦にするかの決め方はいまの `VerticalLineLayout` のまま）
+  1. 一行を縮め（AC-29）、書記素に分ける。字の数を n とする。
+  2. s を始めの値にする。
+  3. 1列の字数を L＝⌊A_h÷s⌋ にし、先頭から L 字ずつ列に分ける。次の列の先頭が行頭禁則の字（いまの `prohibitedLineStartCharacters`）なら、前の列の終わりの字を次の列へ送る。送ったあとも次の列の先頭が禁則の字なら、もう1字送る。前の列が1字になっても満たせないときは、それ以上送らない。このとき列の数に上限を付けず、n 字すべてをどれかの列に入れる（字を落とさない）。
+  4. 列の数を C として、C×s＋(C−1)×0.25s ≤ A_w なら入る。入れば、この s、L、列で決める。
+  5. 入らなければ s を 1 下げて 3 に戻る。s が下限より小さくなったら、下限の s で、送りをせずに L 字ずつ列に分けて決め、`kinsokuRelaxed` を真にする。送らなければ C＝⌈n÷L⌉ で、25字以下なら W-1 と W-2 のどの枠でも入るので、字は落ちない。
+     - ここまで来るのは、行頭禁則の字が多く、送りで列が増える一行だけ。下の表の一行（AC-27 の14字、かな25字、「歩行祭は、…」）は来ない。25字以下でも来る例（検算）：「あ」＋「ー」×24（どの列も1字まで送っても先頭が「ー」のまま。W-1 の両方の枠で 13pt、L 5、C 5）、「あいうーーーー」のくり返しの25字（列が1字にはならないが、153×68 では 13pt でも C が7になる）。AC-28 の一行はこういう並びで作らない。
+  - 手順3で送りを止めたとき（前の列が1字になっても次の列の先頭が禁則の字のまま）の値：`feedCount` はそれまでに実際に送った字を数える（同じ字が続けて2つの列を越えて送られたら2と数える）。`kinsokuRelaxed` は手順5の終わりに来たときだけ真で、ここでは偽のまま。列の先頭に禁則の字が残ったかは `cells`（`row`＝1 で `column`≥2 の字）で見る。
+  - 入るかは「送ったあとの列の数」で見る。G3 r2 の `ReadingVerticalFit.fit` は送る前の列の数（⌈n÷L⌉）で入るかを見てから列の上限（`maxColumns`）を付けて組むので、送りが多い一行では最後の列で字が落ちうる。この手順に合わせる。
+- 項目の値（`h22-widget.schema.json` の `$defs/render/properties/composition`。項目は足さない）
+  - `frame`：上の記号の値。`fontSize`：決めた s。`L`：決めた L（この一行の1列の字数）。`columnCount`：C。`feedCount`：3 で字を送った回数（1字送るごとに1）。`kinsokuRelaxed`：5 の終わりに来たら真。
+  - `referenceL`：同じ枠で、禁則の字のない25字（かな「あ」25字）をこの手順で組んだときの L（AC-28 の L）。一行の字の数によって `L` は `referenceL` と違うことがある（下の表の14字は L＝4、25字は L＝5）。
+  - `slack.horizontal`＝A_w−(C×s＋(C−1)×0.25s)、`slack.vertical`＝A_h−L×s。
+  - `cells[]`：出した字ごとに1つ、列の順（右から）、列の中は上からの順（スキーマの examples の `cells` は抜粋で、全升目を並べていない）。`column` は右から 1、2、…、`row` は列の中の上から 1、2、…。`x`＝(W−i)−k×1.25s−s（k＝`column`−1）、`y`＝i＋(`row`−1)×s（升目の左上）。`dx`、`dy` は字の大きさに対する割合（em。描くときは s を掛けた pt だけずらす）。
+  - `page`：場所の文字の左上の名目の位置。`x`＝i、`y`＝H−i−16。AC の判定には使わない（画像の位置と合うかは比べない）。
+  - `displayedLine`、`shortened`、`orientation`、`cells[].source`・`display`・`rotation` の意味は変えない。`composition` は `state` が `normal` のときだけ出す（スキーマのとおり。一行がないときの書名は横書きで描くので組み方の結果はない）。
+- 横書きの一行（2026-11-02、G3 の契約 r3 の reviewer の要修正1）
+  - いまの `VerticalLineLayout` の決め方で縦にしない一行（ひらがな・カタカナ・漢字を1字も含まない一行。AC-30）は、上の手順1の縮め方（AC-29）だけをして、手順2〜5を通らない。`state` は縦書きと同じ `normal`。
+  - `composition` に必ず書く項目：`orientation`（`horizontal`）、`displayedLine`（縮め方のあとの字の並び。`texts["widget.line"]` と同じ）、`shortened`。場所を描いたときは `page` も書く（縦書きと同じ名目の位置。`x`＝i、`y`＝H−i−16）。
+  - 縦書きの升目の項目（`frame`、`fontSize`、`L`、`referenceL`、`columnCount`、`feedCount`、`kinsokuRelaxed`、`slack`、`cells`）は、キーごと書かない。`columnCount: 0` や `cells: []` のように書くとスキーマ違反（`columnCount` の minimum 1、`cells` の minItems 1）。スキーマはこの9項目を `orientation` が `vertical` のときだけ必須にしている（`composition` の `allOf`）。
+  - 例：スキーマの4つ目の examples（「It was raining.」、172×76）。
+- この手順の結果（検算。リポジトリの外で同じ手順を Python で計算した値）
+
+  | 枠 | 一行 | s | L | C | 送り | `referenceL` | `slack.horizontal` |
+  |---|---|---|---|---|---|---|---|
+  | W-1 172×76 | AC-27 の14字「下人は、雨やみを待っていた。」 | 17 | 4 | 4 | 0 | 5 | 44.25 |
+  | W-1 153×68 | 同じ | 17 | 4 | 4 | 0 | 5 | 25.25 |
+  | W-1 172×76 | かな25字 | 15 | 5 | 5 | 0 | 5 | 35.0 |
+  | W-1 153×68 | かな25字 | 13 | 5 | 5 | 0 | 5 | 28.0 |
+  | W-1 172×76 | 「歩行祭は、いつも同じ道を歩く。」（15字） | 17 | 4 | 4 | 1 | 5 | 44.25 |
+  | W-2 170×170 | AC-27 の14字 | 20 | 5 | 3 | 0 | 5 | 68.0 |
+  | W-2 148×148 | AC-27 の14字 | 20 | 4 | 4 | 0 | 5 | 21.0 |
+  | W-2 170×170 | かな25字 | 20 | 5 | 5 | 0 | 5 | 18.0 |
+  | W-2 148×148 | かな25字 | 19 | 5 | 5 | 0 | 5 | 2.0 |
+
+- 確かめ方
+  - ios-engineer：`ReadingCore` の単体テストで、上の表の各行の s、L、C、送り、`referenceL` が同じになること。W-1、W-2 の View が描く列の数と字の大きさが、同じ枠で呼んだこの関数の値と同じであること（View はこの関数の結果をそのまま描く）。
+  - verifier：同じ起動で `-uitest-widget` と `-uitest-widget-show` に同じ面と大きさを渡したとき、`renders[]` の `composition.fontSize`・`columnCount` と、撮った画像の字の大きさ・列の数が合うこと。`cells` の字を並べると `displayedLine` と同じ（欠け0字）。
+
+#### H22 の撮影用の見本（`-uitest-widget-show`。2026-11-02、G3 r2 の指摘を受けて決めた）
+- 決めたこと：識別子は契約どおり `hook.widget.canvas` とし、実装をこれに合わせる。いまの実装の `screen.widgetShowcase`（全画面）は使わない。
+  - 理由1：AC-27（172×76 pt、153×68 pt）と AC-35（170×170 pt、148×148 pt）は「その大きさの枠で欠けずに組めるか」を問う。枠の要素がその大きさでなければ、画像でも `frame` でも確かめられない。G3 r2 では 172×76 の見本が約 133×120 pt の枠で描かれ、14字のうち2字が欠けた。
+  - 理由2：いまの実装の見本は、拡張の View（`ios/ReadingWidgetExtension/ReadingWidgets.swift` の `ReadingLockScreenWidgetView` など）と別に書き直した View で、文字の大きさも組み方も違う。H22 の読み出し（拡張と同じ関数で組む）では欠け0字なのに画像で欠けたのはこのため。見本が別の View では、撮った画像が製品の証拠にならない。
+  - 理由3：`screen.` で始まる名前は、実装が製品の画面の根に使っている名前（`screen.bookmark`、`screen.shelf` など）。つなぎ口だけの画面は、1-2 の名前の決まりどおり `hook.` で始める。
+- 画面の形
+  - 根の要素：`hook.widget.showcase`（つなぎ口だけの画面全体。背景は下の「背景」）。
+  - 見本の要素：`hook.widget.canvas`。根の中央に1つだけ置く。枠の大きさは次の「大きさ」のとおりで、枠の外にはみ出した中身は枠で切る（`.clipped()`）。本物の WidgetKit も枠の外を描かないため。
+  - どちらも読み出しの要素（1-5）ではないので、`-uitest-readouts off` でも出す。readouts を出さずに撮れば、アクセシビリティの監査に 1×1 pt の `hook.*` 要素が混ざらない。
+- 見本の中身（いちばん大事な決まり）
+  - 拡張が使う View の型と同じ型を描く。見本のために別の View を書かない。
+  - そのため、W-1〜W-5 の View の型は、アプリと拡張の両方のターゲットに入る1つのファイルに置く（`ReadingAppIntents.swift` がすでに両方に入っているのと同じやり方。新しいパッケージやモジュールは作らない）。
+  - View は `@Environment(\.widgetFamily)` や `ActivityViewContext` を読まず、ファミリー、写し（`WidgetSnapshot`）、Live Activity の `ReadingActivityAttributes` と `ContentState` を引数で受ける。`EnvironmentValues.widgetFamily` は読むだけで書けないため（https://developer.apple.com/documentation/swiftui/environmentvalues/widgetfamily の宣言 `var widgetFamily: WidgetFamily { get }`）。拡張の側は、環境と context から読んだ値をその引数に渡すだけにする。
+  - 拡張は、余白をシステムに任せず View の中で決める。W-1 と W-2 の `Widget` に `.contentMarginsDisabled()` を付け、余白は View の `padding` で持つ。
+    - View の `padding` の値は、システムの既定の余白（`.contentMarginsDisabled()` を付けない時にシステムが入れる余白）と同じにする。見本のために本物のウィジェットの余白を変えない。
+    - 値は拡張の中で `@Environment(\.widgetContentMargins)` を読んで View の引数に渡すか、同じ値を定数で持つ（同じ SDK の WidgetKit.swiftinterface 641-646行に `extension EnvironmentValues { @available(iOS 17.0, …) public var widgetContentMargins: EdgeInsets { get } }` があることを確かめた。アプリの中の見本は環境から読めないので、拡張と同じ値を引数で渡す）。どちらでも、付ける前と後で本物のウィジェットの見た目が変わらないことを G4 の実機で見る（ADR 0005 の追記の「G4 の実機で見ること」。PRD の G4-1、G4-3 を撮るときに、`.contentMarginsDisabled()` を付ける前の版の画像と並べる）。
+    - `.contentMarginsDisabled()` は、この Mac の Xcode の iPhoneSimulator27.2.sdk の WidgetKit.swiftinterface 662行に `public func contentMarginsDisabled() -> some SwiftUI::WidgetConfiguration` があることを確かめた。これでアプリの見本と本物の余白が同じになる。
+  - 写しは、拡張と同じく App Group の `widget-snapshot.json`（`UITEST_WIDGET_SNAPSHOT` があればその中身）を同じ読む関数で読む。H2 の投入と H4 の時計がそのまま効く。
+  - 書名と一行を隠す設定（`hideOnWidgets`）、名無しの今の本、電子書籍の進み具合は、写しの値で決まる（見本の側で分けない）。
+  - View の全体の要素には design/ 6 の識別子を付ける：W-1 `widget.rectangular`、W-2 `widget.small`、W-3 `liveActivity.banner`、W-4 `control.startReading`、W-5 `intent.snippet`。中の一行、場所、書名は design/ 6 のとおり読み上げから隠し、全体のラベルに入れる（いまの見本の `widget.accessoryRectangular`、`widget.systemSmall`、`snippet.whereStopped`、`snippet.progress` は design/ 6 にない名前なので使わない）。同じ識別子を拡張の側でも付けてよい（本物のウィジェットの識別子は XCUITest から読めないが、害はない）。
+- 大きさ（`<幅>x<高さ>` は pt。0 より大きい数。小数を書ける）
+
+  | 面（`<面>`） | 画面 | 描く View（拡張の側の使い方） | 枠の高さ | 使う大きさ | `<種類>`（省いたとき） |
+  |---|---|---|---|---|---|
+  | `accessoryRectangular` | W-1 | `ReadingLockScreenWidget` が描く View（ファミリー `.accessoryRectangular`） | 固定（`<高さ>` そのもの） | AC-27：`172x76`、`153x68` | `normal`、`placeholder`（`normal`） |
+  | `systemSmall` | W-2 | `ReadingHomeSmallWidget` が描く View | 固定 | AC-35：`170x170`、`148x148` | `normal`、`placeholder`（`normal`） |
+  | `liveActivity` | W-3 | `ReadingLiveActivityWidget` のロック画面のバナーの View | 中身に合わせ、`<高さ>` を上限とする。`<高さ>` は 160 以下 | `370x160`（幅は見本の値で実寸は未確認、G4 で見る。高さの 160 はシステムが切る上限：https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities の「The system may truncate a Live Activity if its height exceeds 160 points」） | `waiting`、`reading`、`ended`（省けない） |
+  | `control` | W-4 | `ReadingControlWidget` の `ControlWidgetButton` のラベルの View | 固定 | `160x72`（見本の値。Control の形、色、大きさはシステムが描くので、実寸の見た目は G4 で見る） | `startReading`（`startReading`） |
+  | `snippet` | W-5 | `WhereStoppedIntent.perform()` が返す小窓の View | 中身に合わせ、`<高さ>` を上限とする | `360x200`（見本の値。Siri の小窓の実寸は G4 で見る） | `whereStopped`（`whereStopped`） |
+
+  - 例：`-uitest-widget-show accessoryRectangular:172x76`、`-uitest-widget-show systemSmall:148x148:placeholder`、`-uitest-widget-show liveActivity:370x160:reading`、`-uitest-widget-show control:160x72`、`-uitest-widget-show snippet:360x200`。
+  - 前の書き方 `<ファミリー>:<幅>x<高さ>`（W-1、W-2）はそのまま使える。
+  - `w1`〜`w5`、`w3:waiting` のような、ここにない書き方は受けず `hook.error`（`H22:<値>`）にする。いまの実装の「文字列に w3 を含むか」で分ける読み方はやめる（`153x68` を含むかで大きさを決める読み方も同じ）。
+- 種類ごとに描く中身
+  - `normal`：写しから組んだ、いまの項目（タイムラインの最初の項目）。
+  - `placeholder`：拡張の `TimelineProvider.placeholder(in:)` が返す項目を、同じ View に `.redacted(reason: .placeholder)` を付けて描く（design/ 5 の W-1、W-2 の読み込み中）。本の文を出さない。
+  - `waiting`：Live Activity の `ContentState` を、拡張が予約で使うのと同じ関数で、写しの今の本から作る（mode `waiting`）。
+  - `reading`：H2 の `activeSession` があればその読み始めの時刻、なければ H4 の時計のいまを読み始めとして `ContentState`（mode `reading`）を作る。「終える」ボタン（`liveActivity.end`）も描く。
+    - 共有する Live Activity の View は、「終える」の押す部分を引数で受ける（例：`@ViewBuilder endButton: (_ label: Label) -> some View` のような、ラベルを受けてボタンを返す引数。形は実装に任せるが、View の中で `EndReadingFromActivityIntent` を直に作らない）。
+    - 拡張は `Button(intent: EndReadingFromActivityIntent()) { label }` を渡す。いまの拡張と同じ動き。
+    - 見本は、何もしないクロージャのボタン `Button(action: {}) { label }` を渡す。インテントは作らず、実行もしない。見た目（ラベル、色、大きさ、識別子 `liveActivity.end`）は拡張と同じになる。
+    - 確かめ方：見本で `liveActivity.end` を押したあと、H17 の `hook.state` の `sessionEntry` と読書中の有無、H13 の `hook.store` の `activeSession` と記録の数が、押す前と同じであること。H32 の `invocations` にも `EndReadingFromActivityIntent` が足されないこと。
+  - `ended`：今の本のいちばん新しい記録（H2 の `records`）から `ContentState`（mode `ended`）を作る。記録がなければ `hook.error`（`H22:liveActivity.ended.noRecord`）。
+  - `startReading`：Control のラベル（文言キー `control.startReading` と記号）。押しても何もしない。
+  - `whereStopped`：`WhereStoppedIntent` が声と小窓に使うのと同じ関数で、写しから文を作って描く。インテントの実行としては数えない（H32 の `invocations` に足さない）。
+- 背景
+  - `accessoryRectangular`：ロック画面の代わりに黒の背景で、配色は dark にして描く。本物はシステムが壁紙の上に単色（vibrant）で描くので、色の見え方は G4 の実機で見る。
+  - そのほか：拡張が `containerBackground` に渡すのと同じ色を枠に塗る（W-2 は選んだ見た目 `appearanceID` の色）。配色は端末の設定に従う（XCUITest でダークにしたらダーク）。
+  - 角の丸みはシステムが決めるので、見本は四角の枠で切る。
+- 文字の大きさ：アプリの Dynamic Type の設定をそのまま効かせる（本物のウィジェットも利用者の文字の大きさで描かれるため）。AX5 で枠に収まらなければ `contentOverflow` が真になり、それも撮る。
+- 読み出し：`hook.widget` の値に `showcase`（h22-widget.schema.json の `$defs/showcase`）を足す。`-uitest-widget-show` の起動でだけ出す。
+  - `viewType`：描いた View の型の名前。拡張の側が使う型の名前と同じであること（reviewer が `grep -n 'struct <viewType>' ios/` で、アプリと拡張の両方のターゲットに入る1つのファイルにあることを確かめる）。
+  - `canvasWidth`、`canvasHeight`：枠を実際に置いた大きさ。
+  - `idealHeight`、`contentOverflow`：中身が欲しがった高さと、枠で切ったかどうか。
+- テストの確かめ方（verifier が撮るとき）
+  - `hook.widget.canvas` を待ち、`canvas.frame.size` が `<幅>×<高さ>`（固定の面）か `<幅>×canvasHeight`（中身に合わせる面）と 0.5 pt 以内で同じことを確かめてから、`canvas.screenshot()` を撮る。
+  - AC-27、AC-35 の大きさでは、`showcase.contentOverflow` が偽で、`renders` の同じ大きさの `composition` の欠けが0字であること。読み出しと画像が食い違えば、それ自体が不具合。
+  - アクセシビリティの監査は、readouts を出さない起動（`-uitest-readouts off`）で根の `hook.widget.showcase` の画面に対して行う。拡張の View は全体を1つの要素にまとめているので、枠の中の要素はウィジェットの本物の読み上げと同じになる。
+- 失敗：面、大きさ、種類が読めない、`liveActivity` の高さが 160 を超える、今の本がない時の `waiting` と `reading`（今の本がないときは予約を作らない仕様。design/ 5 の W-3 の空）は `hook.error`（`H22:<値>`）。今の本がない時の `accessoryRectangular` と `systemSmall` は誤りではなく、`widget.empty` を描く。
+
+### H23 Live Activity の要求の記録と差し替え
+- 目的：Live Activity（夜の入口の予約と、読書中の表示）の初期状態・利用可否（`areActivitiesEnabled`）・要求失敗を差し替え、アプリが出した要求（予約・取り消し・すぐ始める・更新・終わり）とその「出どころ」（`launchReconcile` / `foregroundReconcile` / `intent` / `app`）、中身、押したときの URL、`liveActivity.end` ボタンの読み上げラベルを外から読む。
+- 使う AC：AC-34、AC-36〜AC-41、AC-97、AC-98、AC-114〜AC-120、AC-125、AC-130〜AC-132、AC-136、AC-139、AC-144。
+- 動かし方：全部の起動で効く。
+  - 環境変数 `UITEST_LIVE_ACTIVITY` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h23LiveActivityConfig`）を入れる。
+  - 動いている途中で状態を変える：Darwin の通知 `yomuma.uitest.liveactivity.transition`（1-4）。状態 `1` で予約中の Live Activity を始まった状態（`started`）にし（AC-41、AC-98、AC-115(3)）、状態 `2` で進行中の Live Activity をシステムが8時間で終えた状態（`dismissedBySystem`）にする（AC-136）。
+  - 読み出し：要素 `hook.liveActivity` の値（JSON、形は `$defs/h23LiveActivityReadout`）を読む。
+- 出力
+  - `activities`：現在存在している Live Activity の一覧。
+  - `requests`：このプロセスでアプリが出した要求の履歴。各要求の `source` により、起動時／前面復帰時の見直し（`launchReconcile` / `foregroundReconcile`）と、インテント（`intent`）や画面操作（`app`）による要求を時刻の区間に頼らず区別できる（AC-115、AC-119、AC-130）。
+  - `reading` 状態の項目には `endButtonIdentifier: "liveActivity.end"`、`endButtonLabel`（文言キー `liveActivity.end.label` の文）、`endIntentName: "EndReadingFromActivityIntent"` が記録される（AC-114）。
+- 失敗：JSON がスキーマに合わなければ `hook.error`（`H23:<場所>`）。
+- 本番：Release に入らない。
+
+### H24 共有シートに渡したものの記録（読み終えカード検査）
+- 目的：読み終えた画面で `finish.card.share` を押したときに共有シート（UIActivityViewController / ShareLink）に渡された PNG 画像の形式・寸法・描画された文字列・禁止項目（一行、写真、ふりかえりの1行が含まれないこと）を外から読む。
+- 使う AC：AC-84、AC-85、AC-103、AC-127。
+- 動かし方：全部の起動で効く。
+  - `finish.card.share` を押すと、つなぎ口が生成されたカード画像とメタデータを記録する。
+  - 読み出し：要素 `hook.shareCard` の値（JSON、形は contracts/hooks/hook-config.schema.json の `$defs/h24ShareCardReadout`）を読む。
+- 出力：`cards[]` に `format: "png"`、`widthPx`、`heightPx`、`renderedTexts`（書名、著者、何晩、合計分など）、`containsSavedLine: false`、`containsPhoto: false`、`containsReflection: false`。
+- 失敗：該当なし。
+- 本番：Release に入らない。
+
+### H25 受賞の一覧の差し替えと読み出し
+- 目的：テスト用の受賞作行への差し替えと、アプリに同梱された本番の受賞一覧（芥川龍之介賞・直木三十五賞・本屋大賞）の全行読み出し（AC-112）を行う。
+- 使う AC：AC-17〜AC-21、AC-77〜AC-83、AC-87、AC-112、AC-146、AC-147。
+- 動かし方：全部の起動で効く。
+  - 差し替え：環境変数 `UITEST_AWARDS` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h25AwardsConfig`、各行は `{"award": "芥川龍之介賞", "sessionOrYear": "第155回", "title": "コンビニ人間", "author": "村田沙耶香"}` の4列「賞・回（年）・題名・著者」形式）を入れる。省いたときは同梱の本番一覧（`mode: "bundled"`）を使う。
+  - 読み出し：要素 `hook.awards` の値（JSON、形は `$defs/h25AwardsReadout`、`activeItems` の各要素も同じく `{"award": "芥川龍之介賞", "sessionOrYear": "第155回", "title": "コンビニ人間", "author": "村田沙耶香"}`）を読む（AC-112）。
+- 失敗：JSON がスキーマに合わなければ `hook.error`（`H25:<場所>`）。
+- 本番：Release に入らない。
+
+### H26 カメラの許可の状態の差し替え
+- 目的：カメラの許可の状態を、未決定、許可、拒否、制限、読めない端末にする。
+- 使う AC：AC-1〜AC-3、AC-6、AC-9〜AC-12、AC-65〜AC-70、AC-92、AC-94、AC-103、AC-113、AC-137、AC-138、AC-140、AC-142。
+- 動かし方：起動の引数 `-uitest-camera <状態>[:<求めたときの答え>]`。全部の起動で効く。
+  - 例 `-uitest-camera notDetermined:granted`。
+- 入力
+  - 状態：`notDetermined`、`authorized`、`denied`、`restricted`、`unsupported`。
+  - 答え：`granted` か `denied`。未決定で、アプリが許可を求めたときの結果。省くと granted。
+- 出力
+  - アプリの許可の部品は、AVCaptureDevice の代わりにこの値を返す。本物の許可のダイアログは出ない。
+  - 拒否のときは、バーコード・表紙撮影（AC-12）でもしおり撮影（AC-70）でも `camera.denied` とスクリーンショット選択導線（`register.screenshot` / `mark.screenshot`）が出る。
+- 失敗：知らない値は `hook.error`（`H26:<値>`）。
+- 本番：Release に入らない。
+
+### H27 画像のファイルの数と写真ライブラリへの書き込みの回数
+- 目的：しおり撮影（`mark.photo`）、スクリーンショット選択（`mark.screenshot`、`register.screenshot`）、表紙撮影（`register.cover`）、本棚撮影（`register.bookshelf`）、奥付撮影（`colophon.capture`）のすべてで、アプリの保存領域（Documents、Library、tmp）と App Group の画像ファイル（jpg、jpeg、heic、png）が 0 個であり、写真ライブラリへの書き込みが 0 回であることを外から読む。
+- 使う AC：AC-69、AC-113、AC-137、AC-138、AC-142。
+- 動かし方：要素 `hook.mediaAudit` の値（JSON、形は contracts/hooks/hook-config.schema.json の `$defs/h27MediaAuditReadout`）を読む。全部の起動で効く。
+- 入力：なし。
+- 出力：`savedImageFileCount`（0 であること）、`savedImagePaths`（`[]` であること）、`photoLibraryWriteCount`（0 であること）。
+- 失敗：該当なし。
+- 本番：Release に入らない。
+
+### H28 入口の URL で起動する
+- 目的：ロック画面のウィジェット、小のウィジェット、Live Activity から開いたのと同じ URL で、アプリを起こす。
+- 使う AC：AC-40、AC-62。
+- 動かし方：テストの側だけ（contracts/entry-urls.md の 6 の (a)）。
+  - プロセスのない起動は、`app.terminate()` のあとに `app.open(URL(string: "yomuma://open?entry=lock_widget")!)`（または `small_widget`、`live_activity`）。
+- 入力：contracts/entry-urls.md の 1 の URL。
+- 出力：アプリの onOpenURL が受ける。入口の候補は hook.state の `entryCandidate`、残った印は H13 か hook.state の `entry` で読む。
+- 失敗：届かなければ、`entryCandidate` が none のまま。テストは落ちる。
+- 本番：アプリの口は足さない。スキームの登録は Release にも入る（entry-urls.md の 1）。
+
+### H29 アプリが出した外部 HTTP 通信の要求の記録（0件の検証）
+- 目的：アプリ本体が出そうとしたすべての外部 HTTP/HTTPS 通信の要求を記録し、どのホストに対しても要求が 0 件（`requests` が空配列 `[]`）であることを検証する。
+- 使う AC：AC-2、AC-6、AC-9、AC-10、AC-103。
+- 動かし方：要素 `hook.outbound` の `requests` を読む。全部の起動で効く。
+- 入力：なし。
+- 出力：contracts/hooks/h29-outbound.schema.json。
+  - 書誌 DB も端末内 SQLite DB（H20）で完結するため、登録・しおり・読書・読了カード共有のどの操作を通しても `requests` は常に `[]`（0件）になる（AC-103）。
+- 記録できないもの：URLProtocol 等を通らない低レベル通信。G2 で reviewer が `grep -rnE 'URLSession|NWConnection|CFStream|WKWebView|URLRequest' ios/` で補う（PRD AC-103 の確かめ方）。
+- 失敗：該当なし（記録だけ）。
+- 本番：Release に入らない。
+
+### H30 StoreKit 2 の差し替え
+- 目的：買い切り課金「よむま＋」の商品情報取得、購入（成功・取りやめ・失敗）、購入の復元（あり・なし）、決済不可端末（`canMakePayments == false`）、および返金（entitlement 取り消し）を差し替える。
+- 使う AC：AC-104〜AC-111。
+- 動かし方：全部の起動で効く。
+  - 環境変数 `UITEST_STOREKIT` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h30StoreKitConfig`）を入れる。
+  - 動いている途中で返金を起こす：Darwin の通知 `yomuma.uitest.storekit.refund`（1-4、状態 `1`）を送る（AC-111）。アプリを後ろにしてから前に戻すと、購入状態が「買っていない」に戻り、設定とウィジェットの見た目の id が `default` に戻る。
+  - 読み出し：要素 `hook.storekit` の値（JSON、形は `$defs/h30StoreKitReadout`）および H13 の `settings.isPlusPurchased`、`settings.appearanceID` を読む。
+  - H8 の通信なしのときは、商品の取得（AC-110）と購入の復元は通信の誤りで終わる（H8 の出力）。`productLoadAvailable` と `restoreOutcome` より H8 を先にする。
+  - 商品の取得、購入、復元の途中の画面（ProgressView）を撮るときは H33 の `storekit.products`、`storekit.purchase`、`storekit.restore` で止める。
+- 失敗：JSON がスキーマに合わなければ `hook.error`（`H30:<場所>`）。
+- 本番：Release に入らない。Release は本物の StoreKit 2 だけ。
+
+### H31 アプリが開いた外部 URL の記録
+- 目的：アプリが開こうとした外の URL（プライバシーポリシー AC-88、設定の「データの出典」から開く CC BY 4.0 ライセンス URL `https://creativecommons.org/licenses/by/4.0/` AC-93）を記録する。
+- 使う AC：AC-88、AC-93。
+- 動かし方：全部の起動で効く。
+  - 要素 `hook.outbound` の `openedURLs` を読む。
+  - 既定では、記録だけして本当には開かない（アプリが前面に残り、次の操作を続けられる）。
+  - 本当に開くときは、起動の引数 `-uitest-openurl passthrough`。
+- 入力：なし。
+- 出力：contracts/hooks/h29-outbound.schema.json の `openedURLs`。
+- 失敗：該当なし。
+- 本番：Release に入らない。
+
+### H32 アプリの外からのインテント（App Intents）を動かす
+- 目的：アプリの外からのインテント（「読み始める」`StartReadingIntent`、Live Activity の「終える」`EndReadingFromActivityIntent`、「どこまで読んだ？」`WhereStoppedIntent`、「続きを読む」`ContinueReadingIntent`）をテストから駆動し、返り値（前に出すか、認証ポリシー、声の文言キーと全文、小窓の文字列）および登録された App Shortcuts 3種と Control 1種を外から読む。
+- 使う AC：AC-114〜AC-126、AC-131〜AC-135、AC-143、AC-144。
+- 動かし方：全部の起動で効く。
+  - 設定：環境変数 `UITEST_INTENT` に JSON（形は contracts/hooks/hook-config.schema.json の `$defs/h32IntentsConfig`、`canContinueInForeground` など）を入れる。
+  - 起動と同時にインテントを動かす（プロセスのない状態からの実行を検証するとき）：起動の引数 `-uitest-run-intent <StartReadingIntent|EndReadingFromActivityIntent|WhereStoppedIntent|ContinueReadingIntent>`。
+  - 動いている途中でインテントを動かす：Darwin の通知 `yomuma.uitest.intent.run`（1-4。1＝`StartReadingIntent`、2＝`EndReadingFromActivityIntent`、3＝`WhereStoppedIntent`、4＝`ContinueReadingIntent`）。
+  - 読み出し：要素 `hook.intents` の値（JSON、形は `$defs/h32IntentsReadout`）を読む。
+- 出力
+  - `invocations`：実行したインテントごとの `intent`、`authenticationPolicy`（`WhereStoppedIntent` は `alwaysAllowed`）、`opensApp`、`requestedForeground`、`outcome`、`dialogKey`、`spokenText`（`WhereStoppedIntent` ではページ・位置番号・％に応じた文の型で、一行・書名・アプリ名を含まない。AC-121、AC-143）、`snippetTexts`（小窓の文字列。`WhereStoppedIntent` は `hideOnWidgets` のオン・オフを問わず、常時、声にも小窓（`intent.snippet`）にも書名と一行を一切出さず、進み具合（ページ・位置番号・％）の1文だけを出す。エラー時は小窓を出さない／空配列 `[]`。AC-121、AC-123、AC-133）。
+  - `registeredShortcuts`：登録された3つの App Shortcuts の `intent`、`phrases`（`${applicationName}` を含み、直後に「で」が続かないこと）、`systemImageName`（AC-126）。
+  - `registeredControls`：登録された1つの Control の `kind: "button"`、`intent: "StartReadingIntent"`、`labelKey: "control.startReading"`（AC-126）。
+- 失敗：知らないインテント名やスキーマ違反は `hook.error`（`H32:<値>`）。
+- 本番：Release に入らない。
+
+### H33 読み込みを止める（読み込み中の画面を撮る。2026-11-02 に足した）
+- 目的：design/ 5 の「読み込み中」の形（0.3秒を超えたら灰の帯、または ProgressView）を、時間に頼らずに出して撮る。端末内の読み込みはふだん 0.3秒より速く、この形はふつうの起動では出ないため（G3 r2 の verifier の 13 章）。
+- 使う AC：なし（AC の判定には使わない。G3 の画面×状態の証拠と、design/ 5 の「空の状態を先に出さない」の確かめに使う）。
+- 動かし方：起動の引数 `-uitest-hold-load <対象>[,<対象>…]`。テストの起動のときだけ効く（設定のファイルに書かない。引数なしの開き直しとシステムが起こしたプロセスでは止めない）。
+  - 書いた対象ごとに、そのプロセスで最初の1回の読み込みだけを止める。止める所は、読み込みの関数の中か、View の側で読み込みを呼ぶ所か読み込んだ結果を画面に渡す所（下の「本番」の (a)・(b)）。どちらでも、放すまで画面は結果を受け取らない。放したあとの読み込み（再試行、画面の開き直し）は止めない。
+  - 放す：Darwin の通知 `yomuma.uitest.load.release`（1-4）。状態に下の表の番号を書いてから知らせる。0 は止めているものをすべて放す。
+  - 放すと、止めていた読み込みはそのまま続く（結果は本物と同じ。H7 の失敗を同じ対象に付けていれば、放したあとに失敗する。例：`-uitest-hold-load store.load` と `-uitest-fail-save store.load:1` で、読み込み中の形のあとに S-1 のエラーを出せる）。
+- 入力：対象（下の表）。
+
+  | 対象 | 番号 | 止める所 | 止めている間に出る形（design/ 5） |
+  |---|---|---|---|
+  | `store.load` | 1 | 起動で主の保存先を読んだ結果を S-1（開き直したときは S-2）に渡す所。読むこと自体は起動のときに H7 の `store.load` と同じ所で終える | S-1 の書名と一行の形の灰の帯。開き直したときの S-2 も同じ |
+  | `shelf.load` | 2 | 本棚（S-6）の3区分の行を作る読み込み | S-6 の行の形の灰の帯5行 |
+  | `book.load` | 3 | 本の画面（S-7）の奥付と記録の読み込み | S-7 の記録の行の形の灰の帯 |
+  | `recommend.load` | 4 | 読み終えた画面（S-9）の「次の1冊」の候補を作る所 | S-9 の候補の行の形の灰の帯 |
+  | `catalog.lookup` | 5 | 端末内書誌 DB の検索（バーコードの1件、書名の候補） | S-8a の行の灰の帯、S-8c の候補の待ち |
+  | `storekit.products` | 6 | 商品の情報の取得（H30） | S-10a のボタンの位置の ProgressView |
+  | `storekit.purchase` | 7 | 購入の処理（H30） | S-10a のボタンの位置の ProgressView |
+  | `storekit.restore` | 8 | 購入の復元（H30） | S-10 の `settings.restorePurchases` の横の ProgressView |
+
+  - OCR の待ち（S-3c、S-7c、S-8b、S-8d の読み込み中）は H19 の `hold: true` と `yomuma.uitest.ocr.release` で止める（H33 には入れない）。
+  - W-1、W-2 の読み込み中は H22 の `-uitest-widget-show <面>:<幅>x<高さ>:placeholder` で描く。
+- 出力
+  - 止めている間も、画面は本物の遅い読み込みと同じに動く。0.3秒を超えたら design/ 5 の読み込み中の形を出し、空の状態を先に出さない。0.3秒は本物の時計（ContinuousClock）で数え、H4 の仮の時計は使わない。
+  - 進みは `hook.state` の `hold.<対象>` で読む（h17-state.schema.json）。`waiting`（まだその読み込みに来ていない）→ `held`（止めた）→ `shown`（止めたまま読み込み中の形を画面に出した）→ `released`（放した）。テストは `shown` を待ってから撮り、sleep で待たない。
+  - 読み込み中の形の要素の識別子は design/ 6 にないので、この契約では足さない（画面の要素の名前は design/ 6 が正）。撮る時は `hold.<対象>=shown` で決め、撮る範囲は画面全体（`XCUIScreen.main.screenshot()`）にする。
+  - `store.load` を止めている間、H13 の `hook.store` は空の文字列（H13 の失敗と同じ）。
+- 失敗：知らない対象は `hook.error`（`H33:<値>`）。止めていない番号を放す知らせは無視する。
+- 速さの AC（AC-55、AC-100〜AC-102、AC-114、AC-115、AC-149）の起動には付けない。
+- 本番：H7 と同じ形にする（1-1 の例外の「実行時の門」）。
+  - 門の型（止める対象、相、放すまで待つ関数）は `ReadingStore` に、実行時の門として1つだけ置く。`consumeFailSave(for:)` と同じく `#if UITEST_HOOKS` では包まない（パッケージには定義がないため）。
+  - 門を通す所（門に「止めるか」を聞いて、止めるなら放すまで待つ所）は、次のどちらかに置く。対象ごとにどちらでもよい（2026-11-02 に広げた。G3 のコードの reviewer の要修正2と指揮役の裁定）。
+    - (a) 読み込みの関数の中（`ReadingStore` の読み込みの関数の入口など）。
+    - (b) View の側で、読み込みを呼ぶ所か、読み込んだ結果を画面に渡す所（例：読み込み中の形と中身を切り替える入れ物の View、ボタンの action、端末内書誌 DB の検索を呼ぶ所）。読み込みが起動のときに同期で終わる対象（`store.load`）は、読み込みのあとに (b) で止める。(b) では、門を通るまで結果を画面に出さない。読み込みの前に門を通す対象（`catalog.lookup`、`storekit.purchase`、`storekit.restore` など）は、門を通ってから本物の読み込みを呼ぶ。
+    - どちらでも、観察できる振る舞いは同じにする：`hold.<対象>` の相（`waiting`→`held`→`shown`→`released`）、`store.load` を止めている間の `hook.store` が空、本物の時計で 0.3秒を超えてからの読み込み中の形、放したあとの結果（H7 の失敗を付けていれば、そのエラー）。
+  - 既定は素通り（止める対象の一覧が空）。止めないときは、(a) でも (b) でも時間の待ち（`sleep`、0.3秒の待ち）と読み込み中の形を足さず、(b) の画面は最初の描画から中身を出す（読み込み中の形や空の枠を1コマも挟まない）。
+    - ボタンの action を `Task` で包んで門を待つこと（main actor の上での1回の切り替え）は許す。包むときは、`Task` が走る前の2度押しで読み込み（購入、復元など）が2回呼ばれないようにする（押したらすぐ押せなくするか、進行中の印で弾く。G3 のコードの reviewer の提案で、指揮役の裁定 4 により次の直しに入れたもの）。
+      - 押せなくする印・進行中の印は、action の中で `Task` を作る前に同期で立てる（`Task` の中で立てない）。こうすると、`Task` が走る前の2度押しも、門で止めている間の2度押し（門は対象ごとに最初の1回しか止めないので、2回目は素通りして本物の処理が走る）も、同じ印で弾ける。印は本物の処理が終わったとき（成功・失敗・取り消しのどれでも）に下ろす。
+      - この条件はボタンの action だけが対象。`catalog.lookup` を止めている間に2つ目のバーコードを読んだとき（G3 のコードの reviewer r1 の提案）は、ボタンでないのでこの条件の外に残る（2つ目の検索をどう扱うかは H21 と S-8a の決まりのまま）。
+  - 門を通す呼び出し（止めるかを聞く、放すまで待つ、読み込み中の形を出したと知らせる）は、製品のコード（`#if UITEST_HOOKS` の外。アプリの View を含む）に置いてよい。止める対象を設定する口は持たない。
+  - 門に止める対象を設定し、`yomuma.uitest.load.release` を受けて放し、`hook.state` に `hold.<対象>` を書き、`store.load` を止めている間の `hook.store` を空にするのは、アプリの `#if UITEST_HOOKS` の中（`UITestHooks/` の下のコーディネータと読み出し）だけ。門の型は (a) でも (b) でも同じ1つを使い、対象ごとに別の門を作らない。
+  - Release は門を設定する入口を持たないので、門は常に素通りし、止まらない。門の関数は Release のバイナリに残るが、型と関数の名前は `UITestHook` で始めず、nm の検査の対象の外（ADR 0005 の追記）。
+
+## 3. テストが読む識別子と属性（つなぎ口に関わる分）
+- 識別子は design/ 6 を正とする。この契約で足すのは `hook.*` だけで、画面の要素には足さない。
+- H9 と H17 の値を載せる要素は `hook.state`（1-5）。画面ごとの根の要素には載せない。
+- 見える文字と読み上げが違う要素は、`label` の属性（XCUIElement.label。VoiceOver のラベル）で読む。`value` は空のことがある。
+  | 要素 | 読む属性 | 比べる値 |
+  |---|---|---|
+  | `bookmark.page` | label | 紙の本は「61ページ」、電子書籍は「位置1450」「52パーセント」などの形（design/ 6。AC-141） |
+  | `result.summary` | label | 「43ページから61ページ、18分」「位置1200から位置1450、18分」「34パーセントから52パーセント、18分」などの形（AC-76、AC-141） |
+  | `book.record.row.<記録の id>` | label | 「10月17日の晩、10分」の形 |
+  | `colophon.title`、`colophon.author`、`colophon.publisher`、`colophon.year` | label | 「名前、値」（例「出版社、新潮社、新潮文庫」） |
+- `widget.line`、`widget.title`、`widget.page` は読み上げから隠すので、XCUITest でなく H22 の `texts` で読む。
+
+## 4. 欠番のつなぎ口
+- H3：読書中の状態の投入は H2 の `activeSession` に統合したため欠番。
+- H11：外部への計測送信は v1.0 で行わない（裁定 10、AC-103）ため欠番。
+- これ以外の H1〜H33（計31個）はすべて第2章のとおり v1.0 の標準仕様に含まれる（H33 は AC の判定には使わない）。
+
+## 5. 前の案から変えた所
+| つなぎ口 | 前の案 | この契約（2026-10-25 更新） | 理由 |
+|---|---|---|---|
+| H2 | 本の基本項目と設定のみ | `isEbook`、`isTitlePending`、`progressUnit`（`page`/`location`/`percent`）、シリーズ名・巻数、NDC、推薦理由ごとの `chosen`/`skipped` を追加 | AC-101、AC-139〜AC-148 |
+| H10 | 3区間（`endToMark`、`shelfOpen`、`bookOpen`） | 8区間（`markWait`、`intentStartRequest`、`intentStartForeground`、`barcodeLookup`、`titleSearch` を追加） | AC-94、AC-114、AC-115、AC-149 |
+| H13 | 本・記録・設定の基本読み出し | `isTitlePending`、`isEbook`、`progressUnit`、進み具合の値、推薦重み `chosen`/`skipped` を追加 | AC-139〜AC-141、AC-145〜AC-147 |
+| H17 | 入口の印3種 | `entry` / `sessionEntry` / `entryCandidate` に `live_activity`、`intent_start`、`intent_open` を追加 | AC-40、AC-114、AC-124 |
+| H19 | 選択肢（ページ縦書き列のみ） | v1.0 標準に昇格。ページに加え表紙（`cover`）・本棚（`bookshelf`）・奥付（`colophon`）と PhotosPicker スクリーンショット選択に対応 | AC-113、AC-137、AC-138、AC-142 |
+| H20 | 外部 NDL OpenSearch API スタブ | 端末内の書誌 SQLite DB（Background Assets、`status: ready / notDownloaded`、`books`）および共起テーブル（`cooccurrences`）の差し替えに変更。`$id` とファイル名は維持 | 2026-10-25 Takuma 決定、ADR 0004、AC-2〜AC-11、AC-87、AC-92、AC-103、AC-148、AC-149 |
+| H21 | ISBN-13 のみ | 2段目の日本図書コード（`192` で始まる13桁 Cコード）の連続注入に対応 | AC-3、AC-11、AC-149 |
+| H22 | 紙の本のページ（`p.61`）のみ | 電子書籍の `位置1450`・`52%`、および名無しの今の本の `今の本`（`widget.currentBookAsTitle`）を追加 | AC-139〜AC-141 |
+| H23 | 選択肢 | v1.0 標準に昇格。要求の「出どころ」（`launchReconcile` / `foregroundReconcile` / `intent` / `app`）と `liveActivity.end` の読み上げラベル記録を追加 | AC-34、AC-36〜AC-41、AC-97、AC-98、AC-114〜AC-120、AC-130〜AC-132、AC-136、AC-139、AC-144 |
+| H24、H25、H27、H30、H32 | 選択肢（第4章に名前だけ） | すべて v1.0 標準に昇格し、第2章と `hook-config.schema.json` に定義 | 全149 AC の標準化 |
+| H29 | 書誌 API 以外の通信記録 | アプリが出したすべての外部 HTTP 通信要求が 0 件（ホスト問わず 0 件）であることの検証用に変更 | AC-2、AC-6、AC-9、AC-10、AC-103 |
+| H31 | プライバシーポリシー URL のみ | 設定の「データの出典」から開く CC BY 4.0 ライセンス URL を追加 | AC-88、AC-93 |
+| H22（2026-11-02） | 撮影用の見本は `hook.widget.canvas` と1行だけ（大きさ、View、W-3〜W-5 の書き方は決めていなかった） | 拡張と同じ View の型を `<幅>×<高さ>` pt の枠で描き、枠で切る。根は `hook.widget.showcase`。面に `liveActivity`、`control`、`snippet`、種類に `placeholder` などを足し、`hook.widget` に `showcase` の読み出しを足した。`w3:waiting` のような書き方は受けない | G3 r2 の verifier：172×76 の見本が約 133×120 pt で描かれ2字欠けた。実装に `hook.widget.canvas` がなかった。AC-27、AC-35 |
+| H8、H30（2026-11-02） | 通信なしは課金シートの商品の取得（AC-110）だけ | 購入の復元も、通信なしなら `restoreOutcome` より先に通信の誤りにし、`store.offline` を出す | G3 r2 の verifier：S-10 の復元を通信なしで押しても知らせが出なかった（design/ 5 の S-10 のオフライン） |
+| H33（2026-11-02、新規） | なし | 読み込みを止めて、読み込み中の形を撮る | G3 r2 の verifier の 13 章（読み込み中の各画面、復元の途中） |
+| H22（2026-11-02、G3 のコードの判定のあと） | `composition` の組み方は「ADR 0003 の組みの結果」とだけ書き、枠から決め直すかを決めていなかった | `renders[]` ごとに `request` の枠から、拡張と見本が描くのと同じ手順（「H22 の組み方」）で字の大きさ・L・列を決め直す。計算は `ReadingCore` の純粋な関数1つ。スキーマの項目は足さず、説明と例（`fontSize` 17、`L` 4、`columnCount` 4 など）を手順の値に直した | G3 のコードの reviewer の要修正1：拡張と見本は 172×76 の14字を 4列×4字で描くのに、読み出しは既定の 2列×8字だった。AC-27、AC-28、AC-35 |
+| H22（2026-11-02、G3 の契約 r3 の判定のあと） | `composition` の12項目をいつも必須にし、横書き（AC-30）の組みの値は「範囲の外（いまのまま）」としていた。横書きはスキーマを満たせなかった | 縦書きの升目の9項目（`frame`、`fontSize`、`L`、`referenceL`、`columnCount`、`feedCount`、`kinsokuRelaxed`、`slack`、`cells`）を `orientation` が `vertical` のときだけ必須にした（必須を減らす向き。名前・型・意味は変えない）。横書きは `orientation`、`displayedLine`、`shortened`（と描いたときの `page`）だけを書く。横書きの例を足した。`state` と `texts` の組を表にした。手順3で送りを止めたときの `feedCount`・`kinsokuRelaxed` の意味を決めた | G3 の契約 r3 の reviewer の要修正1、提案3・7、4(a)・提案9。AC-28、AC-30 |
+| H33（2026-11-02、G3 の契約 r3 の判定のあと） | 1-1 の例外は「読み込んだ結果を画面に渡す所」だけで、(b) の「読み込みの前に門を通す」より狭かった。2度押しの印をいつ立てるかを決めていなかった | 1-1 と (b) を「View の側で、読み込みを呼ぶ所か、読み込んだ結果を画面に渡す所」にそろえた。印は `Task` を作る前に同期で立てる。`catalog.lookup` を止めている間の2つ目のバーコードはこの条件の外 | G3 の契約 r3 の reviewer の要修正2、提案4 |
+| H33（2026-11-02、G3 のコードの判定のあと） | 門は `ReadingStore` の読み込みの関数の入口に置く | 門の型は `ReadingStore` に1つ。門を通す所は (a) 読み込みの関数の中か (b) 読み込んだ結果を画面に渡す所（View の側）。観察できる振る舞いと、既定は素通り・`#if` の外・名前・設定は入口だけ、の決まりは変えない | G3 のコードの reviewer の要修正2と指揮役の裁定 2：G3 r2 の実装は (b)。観察できる振る舞いは契約どおりだったため、文を実装に合わせて広げた |
+
+## 6. 確かめたこと
+- spike 1（2026-10-20、Xcode 27.1、iOS 27.0 のシミュレーター iPhone 17。リポジトリの外で作り、端末は最後に消した）
+  - `import notify` は、アプリと UI テストの両方で module として読めた。
+  - テストが `notify_set_state` で書いた 4242 を、アプリが `notify_get_state` で読めた。
+  - ホーム画面に移したあとに書いた 999 も、`activate()` のあとに読めた。
+  - `app.terminate()` のあとの `app.open(URL(string: "yomuma://open?entry=lock_widget")!)` では、springboard の確認は出ず、onOpenURL に URL が届き、起動の引数と環境変数も渡った。
+- spike 2（同じ環境）
+  - alert の1つ上の高さの UIWindow（触る操作を受けない）に、1×1 pt の要素を置いた。
+  - 要素の種類は other で、isHittable は偽。押せる要素の数を変えず、シートと alert の間も `hook.*` の値を読めた。
+- JSON Schema（2026-10-25 更新）：`contracts/hooks/*.schema.json` の7つと `contracts/widget-snapshot.schema.json` の計8ファイルを `jsonschema` の Draft 2020-12 で検証し、全スキーマと全 examples がエラー0で通ることを確認した。
+
+- JSON Schema（2026-11-02 更新）：H22 の `showcase`、H17 の `hold.<対象>`、設定のファイルの `widget.show` を足したあと、`make check-contracts`（venv のない状態から作って）で `ALL PASSED: 8 schemas, 28 examples validated with 0 errors.` を確かめた。
+
+- H22 の組み方の検算（2026-11-02）：「H22 の組み方」の手順を Python で書き（リポジトリの外のスクラッチパッド、`python3 -I fit.py`）、W-1 の 172×76・153×68、W-2 の 170×170・148×148 で、AC-27 の14字、かな25字、「歩行祭は、いつも同じ道を歩く。」を組んだ。結果は「H22 の組み方」の表のとおりで、かな25字の値は G1 の ADR 0003（6c46e54 版）の「25字のときの結果」と同じ（W-1 は 15pt・13pt、W-2 は 20pt・19pt、L＝5）。G3 r2 の `ReadingVerticalFit.fit` でも AC-27 の14字は 172×76 で 17pt・4列×4字になる（コードを読んで手で計算。ビルドはしていない）。
+- JSON Schema（2026-11-02、H22 の組み方のあと）：`h22-widget.schema.json` の説明と例を直したあと、`make check-contracts` を通した（出力は報告に書いた）。
+- JSON Schema（2026-11-02、横書きの `composition` のあと）：`make check-contracts` で `ALL PASSED: 8 schemas, 29 examples validated with 0 errors.`（横書きの例を1つ足して 28→29）。7 の全体の検査の1行を、スキーマの examples 4つ（すべて OK、終了コード 0）と、わざと壊した3つ（横書きに `columnCount: 0`・`cells: []`、縦書きから `L`・`cells` を抜く、`state: "hasLine"`・`entryURL`・トップの `title`）で試し、壊した3つはすべてエラーを出して終了コード 1 になった。
+- 手順5に来る並びの検算（2026-11-02、同じ Python）：「あ」＋「ー」×24 は W-1 の両方の枠で 13pt・L 5・C 5・`kinsokuRelaxed` 真。「あいうーーーー」のくり返しの25字は 153×68 で 13pt でも送りのあと C 7 で、`kinsokuRelaxed` 真（172×76 は 14pt・C 7 で入る）。「そして」＋「…」×6 は 172×76 で 17pt・C 5・`feedCount` 11・`kinsokuRelaxed` 偽（手順3で送りを止めた列が残る）。
+
+## 7. 照合のしかた（G2 で verifier と reviewer が使う）
+- 全149 AC が使うつなぎ口（H1、H2、H4〜H10、H12〜H32 の計30個）が、すべてこの契約の第2章にあること。
+- JSON Schema：`make check-contracts`（リポジトリの外の `~/.cache/reading-app/contracts-schema-venv` の `jsonschema`。初めての時は自動で作る）で `contracts/hooks/*.schema.json` と `contracts/widget-snapshot.schema.json` の metaschema 検査と examples 検査を行い、エラー0件であること。
+- H22 の読み出しの全体（2026-11-02、G3 の契約 r3 の指揮役の裁定 4。verifier が使う）：`hook.widget` の値（`accessibilityValue` の JSON の文字列）をそのままファイルに保存し、`make check-contracts` と同じ venv の Python で、`h22-widget.schema.json` の全体に照らす。エラーがあれば全部を出して終了コード 1、なければ `hook.widget OK: <renders の数> renders` を出して終了コード 0。保存は W-1・W-2 の枠（`-uitest-widget accessoryRectangular:153x68,accessoryRectangular:172x76,systemSmall:148x148,systemSmall:170x170`）で、少なくとも `state` が `normal`（縦書きと横書き）、`noLine`、`noLineNoPage`、`hidden`、`empty`、`unavailable` になる投入のそれぞれについて行う。`-uitest-widget-show` を付けた起動では `showcase` も同じ1行で検査される。
+  ```
+  ~/.cache/reading-app/contracts-schema-venv/bin/python -I -c 'import json,sys; from jsonschema import Draft202012Validator as V; s=json.load(open(sys.argv[1],encoding="utf-8")); d=json.load(open(sys.argv[2],encoding="utf-8")); E=sorted(V(s).iter_errors(d),key=lambda e:[str(x) for x in e.absolute_path]); [print("/".join(map(str,e.absolute_path)) or "(root)", ":", e.message) for e in E]; n=len(d.get("renders",[])); sys.exit(1) if E else print(f"hook.widget OK: {n} renders")' contracts/hooks/h22-widget.schema.json <hook.widget を保存した JSON>
+  ```
+  - `make check-contracts SCHEMA_PYTHON=<python>` で別の Python を使うときは、先頭の Python をそれに置き換える。
+- G2 の受け入れテストは、ここにない引数、環境変数、通知、`hook.*` の識別子を使わない（`grep -rhoE -- '-uitest-[a-z-]+|UITEST_[A-Z_]+|yomuma\.uitest\.[a-z.]+|hook\.[a-zA-Z.]+' ios/AcceptanceTests | sort -u` の結果が、この文書にあるものだけ）。
+
+## 8. 画面×状態の撮り方（G3 の証拠。2026-11-02、G3 r2 の verifier の 9 章と 13 章への答え）
+- verifier が撮れなかった組ごとに、足したつなぎ口か、いまあるつなぎ口か、仕様上その状態が無いかを決めた。「製品の不具合」は、つなぎ口はあるのに design/ 5 のとおりに出ないもので、直すのは ios-engineer。
+
+| 画面×状態 | 決めたこと | 使うつなぎ口と手順 |
+|---|---|---|
+| W-1、W-2 の通常（AC-27、AC-35 の大きさ） | 見本の作りを直す（H22） | `-uitest-widget-show accessoryRectangular:172x76` など。`hook.widget.canvas` の frame と `showcase.contentOverflow` を確かめて撮る |
+| W-1、W-2 の読み込み中 | 足した（H22 の `placeholder`） | `-uitest-widget-show <面>:<幅>x<高さ>:placeholder` |
+| W-1、W-2 のエラー（`widget.unavailable`） | いまあるもので撮れる | `UITEST_WIDGET_SNAPSHOT=@missing` か壊れた写しと `-uitest-widget-show` |
+| W-3 の waiting、reading、ended | 足した（H22 の `liveActivity`） | `-uitest-widget-show liveActivity:370x160:<種類>`。隠す設定と名無しの今の本は H2 の投入で変える。Dynamic Island（Compact、Minimal、Expanded）はアプリの中で描けない（DynamicIsland の領域は View ではない）ので、G4 の実機で見る |
+| W-3 の読み込み中、オフライン | 仕様上ない（design/ 5 の W-3 の「なし」） | — |
+| W-3 のエラー、権限なし | Live Activity は出ない仕様。アプリの側の画面で撮る | H23 の `failScheduleCount` など、`areActivitiesEnabled: false` で S-2、S-4、S-10（`settings.liveActivity.off`） |
+| W-4 の通常 | 足した（H22 の `control`）。ただし描けるのはラベルの中身だけ | `-uitest-widget-show control:160x72`。登録の中身は H32 の `registeredControls` |
+| W-4 の読み込み中、エラー、権限なし | Control の見た目はシステムが描く（アプリが描く状態はない）。結果はアプリの側で出る | 読み込み中：H32 の `-uitest-run-intent StartReadingIntent` と H23 の要求の記録、H10 の `intentStartRequest`。エラー：H7 の `session.start:1` と H32 の `dialogKey`（`session.start.error`）。権限なし：H23 の `areActivitiesEnabled: false` で S-2 が前に出る（AC-118）。Control そのものの見た目は G4 |
+| W-5 の通常 | 足した（H22 の `snippet`） | `-uitest-widget-show snippet:360x200`。ページ、位置、％は H2 の `progressUnit` で変える |
+| W-5 のエラー | 仕様上、小窓を出さない（H32 の `snippetTexts` が `[]`） | H7 の `store.load:1` と H32 の `WhereStoppedIntent`。撮る画面はない |
+| S-1、S-6、S-7、S-9 の読み込み中 | 足した（H33） | `-uitest-hold-load store.load`（S-1）、`shelf.load`（S-6）、`book.load`（S-7）、`recommend.load`（S-9）。`hold.<対象>=shown` を待って撮る |
+| S-8a、S-8c の読み込み中 | 足した（H33） | `-uitest-hold-load catalog.lookup` |
+| S-3c、S-7c、S-8b、S-8d の読み込み中 | いまあるもので撮れる | H19 の `hold: true`、撮ったあと `yomuma.uitest.ocr.release` |
+| S-10 の読み込み中（復元の途中） | 足した（H33） | `-uitest-hold-load storekit.restore` と H30 の `restoreOutcome` |
+| S-10a の読み込み中 | 足した（H33。いまも撮れているが時間まかせ） | `-uitest-hold-load storekit.products` か `storekit.purchase` |
+| S-10 のオフライン（復元） | 決めた（H8、H30）。出ないのは製品の不具合 | `-uitest-offline` と `UITEST_STOREKIT`、`settings.restorePurchases` を押して `store.offline` |
+| S-10 のエラー（設定の保存） | いまあるもので撮れる。出ないのは製品の不具合 | `-uitest-fail-save settings.save:1` で切り替えを押すと、前の値に戻り `common.save.error` |
+| S-3c のエラー（61字の列） | いまあるもので撮れる。出ないのは製品の不具合（AC-72 の S-3c の道） | H19 の `page.columns` に61字の列を入れ、選んで `mark.save` |
+| S-8b の空（認識0件） | いまあるもので撮れる。出ないのは製品の不具合 | H19 の `cover.lines: []` |
+| S-7 の権限なし、S-7c の各状態 | いまあるもので撮れる（撮る手順の不足） | H26 の `denied`、H19 の `colophon`（`hold: true` で読み込み中、`lines: []` で空）、H7 の `book.update:1` でエラー。S-7 に `colophon.capture` が出ないなら、design/ 5 の S-7 の通常に照らして製品の不具合か確かめる |
+| S-9 のエラー | いまあるもので撮れる（撮る手順の不足） | H2 で積読を1冊（`tsundoku`）入れ、H7 の `book.status:1` で `next.choose` を押す |
+| S-3a、S-3b、S-7a、S-7b、S-8c の「保存の間」 | 仕様上、見た目の読み込み中はない（2度押しを受けないだけ） | — |

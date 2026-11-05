@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:reading-app:contracts:widget-snapshot:1",
+  "title": "ウィジェットの写し（App Group の widget-snapshot.json）大きな版 1",
+  "description": "アプリと W-1、W-2 のウィジェットの拡張が分け合う、今の本の写し。書いた役：tech-lead、2026-10-20（G1 の 7-3）、2026-10-25 に直した（G1 の 7 の続き）。関係：ADR 0002（保存と共有）、ADR 0003（縦書きの組み）、設計メモ 5、PRD 12（App Group には今の本の書名、名無しの本フラグ、一行、進み具合の単位と値、出さない設定、見た目の id だけを置く）、AC-14、AC-16、AC-27〜AC-35、AC-82、AC-99、AC-102、AC-106、AC-111、AC-139、AC-141。\n\n[置き場所と書き方] App Group の入れ物の直下の widget-snapshot.json の1ファイル。UTF-8 の JSON。書くのはアプリだけ（ReadingStore の保存の後ろの1か所）、読むのは拡張だけ（アプリは書いたあとに読み直さない。H22 は拡張と同じ関数で読む）。書くときは Data.write(options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])。書く時：起動のたびと、今の本、書名、名無しの本フラグ、一行、進み具合（単位と値）、出さない設定、見た目の id のどれかを変えた保存のあと。書いたあとにウィジェットの再読み込みを1回だけ求める（AC-33）。今の本がなくなったら currentBook を書かない。Live Activity（W-3）と「どこまで読んだ？」（W-5）はこの写しを使わない（W-3 は ActivityKit の中身、W-5 はアプリのプロセスで主の保存先を読む。ADR 0002）。\n\n[書く側の決まり] この文書の形どおりに書く（知らない項目を足さない）。値がない項目はキーごと書かない（null を書かない。Swift の JSONEncoder の既定）。hideOnWidgets が真のときは、書名と一行と名無しの本フラグを書かない（進み具合だけ。拡張は持っていないものを出せない）。ISBN、著者、出版社、本の id、日時、電子書籍フラグは書かない（PRD 12。ウィジェットに要らない）。名無しの本（isTitlePending が真。AC-139）は title を書かず isTitlePending を真にする。\n\n[読む側の決まり] 次のときは、どれも『読めない』として文言キー widget.unavailable の文を出し、読み上げのラベルも同じ文にする。押したときの URL は入口の URL のまま（contracts/entry-urls.md）。拡張は落ちず、写しを書き直さない：(1) ファイルがない (2) 開けない（保護の等級で開けないときを含む） (3) JSON でない、型が違う、必須の項目がない (4) schemaVersion が 1 でない（知らない大きな版） (5) 値が範囲の外（書名 0字か101字以上、一行 0字か61字以上、進み具合が単位の範囲の外（page 1〜9999、location 1〜999999、percent 0〜100）、知らない単位。字は書記素で数える） (6) hideOnWidgets が真なのに書名か一行か isTitlePending がある (7) isTitlePending が真なのに title がある。次は読み流す：知らない項目は無視する（同じ大きな版で足した項目）。appearanceID が知らない値なら default で描く。\n\n[出し方] currentBook がない：widget.empty。hideOnWidgets が真：widget.hidden の文と進み具合（なければ widget.hidden だけ）。line がある：一行の組み（ADR 0003）と進み具合。line がない：書名の所と、進み具合があればその短い形（なければ書名の所だけ）。書名の所は、title があれば title、なければ（isTitlePending が真）文言キー widget.currentBookAsTitle の文（「今の本」／Reading Now。仕様の決定 66。拡張が描くときに出し、アプリは写しの title に入れない）。進み具合の短い形は、page なら「p.61」、location なら文言キー location.short（「位置1450」）、percent なら percent.short（「52%」）（design/ の 7-1、AC-141）。H22 の状態は title の有無で変えない（line があれば normal、line がなく進み具合があれば noLine、どちらもなければ noLineNoPage。contracts/test-hooks.md の H22）。[読み上げのラベル] 書名の所から始める（AC-99。仕様 6、9）。進み具合の読み上げは、page なら page.spoken（「61ページ」）、location なら location.spoken（「位置1450」）、percent なら percent.spoken（「52パーセント」）。書式：line と進み具合があれば widget.spoken（書名の所、進み具合の読み上げ、line）、line だけなら widget.spoken.noPage、進み具合だけなら widget.spoken.noLine、どちらもなければ書名の所だけ。例：「羅生門、61ページ。下人は、雨やみを待っていた。」「羅生門、位置1450。下人は、雨やみを待っていた。」「今の本、45ページ」「今の本」。hideOnWidgets が真のときは、書名の所が widget.hidden の文になる（例「しおり、61ページ」）。\n\n[版] schemaVersion は大きな版。同じ大きな版の中では、省ける項目を足すことだけをする（項目の名前、型、意味、範囲を変えない。必須の項目を足さない）。それ以外の変更は schemaVersion を 2 にし、ADR を書く。2026-10-25 の直し（page を progress に替え、isTitlePending を足した）は、main に出す前の版 1 の下書きの直しで（`git ls-tree origin/main contracts/` に、この写しの契約はない）、使う側（アプリ、拡張、受け入れテスト）もまだないので、版は上げない。アプリと拡張は同じ版で配られるので、版のずれはアップデートの直後の短い間だけで、アプリの起動で写しが書き直される（ADR 0002）。",
+  "type": "object",
+  "required": ["schemaVersion", "hideOnWidgets"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "写しの大きな版。読む側は 1 のときだけ読む。"
+    },
+    "hideOnWidgets": {
+      "type": "boolean",
+      "description": "設定の「一行と書名を出さない」（settings.hideOnWidgets。AC-34）。真なら currentBook に title、line、isTitlePending を書かない。"
+    },
+    "appearanceID": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$",
+      "default": "default",
+      "description": "ウィジェットの見た目の id（PRD 11 の冒頭。H22 で読む）。今の値は default、kinari、sumi、shu（design/001-reading-session/tokens.md の 1-2）。買っていないのに有料の id を書かない（AC-111 で返金されたら default に戻して書き直す）。読む側は、省いたときと知らない値のとき default で描く。"
+    },
+    "currentBook": {
+      "description": "今の本。キーがないときは今の本なし（本0冊も。AC-32）。"
+    }
+  },
+  "if": {
+    "properties": { "hideOnWidgets": { "const": true } },
+    "required": ["hideOnWidgets"]
+  },
+  "then": {
+    "properties": { "currentBook": { "$ref": "#/$defs/hiddenBook" } }
+  },
+  "else": {
+    "properties": { "currentBook": { "$ref": "#/$defs/visibleBook" } }
+  },
+  "$defs": {
+    "progress": {
+      "type": "object",
+      "required": ["unit", "value"],
+      "additionalProperties": false,
+      "description": "しおりの進み具合（PRD 11 の冒頭）。キーがないときは進み具合なし。単位を替えて新しい単位の値がまだないときも、キーを書かない（違う単位の数字を混ぜない）。",
+      "properties": {
+        "unit": { "enum": ["page", "location", "percent"] },
+        "value": { "type": "integer" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "unit": { "const": "page" } } },
+          "then": { "properties": { "value": { "minimum": 1, "maximum": 9999 } } }
+        },
+        {
+          "if": { "properties": { "unit": { "const": "location" } } },
+          "then": { "properties": { "value": { "minimum": 1, "maximum": 999999 } } }
+        },
+        {
+          "if": { "properties": { "unit": { "const": "percent" } } },
+          "then": { "properties": { "value": { "minimum": 0, "maximum": 100 } } }
+        }
+      ]
+    },
+    "visibleBook": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000,
+          "description": "書名。前後の空白を除いた 1〜100 字（書記素）。キーがないのは、名無しの今の本（isTitlePending が真。register.later。AC-139）のときだけ。ウィジェットに出すのは一行がないときだけで、横書き。読み上げのラベルにはいつも入る（AC-99）。"
+        },
+        "isTitlePending": {
+          "const": true,
+          "description": "名無しの今の本の印（AC-139、AC-140）。偽のときはキーを書かない。真のときは title を書かない。"
+        },
+        "line": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600,
+          "description": "続きの一行の全文。前後の空白を除いた 1〜60 字（書記素）。ウィジェットの25字への縮め方は、描くときに ReadingCore が行う（AC-29）。写しには縮めない全文を書く。キーがないときは一行なし（AC-31）。"
+        },
+        "progress": { "$ref": "#/$defs/progress" }
+      },
+      "not": { "required": ["title", "isTitlePending"] }
+    },
+    "hiddenBook": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "progress": { "$ref": "#/$defs/progress" }
+      },
+      "description": "出さない設定のときの今の本。進み具合だけを持つ。"
+    }
+  },
+  "examples": [
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "default",
+      "currentBook": { "title": "羅生門", "line": "下人は、雨やみを待っていた。", "progress": { "unit": "page", "value": 61 } }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "default",
+      "currentBook": { "title": "檸檬", "progress": { "unit": "page", "value": 120 } }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "currentBook": { "title": "檸檬" }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "kinari",
+      "currentBook": { "title": "夜のピクニック", "line": "歩行祭は、いつも同じ道を歩く。", "progress": { "unit": "location", "value": 1450 } }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "currentBook": { "title": "夜のピクニック", "progress": { "unit": "percent", "value": 52 } }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "currentBook": { "isTitlePending": true, "progress": { "unit": "page", "value": 45 } }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": true,
+      "appearanceID": "default",
+      "currentBook": { "progress": { "unit": "page", "value": 61 } }
+    },
+    {
+      "schemaVersion": 1,
+      "hideOnWidgets": false,
+      "appearanceID": "default"
+    }
+  ]
+}

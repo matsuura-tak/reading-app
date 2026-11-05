@@ -1,0 +1,610 @@
+[
+  {
+    "id": "akutagawa-130-1",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第130回",
+    "order": 1,
+    "title": "蹴りたい背中",
+    "author": "綿矢りさ"
+  },
+  {
+    "id": "akutagawa-130-2",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第130回",
+    "order": 2,
+    "title": "蛇にピアス",
+    "author": "金原ひとみ"
+  },
+  {
+    "id": "akutagawa-138",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第138回",
+    "order": 3,
+    "title": "乳と卵",
+    "author": "川上未映子"
+  },
+  {
+    "id": "akutagawa-144",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第144回",
+    "order": 4,
+    "title": "苦役列車",
+    "author": "西村賢太"
+  },
+  {
+    "id": "akutagawa-150",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第150回",
+    "order": 5,
+    "title": "穴",
+    "author": "小山田浩子"
+  },
+  {
+    "id": "akutagawa-153-1",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第153回",
+    "order": 6,
+    "title": "火花",
+    "author": "又吉直樹"
+  },
+  {
+    "id": "akutagawa-153-2",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第153回",
+    "order": 7,
+    "title": "スクラップ・アンド・ビルド",
+    "author": "羽田圭介"
+  },
+  {
+    "id": "akutagawa-155",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第155回",
+    "order": 8,
+    "title": "コンビニ人間",
+    "author": "村田沙耶香"
+  },
+  {
+    "id": "akutagawa-158",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第158回",
+    "order": 9,
+    "title": "おらおらでひとりいぐも",
+    "author": "若竹千佐子"
+  },
+  {
+    "id": "akutagawa-161",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第161回",
+    "order": 10,
+    "title": "むらさきのスカートの女",
+    "author": "今村夏子"
+  },
+  {
+    "id": "akutagawa-163-1",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第163回",
+    "order": 11,
+    "title": "首里の馬",
+    "author": "高山羽根子"
+  },
+  {
+    "id": "akutagawa-163-2",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第163回",
+    "order": 12,
+    "title": "破局",
+    "author": "遠野遥"
+  },
+  {
+    "id": "akutagawa-164",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第164回",
+    "order": 13,
+    "title": "推し、燃ゆ",
+    "author": "宇佐見りん"
+  },
+  {
+    "id": "akutagawa-166",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第166回",
+    "order": 14,
+    "title": "ブラックボックス",
+    "author": "砂川文次"
+  },
+  {
+    "id": "akutagawa-167",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第167回",
+    "order": 15,
+    "title": "おいしいごはんが食べられますように",
+    "author": "高瀬隼子"
+  },
+  {
+    "id": "akutagawa-169",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第169回",
+    "order": 16,
+    "title": "ハンチバック",
+    "author": "市川沙央"
+  },
+  {
+    "id": "akutagawa-170",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第170回",
+    "order": 17,
+    "title": "東京都同情塔",
+    "author": "九段理江"
+  },
+  {
+    "id": "akutagawa-171-1",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第171回",
+    "order": 18,
+    "title": "サンショウウオの四十九日",
+    "author": "朝比奈秋"
+  },
+  {
+    "id": "akutagawa-171-2",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第171回",
+    "order": 19,
+    "title": "バリ山行",
+    "author": "松永K三蔵"
+  },
+  {
+    "id": "akutagawa-172-1",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第172回",
+    "order": 20,
+    "title": "DTOPIA",
+    "author": "安堂ホセ"
+  },
+  {
+    "id": "akutagawa-172-2",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第172回",
+    "order": 21,
+    "title": "ゲーテはすべてを言った",
+    "author": "鈴木結生"
+  },
+  {
+    "id": "akutagawa-174-1",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第174回",
+    "order": 22,
+    "title": "時の家",
+    "author": "鳥山まこと"
+  },
+  {
+    "id": "akutagawa-174-2",
+    "award": "芥川龍之介賞",
+    "sessionOrYear": "第174回",
+    "order": 23,
+    "title": "叫び",
+    "author": "畠山丑雄"
+  },
+  {
+    "id": "naoki-134",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第134回",
+    "order": 1,
+    "title": "容疑者Ｘの献身",
+    "author": "東野圭吾"
+  },
+  {
+    "id": "naoki-135-1",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第135回",
+    "order": 2,
+    "title": "風に舞いあがるビニールシート",
+    "author": "森絵都"
+  },
+  {
+    "id": "naoki-135-2",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第135回",
+    "order": 3,
+    "title": "まほろ駅前多田便利軒",
+    "author": "三浦しをん"
+  },
+  {
+    "id": "naoki-143",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第143回",
+    "order": 4,
+    "title": "小さいおうち",
+    "author": "中島京子"
+  },
+  {
+    "id": "naoki-145",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第145回",
+    "order": 5,
+    "title": "下町ロケット",
+    "author": "池井戸潤"
+  },
+  {
+    "id": "naoki-147",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第147回",
+    "order": 6,
+    "title": "鍵のない夢を見る",
+    "author": "辻村深月"
+  },
+  {
+    "id": "naoki-148",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第148回",
+    "order": 7,
+    "title": "何者",
+    "author": "朝井リョウ"
+  },
+  {
+    "id": "naoki-151",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第151回",
+    "order": 8,
+    "title": "破門",
+    "author": "黒川博行"
+  },
+  {
+    "id": "naoki-152",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第152回",
+    "order": 9,
+    "title": "サラバ！",
+    "author": "西加奈子"
+  },
+  {
+    "id": "naoki-153",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第153回",
+    "order": 10,
+    "title": "流",
+    "author": "東山彰良"
+  },
+  {
+    "id": "naoki-155",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第155回",
+    "order": 11,
+    "title": "海の見える理髪店",
+    "author": "荻原浩"
+  },
+  {
+    "id": "naoki-156",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第156回",
+    "order": 12,
+    "title": "蜜蜂と遠雷",
+    "author": "恩田陸"
+  },
+  {
+    "id": "naoki-157",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第157回",
+    "order": 13,
+    "title": "月の満ち欠け",
+    "author": "佐藤正午"
+  },
+  {
+    "id": "naoki-158",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第158回",
+    "order": 14,
+    "title": "銀河鉄道の父",
+    "author": "門井慶喜"
+  },
+  {
+    "id": "naoki-159",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第159回",
+    "order": 15,
+    "title": "ファーストラヴ",
+    "author": "島本理生"
+  },
+  {
+    "id": "naoki-160",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第160回",
+    "order": 16,
+    "title": "宝島",
+    "author": "真藤順丈"
+  },
+  {
+    "id": "naoki-161",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第161回",
+    "order": 17,
+    "title": "渦 妹背山婦女庭訓 魂結び",
+    "author": "大島真寿美"
+  },
+  {
+    "id": "naoki-162",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第162回",
+    "order": 18,
+    "title": "熱源",
+    "author": "川越宗一"
+  },
+  {
+    "id": "naoki-163",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第163回",
+    "order": 19,
+    "title": "少年と犬",
+    "author": "馳星周"
+  },
+  {
+    "id": "naoki-165",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第165回",
+    "order": 20,
+    "title": "テスカトリポカ",
+    "author": "佐藤究"
+  },
+  {
+    "id": "naoki-166-1",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第166回",
+    "order": 21,
+    "title": "塞王の楯",
+    "author": "今村翔吾"
+  },
+  {
+    "id": "naoki-166-2",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第166回",
+    "order": 22,
+    "title": "黒牢城",
+    "author": "米澤穂信"
+  },
+  {
+    "id": "naoki-168-1",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第168回",
+    "order": 23,
+    "title": "地図と拳",
+    "author": "小川哲"
+  },
+  {
+    "id": "naoki-168-2",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第168回",
+    "order": 24,
+    "title": "しろがねの葉",
+    "author": "千早茜"
+  },
+  {
+    "id": "naoki-169-1",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第169回",
+    "order": 25,
+    "title": "極楽征夷大将軍",
+    "author": "垣根涼介"
+  },
+  {
+    "id": "naoki-169-2",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第169回",
+    "order": 26,
+    "title": "木挽町のあだ討ち",
+    "author": "永井紗耶子"
+  },
+  {
+    "id": "naoki-170-1",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第170回",
+    "order": 27,
+    "title": "ともぐい",
+    "author": "河﨑秋子"
+  },
+  {
+    "id": "naoki-170-2",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第170回",
+    "order": 28,
+    "title": "八月の御所グラウンド",
+    "author": "万城目学"
+  },
+  {
+    "id": "naoki-171",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第171回",
+    "order": 29,
+    "title": "ツミデミック",
+    "author": "一穂ミチ"
+  },
+  {
+    "id": "naoki-172",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第172回",
+    "order": 30,
+    "title": "藍を継ぐ海",
+    "author": "伊与原新"
+  },
+  {
+    "id": "naoki-174",
+    "award": "直木三十五賞",
+    "sessionOrYear": "第174回",
+    "order": 31,
+    "title": "カフェーの帰り道",
+    "author": "嶋津輝"
+  },
+  {
+    "id": "hontai-2004",
+    "award": "本屋大賞",
+    "sessionOrYear": "2004年",
+    "order": 1,
+    "title": "博士の愛した数式",
+    "author": "小川洋子"
+  },
+  {
+    "id": "hontai-2005",
+    "award": "本屋大賞",
+    "sessionOrYear": "2005年",
+    "order": 2,
+    "title": "夜のピクニック",
+    "author": "恩田陸"
+  },
+  {
+    "id": "hontai-2006",
+    "award": "本屋大賞",
+    "sessionOrYear": "2006年",
+    "order": 3,
+    "title": "東京タワー オカンとボクと、時々、オトン",
+    "author": "リリー・フランキー"
+  },
+  {
+    "id": "hontai-2007",
+    "award": "本屋大賞",
+    "sessionOrYear": "2007年",
+    "order": 4,
+    "title": "一瞬の風になれ",
+    "author": "佐藤多佳子"
+  },
+  {
+    "id": "hontai-2008",
+    "award": "本屋大賞",
+    "sessionOrYear": "2008年",
+    "order": 5,
+    "title": "ゴールデンスランバー",
+    "author": "伊坂幸太郎"
+  },
+  {
+    "id": "hontai-2009",
+    "award": "本屋大賞",
+    "sessionOrYear": "2009年",
+    "order": 6,
+    "title": "告白",
+    "author": "湊かなえ"
+  },
+  {
+    "id": "hontai-2010",
+    "award": "本屋大賞",
+    "sessionOrYear": "2010年",
+    "order": 7,
+    "title": "天地明察",
+    "author": "冲方丁"
+  },
+  {
+    "id": "hontai-2011",
+    "award": "本屋大賞",
+    "sessionOrYear": "2011年",
+    "order": 8,
+    "title": "謎解きはディナーのあとで",
+    "author": "東川篤哉"
+  },
+  {
+    "id": "hontai-2012",
+    "award": "本屋大賞",
+    "sessionOrYear": "2012年",
+    "order": 9,
+    "title": "舟を編む",
+    "author": "三浦しをん"
+  },
+  {
+    "id": "hontai-2013",
+    "award": "本屋大賞",
+    "sessionOrYear": "2013年",
+    "order": 10,
+    "title": "海賊とよばれた男",
+    "author": "百田尚樹"
+  },
+  {
+    "id": "hontai-2014",
+    "award": "本屋大賞",
+    "sessionOrYear": "2014年",
+    "order": 11,
+    "title": "村上海賊の娘",
+    "author": "和田竜"
+  },
+  {
+    "id": "hontai-2015",
+    "award": "本屋大賞",
+    "sessionOrYear": "2015年",
+    "order": 12,
+    "title": "鹿の王",
+    "author": "上橋菜穂子"
+  },
+  {
+    "id": "hontai-2016",
+    "award": "本屋大賞",
+    "sessionOrYear": "2016年",
+    "order": 13,
+    "title": "羊と鋼の森",
+    "author": "宮下奈都"
+  },
+  {
+    "id": "hontai-2017",
+    "award": "本屋大賞",
+    "sessionOrYear": "2017年",
+    "order": 14,
+    "title": "蜜蜂と遠雷",
+    "author": "恩田陸"
+  },
+  {
+    "id": "hontai-2018",
+    "award": "本屋大賞",
+    "sessionOrYear": "2018年",
+    "order": 15,
+    "title": "かがみの孤城",
+    "author": "辻村深月"
+  },
+  {
+    "id": "hontai-2019",
+    "award": "本屋大賞",
+    "sessionOrYear": "2019年",
+    "order": 16,
+    "title": "そして、バトンは渡された",
+    "author": "瀬尾まいこ"
+  },
+  {
+    "id": "hontai-2020",
+    "award": "本屋大賞",
+    "sessionOrYear": "2020年",
+    "order": 17,
+    "title": "流浪の月",
+    "author": "凪良ゆう"
+  },
+  {
+    "id": "hontai-2021",
+    "award": "本屋大賞",
+    "sessionOrYear": "2021年",
+    "order": 18,
+    "title": "52ヘルツのクジラたち",
+    "author": "町田そのこ"
+  },
+  {
+    "id": "hontai-2022",
+    "award": "本屋大賞",
+    "sessionOrYear": "2022年",
+    "order": 19,
+    "title": "同志少女よ、敵を撃て",
+    "author": "逢坂冬馬"
+  },
+  {
+    "id": "hontai-2023",
+    "award": "本屋大賞",
+    "sessionOrYear": "2023年",
+    "order": 20,
+    "title": "汝、星のごとく",
+    "author": "凪良ゆう"
+  },
+  {
+    "id": "hontai-2024",
+    "award": "本屋大賞",
+    "sessionOrYear": "2024年",
+    "order": 21,
+    "title": "成瀬は天下を取りにいく",
+    "author": "宮島未奈"
+  },
+  {
+    "id": "hontai-2025",
+    "award": "本屋大賞",
+    "sessionOrYear": "2025年",
+    "order": 22,
+    "title": "カフネ",
+    "author": "阿部暁子"
+  }
+]

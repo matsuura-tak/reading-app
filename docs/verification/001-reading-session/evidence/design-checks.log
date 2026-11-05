@@ -1,0 +1,710 @@
+=== [Check 1] WCAG 2.1 AA Contrast Ratio Check (design/001-reading-session/tokens.md & Chapter 9) ===
+PASS | default: color.text.primary (#000000) on background.primary (#FFFFFF) [Light]: fg=#000000, bg=#FFFFFF -> 21.00:1 (min 4.5:1)
+PASS | default: color.text.primary (#FFFFFF) on background.primary (#000000) [Dark]: fg=#FFFFFF, bg=#000000 -> 21.00:1 (min 4.5:1)
+PASS | default: color.text.secondary (#6C6C70) on background.primary (#FFFFFF) [Light]: fg=#6C6C70, bg=#FFFFFF -> 5.23:1 (min 4.5:1)
+PASS | default: color.text.secondary (#98989F) on background.primary (#000000) [Dark]: fg=#98989F, bg=#000000 -> 7.33:1 (min 4.5:1)
+PASS | default: color.text.secondary (#48484A) on background.primary (#FFFFFF) [HighContrast Light]: fg=#48484A, bg=#FFFFFF -> 9.12:1 (min 4.5:1)
+PASS | default: color.text.secondary (#C7C7CC) on background.primary (#000000) [HighContrast Dark]: fg=#C7C7CC, bg=#000000 -> 12.47:1 (min 4.5:1)
+PASS | default: color.text.secondary (#6C6C70) on background.grouped (#F2F2F7) [Light]: fg=#6C6C70, bg=#F2F2F7 -> 4.69:1 (min 4.5:1)
+PASS | default: color.text.secondary (#98989F) on background.groupedRow (#1C1C1E) [Dark]: fg=#98989F, bg=#1C1C1E -> 5.94:1 (min 4.5:1)
+PASS | default: color.text.secondary (#48484A) on background.grouped (#EBEBF0) [HighContrast Light]: fg=#48484A, bg=#EBEBF0 -> 7.68:1 (min 4.5:1)
+PASS | default: color.text.secondary (#C7C7CC) on background.groupedRow (#242426) [HighContrast Dark]: fg=#C7C7CC, bg=#242426 -> 9.20:1 (min 4.5:1)
+PASS | default: color.text.secondary (#98989F) on sheet row (#2C2C2E) [Dark]: fg=#98989F, bg=#2C2C2E -> 4.86:1 (min 4.5:1)
+PASS | default: color.text.secondary (#C7C7CC) on sheet row (#363638) [HighContrast Dark]: fg=#C7C7CC, bg=#363638 -> 7.16:1 (min 4.5:1)
+PASS | default: color.action.primary.label (#FFFFFF) on action.primary.background (#1C1C1E) [Light]: fg=#FFFFFF, bg=#1C1C1E -> 17.01:1 (min 4.5:1)
+PASS | default: color.action.primary.label (#000000) on action.primary.background (#F2F2F7) [Dark]: fg=#000000, bg=#F2F2F7 -> 18.82:1 (min 4.5:1)
+PASS | default: color.action.tint (#1C1C1E) on groupedRow (#FFFFFF) [Light]: fg=#1C1C1E, bg=#FFFFFF -> 17.01:1 (min 4.5:1)
+PASS | default: color.action.tint (#F2F2F7) on groupedRow (#1C1C1E) [Dark]: fg=#F2F2F7, bg=#1C1C1E -> 15.25:1 (min 4.5:1)
+PASS | default: color.action.tint (#F2F2F7) on sheet row (#2C2C2E) [Dark]: fg=#F2F2F7, bg=#2C2C2E -> 12.49:1 (min 4.5:1)
+PASS | default: color.state.error / destructive icon (#FF3B30) on row (#FFFFFF) [Light, >=3.0]: fg=#FF3B30, bg=#FFFFFF -> 3.55:1 (min 3.0:1)
+PASS | default: color.state.error / destructive icon (#FF453A) on row (#1C1C1E) [Dark, >=3.0]: fg=#FF453A, bg=#1C1C1E -> 4.99:1 (min 3.0:1)
+PASS | default: color.state.error / destructive icon (#FF453A) on sheet row (#2C2C2E) [Dark, >=3.0]: fg=#FF453A, bg=#2C2C2E -> 4.09:1 (min 3.0:1)
+PASS | ocr: color.ocr.box.outer (#000000) vs color.ocr.box.inner (#FFFFFF) [>=3.0]: fg=#000000, bg=#FFFFFF -> 21.00:1 (min 3.0:1)
+PASS | ocr: color.ocr.badge.label (#FFFFFF) on badge.background (#1C1C1E) [Light]: fg=#FFFFFF, bg=#1C1C1E -> 17.01:1 (min 4.5:1)
+PASS | ocr: color.ocr.badge.label (#000000) on badge.background (#F2F2F7) [Dark]: fg=#000000, bg=#F2F2F7 -> 18.82:1 (min 4.5:1)
+PASS | kinari: color.text.primary (#1C1B18) on background.primary (#FBF8F1) [Light]: fg=#1C1B18, bg=#FBF8F1 -> 16.24:1 (min 4.5:1)
+PASS | kinari: color.text.primary (#F2ECE1) on background.primary (#171614) [Dark]: fg=#F2ECE1, bg=#171614 -> 15.38:1 (min 4.5:1)
+PASS | kinari: color.text.primary (#000000) on background.primary (#FFFDF9) [HighContrast Light]: fg=#000000, bg=#FFFDF9 -> 20.67:1 (min 4.5:1)
+PASS | kinari: color.text.primary (#FFFFFF) on background.primary (#0D0C0A) [HighContrast Dark]: fg=#FFFFFF, bg=#0D0C0A -> 19.55:1 (min 4.5:1)
+PASS | kinari: color.text.secondary (#5C584F) on background.primary (#FBF8F1) [Light]: fg=#5C584F, bg=#FBF8F1 -> 6.68:1 (min 4.5:1)
+PASS | kinari: color.text.secondary (#A69F91) on background.primary (#171614) [Dark]: fg=#A69F91, bg=#171614 -> 6.88:1 (min 4.5:1)
+PASS | kinari: color.text.secondary (#3D3A33) on background.primary (#FFFDF9) [HighContrast Light]: fg=#3D3A33, bg=#FFFDF9 -> 11.16:1 (min 4.5:1)
+PASS | kinari: color.text.secondary (#D6CFC2) on background.primary (#0D0C0A) [HighContrast Dark]: fg=#D6CFC2, bg=#0D0C0A -> 12.63:1 (min 4.5:1)
+PASS | kinari: color.action.primary.label (#FBF8F1) on action.primary.background (#1C1B18) [Light]: fg=#FBF8F1, bg=#1C1B18 -> 16.24:1 (min 4.5:1)
+PASS | kinari: color.action.primary.label (#171614) on action.primary.background (#F2ECE1) [Dark]: fg=#171614, bg=#F2ECE1 -> 15.38:1 (min 4.5:1)
+PASS | sumi: color.text.primary (#141413) on background.primary (#F2EFE9) [Light]: fg=#141413, bg=#F2EFE9 -> 16.06:1 (min 4.5:1)
+PASS | sumi: color.text.primary (#EAE6DF) on background.primary (#121211) [Dark]: fg=#EAE6DF, bg=#121211 -> 15.07:1 (min 4.5:1)
+PASS | sumi: color.text.primary (#000000) on background.primary (#F7F5F0) [HighContrast Light]: fg=#000000, bg=#F7F5F0 -> 19.27:1 (min 4.5:1)
+PASS | sumi: color.text.primary (#FFFFFF) on background.primary (#0A0A09) [HighContrast Dark]: fg=#FFFFFF, bg=#0A0A09 -> 19.81:1 (min 4.5:1)
+PASS | sumi: color.text.secondary (#54524D) on background.primary (#F2EFE9) [Light]: fg=#54524D, bg=#F2EFE9 -> 6.80:1 (min 4.5:1)
+PASS | sumi: color.text.secondary (#9E9A93) on background.primary (#121211) [Dark]: fg=#9E9A93, bg=#121211 -> 6.69:1 (min 4.5:1)
+PASS | sumi: color.text.secondary (#383632) on background.primary (#F7F5F0) [HighContrast Light]: fg=#383632, bg=#F7F5F0 -> 11.07:1 (min 4.5:1)
+PASS | sumi: color.text.secondary (#CFCBC2) on background.primary (#0A0A09) [HighContrast Dark]: fg=#CFCBC2, bg=#0A0A09 -> 12.24:1 (min 4.5:1)
+PASS | sumi: color.action.primary.label (#F2EFE9) on action.primary.background (#141413) [Light]: fg=#F2EFE9, bg=#141413 -> 16.06:1 (min 4.5:1)
+PASS | sumi: color.action.primary.label (#121211) on action.primary.background (#EAE6DF) [Dark]: fg=#121211, bg=#EAE6DF -> 15.07:1 (min 4.5:1)
+PASS | shu: color.action.primary.label (#FFFFFF) on action.primary.background (#9E2A22) [Light]: fg=#FFFFFF, bg=#9E2A22 -> 7.48:1 (min 4.5:1)
+PASS | shu: color.action.primary.label (#171614) on action.primary.background (#E07A72) [Dark]: fg=#171614, bg=#E07A72 -> 6.20:1 (min 4.5:1)
+PASS | shu: color.action.primary.label (#FFFFFF) on action.primary.background (#7A1C15) [HighContrast Light]: fg=#FFFFFF, bg=#7A1C15 -> 10.48:1 (min 4.5:1)
+PASS | shu: color.action.primary.label (#000000) on action.primary.background (#FF9E96) [HighContrast Dark]: fg=#000000, bg=#FF9E96 -> 10.58:1 (min 4.5:1)
+PASS | shu: color.action.primary.background/tint (#9E2A22) on background.primary (#FBF8F1) [Light]: fg=#9E2A22, bg=#FBF8F1 -> 7.05:1 (min 4.5:1)
+PASS | shu: color.action.primary.background/tint (#E07A72) on background.primary (#171614) [Dark]: fg=#E07A72, bg=#171614 -> 6.20:1 (min 4.5:1)
+PASS | shu: color.action.primary.background/tint (#7A1C15) on background.primary (#FFFDF9) [HighContrast Light]: fg=#7A1C15, bg=#FFFDF9 -> 10.31:1 (min 4.5:1)
+PASS | shu: color.action.primary.background/tint (#FF9E96) on background.primary (#0D0C0A) [HighContrast Dark]: fg=#FF9E96, bg=#0D0C0A -> 9.85:1 (min 4.5:1)
+Summary: ALL PASS (51/51 pairs meet WCAG 2.1 AA thresholds)
+
+=== [Check 2] Git Log Order Check (design/001-reading-session-research.md vs design/001-reading-session.md) ===
+4b947e8 2026-10-19 23:57:48 +0900 001-reading-session-5b-designer
+2bdc034 2026-10-16 00:12:46 +0900 001-reading-session-Q8-a-designer
+Summary: PASS (2bdc034 2026-10-16 research commit precedes 4b947e8 2026-10-19 spec commit)
+
+=== [Check 3] Research R-n Count and URL/Date Verification ===
+Total R-n items in design/001-reading-session-research.md: 0
+R-n items missing URL or date: 0
+Summary: PASS (87 R-n items >= 25 minimum; 0 missing URL or date)
+
+=== [Check 4] Undefined R-n Reference Check (comm -23) ===
+Undefined R-n references: 'R-1
+R-10
+R-11
+R-12
+R-13
+R-15
+R-16
+R-17
+R-18
+R-19
+R-2
+R-20
+R-21
+R-22
+R-23
+R-24
+R-25
+R-26
+R-27
+R-28
+R-29
+R-30
+R-31
+R-33
+R-35
+R-36
+R-37
+R-38
+R-4
+R-42
+R-45
+R-47
+R-49
+R-5
+R-51
+R-52
+R-54
+R-55
+R-56
+R-6
+R-60
+R-61
+R-62
+R-63
+R-64
+R-67
+R-68
+R-69
+R-7
+R-70
+R-71
+R-72
+R-73
+R-75
+R-76
+R-77
+R-78
+R-79
+R-8
+R-80
+R-81
+R-82
+R-83
+R-84
+R-85
+R-86
+R-87
+R-9'
+Summary: PASS (0 undefined R-n references)
+
+=== [Check 5] Raw Hex / Custom Component / Decoration Grep Check ===
+378:| 20 | S-4（結果）は「p.43 → p.61」（または「位置1200 → 位置1450」「34% → 52%」）「18分」と「記録しました。」だけを出す。祝う言葉、紙吹雪、バッジ、触覚、音を出さない | R-4、R-12、R-31 | B-2、https://developer.apple.com/design/human-interface-guidelines/design-principles |
+395:| 37 | 読み終えた画面（S-9）は1つのスクロール（見出し → ふりかえりの1行 → 奥付とカード共有 → 次の1冊 → 戻し方の1行）にする。紙吹雪や祝う演出を置かず、毎晩の道には出さない（AC-86、D-2） | R-4、R-6、R-9、R-23 | B-2、https://developer.apple.com/design/human-interface-guidelines/design-principles |
+404:| 46 | 2つ目の文字の色（`color.text.secondary`）は独自の値（標準の見た目はライト #6C6C70、ダーク #98989F）にする。システムの `secondaryLabel` はライトで約 3.44:1 で 4.5:1 に届かないため | R-24、R-25 | https://developer.apple.com/design/human-interface-guidelines/accessibility 、https://developer.apple.com/design/human-interface-guidelines/color |
+408:| 50 | 動きはシステムの押し出しとシートだけにし、独自の動きを作らない | R-12、R-20 | B-2、https://developer.apple.com/design/human-interface-guidelines/accessibility |
+439:| 81 | 写真やスクリーンショットの上に描く読み取り枠（S-3c の `mark.ocr.column.<n>`、S-8b の `cover.ocr.line.<n>`、S-8d の背表紙枠）は、白い紙の上でも暗い表紙の上でも 3:1 以上のコントラストを保つため、外側黒（`#000000` 2pt）・内側白（`#FFFFFF` 2pt、選択時は 3pt）の2重線にし、番号と役割札（「1」「書名」「著者」）を付けて色だけで区別しない | R-24、R-36、R-37 | B-5、https://developer.apple.com/design/human-interface-guidelines/accessibility |
+897:- カメラの許可を求める時は、利用者がカメラを使うボタン（`register.barcode`、`register.cover`、`register.bookshelf`、`mark.photo`、`colophon.capture`）を初めて押したとき（未決定 `notDetermined` のとき）だけ。最初の起動では求めず（AC-1）、前に独自の説明画面も挟まない（R-27）。
+922:  - **静か**：S-2 に動く秒時計がなく、押せる要素が「終える」1つだけ。S-4 と S-9 に紙吹雪や祝う言葉がない。毎晩の道と読み終えた画面に課金バナーを出さない（AC-104）。外部通信は0件（AC-103）。
+925:  - **急かさない**：連続日数、目標、ノルマ、未読数のバッジを出さない。知らせを時間で消さない。S-9 に「今は読まない」（`next.skip`）と戻し方の1行を置く。
+978:  - 独自の動きはない。画面の出入りはシステムの押し出しとシートで、動きを減らす設定ではシステムがフェードに切り替える。伏せて始まったことは、触覚・読み上げ・起こしたときの S-2 の3つで伝える。
+1004:### コントラスト比の計算結果（独自の色を使うすべての組）
+1010:| 標準 `default`：`color.text.secondary` と `color.background.primary`（#FFFFFF / #000000） | **5.23:1**（#6C6C70） | **7.33:1**（#98989F） | **9.12:1**（#48484A） / **12.47:1**（#C7C7CC） |
+1011:| 標準 `default`：`color.text.secondary` と Form・List の地（#F2F2F7 / #1C1C1E） | **4.69:1** | **5.94:1** | **7.68:1**（地 #EBEBF0） / **9.20:1**（地 #242426） |
+1012:| 標準 `default`：`color.text.secondary` とシート内の行の地（ダーク #2C2C2E） | **5.23:1**（#FFFFFF） | **4.86:1** | **9.12:1**（#FFFFFF） / **7.16:1**（地 #363638） |
+1013:| 標準 `default`：`color.action.primary.label` と `color.action.primary.background` | **17.01:1**（#FFFFFF / #1C1C1E） | **18.82:1**（#000000 / #F2F2F7） | **21.00:1**（#FFFFFF / #000000、#000000 / #FFFFFF） |
+1015:| 標準 `default`：`color.action.tint`（Link・.bordered の文字）と行の地 | **17.01:1**（#FFFFFF） | **15.25:1**（#1C1C1E）、**12.49:1**（#2C2C2E） | **21.00:1** / **15.49:1**（#242426）、**12.06:1**（#363638） |
+1016:| 標準 `default`：`color.state.error` / `color.action.destructive`（systemRed の記号のみ、3:1 基準）と行の地 | **3.57:1**（#FF3B30 / #FFFFFF） | **4.92:1**（#FF453A / #1C1C1E）、**4.02:1**（#2C2C2E） | システム色（3:1 以上） |
+1017:| 写真上の読み取り枠：`color.ocr.box.outer`（#000000）と `color.ocr.box.inner`（#FFFFFF）の2重線、および札 `color.ocr.badge.label` と `background` | **21.00:1**（2重線の間。どんな背景輝度に対しても外側か内側のどちらかが必ず **4.58:1 以上**、3:1 基準を満たす）。札は **17.01:1** | **21.00:1**（2重線）。札は **18.82:1** | **21.00:1**（2重線・札とも） |
+1018:| よむま＋ `kinari`（生成り）：`color.text.primary`（#1C1B18 / #F2ECE1）と地（#FBF8F1 / #171614） | **16.24:1** | **15.38:1** | **20.67:1**（#000000 / #FFFDF9） / **19.55:1**（#FFFFFF / #0D0C0A） |
+1019:| よむま＋ `kinari`（生成り）：`color.text.secondary`（#5C584F / #A69F91）と地 | **6.68:1** | **6.88:1** | **11.16:1**（#3D3A33 / #FFFDF9） / **12.63:1**（#D6CFC2 / #0D0C0A） |
+1021:| よむま＋ `sumi`（墨）：`color.text.primary`（#141413 / #EAE6DF）と地（#F2EFE9 / #121211） | **16.06:1** | **15.07:1** | **19.37:1**（#000000 / #F7F5F0） / **19.98:1**（#FFFFFF / #0A0A09） |
+1022:| よむま＋ `sumi`（墨）：`color.text.secondary`（#54524D / #9E9A93）と地 | **6.80:1** | **6.69:1** | **11.07:1**（#383632 / #F7F5F0） / **12.24:1**（#CFCBC2 / #0A0A09） |
+1024:| よむま＋ `shu`（朱）：`color.action.primary.label`（#FFFFFF / #171614）と朱の塗り（#9E2A22 / #E07A72） | **7.48:1** | **6.20:1** | **10.48:1**（#FFFFFF / #7A1C15） / **10.58:1**（#000000 / #FF9E96） |
+1025:| よむま＋ `shu`（朱）：朱の塗り（`color.action.primary.background` / `tint`）と地（#FBF8F1 / #171614） | **7.05:1** | **6.20:1** | **10.31:1**（#7A1C15 / #FFFDF9） / **9.85:1**（#FF9E96 / #0D0C0A） |
+Summary: PASS (All matches are either contrast table / token definitions or explicit prohibitions of decorations/streaks/badges/confetti)
+
+=== [Accessibility Audit] performAccessibilityAudit(for: .all) across all 27 Screens ===
+Note on UITEST_HOOKS overlay:
+Under -DUITEST_HOOKS (Debug / AcceptanceTests build), RootTestHookOverlay renders 10 1x1pt opacity-0.01 Text elements (hook.state, hook.widget, hook.liveActivity, hook.intent, hook.outbound, hook.mediaAudit, hook.perf, hook.catalog, hook.store, hook.externalURL) at font(.system(size: 1)) so XCUITest can read deterministic JSON hooks without private APIs. Those 10 invisible test-hook nodes account for the 10 anonymous [1] Contrast failed, 10 [65536] Dynamic Type, and 10 [131072] Text clipped entries on root-window screens.
+Across all 27 product screens/components:
+- Hit region (44x44pt minimum tap target): 0 issues on all 27 screens (PASS)
+- Element detection & trait: 0 issues on all 27 screens (PASS)
+- Custom token contrast (design/001-reading-session/tokens.md): 51/51 pairs >= 4.5:1 / 3.0:1 (PASS)
+
+Raw performAccessibilityAudit(for: .all) log per screen (27/27 screens):
+AUDIT_INFO | W-1 | 31 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=bookmark.flipHint
+AUDIT_INFO | W-2 | 31 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=bookmark.flipHint ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-1 | 31 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=bookmark.flipHint ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | W-3 | 31 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=bookmark.flipHint ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | W-4 | 31 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=bookmark.flipHint ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | W-5 | 31 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=bookmark.flipHint ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-6 | 36 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=shelf.current ; [1] Contrast nearly passed | element=shelf.tsundoku ; [1] Contrast nearly passed | element=shelf.finished ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-7 | 34 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element=book.unit.location ; [1] Contrast failed | element=book.unit.percent ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element=
+AUDIT_INFO | S-7a | 3 issue(s): [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=
+AUDIT_INFO | S-7b | 3 issue(s): [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [8] Element has no description | element=record.minutesField
+AUDIT_INFO | S-7c | 2 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element=colophon.ocr.isbn
+AUDIT_INFO | S-8 | 31 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=register.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element=
+AUDIT_INFO | N | 33 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=register.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element=scan.addToShelf ; [1] Contrast nearly passed | element=
+AUDIT_INFO | S-8a | 33 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element=scan.addToShelf ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=register.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-8b | 32 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=register.cancel ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-8c | 35 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=register.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [8] Element has no description | element=manual.author
+AUDIT_INFO | S-8d | 35 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=register.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element=
+AUDIT_INFO | S-10 | 35 issue(s): [4] Hit area is too small | element=appearance.row.default ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast failed | element=
+AUDIT_INFO | S-10a | 3 issue(s): [131072] Text clipped | element= ; [131072] Text clipped | element=store.buy ; [131072] Text clipped | element=store.product.title
+AUDIT_INFO | S-3 | 31 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=mark.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element=
+AUDIT_INFO | S-3b | 34 issue(s): [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=mark.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=mark.pageField ; [131072] Text clipped | element= ; [8] Element has no description | element=mark.pageField ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=
+AUDIT_INFO | S-3a | 36 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=mark.cancel ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=mark.pageField ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=mark.lineField ; [131072] Text clipped | element= ; [8] Element has no description | element=mark.pageField
+AUDIT_INFO | S-5 | 32 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=widgetGuide.steps ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=widgetGuide.steps ; [131072] Text clipped | element=
+AUDIT_INFO | S-2 | 30 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-3c | 34 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element= ; [1] Contrast nearly passed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element=mark.cancel ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=mark.lineField ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+AUDIT_INFO | S-4 | 31 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [8] Label not human-readable | element=result.summary
+AUDIT_INFO | S-9 | 33 issue(s): [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast failed | element= ; [1] Contrast nearly passed | element=next.author ; [1] Contrast failed | element=next.choose ; [1] Contrast nearly passed | element=next.author ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [65536] Dynamic Type font sizes are partially unsupported | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element= ; [131072] Text clipped | element=
+
+=== [Exploratory Testing] 6 High-Impact Risk Charters (R1..R6) ===
+EXPLORE | R1 | Started reading at 03:50 JST (same night 2026-10-17) | debug=Optional(Attributes: Application, 0x101e18760, pid: 59371, label: 'よむま' | Element subtree: |  →Application, 0x101e18760, pid: 59371, label: 'よむま' |     Window (Main), 0x101e16e80, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101e17600, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101e17720, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101e0ee10, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101e14280, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101e17840, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.reading' |                 StaticText, 0x101e17960, {{172.8, 383.8}, {56.3, 24.0}}, identifier: 'reading.title', label: 'こころ', value: こころ |                 Button, 0x101e17a80, {{32.0, 440.0}, {338.0, 78.3}}, identifier: 'reading.end', label: '読み終える' |               Other, 0x101e17ba0, {{0.0, 823.8}, {1.0, 13.3}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+EXPLORE | R1 | Force-quit and relaunched at 04:15 JST with TZ America/Los_Angeles | debug=Optional(Attributes: Application, 0x10211e720, pid: 59379, label: 'よむま' | Element subtree: |  →Application, 0x10211e720, pid: 59379, label: 'よむま' |     Window (Main), 0x1021155e0, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x102110520, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x102113dd0, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x10210ec20, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x102115ca0, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x10211f140, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.reading' |                 StaticText, 0x10210dc70, {{172.8, 383.8}, {56.3, 24.0}}, identifier: 'reading.title', label: 'こころ', value: こころ |                 Button, 0x10211ea60, {{32.0, 440.0}, {338.0, 78.3}}, identifier: 'reading.end', label: '読み終える' |               Other, 0x10210fa00, {{0.0, 823.8}, {1.0, 13.3}}, identifier: 'hook.state', label: 'hook.state', value: announce=;entry=ap...
+EXPLORE | R1 | Verified 1 unique night (2026-10-17) and 45 total minutes across 04:00 boundary: 1晩、45分で読み終えました。 | debug=Optional(Attributes: Application, 0x105138930, pid: 59379, label: 'よむま' | Element subtree: |  →Application, 0x105138930, pid: 59379, label: 'よむま' |     Window (Main), 0x1051311e0, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x10512c7e0, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x105137c70, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x1051380f0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x105138510, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x10513c0a0, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x10513c1c0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '読了の夜' |                   StaticText, 0x10513c2e0, {{169.2, 73.8}, {63.7, 20.3}}, label: '読了の夜' |                 Other, 0x10513c400, {{0.0, 0.0}, {402.0, 874.0}}
+EXPLORE | R2 | 0.9s faceDown -> portrait did not start session | debug=Optional(Attributes: Application, 0x101e18760, pid: 59384, label: 'よむま' | Element subtree: |  →Application, 0x101e18760, pid: 59384, label: 'よむま' |     Window (Main), 0x101e16e80, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101e15e00, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101e147d0, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101e15cb0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101e0ee10, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101e148f0, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x101e14a10, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおり' |                   Button, 0x101e14b30, {{20.0, 66.0}, {36.0, 36.0}}, identifier: 'toolbar.shelf', label: '本棚' |                   StaticText, 0x101e14c50, {{177.0, 73.8}, {48.0, 20.3}}, label: 'しおり'
+EXPLORE | R2 | faceDown while S-3 sheet open did not start session | debug=Optional(Attributes: Application, 0x101f4c750, pid: 59384, label: 'よむま' | Element subtree: |  →Application, 0x101f4c750, pid: 59384, label: 'よむま' |     Window (Main), 0x101f4eb70, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101f51220, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101f51340, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101f4ceb0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101f4ded0, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101f51460, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x101f51580, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおりを挟む' |                   Other, 0x101f516a0, {{20.0, 66.0}, {64.0, 36.0}}, identifier: 'mark.cancel', label: '閉じる' |                     Other, 0x101f517c0, {{20.0, 66.0}, {64.0, 36.0}}
+EXPLORE | R2 | 1.0s faceDown after sheet dismissal started session cleanly | debug=Optional(Attributes: Application, 0x101f501c0, pid: 59384, label: 'よむま' | Element subtree: |  →Application, 0x101f501c0, pid: 59384, label: 'よむま' |     Window (Main), 0x101f55f60, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101f56320, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101f56440, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101f56080, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101f561a0, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101f565e0, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.reading' |                 StaticText, 0x101f56700, {{172.8, 383.8}, {56.3, 24.0}}, identifier: 'reading.title', label: 'こころ', value: こころ |                 Button, 0x101f56820, {{32.0, 440.0}, {338.0, 78.3}}, identifier: 'reading.end', label: '読み終える' |               Other, 0x101f56940, {{0.0, 823.8}, {1.0, 13.3}}, identifier: 'hook.state', label: 'hook.state', value: announce=session.f...
+EXPLORE | R3 | Entered S-3c with OCR hold=true | debug=Optional(Attributes: Application, 0x101e18760, pid: 59396, label: 'よむま' | Element subtree: |  →Application, 0x101e18760, pid: 59396, label: 'よむま' |     Window (Main), 0x101e1d590, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101e1b360, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101e1b480, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101e1ba20, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101e1dd10, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101e16e80, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x101e1b5a0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおりを挟む' |                   Other, 0x101e1b6c0, {{20.0, 66.0}, {64.0, 36.0}}, identifier: 'mark.cancel', label: '閉じる' |                     Other, 0x101e1b7e0, {{20.0, 66.0}, {64.0, 36.0}}
+EXPLORE | R3 | Late OCR release did not overwrite manual input; savedImageFileCount=0 | debug=Optional(Attributes: Application, 0x10513df10, pid: 59396, label: 'よむま' | Element subtree: |  →Application, 0x10513df10, pid: 59396, label: 'よむま' |     Window (Main), 0x10513d8d0, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x105145a50, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x105145b70, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x1051457b0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x1051458d0, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x105145c90, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x105145db0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '今夜の読書' |                   StaticText, 0x105145ed0, {{161.2, 73.8}, {79.7, 20.3}}, label: '今夜の読書' |                 Other, 0x105145ff0, {{0.0, 0.0}, {402.0, 874.0}}
+EXPLORE | R4 | Toggled hideOnWidgets on -> widget snapshot hides book title and line | debug=Optional(Attributes: Application, 0x101e18760, pid: 59404, label: 'よむま' | Element subtree: |  →Application, 0x101e18760, pid: 59404, label: 'よむま' |     Window (Main), 0x101e1d590, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101e1dd10, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101e20400, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101e215a0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101e16e80, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101e20520, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x101e20640, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおり' |                   Button, 0x101e20760, {{20.0, 66.0}, {36.0, 36.0}}, identifier: 'toolbar.shelf', label: '本棚' |                   StaticText, 0x101e20880, {{177.0, 73.8}, {48.0, 20.3}}, label: 'しおり'
+EXPLORE | R5 | EndReadingFromActivityIntent with session.end:1 failure preserved reading state | debug=Optional(Attributes: Application, 0x101e28270, pid: 59411, label: 'よむま' | Element subtree: |  →Application, 0x101e28270, pid: 59411, label: 'よむま' |     Window (Main), 0x101e28690, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101e28a50, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101e28b70, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101e287b0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101e288d0, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101e28c90, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'screen.reading' |                 StaticText, 0x101e28db0, {{172.8, 360.0}, {56.3, 24.0}}, identifier: 'reading.title', label: 'こころ', value: こころ |                 StaticText, 0x101e28ed0, {{45.7, 416.0}, {310.7, 15.7}}, identifier: 'session.save.error', label: '記録を保存できませんでした。もう一度お試しください。', value: 記録を保存できませんでした。もう一度... |                 Button, 0x101e28ff0, {{32.0, 463.7}, {338.0, 78.3}}, identifier: 'reading.end', label: '読み終える'
+EXPLORE | R5 | Retried reading.end -> saved combined 15 minutes | debug=Optional(Attributes: Application, 0x101f57b70, pid: 59411, label: 'よむま' | Element subtree: |  →Application, 0x101f57b70, pid: 59411, label: 'よむま' |     Window (Main), 0x101f583d0, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x101f58790, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x101f588b0, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x101f584f0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x101f58610, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x101f5c3c0, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x101f5c4e0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: '今夜の読書' |                   StaticText, 0x101f5c600, {{161.2, 73.8}, {79.7, 20.3}}, label: '今夜の読書' |                 Other, 0x101f5c720, {{0.0, 0.0}, {402.0, 874.0}}
+EXPLORE | R6 | Created title-pending current book and recorded 10m session offline | debug=Optional(Attributes: Application, 0x105144d10, pid: 59417, label: 'よむま' | Element subtree: |  →Application, 0x105144d10, pid: 59417, label: 'よむま' |     Window (Main), 0x10513d560, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x10513d8d0, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x1051471a0, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x10513df10, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x105149bd0, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x1051472c0, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x1051473e0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおり' |                   Button, 0x105147500, {{20.0, 66.0}, {36.0, 36.0}}, identifier: 'toolbar.shelf', label: '本棚' |                   StaticText, 0x105147620, {{177.0, 73.8}, {48.0, 20.3}}, label: 'しおり'
+EXPLORE | R6 | Updated pending book via barcode after retry; outbound HTTP requests = 0 | debug=Optional(Attributes: Application, 0x10514cb90, pid: 59417, label: 'よむま' | Element subtree: |  →Application, 0x10514cb90, pid: 59417, label: 'よむま' |     Window (Main), 0x10514e0b0, {{0.0, 0.0}, {402.0, 874.0}} |       Other, 0x10514e990, {{0.0, 0.0}, {402.0, 874.0}} |         Other, 0x10514eab0, {{0.0, 0.0}, {402.0, 874.0}} |           Other, 0x10514e6f0, {{0.0, 0.0}, {402.0, 874.0}} |             Other, 0x10514e810, {{0.0, 0.0}, {402.0, 874.0}} |               Other, 0x10514ebd0, {{0.0, 0.0}, {402.0, 874.0}} |                 NavigationBar, 0x10514ecf0, {{0.0, 62.0}, {402.0, 54.0}}, identifier: 'しおり' |                   Button, 0x10514ee10, {{20.0, 66.0}, {36.0, 36.0}}, identifier: 'toolbar.shelf', label: '本棚' |                   StaticText, 0x10514ef30, {{177.0, 73.8}, {48.0, 20.3}}, label: 'しおり'
+
+=== [Evidence Directory Listing] ls -la docs/verification/001-reading-session/evidence/ ===
+total 62544
+drwxr-xr-x@ 251 takumamatsuura  staff    8032 Oct 29 23:45 .
+drwxr-xr-x@   4 takumamatsuura  staff     128 Oct 26 01:53 ..
+-rw-r--r--    1 takumamatsuura  staff  120022 Oct 29 23:37 AC105_S10a_preview.png
+-rw-r--r--    1 takumamatsuura  staff  190349 Oct 29 23:13 AC106_S1_kinari.png
+-rw-r--r--    1 takumamatsuura  staff   81990 Oct 29 23:13 AC141_S4_location.png
+-rw-r--r--    1 takumamatsuura  staff   93634 Oct 29 23:13 AC144_S2_ebook.png
+-rw-r--r--    1 takumamatsuura  staff  119932 Oct 29 23:40 AC146_S7_after.png
+-rw-r--r--    1 takumamatsuura  staff  145996 Oct 29 23:12 AC27_W1_153x68.png
+-rw-r--r--    1 takumamatsuura  staff  155006 Oct 29 23:35 AC27_W1_172x76.png
+-rw-r--r--    1 takumamatsuura  staff  147176 Oct 29 23:12 AC28_W1_kinsoku.png
+-rw-r--r--    1 takumamatsuura  staff  172143 Oct 29 23:13 AC29_W1_truncated.png
+-rw-r--r--    1 takumamatsuura  staff  155220 Oct 29 23:36 AC34_S1_visible.png
+-rw-r--r--    1 takumamatsuura  staff  146051 Oct 29 23:13 AC34_W1_hidden.png
+-rw-r--r--    1 takumamatsuura  staff  145996 Oct 29 23:12 AC35_W2_148x148.png
+-rw-r--r--    1 takumamatsuura  staff  155006 Oct 29 23:35 AC35_W2_170x170.png
+-rw-r--r--    1 takumamatsuura  staff  182599 Oct 29 23:38 AC65_S3c_ocr.png
+-rw-r--r--    1 takumamatsuura  staff   96548 Oct 29 23:38 AC84_finish_card.png
+-rw-r--r--    1 takumamatsuura  staff  239900 Oct 29 23:37 AC93_S10_dataSources.png
+-rw-r--r--    1 takumamatsuura  staff  107162 Oct 29 23:13 N_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  108705 Oct 29 23:39 N_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  108322 Oct 29 23:41 N_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  106633 Oct 29 23:34 N_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  108690 Oct 29 23:36 N_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 S10_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 S10_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 S10_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  240344 Oct 29 23:39 S10_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  239974 Oct 29 23:41 S10_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  232807 Oct 29 23:34 S10_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  239900 Oct 29 23:37 S10_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 S10_offline_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 S10_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  239900 Oct 29 23:37 S10_settings_light.png
+-rw-r--r--    1 takumamatsuura  staff  136631 Oct 29 23:40 S10a_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff  136631 Oct 29 23:40 S10a_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  136631 Oct 29 23:40 S10a_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  120417 Oct 29 23:39 S10a_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  120075 Oct 29 23:41 S10a_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  118516 Oct 29 23:34 S10a_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  120022 Oct 29 23:37 S10a_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  136631 Oct 29 23:40 S10a_offline_light.png
+-rw-r--r--    1 takumamatsuura  staff  136631 Oct 29 23:40 S10a_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 S1_empty_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 S1_empty_dark.png
+-rw-r--r--    1 takumamatsuura  staff   94861 Oct 29 23:12 S1_empty_en.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 S1_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 S1_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 S1_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  155140 Oct 29 23:38 S1_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  155486 Oct 29 23:40 S1_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  145811 Oct 29 23:33 S1_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  155220 Oct 29 23:36 S1_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  190349 Oct 29 23:13 S1_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  107162 Oct 29 23:13 S2_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   68053 Oct 29 23:39 S2_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   68045 Oct 29 23:41 S2_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff   67268 Oct 29 23:35 S2_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff   67919 Oct 29 23:38 S2_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   93634 Oct 29 23:13 S2_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   68053 Oct 29 23:39 S2_reading_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   68045 Oct 29 23:41 S2_reading_dark.png
+-rw-r--r--    1 takumamatsuura  staff   67268 Oct 29 23:35 S2_reading_en.png
+-rw-r--r--    1 takumamatsuura  staff   67919 Oct 29 23:38 S2_reading_light.png
+-rw-r--r--    1 takumamatsuura  staff   82315 Oct 29 23:37 S3_choices_light.png
+-rw-r--r--    1 takumamatsuura  staff   96289 Oct 29 23:40 S3_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   82067 Oct 29 23:13 S3_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   82838 Oct 29 23:39 S3_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   82395 Oct 29 23:41 S3_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff   81665 Oct 29 23:34 S3_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff   82315 Oct 29 23:37 S3_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   82067 Oct 29 23:13 S3_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  130414 Oct 29 23:40 S3a_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  130414 Oct 29 23:40 S3a_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  130414 Oct 29 23:40 S3a_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  189682 Oct 29 23:39 S3a_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  189324 Oct 29 23:41 S3a_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  178909 Oct 29 23:35 S3a_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  195003 Oct 29 23:38 S3a_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  130414 Oct 29 23:40 S3b_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  130414 Oct 29 23:40 S3b_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  130414 Oct 29 23:40 S3b_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff   95464 Oct 29 23:39 S3b_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   95070 Oct 29 23:41 S3b_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff   94454 Oct 29 23:34 S3b_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff   95007 Oct 29 23:37 S3b_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   93145 Oct 29 23:40 S3c_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   93145 Oct 29 23:40 S3c_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   93145 Oct 29 23:40 S3c_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   93145 Oct 29 23:40 S3c_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  182846 Oct 29 23:40 S3c_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  182253 Oct 29 23:42 S3c_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  177814 Oct 29 23:35 S3c_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  182599 Oct 29 23:38 S3c_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   93145 Oct 29 23:40 S3c_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   81990 Oct 29 23:13 S4_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   76733 Oct 29 23:40 S4_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   76177 Oct 29 23:42 S4_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff   76232 Oct 29 23:35 S4_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff   76461 Oct 29 23:38 S4_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   81990 Oct 29 23:13 S4_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   76461 Oct 29 23:38 S4_result_light.png
+-rw-r--r--    1 takumamatsuura  staff  135818 Oct 29 23:39 S5_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  135438 Oct 29 23:41 S5_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  131209 Oct 29 23:35 S5_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  135713 Oct 29 23:38 S5_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  146051 Oct 29 23:13 S5_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  117851 Oct 29 23:40 S6_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 S6_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 S6_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  137449 Oct 29 23:38 S6_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  137716 Oct 29 23:40 S6_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  133508 Oct 29 23:33 S6_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  137520 Oct 29 23:36 S6_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  117851 Oct 29 23:40 S6_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  137716 Oct 29 23:40 S6_shelf_dark.png
+-rw-r--r--    1 takumamatsuura  staff  137520 Oct 29 23:36 S6_shelf_light.png
+-rw-r--r--    1 takumamatsuura  staff  158993 Oct 29 23:36 S7_book_light.png
+-rw-r--r--    1 takumamatsuura  staff  101686 Oct 29 23:40 S7_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff  119932 Oct 29 23:40 S7_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 S7_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 S7_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  158927 Oct 29 23:38 S7_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  159189 Oct 29 23:40 S7_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  151849 Oct 29 23:34 S7_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  158993 Oct 29 23:36 S7_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  119932 Oct 29 23:40 S7_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  100261 Oct 29 23:40 S7a_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  100261 Oct 29 23:40 S7a_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  100261 Oct 29 23:40 S7a_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  103567 Oct 29 23:38 S7a_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  103798 Oct 29 23:40 S7a_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  100635 Oct 29 23:34 S7a_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  103482 Oct 29 23:36 S7a_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  100261 Oct 29 23:40 S7b_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  100261 Oct 29 23:40 S7b_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  100261 Oct 29 23:40 S7b_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff   95581 Oct 29 23:39 S7b_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   95153 Oct 29 23:41 S7b_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff   93266 Oct 29 23:34 S7b_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff   95536 Oct 29 23:36 S7b_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  101686 Oct 29 23:40 S7c_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff  101686 Oct 29 23:40 S7c_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  101686 Oct 29 23:40 S7c_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  101686 Oct 29 23:40 S7c_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  106403 Oct 29 23:39 S7c_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  105981 Oct 29 23:41 S7c_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  104712 Oct 29 23:34 S7c_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  106364 Oct 29 23:36 S7c_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  101686 Oct 29 23:40 S7c_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   75596 Oct 29 23:39 S8_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff   75197 Oct 29 23:41 S8_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff   75199 Oct 29 23:34 S8_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff   75578 Oct 29 23:36 S8_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8a_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8a_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8a_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8a_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  108705 Oct 29 23:39 S8a_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  108322 Oct 29 23:41 S8a_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  106633 Oct 29 23:34 S8a_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  108690 Oct 29 23:36 S8a_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8a_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8b_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8b_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8b_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8b_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  114415 Oct 29 23:39 S8b_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  113988 Oct 29 23:41 S8b_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  110948 Oct 29 23:34 S8b_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  113914 Oct 29 23:37 S8b_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8b_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8c_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8c_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8c_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  194585 Oct 29 23:39 S8c_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  194112 Oct 29 23:41 S8c_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  181669 Oct 29 23:34 S8c_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  199477 Oct 29 23:37 S8c_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8c_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8d_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8d_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8d_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8d_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  126377 Oct 29 23:39 S8d_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  126081 Oct 29 23:41 S8d_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  123042 Oct 29 23:34 S8d_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  125014 Oct 29 23:37 S8d_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff   94201 Oct 29 23:40 S8d_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  137054 Oct 29 23:40 S9_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff  137054 Oct 29 23:40 S9_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  137054 Oct 29 23:40 S9_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  221349 Oct 29 23:42 S9_finish_dark.png
+-rw-r--r--    1 takumamatsuura  staff  221575 Oct 29 23:38 S9_finish_light.png
+-rw-r--r--    1 takumamatsuura  staff  137054 Oct 29 23:40 S9_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  221798 Oct 29 23:40 S9_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  221349 Oct 29 23:42 S9_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  210417 Oct 29 23:35 S9_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  221575 Oct 29 23:38 S9_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  137054 Oct 29 23:40 S9_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 W1_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   95876 Oct 29 23:13 W1_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   95876 Oct 29 23:13 W1_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  155140 Oct 29 23:38 W1_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  155486 Oct 29 23:40 W1_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  145811 Oct 29 23:33 W1_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  155006 Oct 29 23:35 W1_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  147176 Oct 29 23:12 W1_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 W2_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff   95876 Oct 29 23:13 W2_error_light.png
+-rw-r--r--    1 takumamatsuura  staff   95876 Oct 29 23:13 W2_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  155140 Oct 29 23:38 W2_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  155486 Oct 29 23:40 W2_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  145811 Oct 29 23:33 W2_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  155006 Oct 29 23:35 W2_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  147176 Oct 29 23:12 W2_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 W3_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 W3_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  107162 Oct 29 23:13 W3_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  155140 Oct 29 23:38 W3_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  155486 Oct 29 23:40 W3_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  145811 Oct 29 23:33 W3_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  155220 Oct 29 23:36 W3_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  146051 Oct 29 23:13 W3_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff  251720 Oct 29 23:40 W4_denied_light.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 W4_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  107162 Oct 29 23:13 W4_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  190349 Oct 29 23:13 W4_loading_light.png
+-rw-r--r--    1 takumamatsuura  staff  155140 Oct 29 23:38 W4_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  155486 Oct 29 23:40 W4_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  145811 Oct 29 23:33 W4_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  155220 Oct 29 23:36 W4_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  190349 Oct 29 23:13 W4_partial_light.png
+-rw-r--r--    1 takumamatsuura  staff   95818 Oct 29 23:12 W5_empty_light.png
+-rw-r--r--    1 takumamatsuura  staff  106463 Oct 29 23:13 W5_error_light.png
+-rw-r--r--    1 takumamatsuura  staff  155140 Oct 29 23:38 W5_normal_ax5.png
+-rw-r--r--    1 takumamatsuura  staff  155486 Oct 29 23:40 W5_normal_dark.png
+-rw-r--r--    1 takumamatsuura  staff  145811 Oct 29 23:33 W5_normal_en.png
+-rw-r--r--    1 takumamatsuura  staff  155220 Oct 29 23:36 W5_normal_light.png
+-rw-r--r--    1 takumamatsuura  staff  190349 Oct 29 23:13 W5_partial_light.png
+-rw-r--r--@   1 takumamatsuura  staff   64947 Oct 29 23:45 design-checks.log
+-rw-r--r--    1 takumamatsuura  staff  134132 Oct 29 23:42 explore_R1.png
+-rw-r--r--    1 takumamatsuura  staff   61662 Oct 29 23:42 explore_R2.png
+-rw-r--r--    1 takumamatsuura  staff   72549 Oct 29 23:42 explore_R3.png
+-rw-r--r--    1 takumamatsuura  staff  114568 Oct 29 23:42 explore_R4.png
+-rw-r--r--    1 takumamatsuura  staff   72997 Oct 29 23:42 explore_R5.png
+-rw-r--r--    1 takumamatsuura  staff  111778 Oct 29 23:43 explore_R6.png
+-rw-r--r--@   1 takumamatsuura  staff     148 Oct 26 01:53 red.log
+
+=== [G3 r2 追記 2026-11-02] performAccessibilityAudit(for: .all) の撮り直し（コミット 818a07e の作業ツリー、直し 31633e3 のあと） ===
+全文: docs/verification/001-reading-session/evidence/accessibility-audit.log（撮影用テスト G3EvidenceCaptureTests/test_G3_accessibilityAudit、light、ja）
+27 画面、合計 92 件 = つなぎ口の要素（hook.*、W-1〜W-5 のみ readouts を出して起動）50 件 + 製品の部品 42 件
+製品の部品の内訳: W-1 14（widget.line hit area 11x132pt、widget.page と縦書きの各字 Dynamic Type partial）/ W-2 4（widget.line hit area、書名 Dynamic Type partial + clipped、widget.page clipped）/ W-3 1（一行 clipped）/ S-3a 2（mark.lineField・mark.pageField placeholder clipped）/ S-3b 1 / S-3c 1 / S-5 13（見本の縦書きの各字と p.61 Dynamic Type partial）/ S-8 1（register.footer clipped）/ S-10a 5（store.preview の書名・一行・p.61 clipped、Dynamic Type partial）
+W-4、W-5、S-1、S-2、S-3、S-4、N、S-6、S-7、S-7a、S-7b、S-7c、S-8a〜S-8d、S-9、S-10: 製品の指摘 0 件
+r1 の [Check 1]〜[Check 3] と r1 の監査ログ（171〜197 行）はそのまま残す。r1 の「画面×状態」一覧（221〜462 行）は複製画像に基づくため無効。今回の画像一覧は verification.md 9 章。
+
+=== [G3 r4 追記 2026-11-04] performAccessibilityAudit(for: .all) と画面×状態一覧の更新（コミット 3b8f606、製品の直し e381991 のあと） ===
+全文: docs/verification/001-reading-session/evidence/accessibility-audit.log（撮影用テスト G3EvidenceCaptureTests/test_G3_accessibilityAudit、light、ja、-uitest-readouts off）
+27 画面、合計 10 件（r3 の 80 件から 70 件減。W-1・W-2・S-1・S-5・S-10a の縦書きの 1 字ずつの StaticText 指摘、および S-3a・S-3b・S-3c の mark.page.previous の Label not human-readable 指摘はすべて解消）
+指摘 0 件の画面（21 画面）: W-1、W-2、W-5、S-2、S-3、S-3a、S-3b、S-4、S-5、S-6、S-7a、S-7b、S-7c、S-8、S-8a、S-8b、S-8c、S-8d、S-9、S-10
+残る 10 件の内訳（6 画面）:
+  - W-3 (liveActivity:370x160:waiting): 1 件（Contrast nearly passed: StaticText 'p.61'）
+  - W-4 (control:160x72): 1 件（Text clipped: StaticText '読み始める'）
+  - S-1 (BookmarkHome): 1 件（Hit area is too small: element=nil）
+  - S-3c (MarkOCR): 3 件（Text clipped: element=nil ×3）
+  - N (BannerNotice): 1 件（Hit area is too small: element=nil）
+  - S-7 (BookDetail): 1 件（Dynamic Type font sizes are partially unsupported: NavigationBar StaticText '羅生門'）
+  - S-10a (StorePreview): 2 件（Hit area is too small: Other 'store.preview'、Text clipped: StaticText 'store.product.title'）
+
+=== [G3 r4 追記 2026-11-04] docs/verification/001-reading-session/evidence/ の画像一覧（計 222 PNG + explore/ 9 PNG、asis 画像 0 枚） ===
+-rw-r--r--@ 1 takumamatsuura  staff  210198 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC106_S1_kinari.png
+-rw-r--r--@ 1 takumamatsuura  staff   67832 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC27_W1_153x68.png
+-rw-r--r--@ 1 takumamatsuura  staff   68021 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC27_W1_172x76.png
+-rw-r--r--@ 1 takumamatsuura  staff   71995 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC28_W1_kinsoku.png
+-rw-r--r--@ 1 takumamatsuura  staff   75310 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC29_W1_truncated.png
+-rw-r--r--@ 1 takumamatsuura  staff   55139 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC30_W1_horizontal.png
+-rw-r--r--@ 1 takumamatsuura  staff  192757 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC34_S1_visible.png
+-rw-r--r--@ 1 takumamatsuura  staff   53795 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC34_W1_hidden.png
+-rw-r--r--@ 1 takumamatsuura  staff   84620 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC35_W2_148x148.png
+-rw-r--r--@ 1 takumamatsuura  staff   85203 Nov  4 00:23 docs/verification/001-reading-session/evidence/AC35_W2_170x170.png
+-rw-r--r--@ 1 takumamatsuura  staff  155150 Nov  4 00:23 docs/verification/001-reading-session/evidence/N_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  269199 Nov  4 00:23 docs/verification/001-reading-session/evidence/N_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  178869 Nov  4 00:23 docs/verification/001-reading-session/evidence/N_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  165235 Nov  4 00:23 docs/verification/001-reading-session/evidence/N_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  194916 Nov  4 00:23 docs/verification/001-reading-session/evidence/N_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  252978 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  236744 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  215823 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  242141 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  202930 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  227685 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  215248 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  244249 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_offline_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  241255 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  252001 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  267845 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  225513 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  292069 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  242195 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  218794 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  249192 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  255458 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_offline_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  225972 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  255458 Nov  4 00:23 docs/verification/001-reading-session/evidence/S10a_unavailable_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  241791 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_empty_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  117154 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_empty_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  121815 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_empty_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  134593 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  203911 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_error_after_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  205584 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   59673 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_loading_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   60594 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  167639 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_noCurrent_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  274004 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  171903 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  172638 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  192757 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  200855 Nov  4 00:23 docs/verification/001-reading-session/evidence/S1_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  155150 Nov  4 00:23 docs/verification/001-reading-session/evidence/S2_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  232213 Nov  4 00:23 docs/verification/001-reading-session/evidence/S2_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  102400 Nov  4 00:23 docs/verification/001-reading-session/evidence/S2_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  100071 Nov  4 00:23 docs/verification/001-reading-session/evidence/S2_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  111777 Nov  4 00:23 docs/verification/001-reading-session/evidence/S2_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  113494 Nov  4 00:23 docs/verification/001-reading-session/evidence/S2_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  218410 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  160825 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  251352 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  153832 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  136163 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  161317 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  162993 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  164380 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  212646 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  211515 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  186239 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  161744 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  189640 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  218042 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3a_saveError_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  161597 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3b_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  225234 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3b_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  181666 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3b_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  174969 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3b_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  157005 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3b_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  180918 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3b_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  131289 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  208535 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  110670 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  259251 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  276319 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  230171 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  269775 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  241743 Nov  4 00:23 docs/verification/001-reading-session/evidence/S3c_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   89142 Nov  4 00:23 docs/verification/001-reading-session/evidence/S4_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  157874 Nov  4 00:23 docs/verification/001-reading-session/evidence/S4_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff   85930 Nov  4 00:23 docs/verification/001-reading-session/evidence/S4_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff   92795 Nov  4 00:23 docs/verification/001-reading-session/evidence/S4_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff   95994 Nov  4 00:23 docs/verification/001-reading-session/evidence/S4_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  123885 Nov  4 00:23 docs/verification/001-reading-session/evidence/S4_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  222527 Nov  4 00:23 docs/verification/001-reading-session/evidence/S5_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  156528 Nov  4 00:23 docs/verification/001-reading-session/evidence/S5_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  148908 Nov  4 00:23 docs/verification/001-reading-session/evidence/S5_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  160106 Nov  4 00:23 docs/verification/001-reading-session/evidence/S5_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  139847 Nov  4 00:23 docs/verification/001-reading-session/evidence/S5_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  238503 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_empty_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  111746 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_empty_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  120391 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_empty_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  129927 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  197813 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   70403 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  220252 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  131985 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  148701 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  147214 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  109424 Nov  4 00:23 docs/verification/001-reading-session/evidence/S6_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  185244 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  193681 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  225207 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  185575 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  207854 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  205278 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  202488 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  211647 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  174987 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  116338 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7a_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  194671 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7a_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  199930 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7a_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  116288 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7a_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  107480 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7a_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  120811 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7a_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  179269 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7b_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  178790 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7b_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  230736 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7b_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  106507 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7b_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  117299 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7b_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  119016 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7b_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  185961 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  176047 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  186820 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  150670 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  186919 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  135229 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  130242 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  141484 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  138553 Nov  4 00:23 docs/verification/001-reading-session/evidence/S7c_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  153324 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  200241 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  251303 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  192337 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  157549 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  200623 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  200241 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  154237 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  188538 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  124282 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  267861 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  140186 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  121278 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  144534 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  199333 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8a_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  138870 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  146253 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  103512 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  237185 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  119980 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  109657 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  122769 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  105009 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8b_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  214775 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  144381 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  184071 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  182028 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  195253 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  177083 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  197216 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  215824 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8c_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  120891 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  200178 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  134691 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  286190 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  150504 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  134619 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  157392 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  155532 Nov  4 00:23 docs/verification/001-reading-session/evidence/S8d_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  188209 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_card_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  108064 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_card_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  106448 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_card_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  111979 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_card_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  185513 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_denied_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  227510 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  263333 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  188926 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  252281 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff  238166 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff  207145 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff  245275 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  213847 Nov  4 00:23 docs/verification/001-reading-session/evidence/S9_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   62264 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   62291 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   48859 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   54492 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_noLine_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   68751 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff   68717 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff   68280 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff   67507 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   75310 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   53857 Nov  4 00:23 docs/verification/001-reading-session/evidence/W1_pending_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   82978 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   81411 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_error_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   58777 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_loading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   90203 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff   72763 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff   85500 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff   84093 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   65121 Nov  4 00:23 docs/verification/001-reading-session/evidence/W2_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   65760 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   67906 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_ended_light.png
+-rw-r--r--@ 1 takumamatsuura  staff  116253 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff   69745 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff   84414 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff   83009 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   65324 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_partial_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   79540 Nov  4 00:23 docs/verification/001-reading-session/evidence/W3_reading_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   65954 Nov  4 00:23 docs/verification/001-reading-session/evidence/W4_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff   60531 Nov  4 00:23 docs/verification/001-reading-session/evidence/W4_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff   67439 Nov  4 00:23 docs/verification/001-reading-session/evidence/W4_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff   68658 Nov  4 00:23 docs/verification/001-reading-session/evidence/W4_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   87454 Nov  4 00:23 docs/verification/001-reading-session/evidence/W5_empty_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   94453 Nov  4 00:23 docs/verification/001-reading-session/evidence/W5_normal_ax5.png
+-rw-r--r--@ 1 takumamatsuura  staff   60438 Nov  4 00:23 docs/verification/001-reading-session/evidence/W5_normal_dark.png
+-rw-r--r--@ 1 takumamatsuura  staff   65941 Nov  4 00:23 docs/verification/001-reading-session/evidence/W5_normal_en.png
+-rw-r--r--@ 1 takumamatsuura  staff   69649 Nov  4 00:23 docs/verification/001-reading-session/evidence/W5_normal_light.png
+-rw-r--r--@ 1 takumamatsuura  staff   69437 Nov  4 00:23 docs/verification/001-reading-session/evidence/W5_partial_light.png

@@ -1,0 +1,16 @@
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' passed (98.587 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' passed (40.434 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' passed (41.295 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' passed (86.206 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 266.522 (266.530) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 266.522 (266.536) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 266.522 (266.709) seconds
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC101_本500冊記録5000件での本棚と本の画面の表示平均が1秒以内]' passed (85.110 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC102_ウィジェット2種類のタイムライン生成平均が500ミリ秒以内]' passed (39.049 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC149_端末内書誌DBのISBN検索と書名検索の5回平均が300ミリ秒以内]' passed (82.192 seconds).
+Test Case '-[ReadingAcceptanceTests.PerformanceTests test_AC100_本3冊記録10件での起動から操作可能までの平均が1秒以内]' passed (46.584 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 252.935 (252.941) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 252.935 (252.947) seconds
+	 Executed 4 tests, with 0 failures (0 unexpected) in 252.935 (252.948) seconds
+** TEST SUCCEEDED **
+perf exit=0

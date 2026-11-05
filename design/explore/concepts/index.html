@@ -1,0 +1,513 @@
+<title>三つの読書の瞬間</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF;--text:#1C1C1E;--text-2:#6E6E73;--rule:#D1D1D6;--control:#8E8E93;--control-press:#E5E5EA;--focus:#0066CC;
+  --stage:#E9E6E0;--desk:#D9D4CB;--hand:#8A8177;
+  --phone-rim:#1C1C1E;--phone-back:#2C2C2E;--lens:#5A5A5F;--island:#000000;
+  --screen-off:#050506;--lock-bg:#141416;--lock-text:#F2F2F7;--lock-text-2:#AEAEB2;
+  --home-bg:#2A2A2E;--icon:#4E4E54;--icon-sns:#D8D8DD;--icon-glyph:#2A2A2E;--home-text:#F2F2F7;
+  --paper:#F6F3EC;--paper-edge:#9E9688;--paper-line:#B3AB9E;--ink:#1C1C1E;
+  --cover:#2F5146;--band:#E8E1D0;--ribbon:#8A3B2B;
+  --cam-bg:#2B2A28;--cam-desk:#3B3936;--cam-text:#FFFFFF;
+  --spine-ink:#F4F0E8;
+  --s1:#3E4A5C;--s2:#6B3A2E;--s3:#2F5146;--s4:#5E5038;--s5:#4A3F5C;--s6:#55524C;--s7:#2E3B57;
+  --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Yu Gothic","Meiryo",system-ui,sans-serif;
+  --mincho:"Hiragino Mincho ProN","Hiragino Mincho Pro","Yu Mincho","YuMincho","BIZ UDPMincho","Noto Serif JP",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#000000;--text:#F2F2F7;--text-2:#98989F;--rule:#38383A;--control:#8E8E93;--control-press:#2C2C2E;--focus:#4DA3FF;
+    --stage:#1C1C1E;--desk:#29292C;--hand:#736C63;
+    --phone-rim:#6C6C70;--phone-back:#3A3A3C;--lens:#7C7C82;--island:#000000;
+    --screen-off:#000000;--lock-bg:#0C0C0E;--lock-text:#F2F2F7;--lock-text-2:#AEAEB2;
+    --home-bg:#232327;--icon:#48484E;--icon-sns:#D1D1D6;--icon-glyph:#232327;--home-text:#F2F2F7;
+    --paper:#E7E2D6;--paper-edge:#BDB6A8;--paper-line:#9D968A;--ink:#1C1C1E;
+    --cover:#3A6155;--band:#CFC8B7;--ribbon:#A24A38;
+    --cam-bg:#262523;--cam-desk:#35332F;--cam-text:#FFFFFF;
+    --spine-ink:#F4F0E8;
+    --s1:#4A5870;--s2:#7A4436;--s3:#3A6155;--s4:#6E5F45;--s5:#5A4D70;--s6:#66625B;--s7:#3A4A6B;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#000000;--text:#F2F2F7;--text-2:#98989F;--rule:#38383A;--control:#8E8E93;--control-press:#2C2C2E;--focus:#4DA3FF;
+  --stage:#1C1C1E;--desk:#29292C;--hand:#736C63;
+  --phone-rim:#6C6C70;--phone-back:#3A3A3C;--lens:#7C7C82;--island:#000000;
+  --screen-off:#000000;--lock-bg:#0C0C0E;--lock-text:#F2F2F7;--lock-text-2:#AEAEB2;
+  --home-bg:#232327;--icon:#48484E;--icon-sns:#D1D1D6;--icon-glyph:#232327;--home-text:#F2F2F7;
+  --paper:#E7E2D6;--paper-edge:#BDB6A8;--paper-line:#9D968A;--ink:#1C1C1E;
+  --cover:#3A6155;--band:#CFC8B7;--ribbon:#A24A38;
+  --cam-bg:#262523;--cam-desk:#35332F;--cam-text:#FFFFFF;
+  --spine-ink:#F4F0E8;
+  --s1:#4A5870;--s2:#7A4436;--s3:#3A6155;--s4:#6E5F45;--s5:#5A4D70;--s6:#66625B;--s7:#3A4A6B;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@supports (font:-apple-system-body){html{font:-apple-system-body}}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0;overflow-wrap:anywhere}
+main{max-width:480px;margin:0 auto;padding:32px 0 56px}
+h1{font-size:1.375rem;line-height:1.35;font-weight:700}
+.lead{margin-top:8px;font-size:.9375rem;color:var(--text-2)}
+.concept{margin-top:40px}
+.meta{margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
+.concept h2{flex:1 1 12em;font-size:1.0625rem;line-height:1.4;font-weight:700}
+.desc{margin-top:4px;font-size:.9375rem;line-height:1.6}
+.replay{flex:none;min-height:44px;min-width:44px;padding:0 16px;font:inherit;font-size:.9375rem;line-height:1.2;color:var(--text);background:transparent;border:1px solid var(--control);border-radius:22px;cursor:pointer}
+.replay:active{background:var(--control-press)}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.ask{margin-top:48px;padding-top:24px;border-top:1px solid var(--rule)}
+.ask ol{padding-left:1.4em}
+.ask li{font-size:1.0625rem;line-height:1.5;font-weight:700}
+.ask li+li{margin-top:12px}
+.order{margin-top:56px}
+.order-h{font-size:.8125rem;line-height:1.4;color:var(--text-2)}
+.nums{margin-top:4px;display:flex;flex-wrap:wrap;gap:4px}
+.nums button{flex:none;min-width:44px;min-height:44px;padding:0 8px;font:inherit;font-size:.8125rem;line-height:1;color:var(--text-2);background:transparent;border:1px solid transparent;border-radius:22px;cursor:pointer;font-variant-numeric:tabular-nums}
+.nums button[aria-pressed="true"]{color:var(--text);font-weight:700;border-color:var(--control)}
+.nums button:active{background:var(--control-press)}
+.frames{display:none;gap:12px}
+.frame{margin:0;container-type:inline-size}
+.frame figcaption{margin-top:4px;font-size:.8125rem;color:var(--text-2)}
+.stage-wrap{container-type:inline-size}
+
+/* 舞台：1em は舞台の幅の 1%。高さは 125em */
+.stage{position:relative;width:100%;aspect-ratio:4/5;overflow:hidden;background:var(--stage);border-radius:8px;isolation:isolate;font-size:calc((min(100vw,512px) - 32px) / 100);line-height:1.2;font-family:var(--sans);-webkit-user-select:none;user-select:none}
+@supports (width:1cqw){.stage{font-size:1cqw}}
+.stage .a{animation-duration:10s;animation-iteration-count:infinite;animation-fill-mode:both;animation-timing-function:ease-in-out;animation-delay:calc(var(--d,0s) - var(--t,0s));animation-play-state:paused}
+.stage.playing .a{animation-play-state:running}
+.stage.reset .a{animation-name:none!important}
+.stage.frozen .a{animation-play-state:paused!important}
+.dim{position:absolute;inset:0;background:var(--stage);opacity:0;pointer-events:none}
+
+/* iPhone */
+.carrier{position:absolute;left:60em;top:63em;width:26em;height:55em;--bz:.9em}
+.flipper{position:absolute;inset:0}
+.phone{position:absolute;inset:0;border-radius:16%/7.6%;background:var(--phone-rim)}
+.screen{position:absolute;inset:var(--bz);border-radius:13%/6%;overflow:hidden;background:var(--screen-off)}
+.island{position:absolute;top:2.6%;left:36%;width:28%;height:3.4%;border-radius:999px;background:var(--island)}
+.back{position:absolute;inset:0;border-radius:16%/7.6%;background:var(--phone-back);opacity:0}
+.lens{position:absolute;left:7%;top:3.4%;width:38%;height:18%;border-radius:28%;background:var(--lens)}
+.hand{position:absolute;color:var(--hand);overflow:visible}
+.hold{left:-3em;top:47em;width:20em;height:30em}
+.point{left:8.35em;top:17.35em;width:15em;height:22.5em;transform-origin:48% 1.3%}
+
+/* 机の上の文庫（上から見る） */
+.book{position:absolute;left:12em;top:10em;width:64em;height:45em}
+.pg{position:absolute;top:0;width:32em;height:100%;background:var(--paper);border:.3em solid var(--paper-edge)}
+.pg::before{content:"";position:absolute;top:5em;bottom:6em;left:3.5em;right:3.5em;background:repeating-linear-gradient(to left,var(--paper-line) 0 .45em,transparent .45em 2.2em)}
+.pg.l{left:0}
+.pg.r{left:32em;border-left-width:0;transform-origin:0 50%;transform:scaleX(0)}
+.cover{position:absolute;left:0;top:0;width:32em;height:100%;background:var(--cover);transform-origin:100% 50%}
+.cover::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12em;background:var(--band)}
+.ribbon{position:absolute;left:28.5em;top:-5em;width:.7em;height:12em;background:var(--ribbon)}
+
+/* 縦書き */
+.vline,.vt,.tt{font-family:var(--mincho);writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;white-space:nowrap;line-height:1}
+.tcy{text-combine-upright:all;-webkit-text-combine:horizontal}
+
+/* 1 続きの一行：ロック画面 */
+.ls{position:absolute;inset:0;background:var(--lock-bg);color:var(--lock-text)}
+.clock{position:absolute;top:8%;left:0;right:0;text-align:center;font-size:4.6em;font-weight:600;font-variant-numeric:tabular-nums}
+.vline{position:absolute;top:21%;left:50%;transform:translateX(-50%);font-size:2.6em;letter-spacing:.04em}
+.pno{position:absolute;top:84.5%;left:0;right:0;text-align:center;font-size:1.8em;color:var(--lock-text-2)}
+.result{position:absolute;top:33%;left:0;right:0;text-align:center}
+.r1{display:block;font-size:3em;font-weight:600;white-space:nowrap}
+.r2{display:block;margin-top:.3em;font-size:2.6em;color:var(--lock-text-2)}
+.off{position:absolute;inset:0;background:var(--screen-off)}
+
+/* 2 積読の山（前から見る） */
+.desk{position:absolute;left:0;right:0;top:92em;bottom:0;background:var(--desk)}
+.pile{position:absolute;left:12em;top:48.5em;width:44em;height:43.5em}
+.bk{position:absolute;color:var(--spine-ink);border-radius:.25em}
+.tt{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-90deg);font-size:2.6em;letter-spacing:.08em}
+.b1{left:6em;top:0;width:36em;height:5em;background:var(--s1)}
+.b2{left:3em;top:5em;width:40em;height:6em;background:var(--s2)}
+.b3{left:7em;top:11em;width:34em;height:5.5em;background:var(--s3)}
+.b4{left:1em;top:16.5em;width:42em;height:7em;background:var(--s4)}
+.b5{left:4em;top:23.5em;width:38em;height:6em;background:var(--s5)}
+.b6{left:0;top:29.5em;width:44em;height:7.5em;background:var(--s6)}
+.b7{left:2em;top:37em;width:40em;height:6.5em;background:var(--s7)}
+.c2 .carrier{left:58em;top:24em;width:38em;height:80em;--bz:1.3em}
+.c2 .hold{left:2em;top:64em;width:24em;height:36em}
+.pull{left:2.5em;top:48.75em;width:18em;height:27em;transform:translateX(-30em) rotate(90deg)}
+.cam{background:var(--cam-bg)}
+.cdesk{position:absolute;left:0;right:0;top:52.6%;height:9%;background:var(--cam-desk)}
+.pcam{position:absolute;left:3.2em;top:12em;width:44em;height:43.5em;transform:scale(.66);transform-origin:0 0}
+.pcam .pile{left:0;top:0}
+.ln{position:absolute;left:2em;right:2em;bottom:.6em;height:.8em;border-radius:.4em;background:var(--cam-text);opacity:0}
+.msg{position:absolute;left:0;right:0;top:66%;text-align:center;color:var(--cam-text);opacity:0}
+.m1{display:block;font-size:4em;font-weight:700;line-height:1.3}
+.m2{display:block;font-size:3em;line-height:1.4}
+
+/* 3 夜の盾：ホーム画面と文庫の1ページ */
+.home{position:absolute;inset:0;background:var(--home-bg);color:var(--home-text)}
+.sb{position:absolute;top:3%;left:11%;font-size:1.7em;font-weight:600;font-variant-numeric:tabular-nums}
+.grid{position:absolute;left:10%;right:10%;top:15%;display:grid;grid-template-columns:repeat(4,1fr);column-gap:1em;row-gap:2.6em}
+.ic{position:relative;aspect-ratio:1;border-radius:24%;background:var(--icon)}
+.ic::after{content:"";position:absolute;left:18%;right:18%;top:calc(100% + .8em);height:.5em;border-radius:.25em;background:var(--icon)}
+.ic.sns{background:var(--icon-sns)}
+.ic.sns::after{display:none}
+.ic.sns svg{position:absolute;left:22%;top:22%;width:56%;height:56%;color:var(--icon-glyph)}
+.lb{position:absolute;left:-.6em;right:-.6em;top:calc(100% + .5em);text-align:center;font-size:1.5em;font-weight:600;line-height:1;white-space:nowrap;color:var(--home-text)}
+.shield{position:absolute;inset:0;background:var(--paper);color:var(--ink);transform-origin:60.5% 31.4%;opacity:0}
+.vt{position:absolute;top:13%;right:15%;font-size:2.8em;line-height:2;letter-spacing:.06em}
+
+/* 動き（10秒で1周。% は 0.1 秒） */
+.c1 .carrier{animation-name:c1car}
+.c1 .flipper{animation-name:c1flip}
+.c1 .back{animation-name:c1back}
+.c1 .off{animation-name:c1off}
+.c1 .lsA{animation-name:c1lsA}
+.c1 .lsB{animation-name:c1lsB;opacity:0}
+.c1 .hold{animation-name:c1hand}
+.c1 .cover{animation-name:c1cover}
+.c1 .pg.r{animation-name:c1pgr}
+.c1 .dim{animation-name:c1dim}
+@keyframes c1car{0%,10%{transform:none}16%,40%{transform:translate(-23em,-28em) scale(1.6)}48%,72%{transform:none}78%,100%{transform:translate(-23em,-28em) scale(1.6)}}
+@keyframes c1flip{0%,40%{transform:scaleX(1)}44%{transform:scaleX(0)}48%,72%{transform:scaleX(1)}75%{transform:scaleX(0)}78%,100%{transform:scaleX(1)}}
+@keyframes c1back{0%,43.9%{opacity:0}44%,74.9%{opacity:1}75%,100%{opacity:0}}
+@keyframes c1off{0%,12%{opacity:1}14%,100%{opacity:0}}
+@keyframes c1lsA{0%,74.9%{opacity:1}75%,100%{opacity:0}}
+@keyframes c1lsB{0%,74.9%{opacity:0}75%,100%{opacity:1}}
+@keyframes c1hand{0%,5%{transform:translateY(60em)}10%,48%{transform:none}53%,68%{transform:translateY(60em)}72%,100%{transform:none}}
+@keyframes c1cover{0%,46%{transform:scaleX(1)}49.5%,100%{transform:scaleX(0)}}
+@keyframes c1pgr{0%,49.5%{transform:scaleX(0)}53%,100%{transform:scaleX(1)}}
+@keyframes c1dim{0%,62%{opacity:0}65%{opacity:.92}68%,95%{opacity:0}100%{opacity:1}}
+
+.c2 .carrier{animation-name:c2car}
+.c2 .b3{animation-name:c2b3}
+.c2 .ln{animation-name:c2ln}
+.c2 .b3 .ln{animation-name:c2ln3}
+.c2 .msg{animation-name:c2msg}
+.c2 .pull{animation-name:c2pull}
+.c2 .dim{animation-name:enddim}
+@keyframes c2car{0%,2%{transform:translateY(105em)}10%,100%{transform:none}}
+@keyframes c2ln{0%,15%{opacity:0}16%,25%{opacity:.5}27%,100%{opacity:0}}
+@keyframes c2ln3{0%,15%{opacity:0;height:.8em}16%,25%{opacity:.5;height:.8em}27%,100%{opacity:1;height:1.3em}}
+@keyframes c2msg{0%,29%{opacity:0}32%,100%{opacity:1}}
+@keyframes c2pull{0%,52%{transform:translateX(-30em) rotate(90deg)}60%{transform:translateX(0) rotate(90deg)}72%,100%{transform:translateX(-18em) rotate(90deg)}}
+@keyframes c2b3{0%,60%{transform:translateX(0)}72%,100%{transform:translateX(-18em)}}
+
+.c3 .carrier{animation-name:c3car;transform:translate(-23em,-28em) scale(1.6)}
+.c3 .flipper{animation-name:c3flip}
+.c3 .back{animation-name:c3back}
+.c3 .hold{animation-name:c3hand}
+.c3 .point{animation-name:c3point}
+.c3 .sns{animation-name:c3sns}
+.c3 .shield{animation-name:c3shield}
+.c3 .cover{animation-name:c3cover}
+.c3 .pg.r{animation-name:c3pgr}
+.c3 .dim{animation-name:enddim}
+@keyframes c3car{0%,56%{transform:translate(-23em,-28em) scale(1.6)}64%,100%{transform:none}}
+@keyframes c3flip{0%,56%{transform:scaleX(1)}60%{transform:scaleX(0)}64%,100%{transform:scaleX(1)}}
+@keyframes c3back{0%,59.9%{opacity:0}60%,100%{opacity:1}}
+@keyframes c3hand{0%,64%{transform:none}69%,100%{transform:translateY(60em)}}
+@keyframes c3point{0%,6%{transform:translate(18em,60em) rotate(-35deg)}13%{transform:rotate(-35deg)}14%{transform:rotate(-35deg) scale(.96)}15%{transform:rotate(-35deg)}21%,100%{transform:translate(18em,60em) rotate(-35deg)}}
+@keyframes c3sns{0%,13%{opacity:1}14%{opacity:.5}16%,100%{opacity:1}}
+@keyframes c3shield{0%,15%{opacity:0;transform:scale(.18)}21%,100%{opacity:1;transform:none}}
+@keyframes c3cover{0%,62%{transform:scaleX(1)}65.5%,100%{transform:scaleX(0)}}
+@keyframes c3pgr{0%,65.5%{transform:scaleX(0)}69%,100%{transform:scaleX(1)}}
+@keyframes enddim{0%,95%{opacity:0}100%{opacity:1}}
+
+/* 動きを減らす設定：動かさず、要の場面を3コマで見せる */
+@media (prefers-reduced-motion: reduce){
+  .stage .a{animation-play-state:paused!important}
+  .live{display:none}
+  .frames{display:grid}
+  .replay{display:none}
+}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="hand-hold" viewBox="0 0 100 150">
+      <g fill="currentColor">
+        <rect x="32" y="104" width="40" height="46" rx="8"/>
+        <rect x="22" y="44" width="60" height="74" rx="24"/>
+        <rect x="24" y="20" width="14" height="44" rx="7"/>
+        <rect x="38" y="10" width="14" height="50" rx="7"/>
+        <rect x="52" y="12" width="14" height="48" rx="7"/>
+        <rect x="66" y="24" width="13" height="40" rx="6.5"/>
+        <rect x="6" y="56" width="17" height="46" rx="8.5" transform="rotate(-30 14.5 79)"/>
+      </g>
+    </symbol>
+    <symbol id="hand-point" viewBox="0 0 100 150">
+      <g fill="currentColor">
+        <rect x="32" y="104" width="40" height="46" rx="8"/>
+        <rect x="24" y="56" width="58" height="62" rx="22"/>
+        <rect x="40" y="2" width="16" height="72" rx="8"/>
+        <rect x="8" y="62" width="18" height="38" rx="9" transform="rotate(-24 17 81)"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+<main lang="ja">
+<header>
+  <h1>三つの読書の瞬間</h1>
+  <p class="lead">まだ作っていない読書アプリの、3つの案です。どれも約10秒で、音はありません。</p>
+</header>
+
+<section class="concept" data-c="1" aria-labelledby="h-c1">
+  <div class="live"><div class="stage-wrap">
+    <div class="stage c1" role="img" data-keys="3,5.9,8.6"
+      aria-label="夜、机の上の iPhone を手に取ると、ロック画面に縦書きで「雨は、まだやまなかった。」と p.43 が出ている。伏せて机に置くと画面は見えなくなり、文庫本を開く。18分後に起こすと「p.43 → p.61」「18分」と出る。"
+      data-frames="1コマ目。夜11時40分、手に取った iPhone のロック画面に、縦書きで「雨は、まだやまなかった。」、その下に p.43。|2コマ目。iPhone を伏せて机に置き、文庫本を開いている。画面は見えない。|3コマ目。18分後に起こすと、11時58分のロック画面に「p.43 → p.61」「18分」。">
+      <div class="book">
+        <div class="pg l"></div>
+        <div class="pg r a"></div>
+        <div class="cover a"></div>
+        <div class="ribbon"></div>
+      </div>
+      <div class="carrier a">
+        <div class="flipper a">
+          <div class="phone">
+            <div class="screen">
+              <div class="ls lsA a">
+                <div class="clock">23:40</div>
+                <div class="vline">雨は、まだやまなかった。</div>
+                <div class="pno">p.43</div>
+              </div>
+              <div class="ls lsB a">
+                <div class="clock">23:58</div>
+                <div class="result"><span class="r1">p.43 → p.61</span><span class="r2">18分</span></div>
+              </div>
+              <div class="off a"></div>
+            </div>
+            <div class="island"></div>
+          </div>
+          <div class="back a"><div class="lens"></div></div>
+        </div>
+        <svg class="hand hold a" viewBox="0 0 100 150" aria-hidden="true"><use href="#hand-hold" xlink:href="#hand-hold"/></svg>
+      </div>
+      <div class="dim a"></div>
+    </div>
+  </div></div>
+  <div class="frames"></div>
+  <div class="meta">
+    <h2 id="h-c1">iPhone を手に取ると、<br>続きの一行が出る</h2>
+    <button type="button" class="replay" aria-describedby="h-c1">もう一度再生</button>
+  </div>
+  <p class="desc">夜、ロック画面に、昨夜読んだ最後の一行が出る。伏せて、本を開く。</p>
+</section>
+
+<section class="concept" data-c="2" aria-labelledby="h-c2">
+  <div class="live"><div class="stage-wrap">
+    <div class="stage c2" role="img" data-keys="2.2,4.5,8.6"
+      aria-label="机に7冊の本が積んである。iPhone のカメラを向けると、画面の中で背表紙に1本ずつ細い線が付き、「小さな舟」にだけ線が残る。「次は、これ。」「p.1から、約15分。」と出て、その本を山から引き抜く。"
+      data-frames="1コマ目。机に積んだ7冊の本に iPhone のカメラを向けている。画面の中で、背表紙に1本ずつ細い線が付いていく。|2コマ目。画面の中で「小さな舟」にだけ細い線が残り、「次は、これ。」「p.1から、約15分。」と出ている。|3コマ目。手が「小さな舟」を山から引き抜いている。">
+      <div class="desk"></div>
+      <div class="pile">
+        <div class="bk b1"><span class="tt">白い港</span></div>
+        <div class="bk b2"><span class="tt">冬の庭</span></div>
+        <div class="bk b3 a"><span class="tt">小さな舟</span></div>
+        <div class="bk b4"><span class="tt">川のほとり</span></div>
+        <div class="bk b5"><span class="tt">午後の地図</span></div>
+        <div class="bk b6"><span class="tt">遠い灯</span></div>
+        <div class="bk b7"><span class="tt">石の記憶</span></div>
+      </div>
+      <svg class="hand pull a" viewBox="0 0 100 150" aria-hidden="true"><use href="#hand-hold" xlink:href="#hand-hold"/></svg>
+      <div class="carrier a">
+        <div class="flipper">
+          <div class="phone">
+            <div class="screen cam">
+              <div class="cdesk"></div>
+              <div class="pcam">
+                <div class="pile copy">
+                  <div class="bk b1"><span class="tt">白い港</span><i class="ln a"></i></div>
+                  <div class="bk b2"><span class="tt">冬の庭</span><i class="ln a" style="--d:.12s"></i></div>
+                  <div class="bk b3 a"><span class="tt">小さな舟</span><i class="ln a" style="--d:.24s"></i></div>
+                  <div class="bk b4"><span class="tt">川のほとり</span><i class="ln a" style="--d:.36s"></i></div>
+                  <div class="bk b5"><span class="tt">午後の地図</span><i class="ln a" style="--d:.48s"></i></div>
+                  <div class="bk b6"><span class="tt">遠い灯</span><i class="ln a" style="--d:.6s"></i></div>
+                  <div class="bk b7"><span class="tt">石の記憶</span><i class="ln a" style="--d:.72s"></i></div>
+                </div>
+              </div>
+              <div class="msg a"><span class="m1">次は、これ。</span><span class="m2">p.1から、約15分。</span></div>
+            </div>
+            <div class="island"></div>
+          </div>
+        </div>
+        <svg class="hand hold" viewBox="0 0 100 150" aria-hidden="true"><use href="#hand-hold" xlink:href="#hand-hold"/></svg>
+      </div>
+      <div class="dim a"></div>
+    </div>
+  </div></div>
+  <div class="frames"></div>
+  <div class="meta">
+    <h2 id="h-c2">カメラを向けると、<br>次の1冊に線が付く</h2>
+    <button type="button" class="replay" aria-describedby="h-c2">もう一度再生</button>
+  </div>
+  <p class="desc">本を読み終えたら、カメラの画面で、積読の1冊にだけ線が残る。その本を抜く。</p>
+</section>
+
+<section class="concept" data-c="3" aria-labelledby="h-c3">
+  <div class="live"><div class="stage-wrap">
+    <div class="stage c3" role="img" data-keys="1.35,3.5,8.6"
+      aria-label="夜11時12分、iPhone のホーム画面で SNS のアプリを押すと、画面が文庫の1ページの姿に変わり、縦書きで「124ページから。」「伏せて10分」とだけ出る。iPhone を伏せて机に置き、文庫本を開く。"
+      data-frames="1コマ目。夜11時12分のホーム画面で、指が SNS のアプリを押している。|2コマ目。画面が文庫の1ページの姿に変わり、縦書きで「124ページから。」「伏せて10分」とだけ出ている。|3コマ目。iPhone を伏せて机に置き、文庫本を開いている。画面は見えない。">
+      <div class="book">
+        <div class="pg l"></div>
+        <div class="pg r a"></div>
+        <div class="cover a"></div>
+        <div class="ribbon"></div>
+      </div>
+      <div class="carrier a">
+        <div class="flipper a">
+          <div class="phone">
+            <div class="screen">
+              <div class="home">
+                <div class="sb">23:12</div>
+                <div class="grid">
+                  <i class="ic"></i><i class="ic"></i><i class="ic"></i><i class="ic"></i>
+                  <i class="ic"></i><i class="ic"></i>
+                  <i class="ic sns a"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5.5C4 4.7 4.7 4 5.5 4h13c.8 0 1.5.7 1.5 1.5v9c0 .8-.7 1.5-1.5 1.5H11l-4.5 4v-4h-1C4.7 16 4 15.3 4 14.5z"/></svg><span class="lb">SNS</span></i>
+                  <i class="ic"></i>
+                  <i class="ic"></i><i class="ic"></i><i class="ic"></i><i class="ic"></i>
+                  <i class="ic"></i><i class="ic"></i><i class="ic"></i><i class="ic"></i>
+                </div>
+              </div>
+              <div class="shield a"><div class="vt"><span class="tcy">124</span>ページから。<br>伏せて<span class="tcy">10</span>分</div></div>
+            </div>
+            <div class="island"></div>
+          </div>
+          <div class="back a"><div class="lens"></div></div>
+        </div>
+        <svg class="hand hold a" viewBox="0 0 100 150" aria-hidden="true"><use href="#hand-hold" xlink:href="#hand-hold"/></svg>
+        <svg class="hand point a" viewBox="0 0 100 150" aria-hidden="true"><use href="#hand-point" xlink:href="#hand-point"/></svg>
+      </div>
+      <div class="dim a"></div>
+    </div>
+  </div></div>
+  <div class="frames"></div>
+  <div class="meta">
+    <h2 id="h-c3">SNS を開くと、<br>本の1ページが出る</h2>
+    <button type="button" class="replay" aria-describedby="h-c3">もう一度再生</button>
+  </div>
+  <p class="desc">夜、紙の色の画面に、続きのページ番号だけが出る。伏せて10分、本を読む。</p>
+</section>
+
+<section class="ask" aria-label="問い">
+  <ol>
+    <li>どれをいちばん人に見せたいですか</li>
+    <li>どれをいちばん使ってみたいですか</li>
+  </ol>
+</section>
+<div class="order" role="group" aria-labelledby="order-h" hidden>
+  <p class="order-h" id="order-h">見せる順番</p>
+  <div class="nums">
+    <button type="button" data-order="1" aria-pressed="true">1</button>
+    <button type="button" data-order="2" aria-pressed="false">2</button>
+    <button type="button" data-order="3" aria-pressed="false">3</button>
+    <button type="button" data-order="4" aria-pressed="false">4</button>
+    <button type="button" data-order="5" aria-pressed="false">5</button>
+    <button type="button" data-order="6" aria-pressed="false">6</button>
+  </div>
+</div>
+</main>
+<script>
+(function(){
+  var root=document.documentElement;
+  var q=new URLSearchParams(location.search);
+  var th=q.get('theme');
+  if(th==='dark'||th==='light'){root.setAttribute('data-theme',th);}
+  var stages=[].slice.call(document.querySelectorAll('.live .stage'));
+  // 動きを減らす設定のための3コマ（同じ舞台を、決めた時刻で止めて複製する）
+  stages.forEach(function(st){
+    var box=st.closest('.concept').querySelector('.frames');
+    var keys=(st.getAttribute('data-keys')||'').split(',');
+    var labels=(st.getAttribute('data-frames')||'').split('|');
+    keys.forEach(function(k,i){
+      var fig=document.createElement('figure');
+      fig.className='frame';
+      var c=st.cloneNode(true);
+      c.removeAttribute('data-keys');
+      c.removeAttribute('data-frames');
+      c.classList.add('frozen');
+      c.style.setProperty('--t',(parseFloat(k)||0)+'s');
+      c.setAttribute('aria-label',labels[i]||'');
+      var cap=document.createElement('figcaption');
+      cap.setAttribute('aria-hidden','true');
+      cap.textContent=(i+1)+' / '+keys.length;
+      fig.appendChild(c);
+      fig.appendChild(cap);
+      box.appendChild(fig);
+    });
+  });
+  // 見せる順番：6通りの並び（数字は案の印 data-c）。6つを1回ずつ使うと、どの案も各位置に2回ずつ来る
+  var ORDERS={'1':'123','2':'231','3':'312','4':'132','5':'321','6':'213'};
+  var KEY='concepts-show-order';
+  var main=document.querySelector('main');
+  var ask=document.querySelector('.ask');
+  var nums=[].slice.call(document.querySelectorAll('.nums button'));
+  var restart=function(){};
+  function valid(v){v=String(v);return ORDERS.hasOwnProperty(v)?v:null;}
+  function arrange(n){
+    ORDERS[n].split('').forEach(function(c){main.insertBefore(document.querySelector('.concept[data-c="'+c+'"]'),ask);});
+    nums.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-order')===n?'true':'false');});
+    main.setAttribute('data-order',n);
+  }
+  // 初めては 1。最後に選んだ番号を覚えておく（使えないときは 1）。確かめ用に ?order=1〜6 も読む
+  var first=valid(q.get('order'));
+  if(!first){try{first=valid(window.localStorage.getItem(KEY));}catch(e){}}
+  arrange(first||'1');
+  nums.forEach(function(b){
+    b.addEventListener('click',function(){
+      var n=b.getAttribute('data-order');
+      try{window.localStorage.setItem(KEY,n);}catch(e){}
+      arrange(n);
+      window.scrollTo(0,0);
+      restart();
+    });
+  });
+  document.querySelector('.order').hidden=false;
+  // 確かめ用：?t=秒 で、その時刻の場面に止める
+  var fz=q.get('t');
+  if(fz!==null){
+    stages.forEach(function(st){st.classList.add('frozen');st.style.setProperty('--t',(parseFloat(fz)||0)+'s');});
+    return;
+  }
+  function play(st){
+    st.classList.remove('playing');
+    st.classList.add('reset');
+    void st.offsetWidth;
+    st.classList.remove('reset');
+    st.classList.add('playing');
+    st.setAttribute('data-started','1');
+  }
+  // 並びを変えたとき：まだ再生していない状態（0秒で止まった形）に戻す
+  function rewind(st){
+    st.classList.remove('playing');
+    st.removeAttribute('data-started');
+    st.classList.add('reset');
+    void st.offsetWidth;
+    st.classList.remove('reset');
+  }
+  if(!('IntersectionObserver' in window)){
+    stages.forEach(play);
+    restart=function(){stages.forEach(play);};
+  }else{
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var st=e.target;
+        if(e.intersectionRatio>=0.5){
+          if(st.hasAttribute('data-started')){st.classList.add('playing');}else{play(st);}
+        }else if(!e.isIntersecting){
+          st.classList.remove('playing');
+        }
+      });
+    },{threshold:[0,0.5]});
+    stages.forEach(function(st){io.observe(st);});
+    // 見え方を最初から数え直す（半分以上見えている舞台は、0秒から動く）
+    restart=function(){
+      io.takeRecords();
+      stages.forEach(function(st){io.unobserve(st);rewind(st);io.observe(st);});
+    };
+  }
+  [].forEach.call(document.querySelectorAll('.replay'),function(b){
+    b.addEventListener('click',function(){play(b.closest('.concept').querySelector('.live .stage'));});
+  });
+})();
+</script>

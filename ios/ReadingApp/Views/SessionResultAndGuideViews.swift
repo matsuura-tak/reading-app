@@ -1,0 +1,269 @@
+import SwiftUI
+import ReadingCore
+import ReadingStore
+
+public enum SessionResultSheetState: Equatable, Sendable {
+    case standard(summaryText: String)
+    case capped(summaryText: String, noticeText: String)
+}
+
+public struct SessionResultSheetView: View {
+    @Bindable var model: ReadingAppModel
+    public let previewState: SessionResultSheetState?
+    @Environment(\.themePalette) private var palette
+
+    public init(model: ReadingAppModel, previewState: SessionResultSheetState? = nil) {
+        self.model = model
+        self.previewState = previewState
+    }
+
+    private var resolvedState: SessionResultSheetState {
+        if let previewState { return previewState }
+        // 仮の値を入れない（screens.md S-4）。S-4 は保存した記録のあとにだけ出るので、まとめは必ずその記録から組まれている。
+        let summary = model.store.latestResultSummary ?? ""
+        if model.store.activeNoticeKey == "session.capped" {
+            return .capped(summaryText: summary, noticeText: BannerNoticeView.message(forKey: "session.capped"))
+        }
+        return .standard(summaryText: summary)
+    }
+
+    /// 読み上げ（design/ 6 の S-4）。見える文字を置き換えず、`result.summary.spoken`、`result.summary.first.spoken`、
+    /// `duration.minutes.spoken` で組む（決定 53）。値がない Preview では見える文字のまま。
+    static func spokenSummary(_ figures: SessionResultFigures?, fallback: String) -> String {
+        guard let figures else { return fallback }
+        let minutes = ReadingWidgetStrings.durationMinutesSpoken(figures.minutes)
+        let strings = ReadingWidgetStrings.spoken
+        guard let current = figures.current,
+              let currentSpoken = strings.spokenProgress(unit: figures.unit, display: String(current)) else {
+            return minutes
+        }
+        if let previous = figures.previous,
+           let previousSpoken = strings.spokenProgress(unit: figures.unit, display: String(previous)) {
+            return String(format: String(localized: "result.summary.spoken"), previousSpoken, currentSpoken, minutes)
+        }
+        return String(format: String(localized: "result.summary.first.spoken"), currentSpoken, minutes)
+    }
+
+    public var body: some View {
+        let book = model.store.currentBook
+        let bookTitle = (book?.isTitlePending == true) ? String(localized: "widget.currentBookAsTitle") : (book?.title ?? "")
+
+        return VStack(spacing: 0) {
+            SheetHeaderBar(title: String(localized: "result.navTitle"))
+
+            VStack(spacing: ThemeSpace.s24) {
+                SheetContentTitle(String(localized: "result.navTitle"))
+
+                BannerNoticeView(model: model, showCloseButton: false)
+
+                Spacer()
+
+                VStack(spacing: ThemeSpace.s16) {
+                    if !bookTitle.isEmpty {
+                        Text(bookTitle)
+                            .font(.subheadline)
+                            .foregroundStyle(palette.textSecondary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityIdentifier("result.title")
+                    }
+
+                    let summaryText: String = {
+                        switch resolvedState {
+                        case .standard(let text), .capped(let text, _):
+                            return text
+                        }
+                    }()
+
+                    if !summaryText.isEmpty {
+                        Text(verbatim: summaryText)
+                            .font(.title.bold().monospacedDigit())
+                            .foregroundStyle(palette.textPrimary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityIdentifier("result.summary")
+                            .accessibilityLabel(Self.spokenSummary(
+                                previewState == nil ? model.store.latestResultFigures : nil,
+                                fallback: summaryText
+                            ))
+                            .accessibilityValue(summaryText)
+                    }
+
+                    Text(String(localized: "result.saved"))
+                        .font(.subheadline)
+                        .foregroundStyle(palette.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("result.saved")
+                }
+
+                Spacer()
+            }
+            .padding(ThemeSpace.s24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            VStack(spacing: 0) {
+                Button {
+                    model.store.activeNoticeKey = nil
+                    model.store.showWidgetGuide = false
+                    model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+                    model.activeSheet = nil
+                    model.notifyHookChanged()
+                } label: {
+                    Text(String(localized: "result.close"))
+                }
+                .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+                .accessibilityIdentifier("result.close")
+            }
+            .padding(.horizontal, ThemeSpace.s24)
+            .padding(.top, ThemeSpace.s12)
+            .padding(.bottom, ThemeSpace.s24)
+            .background(palette.bgPrimary)
+        }
+        .background(palette.bgPrimary.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("sheet.result")
+        .onAppear {
+            model.currentScreen = .sessionResult
+            model.notifyHookChanged()
+        }
+    }
+}
+
+public enum WidgetGuideSheetState: Equatable, Sendable {
+    case visible
+}
+
+public struct WidgetGuideSheetView: View {
+    @Bindable var model: ReadingAppModel
+    public let state: WidgetGuideSheetState
+    @Environment(\.themePalette) private var palette
+
+    public init(model: ReadingAppModel, state: WidgetGuideSheetState = .visible) {
+        self.model = model
+        self.state = state
+    }
+
+    public var body: some View {
+        let book = model.store.currentBook
+        let sampleLine = book?.lastSavedLine ?? "下人の行方は、誰も知らない。"
+        let stepsText = String(localized: "widgetGuide.body")
+
+        return VStack(spacing: 0) {
+            SheetHeaderBar(title: String(localized: "widgetGuide.title"))
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: ThemeSpace.s24) {
+                    Text(String(localized: "widgetGuide.title"))
+                        .font(.title3.bold())
+                        .foregroundStyle(palette.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("widgetGuide.title")
+                        .accessibilityAddTraits(.isHeader)
+
+                    HStack {
+                        Spacer()
+                        lockWidgetPreview(line: sampleLine)
+                        Spacer()
+                    }
+
+                    Text(stepsText)
+                        .font(.body)
+                        .foregroundStyle(palette.textPrimary)
+                        .lineSpacing(ThemeSpace.s4)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityIdentifier("widgetGuide.steps")
+                }
+                .padding(ThemeSpace.s24)
+            }
+
+            VStack(spacing: 0) {
+                Button {
+                    model.store.showWidgetGuide = false
+                    model.currentScreen = (model.store.currentBook != nil) ? .bookmarkCurrent : .bookmarkEmpty
+                    model.activeSheet = nil
+                    model.notifyHookChanged()
+                } label: {
+                    Text(String(localized: "widgetGuide.close"))
+                }
+                .buttonStyle(ThemePrimaryButtonStyle(palette: palette))
+                .accessibilityIdentifier("widgetGuide.close")
+            }
+            .padding(.horizontal, ThemeSpace.s24)
+            .padding(.top, ThemeSpace.s12)
+            .padding(.bottom, ThemeSpace.s24)
+            .background(palette.bgPrimary)
+        }
+        .background(palette.bgPrimary.ignoresSafeArea())
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("widgetGuide")
+        .onAppear {
+            model.currentScreen = .widgetGuide
+            model.notifyHookChanged()
+        }
+    }
+
+    /// 見本の写し。保存の直後に書いた W-1 の写し（widget-snapshot.json）を使い、隠す設定や場所なしも W-1 と同じに見せる（design/ 5 の S-5）。
+    /// 写しに今の本がない時だけ、画面の一行と今の本の場所から作る。
+    private func guideSnapshot(line: String) -> WidgetSnapshot {
+        let current = model.store.snapshotStore.currentSnapshot
+        if current.currentBook != nil { return current }
+        let book = model.store.currentBook
+        let sampleProgress = book.flatMap {
+            WidgetSnapshotProgress.make(unit: $0.progressUnit, page: $0.currentPage, location: $0.currentLocation, percent: $0.currentPercent)
+        } ?? WidgetSnapshotProgress(unit: .page, value: 61)
+        return WidgetSnapshot(
+            appearanceID: current.appearanceID,
+            hideOnWidgets: current.hideOnWidgets,
+            currentBook: current.hideOnWidgets
+                ? WidgetSnapshotBook(progress: sampleProgress)
+                : WidgetSnapshotBook(title: book?.title, line: line, progress: sampleProgress)
+        )
+    }
+
+    /// 172×76 pt の W-1 と同じ縦書き描画（拡張と同じ `ReadingLockScreenWidgetView`）を角丸枠の中に見せる（design/ 3 の S-5）。
+    private func lockWidgetPreview(line: String) -> some View {
+        let snapshot = guideSnapshot(line: line)
+        let widgetLabel = ReadingWidgetStrings.widgetLabel(for: snapshot)
+        let size = CGSize(width: 172, height: 76)
+        return ReadingLockScreenWidgetView(
+            family: .accessoryRectangular,
+            snapshot: snapshot,
+            size: size,
+            contentMargins: ReadingWidgetMetrics.lockScreenContentMargins
+        )
+        .foregroundStyle(palette.textPrimary)
+        .frame(width: size.width, height: size.height)
+        .padding(ThemeSpace.s12)
+        .background(
+            RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
+                .fill(palette.groupedRow)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: ThemeRadius.card, style: .continuous)
+                .stroke(palette.hairline, lineWidth: 1)
+        )
+        // 見本全体を1つの要素に置き換え、中の縦書きの字は要素として出さない（決定 94）。
+        .singleAccessibilityElement(
+            label: String(localized: "widgetGuide.preview.label") + widgetLabel,
+            value: nil,
+            identifier: "widgetGuide.preview"
+        )
+    }
+}
+
+#Preview("S-4 Session Result Standard") {
+    let model = ReadingAppModel()
+    SessionResultSheetView(model: model, previewState: .standard(summaryText: "p.45 → p.62　25分"))
+}
+
+#Preview("S-4 Session Result Capped") {
+    let model = ReadingAppModel()
+    SessionResultSheetView(model: model, previewState: .capped(summaryText: "1440分", noticeText: "24時間を上限として記録しました。"))
+}
+
+#Preview("S-5 Widget Guide AX5 Dark") {
+    let model = ReadingAppModel()
+    WidgetGuideSheetView(model: model)
+        .environment(\.dynamicTypeSize, .accessibility5)
+        .preferredColorScheme(.dark)
+}

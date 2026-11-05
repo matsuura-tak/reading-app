@@ -1,0 +1,32 @@
+jsonschema: 4.25.1
+== empty.json
+hook.widget OK: 4 renders
+exit=0
+== explore_kinsoku_heavy.json
+hook.widget OK: 4 renders
+exit=0
+== hidden.json
+hook.widget OK: 4 renders
+exit=0
+== noLine.json
+hook.widget OK: 4 renders
+exit=0
+== noLineNoPage.json
+hook.widget OK: 4 renders
+exit=0
+== normal_horizontal.json
+hook.widget OK: 4 renders
+exit=0
+== normal_vertical.json
+hook.widget OK: 4 renders
+exit=0
+== showcase_w1_172x76.json
+hook.widget OK: 1 renders
+exit=0
+== showcase_w1_horizontal.json
+hook.widget OK: 1 renders
+exit=0
+== unavailable.json
+hook.widget OK: 4 renders
+exit=0
+files with errors: 0
